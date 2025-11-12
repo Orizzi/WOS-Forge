@@ -19,15 +19,79 @@
         <a href="warAcademy.html">War Academy</a> |
         <a href="pets.html">Pets</a>
         <a href="experts.html">Experts</a> |
-    <button id="dark-mode-toggle" class="dark-mode-toggle">Dark mode toggle</button>
+    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">Dark mode toggle</button>
     </nav>
  <main>  
     <h2>Charms Calculator</h2>
-        <section class="calculation-input">
+  <!-- Profiles / presets section: saved locally in browser -->
+  <section class="profiles" aria-label="Charm profiles">
+    <h3>Profiles</h3>
+    <div class="profiles-row">
+      <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
+      <button id="profile-save" type="button">Save as new</button>
+      <button id="profile-overwrite" type="button" title="Overwrite selected profile">Overwrite</button>
+    </div>
+    <div class="profiles-row">
+      <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+      <button id="profile-rename" type="button">Rename</button>
+      <button id="profile-delete" type="button">Delete</button>
+    </div>
     
-    <div class="table">
+  </section>
+
+  <!-- Controls: reset and batch set per charm type (placed above all inputs) -->
+  <div class="batch-controls">
+    <button id="charms-reset" type="button" title="Click to set every charm's start and finish back to 0">Reset all charms to 0</button>
+    <p class="batch-help">Quick controls: pick a value and the corresponding column will set all FROM (left) or TO (right) selects for that charm type. Changes apply immediately.</p>
+  </div>
+
+  <section class="calculation-input">
+
+  <div class="table">
         
-        <label for="hat-charm-1">Hat Charm Level:</label>
+    <div class="table-top">
+    <label for="hat-charm-1">Hat Charm Level:</label>
+    <div class="batch-inline">
+      <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="hat-batch-to" class="batch-select" title="Set all Hat TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection"><p>FROM</p>
              <select id="hat-charm-1-start" name="hat-charm-1">
@@ -150,8 +214,50 @@
             <option value="16">16</option>
             </select>
         </div></div>
-    <div class="table">
-        <label for="chestplate-charm-1">Chestplate Charm Level:</label>
+  <div class="table">
+    <div class="table-top">
+    <label for="chestplate-charm-1">Chestplate Charm Level:</label>
+    <div class="batch-inline">
+      <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="chestplate-batch-to" class="batch-select" title="Set all Chestplate TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection">
             <p>FROM</p>
@@ -273,8 +379,50 @@
             <option value="16">16</option>
             </select>
         </div></div>
-    <div class="table">
-        <label for="ring-charm-1">Ring Charm Level:</label>
+  <div class="table">
+    <div class="table-top">
+    <label for="ring-charm-1">Ring Charm Level:</label>
+    <div class="batch-inline">
+      <select id="ring-batch-from" class="batch-select" title="Set all Ring FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="ring-batch-to" class="batch-select" title="Set all Ring TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection"><p>FROM</p>
              <select id="ring-charm-1-start" name="ring-charm-1">
@@ -396,8 +544,50 @@
             </select>
         </div></div>
     </div>   
-    <div class="table">
-        <label for="watch-charm-1">Watch Charm Level:</label>
+  <div class="table">
+    <div class="table-top">
+    <label for="watch-charm-1">Watch Charm Level:</label>
+    <div class="batch-inline">
+      <select id="watch-batch-from" class="batch-select" title="Set all Watch FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="watch-batch-to" class="batch-select" title="Set all Watch TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection"><p>FROM</p>
              <select id="watch-charm-1-start" name="watch-charm-1">
@@ -518,8 +708,50 @@
             <option value="16">16</option>
             </select>
         </div></div>
-    <div class="table">
-        <label for="pants-charm-1">Pants Charm Level:</label>
+  <div class="table">
+    <div class="table-top">
+    <label for="pants-charm-1">Pants Charm Level:</label>
+    <div class="batch-inline">
+      <select id="pants-batch-from" class="batch-select" title="Set all Pants FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="pants-batch-to" class="batch-select" title="Set all Pants TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection"><p>FROM</p>
              <select id="pants-charm-1-start" name="pants-charm-1">
@@ -640,8 +872,50 @@
             <option value="16">16</option>
             </select>
         </div></div>
-    <div class="table">
-        <label for="staff-charm-1">Staff Charm Level:</label>
+  <div class="table">
+    <div class="table-top">
+    <label for="staff-charm-1">Staff Charm Level:</label>
+    <div class="batch-inline">
+      <select id="staff-batch-from" class="batch-select" title="Set all Staff FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="staff-batch-to" class="batch-select" title="Set all Staff TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
         <div class="inner-selection">
         <div class="inner-selection"><p>FROM</p>
              <select id="staff-charm-1-start" name="staff-charm-1">
@@ -764,9 +1038,9 @@
         </div></div>
     </div> 
         </section>
-        <section class="calculation-output">
-            <h2>results</h2>
-            <div id="calculation-results">
+        <section class="calculation-output" aria-label="Calculation results">
+            <h2>Results</h2>
+            <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
                 <!-- Calculation results will be displayed here -->
             </div>
         </section>

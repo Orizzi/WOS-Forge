@@ -1,77 +1,89 @@
+/* Theme variables */
+:root{
+    --bg: #12121a; /* tightened dark background */
+    --panel: #1f1d32; /* panels */
+    --muted: #2f2b45; /* controls */
+    --accent: #7c6cff; /* primary accent */
+    --text: #e9eef8; /* main text on dark */
+    --muted-text: #bfc6df;
+    --card: rgb(255 255 255 / 3%);
+    --success: #6ad29a;
+    --danger: #ff7b7b;
+}
+html.light-theme, body.light-theme{ --bg: #fff; --panel: #f2f2f6; --muted: #e9e9ee; --accent: #6b6bf0; --text: #111; --card: rgb(0 0 0 / 3%); }
+
 body { 
-    font-family: Arial, sans-serif; 
-    background-color: #221F37; 
+    font-family: Inter, Arial, sans-serif; 
+    background-color: var(--bg); 
+    color: var(--text);
     margin: 0; 
     padding: 0; 
 }
+
 h1, h2, h3, h4, h5, h6 {
-    color: #FFFFFF;
+    color: var(--text);
     display: flex;
     justify-content: center;
     padding-top: 1%;
     padding-bottom: 1%;
-
 }
+
 .title {
     text-align: center; 
     text-decoration: none;
-    color: #FFFFFF;
+    color: #FFF;
     display: flex;
     justify-content: center;
     margin: auto;
      padding-bottom: 10px;
     margin-top: 20px; 
 }
+
 .main-nav{
-    background-color: #2C2A4A; 
+    background-color: var(--panel);
     padding: 10px; 
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
-.main-nav a {
-    color: #FFFFFF;
-    background-color: #444262;
-    text-decoration: none;
-    margin: 1px 10px;
-    padding: 0.15em;
-    border: 1px solid #444262;
-    border-radius: 5px;
-    
-}
-.dark-mode-toggle {
 
-    background: none; /* no button background */
-    border: 1px solid #444262;  
-    background-color: #444262;
-    border-radius: 5px;
-    color: #FFFFFF;    /* keep your text color */
-    margin: 1px 10px;
-    padding: 0.15em;       /* remove padding so it looks like plain text */
-    cursor: pointer;   /* still indicate clickable */
-    border-radius: 0;
-    font: inherit;     /* match surrounding text */
+.main-nav a {
+    color: var(--text);
+    background-color: var(--muted);
     text-decoration: none;
+    margin: 1px 10px;
+    padding: 0.25em 0.4em;
+    border: 1px solid rgb(255 255 255 / 3%);
+    border-radius: 8px;
+    box-shadow: 0 1px 0 rgb(0 0 0 / 20%) inset;
+}
+
+.dark-mode-toggle {
+    background: none; /* no button background */
+    border: 1px solid var(--muted);
+    background-color: var(--muted);
+    border-radius: 6px;
+    color: var(--text);
+    margin: 1px 10px;
+    padding: 0.25em 0.5em;
+    cursor: pointer;
+    font: inherit;
 }
 
 /* hover and focus styles to keep it discoverable and accessible */
 .dark-mode-toggle:hover {
     text-decoration: none;
-    color: #ffffcc;
+    color: #ffc;
 }
+
 .dark-mode-toggle:focus {
-    outline: 2px solid #ffffff; /* visible focus for keyboard users */
+    outline: 2px solid #fff; /* visible focus for keyboard users */
     outline-offset: 3px;
 }
-p {
-    color: #FFFFFF;
-    line-height: 1.6;
-    margin: 10px 20px;
-    text-align:center;
+.muted { color: var(--text); opacity: 0.85; }
+p { line-height: 1.6; margin: 10px 20px; }
 
-  
-}
 .introduction {
     background-color: #2C2A4A; 
     padding: 20px; 
@@ -84,86 +96,142 @@ body, .main-nav, .introduction, .main-nav a, p, .title, select, input {
     transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
-.light-theme /* applied to <body> by the script */
-html.light-theme, body.light-theme {
-    background-color: #FFFFFF; /* page background */
-    color: #111111; /* sensible default text color for light theme */
-}
-.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6 {
-    color: #111111;
-}
-.light-theme .title {
-    color: #111111;
-}
-.light-theme .main-nav{
-    background-color: #f2f2f6;
-}
-.light-theme .main-nav a{
-    color: #111111;
-    background-color: #e9e9ee;
-    border: 1px solid #e9e9ee;
-}
-
-.light-theme p{
-    color: #222222;
-}
-.light-theme .introduction{
-    background-color: #f5f5fa;
-}
-.light-theme .dark-mode-toggle{
-    color: #111111;
-    background-color: #e9e9ee;
-}
-/* removed stray .light-theme .body rule (not needed) */
-
-/* Slightly different hover color for light theme */
-.light-theme .dark-mode-toggle:hover{
-    color: #333333;
-}
-
-/* Select styling per theme ------------------------------------------------- */
-/* Dark (default) */
+/* Enhanced select styling for consistency across browsers and Windows */
 select {
-    background-color: #2C2A4A; /* dark select background */
-    color: #FFFFFF;
-    border: 1px solid #444262;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 8%);
+    cursor: pointer;
+    appearance: none; /* hide default arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9eef8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
 }
 
 /* Light theme selects */
 html.light-theme select, body.light-theme select {
-    background-color: #ffffff; /* light select background */
-    color: #111111; /* dark text for readability */
+    background-color: #fff;
+    color: #111;
     border: 1px solid #dcdde6;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Enhanced button and interactive control styling */
+button, input[type="button"], .dark-mode-toggle {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 150ms ease;
+    cursor: pointer;
+}
+
+button:hover, input[type="button"]:hover, .dark-mode-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 30%);
+    filter: brightness(1.05);
+}
+
+button:active, input[type="button"]:active, .dark-mode-toggle:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+}
+
+button:focus, input[type="button"]:focus, .dark-mode-toggle:focus {
+    outline: 3px solid rgb(124 108 255 / 30%);
+    outline-offset: 2px;
 }
 
 /* Focus state for accessibility */
 select:focus {
-    outline: 2px solid #8b8bf0; /* visible focus ring */
+    outline: 3px solid rgb(124 108 255 / 30%);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgb(124 108 255 / 10%);
+}
+
+html.light-theme select:focus {
+    outline: 3px solid rgb(107 107 240 / 30%);
+}
+
+input:focus {
+    outline: 3px solid rgb(124 108 255 / 30%);
     outline-offset: 2px;
 }
+
+html.light-theme input:focus {
+    outline: 3px solid rgb(107 107 240 / 30%);
+}
+
 .calculation-input, .calculation-output {
-    color: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
     margin: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgb(255 255 255 / 4%);
     width: calc(100% - 60px);
     box-sizing: border-box;
+    background: var(--card);
 }
-select, input {
-    padding: 5px;
-    border-radius: 3px;
+
+input {
+    padding: 8px 10px;
+    border-radius: 6px;
     font-size: 1em;
+    font-family: inherit;
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 8%);
+    transition: background-color 150ms ease, border-color 150ms ease;
 }
+
 .table {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
     gap: 10px;
-    
 }
+
+.table .batch-select{
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 3%);
+}
+
+.table .profiles input[type="text"]{ padding:8px; border-radius:8px; min-width:220px; background-color: #fff4c7; color: #111; border:1px solid rgb(0 0 0 / 6%); }
+
+.table-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+    /* resource color hints */
+    .col-dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; vertical-align:middle; }
+    .res-guides{ background:#ffd166; }
+    .res-designs{ background:#6ad29a; }
+    .res-secrets{ background:#7c6cff; }
+
+.batch-inline{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.batch-inline .batch-select{
+    width: 84px;
+}
+
 .inner-selection {
     display: flex;
     justify-content: flex-start;
@@ -171,3 +239,94 @@ select, input {
     gap: 0.15em;
     
 }
+
+/* Batch controls styling -------------------------------------------------- */
+.batch-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 20px;
+}
+
+.batch-controls .batch-row{
+    display:flex; gap:10px; align-items:center; width:100%; max-width:1100px; justify-content:space-between;
+}
+
+.batch-controls #charms-reset {
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 3%);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.batch-controls #charms-reset:hover { filter:brightness(1.08); }
+.batch-help { margin: 0; font-size: 0.95em; color: rgb(255 255 255 / 90%); text-align:center; }
+
+.batch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+.batch-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--card);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.batch-item label{
+    font-weight: bold;
+    color: #eee;
+    text-transform: capitalize;
+    font-size: 0.95em;
+}
+
+.batch-select{
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--muted);
+}
+
+/* Light theme overrides for batch controls */
+html.light-theme .batch-help{ color: #333; }
+html.light-theme .batch-controls #charms-reset{ background-color: #e9e9ee; color:#111; border:1px solid #ddd; }
+html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
+html.light-theme .batch-item label{ color: #222; }
+
+/* Profiles UI ------------------------------------------------------------ */
+.profiles{ margin: 12px 20px; padding: 12px; border-radius: 8px; background: var(--card); display:flex; flex-direction:column; align-items:center; }
+.profiles h3{ margin: 0 0 8px; color: var(--text); }
+.profiles-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; justify-content:center; }
+.profiles input[type="text"]{ padding:8px; border-radius:6px; min-width:220px; background-color: #fff4c7; color: #111; }
+.profiles .profiles-list{ padding:8px; border-radius:6px; min-width:220px; background: var(--panel); color:var(--text); border:1px solid var(--muted); }
+.profiles-help{ font-size:0.9em; color:rgb(255 255 255 / 80%); margin:0; }
+html.light-theme .profiles input[type="text"]{ background-color:#fffacd; color:#111; }
+html:not(.light-theme) .profiles input[type="text"]{ background-color:#2f2b45; color:#fff; }
+
+/* Results styling ------------------------------------------------------- */
+.calculation-output { background: transparent; padding: 10px 20px; }
+.result-totals { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:flex-start; margin-bottom:12px; }
+.result-totals p{ margin:0; padding:6px 10px; background: rgb(0 0 0 / 4%); border-radius:6px; }
+.results-wrap{ overflow:auto; border-radius:8px; background: var(--card); padding:12px; }
+.results-table{ width:100%; border-collapse:collapse; min-width:560px; }
+.results-table th, .results-table td{ padding:8px 10px; text-align:left; border-bottom:1px solid rgb(255 255 255 / 4%); }
+.results-table thead th{ background: linear-gradient(90deg, rgb(0 0 0 / 4%), transparent); position:sticky; top:0; backdrop-filter: blur(2px); }
+.results-table tfoot td{ font-weight:700; border-top:2px solid rgb(255 255 255 / 6%); }
+
+@media (width <=720px){
+    .batch-inline .batch-select{ width:64px; }
+    .results-table{ min-width:480px; }
+    .result-totals{ justify-content:center; }
+}
+
+
+
