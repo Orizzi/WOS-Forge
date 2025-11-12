@@ -39,6 +39,7 @@
                 "construction-speed": "Construction Speed Bonus (%)",
                 "speedup-days": "Speedup Days",
                 "total-time": "Total Time",
+                "total-reduced-time": "Total Reduced Time",
             
             // Gear types
             Helmet: "Helmet",
@@ -107,6 +108,7 @@
                 "construction-speed": "Bono de Velocidad de Construcción (%)",
                 "speedup-days": "Días de Aceleración",
                 "total-time": "Tiempo Total",
+                "total-reduced-time": "Tiempo Total Reducido",
             
             // Gear types
             Helmet: "Casco",
@@ -175,6 +177,7 @@
               "construction-speed": "건설 속도 보너스 (%)",
               "speedup-days": "스피드업 일수",
               "total-time": "총 시간",
+              "total-reduced-time": "총 감소 시간",
             
             // Gear types
             Helmet: "투구",
@@ -247,6 +250,7 @@
                 "construction-speed": "Бонус Скорости Строительства (%)",
                 "speedup-days": "Дни Ускорения",
                 "total-time": "Общее Время",
+                "total-reduced-time": "Общее Сокращённое Время",
             
             // Gear types
             Helmet: "Шлем",

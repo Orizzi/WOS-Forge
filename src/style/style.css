@@ -737,11 +737,27 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 /* Fire Crystals specific layout */
 .buildings-section {
-    margin: 20px;
+    margin: 12px 20px 20px 20px;
     padding: 16px;
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 10px;
+}
+
+.results-container {
+    margin-top: 12px;
+}
+
+.results-container h2 {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+/* Separate time section styling */
+.time-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border);
 }
 
 .building-card {
@@ -796,6 +812,49 @@ html:not(.light-theme) .profiles input[type="text"]{
 .building-select {
     width: 100%;
     text-align-last: center;
+}
+
+/* Building breakdown compact styles */
+.building-breakdown {
+    margin-top: 20px;
+}
+
+.building-breakdown h3 {
+    margin-bottom: 12px;
+}
+
+.breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.building-result-compact {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.9em;
+}
+
+.building-result-compact strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--accent);
+    font-size: 0.95em;
+}
+
+.compact-line {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 2px 0;
+    font-size: 0.85em;
+}
+
+.compact-line .res-icon {
+    width: 14px;
+    height: 14px;
 }
 
 @media (max-width: 1200px) {

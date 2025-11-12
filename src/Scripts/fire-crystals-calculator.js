@@ -860,6 +860,11 @@
             </div>`;
         }
 
+        html += '</div>';
+
+        // Time section (separate from resources)
+        html += '<div class="totals-summary time-section">';
+
         // Total construction time
         const totalTimeFormatted = formatTime(totals.totalTime);
         html += `<div class="total-item">
@@ -871,7 +876,7 @@
         if (totals.constructionSpeed > 0) {
             const adjustedTimeFormatted = formatTime(totals.adjustedTime);
             html += `<div class="total-item">
-                <span class="resource-label">${t('total-time', lang)} (${totals.constructionSpeed}% bonus):</span>
+                <span class="resource-label">${t('total-reduced-time', lang)}:</span>
                 <span class="resource-value">${adjustedTimeFormatted.days}d ${adjustedTimeFormatted.hours}h ${adjustedTimeFormatted.minutes}m</span>
             </div>`;
         }
@@ -892,25 +897,25 @@
 
         html += '</div>';
 
-        // Building breakdown
+        // Building breakdown - compact format
         if (Object.keys(buildingResults).length > 0) {
-            html += `<div class="building-breakdown"><h3>${t('building-breakdown', lang)}</h3>`;
+            html += `<div class="building-breakdown"><h3>${t('building-breakdown', lang)}</h3><div class="breakdown-grid">`;
             
             for (const [building, costs] of Object.entries(buildingResults)) {
                 const timeFormatted = formatTime(costs.time);
-                html += `<div class="building-result">
-                    <h4>${t(building, lang)}</h4>
-                    <p><span class="resource-label">${labelWithIcon('fire-crystals')}:</span> ${Number(costs.normalFC || 0).toLocaleString()}</p>
-                    ${costs.refineFC > 0 ? `<p><span class=\"resource-label\">${labelWithIcon('refine-crystals')}:</span> ${Number(costs.refineFC || 0).toLocaleString()}</p>` : ''}
-                    ${(costs.meat || 0) > 0 ? `<p><span class=\"resource-label\">${labelWithIcon('meat')}:</span> ${Number(costs.meat || 0).toLocaleString()}</p>` : ''}
-                    ${(costs.wood || 0) > 0 ? `<p><span class=\"resource-label\">${labelWithIcon('wood')}:</span> ${Number(costs.wood || 0).toLocaleString()}</p>` : ''}
-                    ${(costs.coal || 0) > 0 ? `<p><span class=\"resource-label\">${labelWithIcon('coal')}:</span> ${Number(costs.coal || 0).toLocaleString()}</p>` : ''}
-                    ${(costs.iron || 0) > 0 ? `<p><span class=\"resource-label\">${labelWithIcon('iron')}:</span> ${Number(costs.iron || 0).toLocaleString()}</p>` : ''}
-                    <p>${t('total-time', lang)}: ${timeFormatted.days}d ${timeFormatted.hours}h ${timeFormatted.minutes}m</p>
+                html += `<div class="building-result-compact">
+                    <strong>${t(building, lang)}</strong>
+                    <div class="compact-line">${labelWithIcon('fire-crystals')}: ${Number(costs.normalFC || 0).toLocaleString()}</div>
+                    ${costs.refineFC > 0 ? `<div class="compact-line">${labelWithIcon('refine-crystals')}: ${Number(costs.refineFC || 0).toLocaleString()}</div>` : ''}
+                    ${(costs.meat || 0) > 0 ? `<div class="compact-line">${labelWithIcon('meat')}: ${Number(costs.meat || 0).toLocaleString()}</div>` : ''}
+                    ${(costs.wood || 0) > 0 ? `<div class="compact-line">${labelWithIcon('wood')}: ${Number(costs.wood || 0).toLocaleString()}</div>` : ''}
+                    ${(costs.coal || 0) > 0 ? `<div class="compact-line">${labelWithIcon('coal')}: ${Number(costs.coal || 0).toLocaleString()}</div>` : ''}
+                    ${(costs.iron || 0) > 0 ? `<div class="compact-line">${labelWithIcon('iron')}: ${Number(costs.iron || 0).toLocaleString()}</div>` : ''}
+                    <div class="compact-line">${t('total-time', lang)}: ${timeFormatted.days}d ${timeFormatted.hours}h ${timeFormatted.minutes}m</div>
                 </div>`;
             }
             
-            html += '</div>';
+            html += '</div></div>';
         }
 
         resultsDisplay.innerHTML = html;
