@@ -394,6 +394,19 @@ input {
     
 }
 
+/* Building header with optional icon */
+.building-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.building-header .building-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 1px var(--shadow));
+}
+
 /* Batch controls styling -------------------------------------------------- */
 .batch-controls {
     display: flex;
@@ -680,6 +693,9 @@ html:not(.light-theme) .profiles input[type="text"]{
     font-size: 0.95em;
 }
 
+.label-with-icon { display: inline-flex; align-items: center; gap: 6px; }
+.res-icon { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 1px 1px var(--shadow)); }
+
 .inventory-item input {
     padding: 10px;
     background: var(--muted);
@@ -695,6 +711,93 @@ html:not(.light-theme) .profiles input[type="text"]{
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
+}
+
+/* Fire Crystals results summary */
+.totals-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.totals-summary .total-item {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+}
+.totals-summary .resource-label { color: var(--muted-text); font-size: 0.95em; }
+.totals-summary .resource-value { font-weight: 700; font-size: 1.05em; }
+.totals-summary .gap.deficit { color: var(--danger); font-weight: 600; }
+.totals-summary .gap.surplus { color: var(--success); font-weight: 600; }
+
+/* Fire Crystals specific layout */
+.buildings-section {
+    margin: 20px;
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.building-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 6px 16px var(--shadow);
+    text-align: center;
+}
+
+.building-main {
+    border: 1px solid var(--accent);
+}
+
+.building-selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 8px;
+    align-items: center;
+    justify-items: center;
+}
+
+.select-group {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    width: 100%;
+}
+
+.select-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted-text);
+    text-align: center;
+}
+
+.buildings-grid {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.building-select {
+    width: 100%;
+    text-align-last: center;
+}
+
+@media (max-width: 1200px) {
+    .buildings-grid { grid-template-columns: repeat(2, minmax(200px, 1fr)); }
+}
+@media (max-width: 900px) {
+    .building-selects { grid-template-columns: 1fr; }
+    .buildings-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 900px) {

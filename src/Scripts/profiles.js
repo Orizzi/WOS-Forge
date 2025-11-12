@@ -81,8 +81,9 @@ const ProfilesModule = (function(){
     const data = {
       charms: {},
       chiefGear: {},
-      inventory: {}
-    };
+        inventory: {},
+        fireCrystals: {}
+      };
     
     // Capture Charms data (all charm selects ending with -start or -finish)
     const charmSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
@@ -100,12 +101,26 @@ const ProfilesModule = (function(){
       if(desired && desired.value) data.chiefGear[`${gear}-desired`] = desired.value;
     });
     
-    // Capture Inventory data (chief gear inventory inputs)
-    const inventoryIds = ['inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber'];
-    inventoryIds.forEach(id => {
-      const input = document.getElementById(id);
-      if(input && input.value) data.inventory[id] = input.value;
-    });
+      // Capture Fire Crystals buildings data (8 buildings from fireCrystals.html page)
+      const buildings = ['furnace', 'embassy', 'command-center', 'infirmary', 
+                         'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
+      buildings.forEach(building => {
+        const current = document.getElementById(`${building}-current`);
+        const desired = document.getElementById(`${building}-desired`);
+        if(current && current.value) data.fireCrystals[`${building}-current`] = current.value;
+        if(desired && desired.value) data.fireCrystals[`${building}-desired`] = desired.value;
+      });
+    
+      // Capture Inventory data (all inventory inputs from all pages)
+      const inventoryIds = [
+        'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',  // Chief Gear
+        'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed', // Fire Crystals
+        'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron' // Base resources (optional)
+      ];
+      inventoryIds.forEach(id => {
+        const input = document.getElementById(id);
+        if(input && input.value) data.inventory[id] = input.value;
+      });
     
     return data;
   }
@@ -143,6 +158,14 @@ const ProfilesModule = (function(){
       });
     }
     
+      // Apply Fire Crystals data
+      if(obj.fireCrystals){
+        Object.keys(obj.fireCrystals).forEach(id => {
+          const el = document.getElementById(id);
+          if(el && el.tagName === 'SELECT') el.value = String(obj.fireCrystals[id]);
+        });
+      }
+    
     // Recalculate with new values (trigger both calculators if available)
     if(typeof CalculatorModule !== 'undefined'){
       CalculatorModule.calculateAll();
@@ -150,6 +173,9 @@ const ProfilesModule = (function(){
     if(typeof ChiefGearCalculator !== 'undefined'){
       ChiefGearCalculator.calculateAll();
     }
+      if(typeof FireCrystalsCalculator !== 'undefined'){
+        FireCrystalsCalculator.calculateAll();
+      }
   }
 
   /**
