@@ -810,55 +810,50 @@
             <span class="gap ${rfcGapClass}">${rfcGapText}</span>
         </div>`;
 
-        // Base resources (totals + gap if inventory provided)
-        if ((totals.totalMeat || 0) > 0) {
-            const meatGap = (totals.totalMeat || 0) - (totals.inventoryMeat || 0);
-            const meatGapClass = meatGap > 0 ? 'deficit' : 'surplus';
-            const meatGapText = meatGap > 0 
-                ? t('gap-need-more', lang).replace('%d', Math.abs(meatGap).toLocaleString())
-                : t('gap-have-left', lang).replace('%d', Math.abs(meatGap).toLocaleString());
-            html += `<div class="total-item">
-                <span class="resource-label">${labelWithIcon('meat')}:</span>
-                <span class="resource-value">${totals.totalMeat.toLocaleString()}</span>
-                <span class="gap ${meatGapClass}">${meatGapText}</span>
-            </div>`;
-        }
-        if ((totals.totalWood || 0) > 0) {
-            const woodGap = (totals.totalWood || 0) - (totals.inventoryWood || 0);
-            const woodGapClass = woodGap > 0 ? 'deficit' : 'surplus';
-            const woodGapText = woodGap > 0 
-                ? t('gap-need-more', lang).replace('%d', Math.abs(woodGap).toLocaleString())
-                : t('gap-have-left', lang).replace('%d', Math.abs(woodGap).toLocaleString());
-            html += `<div class="total-item">
-                <span class="resource-label">${labelWithIcon('wood')}:</span>
-                <span class="resource-value">${totals.totalWood.toLocaleString()}</span>
-                <span class="gap ${woodGapClass}">${woodGapText}</span>
-            </div>`;
-        }
-        if ((totals.totalCoal || 0) > 0) {
-            const coalGap = (totals.totalCoal || 0) - (totals.inventoryCoal || 0);
-            const coalGapClass = coalGap > 0 ? 'deficit' : 'surplus';
-            const coalGapText = coalGap > 0 
-                ? t('gap-need-more', lang).replace('%d', Math.abs(coalGap).toLocaleString())
-                : t('gap-have-left', lang).replace('%d', Math.abs(coalGap).toLocaleString());
-            html += `<div class="total-item">
-                <span class="resource-label">${labelWithIcon('coal')}:</span>
-                <span class="resource-value">${totals.totalCoal.toLocaleString()}</span>
-                <span class="gap ${coalGapClass}">${coalGapText}</span>
-            </div>`;
-        }
-        if ((totals.totalIron || 0) > 0) {
-            const ironGap = (totals.totalIron || 0) - (totals.inventoryIron || 0);
-            const ironGapClass = ironGap > 0 ? 'deficit' : 'surplus';
-            const ironGapText = ironGap > 0 
-                ? t('gap-need-more', lang).replace('%d', Math.abs(ironGap).toLocaleString())
-                : t('gap-have-left', lang).replace('%d', Math.abs(ironGap).toLocaleString());
-            html += `<div class="total-item">
-                <span class="resource-label">${labelWithIcon('iron')}:</span>
-                <span class="resource-value">${totals.totalIron.toLocaleString()}</span>
-                <span class="gap ${ironGapClass}">${ironGapText}</span>
-            </div>`;
-        }
+        // Base resources (always display)
+        const meatGap = (totals.totalMeat || 0) - (totals.inventoryMeat || 0);
+        const meatGapClass = meatGap > 0 ? 'deficit' : 'surplus';
+        const meatGapText = meatGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(meatGap).toLocaleString())
+            : t('gap-have-left', lang).replace('%d', Math.abs(meatGap).toLocaleString());
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('meat')}:</span>
+            <span class="resource-value">${(totals.totalMeat || 0).toLocaleString()}</span>
+            <span class="gap ${meatGapClass}">${meatGapText}</span>
+        </div>`;
+
+        const woodGap = (totals.totalWood || 0) - (totals.inventoryWood || 0);
+        const woodGapClass = woodGap > 0 ? 'deficit' : 'surplus';
+        const woodGapText = woodGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(woodGap).toLocaleString())
+            : t('gap-have-left', lang).replace('%d', Math.abs(woodGap).toLocaleString());
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('wood')}:</span>
+            <span class="resource-value">${(totals.totalWood || 0).toLocaleString()}</span>
+            <span class="gap ${woodGapClass}">${woodGapText}</span>
+        </div>`;
+
+        const coalGap = (totals.totalCoal || 0) - (totals.inventoryCoal || 0);
+        const coalGapClass = coalGap > 0 ? 'deficit' : 'surplus';
+        const coalGapText = coalGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(coalGap).toLocaleString())
+            : t('gap-have-left', lang).replace('%d', Math.abs(coalGap).toLocaleString());
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('coal')}:</span>
+            <span class="resource-value">${(totals.totalCoal || 0).toLocaleString()}</span>
+            <span class="gap ${coalGapClass}">${coalGapText}</span>
+        </div>`;
+
+        const ironGap = (totals.totalIron || 0) - (totals.inventoryIron || 0);
+        const ironGapClass = ironGap > 0 ? 'deficit' : 'surplus';
+        const ironGapText = ironGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(ironGap).toLocaleString())
+            : t('gap-have-left', lang).replace('%d', Math.abs(ironGap).toLocaleString());
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('iron')}:</span>
+            <span class="resource-value">${(totals.totalIron || 0).toLocaleString()}</span>
+            <span class="gap ${ironGapClass}">${ironGapText}</span>
+        </div>`;
 
         html += '</div>';
 
