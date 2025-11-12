@@ -80,7 +80,7 @@ p {
 }
 
 /* Smooth transitions for theme changes */
-body, .main-nav, .introduction, .main-nav a, p, .title {
+body, .main-nav, .introduction, .main-nav a, p, .title, select, input {
     transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
@@ -114,11 +114,60 @@ html.light-theme, body.light-theme {
     color: #111111;
     background-color: #e9e9ee;
 }
-.light-theme .body{
-background-color: #FFFFFF;
-}
+/* removed stray .light-theme .body rule (not needed) */
 
 /* Slightly different hover color for light theme */
 .light-theme .dark-mode-toggle:hover{
     color: #333333;
+}
+
+/* Select styling per theme ------------------------------------------------- */
+/* Dark (default) */
+select {
+    background-color: #2C2A4A; /* dark select background */
+    color: #FFFFFF;
+    border: 1px solid #444262;
+}
+
+/* Light theme selects */
+html.light-theme select, body.light-theme select {
+    background-color: #ffffff; /* light select background */
+    color: #111111; /* dark text for readability */
+    border: 1px solid #dcdde6;
+}
+
+/* Focus state for accessibility */
+select:focus {
+    outline: 2px solid #8b8bf0; /* visible focus ring */
+    outline-offset: 2px;
+}
+.calculation-input, .calculation-output {
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: calc(100% - 60px);
+    box-sizing: border-box;
+}
+select, input {
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 1em;
+}
+.table {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+.inner-selection {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 0.15em;
+    
 }

@@ -11,8 +11,10 @@
     try { localStorage.setItem(STORAGE_KEY, isLight ? 'light' : 'dark'); } catch(e){}
     // update the toggle button label to reflect the action it will perform
     if(toggle){
-      // when currently in light mode, the button should offer to switch to dark mode
-      toggle.textContent = isLight ? 'Dark mode toggle' : 'Light mode toggle';
+      // short English labels: show the action the button will perform
+      // when currently in light mode, show 'Dark' (to switch to dark mode)
+      // when currently in dark mode, show 'Light' (to switch to light mode)
+      toggle.textContent = isLight ? 'Dark' : 'Light';
       // keep an accessible pressed state (true when light mode is active)
       try { toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false'); } catch(e){}
     }
