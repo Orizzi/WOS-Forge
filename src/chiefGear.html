@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="Scripts/theme.js" defer></script>
+    <script src="Scripts/translations.js" defer></script>
+    <script src="Scripts/profiles.js" defer></script>
+    <script src="Scripts/chief-gear-calculator.js" defer></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="title">WOS CALCULATOR</a>
+    </header>
+    <nav class="main-nav">
+        <a href="index.html">Home</a> |
+        <a href="charms.html" data-i18n="nav-charms">Charms</a> |
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a> |
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a> |
+        <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a> |
+        <a href="pets.html" data-i18n="nav-pets">Pets</a>
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="ko">🇰🇷 한국어</option>
+            <option value="ru">🇷🇺 Русский</option>
+        </select>
+    </nav>
+    <main>
+        <h2 data-i18n="header">Chief Gear Calculator</h2>
+
+        <!-- Profiles section -->
+        <section class="profiles" aria-label="Chief Gear profiles">
+            <h3>Profiles</h3>
+            <div class="profiles-row">
+                <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
+                <button id="profile-save" type="button" title="Save current setup" class="primary">💾 Save New</button>
+                <button id="profile-overwrite" type="button" title="Update selected profile" class="secondary">📝 Update</button>
+            </div>
+            <div class="profiles-row">
+                <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                <button id="profile-rename" type="button" title="Rename selected profile" class="secondary">✏️ Rename</button>
+                <button id="profile-delete" type="button" title="Delete selected profile" class="danger">🗑️ Delete</button>
+            </div>
+            <div class="profiles-row">
+                <button id="export-profiles" type="button" title="Download all profiles as JSON" class="secondary">📤 Export</button>
+                <button id="import-profiles" type="button" title="Import profiles from JSON file" class="secondary">📥 Import</button>
+            </div>
+        </section>
+
+        <!-- Inventory Section -->
+        <section class="inventory-section">
+            <h3 data-i18n="inventory-header">Your Inventory</h3>
+            <div class="inventory-grid">
+                <div class="inventory-item">
+                    <label for="inventory-alloy" data-i18n="hardened-alloy">Hardened Alloy</label>
+                    <input type="number" id="inventory-alloy" value="0" min="0" aria-label="Hardened Alloy inventory">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-solution" data-i18n="polishing-solution">Polishing Solution</label>
+                    <input type="number" id="inventory-solution" value="0" min="0" aria-label="Polishing Solution inventory">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-plans" data-i18n="design-plans">Design Plans</label>
+                    <input type="number" id="inventory-plans" value="0" min="0" aria-label="Design Plans inventory">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-amber" data-i18n="lunar-amber">Lunar Amber</label>
+                    <input type="number" id="inventory-amber" value="0" min="0" aria-label="Lunar Amber inventory">
+                </div>
+            </div>
+        </section>
+
+        <!-- Batch Controls -->
+        <div class="batch-controls">
+            <h3 data-i18n="select-all-header">Set All Gear Levels</h3>
+            <div class="batch-row">
+                <label for="batch-current">Current:</label>
+                <select id="batch-current" title="Apply to all Current levels" aria-label="Set all current levels">
+                    <option value="">--</option>
+                    <option value="Green">Green</option>
+                    <option value="Green 1">Green 1</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Blue 1">Blue 1</option>
+                    <option value="Blue 2">Blue 2</option>
+                    <option value="Blue 3">Blue 3</option>
+                    <option value="Purple">Purple</option>
+                    <option value="Purple 1">Purple 1</option>
+                    <option value="Purple 2">Purple 2</option>
+                    <option value="Purple 3">Purple 3</option>
+                    <option value="Purple T1">Purple T1</option>
+                    <option value="Purple T1 1">Purple T1 1</option>
+                    <option value="Purple T1 2">Purple T1 2</option>
+                    <option value="Purple T1 3">Purple T1 3</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Gold 1">Gold 1</option>
+                    <option value="Gold 2">Gold 2</option>
+                    <option value="Gold 3">Gold 3</option>
+                    <option value="Gold T1">Gold T1</option>
+                    <option value="Gold T1 1">Gold T1 1</option>
+                    <option value="Gold T1 2">Gold T1 2</option>
+                    <option value="Gold T1 3">Gold T1 3</option>
+                    <option value="Gold T2">Gold T2</option>
+                    <option value="Gold T2 1">Gold T2 1</option>
+                    <option value="Gold T2 2">Gold T2 2</option>
+                    <option value="Gold T2 3">Gold T2 3</option>
+                    <option value="Red">Red</option>
+                    <option value="Red 1">Red 1</option>
+                    <option value="Red 2">Red 2</option>
+                    <option value="Red 3">Red 3</option>
+                    <option value="Red T1">Red T1</option>
+                    <option value="Red T1 1">Red T1 1</option>
+                    <option value="Red T1 2">Red T1 2</option>
+                    <option value="Red T1 3">Red T1 3</option>
+                    <option value="Red T2">Red T2</option>
+                    <option value="Red T2 1">Red T2 1</option>
+                    <option value="Red T2 2">Red T2 2</option>
+                    <option value="Red T2 3">Red T2 3</option>
+                    <option value="Red T3">Red T3</option>
+                    <option value="Red T3 1">Red T3 1</option>
+                    <option value="Red T3 2">Red T3 2</option>
+                    <option value="Red T3 3">Red T3 3</option>
+                    <option value="Red T4">Red T4</option>
+                    <option value="Red T4 1">Red T4 1</option>
+                    <option value="Red T4 2">Red T4 2</option>
+                    <option value="Red T4 3">Red T4 3</option>
+                </select>
+                <label for="batch-desired">Desired:</label>
+                <select id="batch-desired" title="Apply to all Desired levels" aria-label="Set all desired levels">
+                    <option value="">--</option>
+                    <option value="Green">Green</option>
+                    <option value="Green 1">Green 1</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Blue 1">Blue 1</option>
+                    <option value="Blue 2">Blue 2</option>
+                    <option value="Blue 3">Blue 3</option>
+                    <option value="Purple">Purple</option>
+                    <option value="Purple 1">Purple 1</option>
+                    <option value="Purple 2">Purple 2</option>
+                    <option value="Purple 3">Purple 3</option>
+                    <option value="Purple T1">Purple T1</option>
+                    <option value="Purple T1 1">Purple T1 1</option>
+                    <option value="Purple T1 2">Purple T1 2</option>
+                    <option value="Purple T1 3">Purple T1 3</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Gold 1">Gold 1</option>
+                    <option value="Gold 2">Gold 2</option>
+                    <option value="Gold 3">Gold 3</option>
+                    <option value="Gold T1">Gold T1</option>
+                    <option value="Gold T1 1">Gold T1 1</option>
+                    <option value="Gold T1 2">Gold T1 2</option>
+                    <option value="Gold T1 3">Gold T1 3</option>
+                    <option value="Gold T2">Gold T2</option>
+                    <option value="Gold T2 1">Gold T2 1</option>
+                    <option value="Gold T2 2">Gold T2 2</option>
+                    <option value="Gold T2 3">Gold T2 3</option>
+                    <option value="Red">Red</option>
+                    <option value="Red 1">Red 1</option>
+                    <option value="Red 2">Red 2</option>
+                    <option value="Red 3">Red 3</option>
+                    <option value="Red T1">Red T1</option>
+                    <option value="Red T1 1">Red T1 1</option>
+                    <option value="Red T1 2">Red T1 2</option>
+                    <option value="Red T1 3">Red T1 3</option>
+                    <option value="Red T2">Red T2</option>
+                    <option value="Red T2 1">Red T2 1</option>
+                    <option value="Red T2 2">Red T2 2</option>
+                    <option value="Red T2 3">Red T2 3</option>
+                    <option value="Red T3">Red T3</option>
+                    <option value="Red T3 1">Red T3 1</option>
+                    <option value="Red T3 2">Red T3 2</option>
+                    <option value="Red T3 3">Red T3 3</option>
+                    <option value="Red T4">Red T4</option>
+                    <option value="Red T4 1">Red T4 1</option>
+                    <option value="Red T4 2">Red T4 2</option>
+                    <option value="Red T4 3">Red T4 3</option>
+                </select>
+                <button id="reset-all" type="button" class="primary">🔄 Reset All</button>
+            </div>
+        </section>
+
+        <!-- Gear Input Grid -->
+        <section class="gear-input-section">
+            <div class="gear-grid-two-columns">
+                <div class="gear-column">
+                <!-- Helmet -->
+                <div class="gear-card">
+                    <h4 data-i18n="Helmet">Helmet</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="helmet-current" data-i18n="gear-current">Current</label>
+                            <select id="helmet-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="helmet-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="helmet-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chestplate -->
+                <div class="gear-card">
+                    <h4 data-i18n="Chestplate">Chestplate</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="chestplate-current" data-i18n="gear-current">Current</label>
+                            <select id="chestplate-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="chestplate-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="chestplate-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ring -->
+                <div class="gear-card">
+                    <h4 data-i18n="Ring">Ring</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="ring-current" data-i18n="gear-current">Current</label>
+                            <select id="ring-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="ring-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="ring-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="gear-column">
+                <!-- Watch -->
+                <div class="gear-card">
+                    <h4 data-i18n="Watch">Watch</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="watch-current" data-i18n="gear-current">Current</label>
+                            <select id="watch-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="watch-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="watch-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pants -->
+                <div class="gear-card">
+                    <h4 data-i18n="Pants">Pants</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="pants-current" data-i18n="gear-current">Current</label>
+                            <select id="pants-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pants-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="pants-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff -->
+                <div class="gear-card">
+                    <h4 data-i18n="Staff">Staff</h4>
+                    <div class="gear-selects">
+                        <div>
+                            <label for="staff-current" data-i18n="gear-current">Current</label>
+                            <select id="staff-current" class="gear-select-current">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="staff-desired" data-i18n="gear-desired">Desired</label>
+                            <select id="staff-desired" class="gear-select-desired">
+                                <option value="">--</option>
+                                <option value="Green">Green</option>
+                                <option value="Green 1">Green 1</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Blue 1">Blue 1</option>
+                                <option value="Blue 2">Blue 2</option>
+                                <option value="Blue 3">Blue 3</option>
+                                <option value="Purple">Purple</option>
+                                <option value="Purple 1">Purple 1</option>
+                                <option value="Purple 2">Purple 2</option>
+                                <option value="Purple 3">Purple 3</option>
+                                <option value="Purple T1">Purple T1</option>
+                                <option value="Purple T1 1">Purple T1 1</option>
+                                <option value="Purple T1 2">Purple T1 2</option>
+                                <option value="Purple T1 3">Purple T1 3</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Gold 1">Gold 1</option>
+                                <option value="Gold 2">Gold 2</option>
+                                <option value="Gold 3">Gold 3</option>
+                                <option value="Gold T1">Gold T1</option>
+                                <option value="Gold T1 1">Gold T1 1</option>
+                                <option value="Gold T1 2">Gold T1 2</option>
+                                <option value="Gold T1 3">Gold T1 3</option>
+                                <option value="Gold T2">Gold T2</option>
+                                <option value="Gold T2 1">Gold T2 1</option>
+                                <option value="Gold T2 2">Gold T2 2</option>
+                                <option value="Gold T2 3">Gold T2 3</option>
+                                <option value="Red">Red</option>
+                                <option value="Red 1">Red 1</option>
+                                <option value="Red 2">Red 2</option>
+                                <option value="Red 3">Red 3</option>
+                                <option value="Red T1">Red T1</option>
+                                <option value="Red T1 1">Red T1 1</option>
+                                <option value="Red T1 2">Red T1 2</option>
+                                <option value="Red T1 3">Red T1 3</option>
+                                <option value="Red T2">Red T2</option>
+                                <option value="Red T2 1">Red T2 1</option>
+                                <option value="Red T2 2">Red T2 2</option>
+                                <option value="Red T2 3">Red T2 3</option>
+                                <option value="Red T3">Red T3</option>
+                                <option value="Red T3 1">Red T3 1</option>
+                                <option value="Red T3 2">Red T3 2</option>
+                                <option value="Red T3 3">Red T3 3</option>
+                                <option value="Red T4">Red T4</option>
+                                <option value="Red T4 1">Red T4 1</option>
+                                <option value="Red T4 2">Red T4 2</option>
+                                <option value="Red T4 3">Red T4 3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <h3 data-i18n="totals-header">Items You Need</h3>
+            <div id="calculation-results" aria-live="polite"></div>
+        </section>
+    </main>
+</body>
+</html>

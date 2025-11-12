@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOSC-Charms</title>
+        <link rel="stylesheet" href="style/style.css">
+  <script src="Scripts/theme.js" defer></script>
+  <script src="Scripts/table-sort.js" defer></script>
+  <script src="Scripts/calculator.js" defer></script>
+  <script src="Scripts/profiles.js" defer></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="title">WOS CALCULATOR</a>
+    </header>
+    <nav class="main-nav">
+        <a href="index.html">Home</a> |
+        <a href="charms.html">Charms</a> |
+        <a href="chiefGear.html">Chief Gear</a>
+        <a href="fireCrystals.html">Fire Crystals</a> |
+        <a href="warAcademy.html">War Academy</a> |
+        <a href="pets.html">Pets</a>
+        <a href="experts.html">Experts</a> |
+    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+    </nav>
+ <main>  
+    <h2>Charms Calculator</h2>
+  <!-- Profiles / presets section: saved locally in browser -->
+  <section class="profiles" aria-label="Charm profiles">
+    <h3>Profiles</h3>
+    <div class="profiles-row">
+      <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
+      <button id="profile-save" type="button" title="Save current charm setup as a new profile" class="primary">💾 Save New</button>
+      <button id="profile-overwrite" type="button" title="Overwrite the currently selected profile" class="secondary">📝 Update</button>
+    </div>
+    <div class="profiles-row">
+      <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+      <button id="profile-rename" type="button" title="Rename the selected profile" class="secondary">✏️ Rename</button>
+      <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ Delete</button>
+    </div>
+    <div class="profiles-row">
+      <button id="export-profiles" type="button" title="Download all profiles as JSON" class="secondary">📤 Export</button>
+      <button id="import-profiles" type="button" title="Import profiles from a JSON file" class="secondary">📥 Import</button>
+    </div>
+    
+  </section>
+
+  <!-- Controls: reset and batch set per charm type (placed above all inputs) -->
+  <div class="batch-controls">
+    <button id="charms-reset" type="button" title="Reset every charm level back to 0" class="primary">🔄 Reset All</button>
+    <p class="batch-help">💡 <strong>Quick Tip:</strong> Use the FROM/TO selects below to quickly set all charm levels of the same type. Changes apply immediately.</p>
+  </div>
+
+  <section class="calculation-input">
+
+  <div class="table">
+        
+    <div class="table-top">
+    <label for="hat-charm-1">Hat Charm Level:</label>
+    <div class="batch-inline">
+      <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="hat-batch-to" class="batch-select" title="Set all Hat TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection"><p>FROM</p>
+             <select id="hat-charm-1-start" name="hat-charm-1">
+            <!-- options 0..16, default 1 -->
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="hat-charm-2-start" name="hat-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="hat-charm-3-start" name="hat-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="hat-charm-1-finish" name="hat-charm-1">
+            <!-- options 0..16, default 1 -->
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="hat-charm-2-finish" name="hat-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="hat-charm-3-finish" name="hat-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+  <div class="table">
+    <div class="table-top">
+    <label for="chestplate-charm-1">Chestplate Charm Level:</label>
+    <div class="batch-inline">
+      <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="chestplate-batch-to" class="batch-select" title="Set all Chestplate TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection">
+            <p>FROM</p>
+            <select id="chestplate-charm-1-start" name="chestplate-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="chestplate-charm-2-start" name="chestplate-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="chestplate-charm-3-start" name="chestplate-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="chestplate-charm-1-finish" name="chestplate-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="chestplate-charm-2-finish" name="chestplate-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="chestplate-charm-3-finish" name="chestplate-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+  <div class="table">
+    <div class="table-top">
+    <label for="ring-charm-1">Ring Charm Level:</label>
+    <div class="batch-inline">
+      <select id="ring-batch-from" class="batch-select" title="Set all Ring FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="ring-batch-to" class="batch-select" title="Set all Ring TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection"><p>FROM</p>
+             <select id="ring-charm-1-start" name="ring-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="ring-charm-2-start" name="ring-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="ring-charm-3-start" name="ring-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="ring-charm-1-finish" name="ring-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="ring-charm-2-finish" name="ring-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="ring-charm-3-finish" name="ring-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+    </div>   
+  <div class="table">
+    <div class="table-top">
+    <label for="watch-charm-1">Watch Charm Level:</label>
+    <div class="batch-inline">
+      <select id="watch-batch-from" class="batch-select" title="Set all Watch FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="watch-batch-to" class="batch-select" title="Set all Watch TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection"><p>FROM</p>
+             <select id="watch-charm-1-start" name="watch-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="watch-charm-2-start" name="watch-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="watch-charm-3-start" name="watch-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="watch-charm-1-finish" name="watch-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="watch-charm-2-finish" name="watch-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="watch-charm-3-finish" name="watch-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+  <div class="table">
+    <div class="table-top">
+    <label for="pants-charm-1">Pants Charm Level:</label>
+    <div class="batch-inline">
+      <select id="pants-batch-from" class="batch-select" title="Set all Pants FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="pants-batch-to" class="batch-select" title="Set all Pants TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection"><p>FROM</p>
+             <select id="pants-charm-1-start" name="pants-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="pants-charm-2-start" name="pants-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="pants-charm-3-start" name="pants-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="pants-charm-1-finish" name="pants-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="pants-charm-2-finish" name="pants-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="pants-charm-3-finish" name="pants-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+  <div class="table">
+    <div class="table-top">
+    <label for="staff-charm-1">Staff Charm Level:</label>
+    <div class="batch-inline">
+      <select id="staff-batch-from" class="batch-select" title="Set all Staff FROM values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <select id="staff-batch-to" class="batch-select" title="Set all Staff TO values to this">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+    </div>
+    </div>
+        <div class="inner-selection">
+        <div class="inner-selection"><p>FROM</p>
+             <select id="staff-charm-1-start" name="staff-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="staff-charm-2-start" name="staff-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+              <select id="staff-charm-3-start" name="staff-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+              </select>
+       </div>
+        <div class="inner-selection">
+            <p>TO</p>
+            <select id="staff-charm-1-finish" name="staff-charm-1">
+            <option value="0" selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="staff-charm-2-finish" name="staff-charm-2">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+            <select id="staff-charm-3-finish" name="staff-charm-3">
+            <option value="0"selected>0</option>
+            <option value="1" >1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            </select>
+        </div></div>
+    </div> 
+        </section>
+        <section class="calculation-output" aria-label="Calculation results">
+            <h2>Results</h2>
+            <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
+                <!-- Calculation results will be displayed here -->
+            </div>
+        </section>
+</main>
+
+</body>
+</html>

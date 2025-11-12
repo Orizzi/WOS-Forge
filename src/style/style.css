@@ -1,0 +1,724 @@
+/* Theme variables */
+:root{
+    --bg: #12121a; /* tightened dark background */
+    --panel: #1f1d32; /* panels */
+    --muted: #2f2b45; /* controls */
+    --accent: #7c6cff; /* primary accent */
+    --text: #e9eef8; /* main text on dark */
+    --muted-text: #bfc6df;
+    --card: rgb(255 255 255 / 3%);
+    --success: #6ad29a;
+    --danger: #ff7b7b;
+    --border: rgb(255 255 255 / 8%);
+    --shadow: rgb(0 0 0 / 20%);
+}
+
+html.light-theme, body.light-theme{ 
+    --bg: #fff; 
+    --panel: #f2f2f6; 
+    --muted: #e9e9ee; 
+    --accent: #6b6bf0; 
+    --text: #111; 
+    --muted-text: #555;
+    --card: rgb(0 0 0 / 3%); 
+    --success: #4caf50;
+    --danger: #ff6b6b;
+    --border: rgb(0 0 0 / 10%);
+    --shadow: rgb(0 0 0 / 15%);
+}
+
+body { 
+    font-family: Inter, Arial, sans-serif; 
+    background-color: var(--bg); 
+    color: var(--text);
+    margin: 0; 
+    padding: 0; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.title {
+    text-align: center; 
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    margin: auto;
+     padding-bottom: 10px;
+    margin-top: 20px; 
+}
+
+.main-nav{
+    background-color: var(--panel);
+    padding: 10px; 
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-nav a {
+    color: var(--text);
+    background-color: var(--muted);
+    text-decoration: none;
+    margin: 1px 10px;
+    padding: 0.25em 0.4em;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 1px 0 var(--shadow) inset;
+    transition: all 150ms ease;
+}
+
+.main-nav a:hover {
+    background-color: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.dark-mode-toggle {
+    background-color: var(--accent);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    margin: 1px 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    transition: all 150ms ease;
+    min-height: 44px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.dark-mode-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
+    filter: brightness(1.1);
+    text-decoration: none;
+}
+
+.dark-mode-toggle:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.dark-mode-toggle:focus {
+    outline: 3px solid rgb(124 108 255 / 50%);
+    outline-offset: 2px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%), 0 0 0 3px rgb(124 108 255 / 20%);
+}
+.muted { color: var(--text); opacity: 0.85; }
+p { line-height: 1.6; margin: 10px 20px; }
+
+.introduction {
+    background-color: var(--panel); 
+    padding: 20px; 
+    margin: 20px; 
+    border-radius: 5px; 
+}
+
+/* Smooth transitions for theme changes */
+body, .main-nav, .introduction, .main-nav a, p, .title, select, input {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+/* Enhanced select styling for consistency across browsers and Windows */
+select {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    appearance: none; /* hide default arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9eef8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 32px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+/* Light theme selects */
+html.light-theme select, body.light-theme select {
+    background-color: #fff;
+    color: #111;
+    border: 1px solid #dcdde6;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+/* Enhanced button and interactive control styling */
+button, input[type="button"] {
+    padding: 12px 20px;
+    min-height: 44px;  /* Accessibility: minimum touch target size */
+    min-width: 44px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 120ms ease;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 18%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover, input[type="button"]:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 30%);
+    filter: brightness(1.12);
+    cursor: pointer;
+}
+
+button:active, input[type="button"]:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
+}
+
+button:focus, input[type="button"]:focus {
+    outline: 3px solid rgb(124 108 255 / 60%);
+    outline-offset: 3px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%), 0 0 0 4px rgb(124 108 255 / 25%);
+}
+
+button:disabled, input[type="button"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
+    background-color: #a0a0a0;
+    color: #777777;
+}
+
+/* Light theme button adjustments */
+html.light-theme button, html.light-theme input[type="button"],
+body.light-theme button, body.light-theme input[type="button"] {
+    background-color: #6b6bf0;
+    color: #fff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+}
+
+html.light-theme button:hover, html.light-theme input[type="button"]:hover,
+body.light-theme button:hover, body.light-theme input[type="button"]:hover {
+    box-shadow: 0 6px 16px rgb(0 0 0 / 20%);
+}
+
+html.light-theme button:focus, html.light-theme input[type="button"]:focus,
+body.light-theme button:focus, body.light-theme input[type="button"]:focus {
+    outline: 3px solid rgb(107 107 240 / 50%);
+}
+
+/* Button type variants - for different button actions */
+
+/* Primary action buttons (default) */
+button.primary, input[type="button"].primary,
+#profile-save, #charms-reset {
+    background-color: var(--accent);
+    color: #fff;
+}
+
+/* Secondary/neutral buttons */
+button.secondary, input[type="button"].secondary,
+#profile-overwrite, #profile-rename {
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid rgb(255 255 255 / 10%);
+}
+
+button.secondary:hover, input[type="button"].secondary:hover,
+#profile-overwrite:hover, #profile-rename:hover {
+    background-color: var(--accent);
+    color: #fff;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgb(124 108 255 / 35%);
+}
+
+/* Danger buttons for destructive actions */
+button.danger, input[type="button"].danger,
+#profile-delete {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+button.danger:hover, input[type="button"].danger:hover,
+#profile-delete:hover {
+    background-color: #ff5252;
+    filter: brightness(1.15);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgb(255 107 107 / 40%);
+}
+
+button.danger:active, input[type="button"].danger:active,
+#profile-delete:active {
+    background-color: #ff4444;
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
+}
+
+/* Light theme variants */
+html.light-theme button.secondary, html.light-theme input[type="button"].secondary,
+html.light-theme #profile-overwrite, html.light-theme #profile-rename,
+body.light-theme button.secondary, body.light-theme input[type="button"].secondary,
+body.light-theme #profile-overwrite, body.light-theme #profile-rename {
+    background-color: #e9e9ee;
+    color: #111;
+    border: 1px solid #dcdde6;
+}
+
+html.light-theme button.secondary:hover, html.light-theme input[type="button"].secondary:hover,
+html.light-theme #profile-overwrite:hover, html.light-theme #profile-rename:hover,
+body.light-theme button.secondary:hover, body.light-theme input[type="button"].secondary:hover,
+body.light-theme #profile-overwrite:hover, body.light-theme #profile-rename:hover {
+    background-color: #6b6bf0;
+    color: #fff;
+}
+
+html.light-theme button.danger, html.light-theme input[type="button"].danger,
+html.light-theme #profile-delete,
+body.light-theme button.danger, body.light-theme input[type="button"].danger,
+body.light-theme #profile-delete {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+/* Focus state for accessibility */
+select:focus {
+    outline: 3px solid rgb(124 108 255 / 30%);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgb(124 108 255 / 10%);
+}
+
+html.light-theme select:focus {
+    outline: 3px solid rgb(107 107 240 / 30%);
+}
+
+input:focus {
+    outline: 3px solid rgb(124 108 255 / 30%);
+    outline-offset: 2px;
+}
+
+html.light-theme input:focus {
+    outline: 3px solid rgb(107 107 240 / 30%);
+}
+
+.calculation-input, .calculation-output {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    width: calc(100% - 60px);
+    box-sizing: border-box;
+    background: var(--card);
+}
+
+input {
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 1em;
+    font-family: inherit;
+    background-color: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.table {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table .batch-select{
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.table-top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+    /* resource color hints */
+    .col-dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; vertical-align:middle; }
+    .res-guides{ background:#ffd166; }
+    .res-designs{ background:#6ad29a; }
+    .res-secrets{ background:#7c6cff; }
+
+.batch-inline{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.batch-inline .batch-select{
+    width: 84px;
+}
+
+.inner-selection {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 0.15em;
+    
+}
+
+/* Batch controls styling -------------------------------------------------- */
+.batch-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 20px;
+    padding: 16px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+}
+
+.batch-controls .batch-row{
+    display:flex; 
+    gap:10px; 
+    align-items:center; 
+    width:100%; 
+    max-width:1100px; 
+    justify-content:space-between;
+    flex-wrap: wrap;
+}
+
+.batch-controls #charms-reset {
+    /* Uses primary button styling from above */
+    font-size: 1em;
+    padding: 11px 18px;
+}
+
+.batch-help { 
+    margin: 0; 
+    font-size: 0.95em; 
+    color: var(--muted-text); 
+    text-align:center;
+    line-height: 1.5;
+}
+
+html.light-theme .batch-help {
+    color: rgb(0 0 0 / 70%);
+}
+
+.batch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+.batch-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--card);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.batch-item label{
+    font-weight: bold;
+    color: var(--text);
+    text-transform: capitalize;
+    font-size: 0.95em;
+}
+
+.batch-select{
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--muted);
+}
+
+/* Light theme overrides for batch controls */
+html.light-theme .batch-controls #charms-reset{ background-color: #e9e9ee; color:#111; border:1px solid #ddd; }
+html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
+
+/* Profiles UI ------------------------------------------------------------ */
+.profiles{ 
+    margin: 12px 20px; 
+    padding: 16px; 
+    border-radius: 8px; 
+    background: var(--card); 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center;
+    border: 1px solid var(--border);
+}
+.profiles h3{ 
+    margin: 0 0 12px; 
+    color: var(--text);
+    font-size: 1.1em;
+}
+.profiles-row{ 
+    display:flex; 
+    gap: 12px; 
+    align-items:center; 
+    margin-bottom: 12px; 
+    justify-content:center;
+    flex-wrap: wrap;
+}
+.profiles input[type="text"]{ 
+    padding: 10px 12px; 
+    border-radius:6px; 
+    min-width:200px; 
+    background-color: #fff4c7; 
+    color: #111;
+    border: 1px solid rgb(0 0 0 / 10%);
+    font-size: 0.95em;
+    transition: all 150ms ease;
+}
+.profiles input[type="text"]:focus {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+    background-color: #ffff99;
+}
+.profiles .profiles-list{ 
+    padding: 10px 12px; 
+    border-radius:6px; 
+    min-width:200px; 
+    background: var(--panel); 
+    color:var(--text); 
+    border:1px solid var(--muted);
+    font-size: 0.95em;
+    cursor: pointer;
+}
+.profiles-help{ 
+    font-size:0.9em; 
+    color: var(--muted-text); 
+    margin:0;
+    text-align: center;
+    line-height: 1.4;
+}
+html.light-theme .profiles input[type="text"]{ 
+    background-color:#fffacd; 
+    color:#111;
+    border: 1px solid #ffd700;
+}
+html.light-theme .profiles input[type="text"]:focus {
+    background-color: #ffff99;
+    outline-color: #ffa500;
+}
+html:not(.light-theme) .profiles input[type="text"]{ 
+    background-color:#2f2b45; 
+    color:#fff;
+    border: 1px solid rgb(255 255 255 / 10%);
+}
+
+/* Button group styling for better spacing */
+.profiles-row button,
+.batch-controls button {
+    flex: 0 1 auto;
+    min-width: 110px;
+    margin: 4px;
+}
+
+.profiles-row button:not(:last-child) {
+    margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+    .profiles-row {
+        gap: 6px;
+    }
+    .profiles input[type="text"],
+    .profiles .profiles-list {
+        min-width: 150px;
+        font-size: 0.9em;
+    }
+    .profiles-row button {
+        min-width: 80px;
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+}
+
+/* Results styling ------------------------------------------------------- */
+.calculation-output { background: transparent; padding: 10px 20px; }
+.result-totals { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:flex-start; margin-bottom:12px; }
+.result-totals p{ margin:0; padding:6px 10px; background: var(--card); border-radius:6px; border: 1px solid var(--border); }
+.results-wrap{ overflow:auto; border-radius:8px; background: var(--card); padding:12px; border: 1px solid var(--border); }
+.results-table{ width:100%; border-collapse:collapse; min-width:560px; }
+.results-table th, .results-table td{ padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); }
+.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position:sticky; top:0; backdrop-filter: blur(2px); }
+.results-table tfoot td{ font-weight:700; border-top:2px solid var(--border); }
+
+@media (width <=720px){
+    .batch-inline .batch-select{ width:64px; }
+    .results-table{ min-width:480px; }
+    .result-totals{ justify-content:center; }
+}
+
+/* Chief Gear specific styling ------------------------------------------------------- */
+.gear-input-section {
+    margin: 20px;
+}
+
+.gear-grid-two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gear-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.gear-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px var(--shadow);
+}
+
+.gear-card h4 {
+    margin: 0 0 12px 0;
+    padding: 0;
+    color: var(--accent);
+    font-size: 1.1em;
+    justify-content: flex-start;
+}
+
+.gear-selects {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.gear-selects > div {
+    flex: 1;
+    min-width: 140px;
+}
+
+.gear-selects label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted-text);
+    font-size: 0.9em;
+}
+
+.gear-selects select {
+    width: 100%;
+    padding: 8px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.inventory-section {
+    margin: 20px;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.inventory-section h3 {
+    margin-top: 0;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.inventory-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.inventory-item label {
+    margin-bottom: 6px;
+    color: var(--muted-text);
+    font-size: 0.95em;
+}
+
+.inventory-item input {
+    padding: 10px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.results-section {
+    margin: 20px;
+    padding: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+    .gear-grid-two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .gear-selects {
+        flex-direction: column;
+    }
+    
+    .gear-selects > div {
+        min-width: 100%;
+    }
+    
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+
