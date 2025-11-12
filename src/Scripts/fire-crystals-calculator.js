@@ -684,9 +684,10 @@
 
     /**
      * Calculate adjusted time with speed bonus
+     * Uses the game's diminishing returns formula: finalValue = baseValue * (100 / (100 + bonusPercent))
      */
     function calculateAdjustedTime(totalSeconds, speedBonus) {
-        const adjustedSeconds = totalSeconds / (1 + (speedBonus / 100));
+        const adjustedSeconds = totalSeconds * (100 / (100 + speedBonus));
         return adjustedSeconds;
     }
 
