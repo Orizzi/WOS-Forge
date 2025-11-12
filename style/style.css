@@ -6,18 +6,23 @@ body {
 }
 h1, h2, h3, h4, h5, h6 {
     color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
 
 }
 .title {
     text-align: center; 
+    text-decoration: none;
     color: #FFFFFF;
     display: flex;
     justify-content: center;
     margin: auto;
-     
+     padding-bottom: 10px;
     margin-top: 20px; 
 }
-.main-nav {
+.main-nav{
     background-color: #2C2A4A; 
     padding: 10px; 
     display: flex;
@@ -27,17 +32,93 @@ h1, h2, h3, h4, h5, h6 {
 }
 .main-nav a {
     color: #FFFFFF;
+    background-color: #444262;
     text-decoration: none;
     margin: 1px 10px;
+    padding: 0.15em;
     border: 1px solid #444262;
     border-radius: 5px;
     
 }
 .dark-mode-toggle {
-    background-color: #444262; 
-    border: none; 
-    color: #FFFFFF; 
-    padding: 10px 20px; 
-    cursor: pointer; 
+
+    background: none; /* no button background */
+    border: 1px solid #444262;  
+    background-color: #444262;
+    border-radius: 5px;
+    color: #FFFFFF;    /* keep your text color */
+    margin: 1px 10px;
+    padding: 0.15em;       /* remove padding so it looks like plain text */
+    cursor: pointer;   /* still indicate clickable */
+    border-radius: 0;
+    font: inherit;     /* match surrounding text */
+    text-decoration: none;
+}
+
+/* hover and focus styles to keep it discoverable and accessible */
+.dark-mode-toggle:hover {
+    text-decoration: none;
+    color: #ffffcc;
+}
+.dark-mode-toggle:focus {
+    outline: 2px solid #ffffff; /* visible focus for keyboard users */
+    outline-offset: 3px;
+}
+p {
+    color: #FFFFFF;
+    line-height: 1.6;
+    margin: 10px 20px;
+    text-align:center;
+
+  
+}
+.introduction {
+    background-color: #2C2A4A; 
+    padding: 20px; 
+    margin: 20px; 
     border-radius: 5px; 
+}
+
+/* Smooth transitions for theme changes */
+body, .main-nav, .introduction, .main-nav a, p, .title {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.light-theme /* applied to <body> by the script */
+html.light-theme, body.light-theme {
+    background-color: #FFFFFF; /* page background */
+    color: #111111; /* sensible default text color for light theme */
+}
+.light-theme h1, .light-theme h2, .light-theme h3, .light-theme h4, .light-theme h5, .light-theme h6 {
+    color: #111111;
+}
+.light-theme .title {
+    color: #111111;
+}
+.light-theme .main-nav{
+    background-color: #f2f2f6;
+}
+.light-theme .main-nav a{
+    color: #111111;
+    background-color: #e9e9ee;
+    border: 1px solid #e9e9ee;
+}
+
+.light-theme p{
+    color: #222222;
+}
+.light-theme .introduction{
+    background-color: #f5f5fa;
+}
+.light-theme .dark-mode-toggle{
+    color: #111111;
+    background-color: #e9e9ee;
+}
+.light-theme .body{
+background-color: #FFFFFF;
+}
+
+/* Slightly different hover color for light theme */
+.light-theme .dark-mode-toggle:hover{
+    color: #333333;
 }
