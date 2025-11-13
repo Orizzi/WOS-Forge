@@ -80,6 +80,22 @@ const CalculatorModule = (function(){
     }
   }
 
+  // Render a label with a local icon (delegates to global IconHelper if available)
+  function labelWithIcon(key){
+    if(window.IconHelper){
+      return window.IconHelper.label(key, k=>k.charAt(0).toUpperCase()+k.slice(1));
+    }
+    const map = {
+      guides: 'assets/resources/charm-guides.svg',
+      designs: 'assets/resources/charm-designs.svg',
+      secrets: 'assets/resources/charm-secrets.svg'
+    };
+    const url = map[key];
+    if(!url) return key;
+    const pretty = key.charAt(0).toUpperCase() + key.slice(1);
+    return `<img class="res-icon" src="${url}" alt="${pretty}" onerror="this.style.display='none'"> ${pretty}`;
+  }
+
   /**
    * estimateDaysNeeded(totals)
    * Rough estimate of days needed to gather resources
@@ -201,13 +217,29 @@ const CalculatorModule = (function(){
     out.innerHTML = '';
 
     // Create the totals summary (big numbers at top)
+    // Inventory subtraction (optional inputs) - show gaps similar to Fire Crystals page
+    const invGuides = parseInt(document.getElementById('inventory-guides')?.value || '0', 10);
+    const invDesigns = parseInt(document.getElementById('inventory-designs')?.value || '0', 10);
+    const invSecrets = parseInt(document.getElementById('inventory-secrets')?.value || '0', 10);
+
+    const gapGuides = grand.guides - invGuides;
+    const gapDesigns = grand.designs - invDesigns;
+    const gapSecrets = grand.secrets - invSecrets;
+
+    function gapHtml(label, total, inv){
+      const gap = total - inv;
+      const cls = gap > 0 ? 'deficit' : 'surplus';
+      const msg = gap > 0 ? `Need ${formatNumber(gap)}` : `Extra ${formatNumber(Math.abs(gap))}`;
+      return `<p><strong>${label}:</strong> ${formatNumber(total)} <span class="gap ${cls}" aria-label="${msg}">${msg}</span></p>`;
+    }
+
     const totalsHtml = `
-      <div class="result-totals">
-        <p><strong>Total Guides:</strong> ${formatNumber(grand.guides)}</p>
-        <p><strong>Total Designs:</strong> ${formatNumber(grand.designs)}</p>
-        <p><strong>Total Secrets:</strong> ${formatNumber(grand.secrets)}</p>
-        <p><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
-        <p><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
+      <div class="result-totals" aria-live="polite">
+        ${gapHtml(labelWithIcon('guides'), grand.guides, invGuides)}
+        ${gapHtml(labelWithIcon('designs'), grand.designs, invDesigns)}
+        ${gapHtml(labelWithIcon('secrets'), grand.secrets, invSecrets)}
+        <p style="background: var(--accent-secondary); color: white;"><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
+        <p style="background: var(--accent); color: white;"><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
@@ -228,9 +260,9 @@ const CalculatorModule = (function(){
           <td>${d.id.replace(/-/g,' ')}</td>
           <td>${d.from}</td>
           <td>${d.to}</td>
-          <td><span class="col-dot res-guides" aria-hidden="true"></span>${formatNumber(d.sum.guides)}</td>
-          <td><span class="col-dot res-designs" aria-hidden="true"></span>${formatNumber(d.sum.designs)}</td>
-          <td><span class="col-dot res-secrets" aria-hidden="true"></span>${formatNumber(d.sum.secrets)}</td>
+          <td><img class="res-icon" src="assets/resources/charm-guides.svg" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
+          <td><img class="res-icon" src="assets/resources/charm-designs.svg" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
+          <td><img class="res-icon" src="assets/resources/charm-secrets.svg" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
         </tr>`;
     }).join('\n');
 
@@ -244,9 +276,9 @@ const CalculatorModule = (function(){
               <th data-key="slot">Slot</th>
               <th data-key="from">From</th>
               <th data-key="to">To</th>
-              <th data-key="guides">Guides <span class="col-dot res-guides" aria-hidden="true"></span></th>
-              <th data-key="designs">Designs <span class="col-dot res-designs" aria-hidden="true"></span></th>
-              <th data-key="secrets">Secrets <span class="col-dot res-secrets" aria-hidden="true"></span></th>
+              <th data-key="guides">${labelWithIcon('guides')}</th>
+              <th data-key="designs">${labelWithIcon('designs')}</th>
+              <th data-key="secrets">${labelWithIcon('secrets')}</th>
             </tr>
           </thead>
           <tbody>
@@ -255,9 +287,9 @@ const CalculatorModule = (function(){
           <tfoot>
             <tr>
               <td colspan="3">Totals</td>
-              <td>${formatNumber(grand.guides)}</td>
-              <td>${formatNumber(grand.designs)}</td>
-              <td>${formatNumber(grand.secrets)}</td>
+              <td><img class="res-icon" src="assets/resources/charm-guides.svg" alt="Guides"> ${formatNumber(grand.guides)}</td>
+              <td><img class="res-icon" src="assets/resources/charm-designs.svg" alt="Designs"> ${formatNumber(grand.designs)}</td>
+              <td><img class="res-icon" src="assets/resources/charm-secrets.svg" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
             </tr>
           </tfoot>
         </table>

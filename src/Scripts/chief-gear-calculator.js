@@ -311,13 +311,32 @@
         const t = window.I18n ? window.I18n.t : (key) => key;
 
         let html = '<div class="calculation-output">';
+
+        // Icon helper for chief gear resources (delegates to global IconHelper if available)
+        function labelWithIcon(key) {
+            const tfn = window.I18n ? window.I18n.t : (k)=>k;
+            if (window.IconHelper && typeof window.IconHelper.label === 'function') {
+                return window.IconHelper.label(key, tfn);
+            }
+            // Fallback (should rarely run once IconHelper is loaded)
+            const urlMap = {
+                'hardened-alloy': 'assets/resources/hardened-alloy.svg',
+                'polishing-solution': 'assets/resources/polishing-solution.svg',
+                'design-plans': 'assets/resources/design-plans.svg',
+                'lunar-amber': 'assets/resources/lunar-amber.svg'
+            };
+            const url = urlMap[key];
+            const text = tfn(key);
+            if (!url) return text;
+            return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
+        }
         
         // Totals summary
         html += '<div class="result-totals">';
-        html += `<p><strong>${t('hardened-alloy')}:</strong> ${totals.hardenedAlloy.toLocaleString()}</p>`;
-        html += `<p><strong>${t('polishing-solution')}:</strong> ${totals.polishingSolution.toLocaleString()}</p>`;
-        html += `<p><strong>${t('design-plans')}:</strong> ${totals.designPlans.toLocaleString()}</p>`;
-        html += `<p><strong>${t('lunar-amber')}:</strong> ${totals.lunarAmber.toLocaleString()}</p>`;
+    html += `<p><strong>${labelWithIcon('hardened-alloy')}:</strong> ${totals.hardenedAlloy.toLocaleString()}</p>`;
+    html += `<p><strong>${labelWithIcon('polishing-solution')}:</strong> ${totals.polishingSolution.toLocaleString()}</p>`;
+    html += `<p><strong>${labelWithIcon('design-plans')}:</strong> ${totals.designPlans.toLocaleString()}</p>`;
+    html += `<p><strong>${labelWithIcon('lunar-amber')}:</strong> ${totals.lunarAmber.toLocaleString()}</p>`;
         html += `<p style="background: var(--accent-secondary); color: white;"><strong>Power:</strong> ${totals.power.toLocaleString()}</p>`;
         html += `<p style="background: var(--accent); color: white;"><strong>${t('svs-points')}:</strong> ${totals.svsPoints.toLocaleString()}</p>`;
         html += '</div>';
@@ -347,8 +366,8 @@
             html += '<table class="results-table">';
             html += '<thead><tr>';
             html += `<th>${t('gear-type', 'en')}</th><th>${t('gear-current')}</th><th>${t('gear-desired')}</th>`;
-            html += `<th>${t('hardened-alloy')}</th><th>${t('polishing-solution')}</th>`;
-            html += `<th>${t('design-plans')}</th><th>${t('lunar-amber')}</th><th>${t('svs-points')}</th>`;
+            html += `<th>${labelWithIcon('hardened-alloy')}</th><th>${labelWithIcon('polishing-solution')}</th>`;
+            html += `<th>${labelWithIcon('design-plans')}</th><th>${labelWithIcon('lunar-amber')}</th><th>${t('svs-points')}</th>`;
             html += '</tr></thead><tbody>';
 
             gearResults.forEach(result => {
@@ -356,10 +375,10 @@
                 html += `<td>${t(result.name)}</td>`;
                 html += `<td>${result.from}</td>`;
                 html += `<td>${result.to}</td>`;
-                html += `<td>${result.costs.hardenedAlloy.toLocaleString()}</td>`;
-                html += `<td>${result.costs.polishingSolution.toLocaleString()}</td>`;
-                html += `<td>${result.costs.designPlans.toLocaleString()}</td>`;
-                html += `<td>${result.costs.lunarAmber.toLocaleString()}</td>`;
+                html += `<td><img class="res-icon" src="assets/resources/hardened-alloy.svg" alt="${t('hardened-alloy')}"> ${result.costs.hardenedAlloy.toLocaleString()}</td>`;
+                html += `<td><img class="res-icon" src="assets/resources/polishing-solution.svg" alt="${t('polishing-solution')}"> ${result.costs.polishingSolution.toLocaleString()}</td>`;
+                html += `<td><img class="res-icon" src="assets/resources/design-plans.svg" alt="${t('design-plans')}"> ${result.costs.designPlans.toLocaleString()}</td>`;
+                html += `<td><img class="res-icon" src="assets/resources/lunar-amber.svg" alt="${t('lunar-amber')}"> ${result.costs.lunarAmber.toLocaleString()}</td>`;
                 html += `<td>${result.costs.svsPoints.toLocaleString()}</td>`;
                 html += '</tr>';
             });

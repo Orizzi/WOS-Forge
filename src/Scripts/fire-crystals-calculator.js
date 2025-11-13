@@ -954,8 +954,12 @@
         const lang = window.I18n ? window.I18n.getCurrentLanguage() : 'en';
         const t = window.I18n ? window.I18n.t : (key) => key;
 
-        // Icon helper for resources (supports base + crystals)
+        // Icon helper for resources (delegates to global IconHelper if available)
         function labelWithIcon(key) {
+            if (window.IconHelper && typeof window.IconHelper.label === 'function') {
+                return window.IconHelper.label(key, t);
+            }
+            // Fallback for when IconHelper isn't loaded
             const urlMap = {
                 'fire-crystals': 'assets/resources/fire-crystals.png',
                 'refine-crystals': 'assets/resources/refine-crystals.png',
@@ -965,8 +969,9 @@
                 iron: 'assets/resources/iron.png'
             };
             const url = urlMap[key];
-            if (!url) return t(key, lang);
-            return `<img class="res-icon" src="${url}" alt="${t(key, lang)}" onerror="this.style.display='none'"> ${t(key, lang)}`;
+            const text = t(key);
+            if (!url) return text;
+            return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
         }
 
         let html = '<div class="totals-summary">';

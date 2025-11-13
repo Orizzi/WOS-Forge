@@ -8,10 +8,10 @@
     <script src="Scripts/theme.js" defer></script>
 </head>
 <body>
-    <header>
+    <header role="banner">
         <a href="index.html" class="title">WOS CALCULATOR</a>
     </header>
-    <nav class="main-nav">
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
         <a href="index.html">Home</a> |
         <a href="charms.html">Charms</a> |
         <a href="chiefGear.html">Chief Gear</a>
@@ -21,9 +21,9 @@
         <a href="experts.html">Experts</a> |
     <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
     </nav>
-    <main>  
-        <section class="introduction">
-            <h1>Welcome to the WOS Calculator</h1>
+    <main role="main">  
+        <section class="introduction" aria-labelledby="welcome-heading">
+            <h1 id="welcome-heading">Welcome to the WOS Calculator</h1>
             <p>This calculator is designed to help you optimize your gameplay in Whiteout Survival (WOS). Whether you're looking to enhance your charms, upgrade your chief gear, or manage your fire crystals, our tools are here to assist you.</p>
             <p>Use the navigation links above to explore different sections of the calculator tailored to various aspects of the game. Happy gaming!</p>
         </section>

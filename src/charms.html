@@ -11,10 +11,10 @@
   <script src="Scripts/profiles.js" defer></script>
 </head>
 <body>
-    <header>
+    <header role="banner">
         <a href="index.html" class="title">WOS CALCULATOR</a>
     </header>
-    <nav class="main-nav">
+    <nav class="main-nav" role="navigation" aria-label="Main navigation">
         <a href="index.html">Home</a> |
         <a href="charms.html">Charms</a> |
         <a href="chiefGear.html">Chief Gear</a>
@@ -24,10 +24,10 @@
         <a href="experts.html">Experts</a> |
     <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
     </nav>
- <main>  
+ <main role="main">  
     <h2>Charms Calculator</h2>
   <!-- Profiles / presets section: saved locally in browser -->
-  <section class="profiles" aria-label="Charm profiles">
+  <section class="profiles" aria-label="Charm profiles" role="region">
     <h3>Profiles</h3>
     <div class="profiles-row">
       <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
@@ -52,13 +52,35 @@
     <p class="batch-help">💡 <strong>Quick Tip:</strong> Use the FROM/TO selects below to quickly set all charm levels of the same type. Changes apply immediately.</p>
   </div>
 
-  <section class="calculation-input">
+  <!-- Inventory for charms resources -->
+  <section class="inventory-section" aria-label="Your Charms Inventory" role="region">
+    <h3>Charms Inventory</h3>
+    <div class="inventory-grid">
+      <div class="inventory-item">
+        <label for="inventory-guides"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charm-guides.svg" alt="Guides"> Guides</span></label>
+        <input type="number" id="inventory-guides" min="0" value="0" aria-describedby="inv-guides-help" />
+        <small id="inv-guides-help" class="muted">Enter how many Guides you already own</small>
+      </div>
+      <div class="inventory-item">
+        <label for="inventory-designs"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charm-designs.svg" alt="Designs"> Designs</span></label>
+        <input type="number" id="inventory-designs" min="0" value="0" aria-describedby="inv-designs-help" />
+        <small id="inv-designs-help" class="muted">Enter how many Designs you already own</small>
+      </div>
+      <div class="inventory-item">
+        <label for="inventory-secrets"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charm-secrets.svg" alt="Secrets"> Secrets</span></label>
+        <input type="number" id="inventory-secrets" min="0" value="0" aria-describedby="inv-secrets-help" />
+        <small id="inv-secrets-help" class="muted">Enter how many Secrets you already own</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="calculation-input" aria-label="Charm Level Inputs" role="region">
 
   <div class="table">
         
-    <div class="table-top">
-    <label for="hat-charm-1">Hat Charm Level:</label>
-    <div class="batch-inline">
+  <div class="table-top">
+  <label for="hat-charm-1" class="batch-label">Hat Charms <span class="badge" aria-label="Batch controls">Batch</span></label>
+  <div class="batch-inline" aria-label="Batch set all Hat charms" role="group">
       <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values to this">
         <option value="0" selected>0</option>
         <option value="1">1</option>
@@ -222,9 +244,9 @@
             </select>
         </div></div>
   <div class="table">
-    <div class="table-top">
-    <label for="chestplate-charm-1">Chestplate Charm Level:</label>
-    <div class="batch-inline">
+  <div class="table-top">
+  <label for="chestplate-charm-1" class="batch-label">Chestplate Charms <span class="badge">Batch</span></label>
+  <div class="batch-inline" aria-label="Batch set all Chestplate charms" role="group">
       <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">
         <option value="0" selected>0</option>
         <option value="1">1</option>

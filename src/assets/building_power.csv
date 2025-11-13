@@ -1,0 +1,53 @@
+building,level,power
+Furnace,FC1,100000
+Furnace,FC2,180000
+Furnace,FC3,260000
+Furnace,FC4,340000
+Furnace,FC5,500000
+Furnace,FC6,650000
+Furnace,FC7,800000
+Furnace,FC8,960000
+Furnace,FC9,1120000
+Furnace,FC10,1300000
+Embassy,FC5,120000
+Embassy,FC6,160000
+Embassy,FC7,200000
+Embassy,FC8,250000
+Embassy,FC9,300000
+Embassy,FC10,360000
+Command Center,FC5,140000
+Command Center,FC6,180000
+Command Center,FC7,220000
+Command Center,FC8,270000
+Command Center,FC9,320000
+Command Center,FC10,380000
+Infirmary,FC5,140000
+Infirmary,FC6,180000
+Infirmary,FC7,220000
+Infirmary,FC8,270000
+Infirmary,FC9,320000
+Infirmary,FC10,380000
+Infantry Camp,FC5,200000
+Infantry Camp,FC6,260000
+Infantry Camp,FC7,320000
+Infantry Camp,FC8,380000
+Infantry Camp,FC9,440000
+Infantry Camp,FC10,520000
+Marksman Camp,FC5,200000
+Marksman Camp,FC6,260000
+Marksman Camp,FC7,320000
+Marksman Camp,FC8,380000
+Marksman Camp,FC9,440000
+Marksman Camp,FC10,520000
+Lancer Camp,FC5,200000
+Lancer Camp,FC6,260000
+Lancer Camp,FC7,320000
+Lancer Camp,FC8,380000
+Lancer Camp,FC9,440000
+Lancer Camp,FC10,520000
+War Academy,FC5,220000
+War Academy,FC6,280000
+War Academy,FC7,340000
+War Academy,FC8,400000
+War Academy,FC9,460000
+War Academy,FC10,540000
