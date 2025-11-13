@@ -161,7 +161,6 @@ const CalculatorModule = (function(){
     const starts = Array.from(document.querySelectorAll('select[id$="-start"]'));
     
   const grand = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };  // Grand total
-  const maxPowerByType = {}; // Track highest power per charm type (hat, chestplate, ring, watch, pants, staff)
     const details = [];  // Array to store each charm's cost
 
     // For each FROM select, find its matching TO select
@@ -189,18 +188,12 @@ const CalculatorModule = (function(){
         grand.designs += sum.designs;
         grand.secrets += sum.secrets;
         grand.svsPoints += sum.svsPoints;
-
-        // Determine charm type from base id (e.g., 'hat-charm-1' -> 'hat')
-        const type = base.split('-')[0];
-        const currentPower = Number(sum.power || 0);
-        if(!maxPowerByType[type] || currentPower > maxPowerByType[type]){
-          maxPowerByType[type] = currentPower;
-        }
+        
+        // Power: sum the target power of each charm (3 charms per type)
+        grand.power += Number(sum.power || 0);
       }
     });
 
-    // Power total is the sum of highest power per type
-    grand.power = Object.values(maxPowerByType).reduce((acc, v) => acc + (Number(v)||0), 0);
 
     // Get the results container and clear it
     const out = document.getElementById('calculation-results');
