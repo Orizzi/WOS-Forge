@@ -1,17 +1,109 @@
 # WOS Calculator - Maintenance & Modification Guide
 
-This guide shows you exactly how to modify the calculator for common tasks. Copy-paste code snippets and edit specific values.
+This guide shows you exactly how to modify the calculator for common tasks and how to update game data from the Excel workbook.
 
 ---
 
 ## 📋 Table of Contents
 
-1. [Change Colors](#change-colors)
-2. [Modify Resource Costs](#modify-resource-costs)
-3. [Add a New Charm Type](#add-a-new-charm-type)
-4. [Change Button Styles](#change-button-styles)
-5. [Fix Common Problems](#fix-common-problems)
-6. [Add New Features](#add-new-features)
+1. [Update Game Data from Excel](#update-game-data-from-excel)
+2. [Change Colors](#change-colors)
+3. [Modify Resource Costs Manually](#modify-resource-costs-manually)
+4. [Add a New Charm Type](#add-a-new-charm-type)
+5. [Change Button Styles](#change-button-styles)
+6. [Fix Common Problems](#fix-common-problems)
+7. [Add New Features](#add-new-features)
+
+---
+
+## 📊 Update Game Data from Excel
+
+### Overview
+
+All calculator data comes from **`src/assets/resource_data.xlsx`** (39 sheets). When game data updates:
+
+1. Edit the Excel workbook with new values
+2. Run extractor scripts to generate CSVs
+3. Calculators automatically load new data at runtime
+
+### Prerequisites
+
+Make sure you have Node.js installed and dependencies installed:
+```bash
+npm install
+```
+
+### Full Data Refresh (All Calculators)
+
+```bash
+npm run import:all
+```
+
+This extracts:
+- **Building resources** (Fire Crystals calculator): F30→FC10 base resources for Furnace, Embassy, Command Center, Infirmary, Infantry/Marksman/Lancer Camps, War Academy
+- **Charm costs**: Guides, Designs, Secrets, Power, SvS Points (levels 1-16)
+- **Chief gear costs**: Alloy, Polish, Plans, Amber, Power, SvS Points (116 gear levels)
+
+### Individual Extractors
+
+Extract specific domains when only one sheet changed:
+
+#### Buildings (Fire Crystals)
+```bash
+npm run import:buildings
+# OR
+node scripts/extract-building-resources.js
+```
+
+**Source sheets:** Furnace, Embassy, Command Center, Infirmary, Infantry Camp, Marksman Camp, Lancer Camp, War Academy  
+**Output:** `src/assets/resource_costs.csv` (396 rows, format: `building,level,meat,wood,coal,iron`)  
+**Affected file:** `src/Scripts/fire-crystals-calculator.js` (loads at runtime via `applyResourceOverridesFromCsv()`)
+
+#### Charms
+```bash
+npm run import:charms
+# OR
+node scripts/extract-charms-costs.js
+```
+
+**Source sheet:** Charms Data  
+**Output:** `src/assets/charms_costs.csv` (16 rows, format: `level,guides,designs,secrets,power,svsPoints`)  
+**Affected file:** `src/Scripts/calculator.js` (loads at runtime via `loadCharmCostsFromCsv()`)
+
+#### Chief Gear
+```bash
+npm run import:chief-gear
+# OR
+node scripts/extract-chief-gear-costs.js
+```
+
+**Source sheet:** New Chief Gear Data  
+**Output:** `src/assets/chief_gear_costs.csv` (116 rows, format: `gearLevel,number,alloy,polish,plans,amber,power,svsPoints`)  
+**Affected file:** `src/Scripts/chief-gear-calculator.js` (loads at runtime via `loadChiefGearCostsFromCsv()`)
+
+### Verifying Extraction
+
+After running extractors:
+
+1. **Check console output**: Should say "Extracted X levels to [path]"
+2. **Inspect CSV files**: Open generated CSVs in `src/assets/` to verify values
+3. **Test in browser**: Run `npm start`, open calculator, verify new values display correctly
+
+### Troubleshooting Extraction
+
+**Error: "Could not find required columns"**  
+- Excel sheet structure changed
+- Check extractor's column indices match current sheet layout
+- Update `scripts/extract-*.js` header row detection logic
+
+**Error: "Sheet 'X' not found"**  
+- Sheet renamed in workbook
+- Update `sheetName` variable in extractor script
+
+**Values look wrong**  
+- Check if sheet has multiple header rows (adjust `dataStartRow` in extractor)
+- Verify column order matches extractor's indices
+- Check for hidden columns or merged cells in Excel
 
 ---
 
@@ -80,7 +172,9 @@ html.light-theme, body.light-theme {
 
 ---
 
-## 💰 Modify Resource Costs
+## 💰 Modify Resource Costs Manually
+
+> ⚠️ **Note:** It's recommended to update costs via the Excel workbook (see [Update Game Data from Excel](#update-game-data-from-excel)). Manual updates are only for quick testing or when the workbook isn't available.
 
 The cost table tells the game how much it costs to upgrade from level N-1 to level N.
 
@@ -89,13 +183,15 @@ The cost table tells the game how much it costs to upgrade from level N-1 to lev
 
 ```javascript
 const costs = {
-  0:  { guides: 5,   designs: 5,   secrets: 0 },
-  1:  { guides: 40,  designs: 15,  secrets: 0 },
-  2:  { guides: 60,  designs: 40,  secrets: 0 },
+  1:  { guides: 5,   designs: 5,   secrets: 0, power: 0, svsPoints: 0 },
+  2:  { guides: 40,  designs: 15,  secrets: 0, power: 0, svsPoints: 0 },
+  3:  { guides: 60,  designs: 40,  secrets: 0, power: 0, svsPoints: 0 },
   // ... and so on
-  15: { guides: 650, designs: 550, secrets: 100 }
+  16: { guides: 650, designs: 550, secrets: 100, power: 0, svsPoints: 0 }
 };
 ```
+
+**Note:** These default values are overridden at runtime by `charms_costs.csv`. To make permanent changes, edit the workbook and re-extract.
 
 ### How to Update Costs
 

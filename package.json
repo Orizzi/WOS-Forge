@@ -7,7 +7,10 @@
     "start": "cd src && python -m http.server 8080",
     "lint": "stylelint \"src/style/**/*.css\"",
     "lint:fix": "stylelint \"src/style/**/*.css\" --fix",
-    "import:resources": "node scripts/extract-building-resources.js"
+    "import:all": "node scripts/extract-building-resources.js && node scripts/extract-charms-costs.js && node scripts/extract-chief-gear-costs.js",
+    "import:buildings": "node scripts/extract-building-resources.js",
+    "import:charms": "node scripts/extract-charms-costs.js",
+    "import:chief-gear": "node scripts/extract-chief-gear-costs.js"
   },
   "keywords": ["whiteout-survival", "calculator", "game-tools"],
   "author": "",

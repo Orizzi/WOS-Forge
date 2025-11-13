@@ -1,6 +1,6 @@
 # WOS Calculator - Complete Beginner's Guide
 
-Welcome! This is a **Whiteout Survival (WOS) Game Calculator** that helps players calculate resource costs for upgrading charms. Don't worry about the complexity—this guide explains everything step-by-step.
+Welcome! This is a **Whiteout Survival (WOS) Game Calculator** that helps players calculate resource costs for upgrading charms, chief gear, and buildings (Fire Crystals). All data is driven by an authoritative Excel workbook to ensure accuracy.
 
 > 📁 **New Organization:** All source code is in `src/` folder, all documentation is in `docs/` folder. See the structure below!
 
@@ -10,20 +10,52 @@ Welcome! This is a **Whiteout Survival (WOS) Game Calculator** that helps player
 
 The calculator helps you answer questions like:
 - **"How many guides do I need to upgrade my hat charm from level 0 to level 10?"**
-- **"What's the total cost for all my charms?"**
+- **"What's the total cost to upgrade my chief gear from Blue to Gold?"**
+- **"How many Fire Crystals do I need to upgrade my Furnace to FC10?"**
 - **"Can I save my favorite upgrade plans?"**
 
-You set the current level and desired level for each charm, and the app calculates the total resources needed.
+You set the current and desired levels, and the app calculates total resources, power gains, and SvS points.
+
+---
+
+## 📊 Data Sources
+
+All calculator data is extracted from **`src/assets/resource_data.xlsx`** (39 sheets) and converted to CSV files at build time:
+
+| Calculator | Source Sheet(s) | Generated CSV | Extracted By |
+|-----------|----------------|---------------|--------------|
+| **Charms** | Charms Data | `charms_costs.csv` | `scripts/extract-charms-costs.js` |
+| **Chief Gear** | New Chief Gear Data | `chief_gear_costs.csv` | `scripts/extract-chief-gear-costs.js` |
+| **Fire Crystals** | Furnace, Embassy, Command Center, Infirmary, Infantry/Marksman/Lancer Camps, War Academy | `resource_costs.csv` | `scripts/extract-building-resources.js` |
+
+### Data Import Pipeline
+
+1. **Update workbook**: Edit `src/assets/resource_data.xlsx` with latest game data
+2. **Run extractors**: Execute Node.js scripts to generate CSVs
+3. **Automatic override**: Calculators load CSVs at runtime and override defaults
+
+Commands:
+```bash
+# Extract all data (run after workbook updates)
+npm run import:all
+
+# Extract individual domains
+node scripts/extract-building-resources.js   # Fire Crystals base resources
+node scripts/extract-charms-costs.js         # Charm costs, power, SvS points
+node scripts/extract-chief-gear-costs.js     # Chief gear costs, power, SvS points
+```
+
+See [`docs/MAINTENANCE.md`](docs/MAINTENANCE.md) for detailed import procedures.
 
 ---
 
 ## 📁 Project Structure (Easy Explanation)
 
 Think of it like a house:
-- **The HTML files** = the rooms (pages: home, calculator)
+- **The HTML files** = the rooms (pages: home, calculators)
 - **CSS file** = the paint and furniture (colors, styling, layout)
-- **JavaScript file** = the appliances (buttons work, calculations happen)
-- **package.json** = the tools list (npm dependencies)
+- **JavaScript files** = the appliances (buttons work, calculations happen)
+- **Excel workbook** = the source of truth (all game data)
 
 ```
 Wos calculator/

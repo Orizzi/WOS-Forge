@@ -86,8 +86,92 @@
         "Red T4": 4200, "Red T4 1": 4300, "Red T4 2": 4400, "Red T4 3": 4500
     };
 
+    // Power earned per upgrade (will be overridden by CSV)
+    const power = {
+        "Green": 0, "Green 1": 0,
+        "Blue": 0, "Blue 1": 0, "Blue 2": 0, "Blue 3": 0,
+        "Purple": 0, "Purple 1": 0, "Purple 2": 0, "Purple 3": 0,
+        "Purple T1": 0, "Purple T1 1": 0, "Purple T1 2": 0, "Purple T1 3": 0,
+        "Gold": 0, "Gold 1": 0, "Gold 2": 0, "Gold 3": 0,
+        "Gold T1": 0, "Gold T1 1": 0, "Gold T1 2": 0, "Gold T1 3": 0,
+        "Gold T2": 0, "Gold T2 1": 0, "Gold T2 2": 0, "Gold T2 3": 0,
+        "Red": 0, "Red 1": 0, "Red 2": 0, "Red 3": 0,
+        "Red T1": 0, "Red T1 1": 0, "Red T1 2": 0, "Red T1 3": 0,
+        "Red T2": 0, "Red T2 1": 0, "Red T2 2": 0, "Red T2 3": 0,
+        "Red T3": 0, "Red T3 1": 0, "Red T3 2": 0, "Red T3 3": 0,
+        "Red T4": 0, "Red T4 1": 0, "Red T4 2": 0, "Red T4 3": 0
+    };
+
     // Gear types
     const GEAR_TYPES = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
+
+    /**
+     * loadChiefGearCostsFromCsv()
+     * Loads chief gear costs from CSV file and overrides default values
+     * CSV uses a "number" field (2-111) to map to GEAR_LEVELS array indices
+     * This allows the sheet data to override hard-coded values
+     */
+    async function loadChiefGearCostsFromCsv() {
+        try {
+            const response = await fetch('assets/chief_gear_costs.csv');
+            if (!response.ok) {
+                console.warn('Could not load chief_gear_costs.csv, using default values');
+                return;
+            }
+            
+            const text = await response.text();
+            const lines = text.trim().split('\n');
+            
+            // Skip header row
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const parts = line.split(',');
+                if (parts.length < 8) continue;
+                
+                const gearLevel = parts[0].trim();
+                const number = parseInt(parts[1]);
+                const alloy = parseFloat(parts[2]) || 0;
+                const polish = parseFloat(parts[3]) || 0;
+                const plans = parseFloat(parts[4]) || 0;
+                const amber = parseFloat(parts[5]) || 0;
+                const powerValue = parseFloat(parts[6]) || 0;
+                const svsPointsValue = parseFloat(parts[7]) || 0;
+                
+                // Skip aggregated rows (HatDesiredLevel, etc.)
+                if (gearLevel.includes('DesiredLevel')) continue;
+                
+                // Map number to GEAR_LEVELS array index (number 1 = index 0, number 2 = index 1, etc.)
+                const arrayIndex = number - 1;
+                if (arrayIndex >= 0 && arrayIndex < GEAR_LEVELS.length) {
+                    const levelName = GEAR_LEVELS[arrayIndex];
+                    
+                    // Update costs
+                    if (chiefGearCosts[levelName]) {
+                        chiefGearCosts[levelName].hardenedAlloy = alloy;
+                        chiefGearCosts[levelName].polishingSolution = polish;
+                        chiefGearCosts[levelName].designPlans = plans;
+                        chiefGearCosts[levelName].lunarAmber = amber;
+                    }
+                    
+                    // Update svsPoints
+                    if (svsPoints[levelName] !== undefined) {
+                        svsPoints[levelName] = svsPointsValue;
+                    }
+                    
+                    // Update power
+                    if (power[levelName] !== undefined) {
+                        power[levelName] = powerValue;
+                    }
+                }
+            }
+            
+            console.log('Chief gear costs loaded from CSV');
+        } catch (error) {
+            console.error('Error loading chief gear costs from CSV:', error);
+        }
+    }
 
     // Validate that current level is not higher than desired level
     function validateLevels(currentSelect, desiredSelect) {
@@ -121,6 +205,7 @@
             polishingSolution: 0,
             designPlans: 0,
             lunarAmber: 0,
+            power: 0,
             svsPoints: 0
         };
 
@@ -132,6 +217,7 @@
             costs.polishingSolution += levelCost.polishingSolution;
             costs.designPlans += levelCost.designPlans;
             costs.lunarAmber += levelCost.lunarAmber;
+            costs.power += power[level] || 0;
             costs.svsPoints += svsPoints[level] || 0;
         }
 
@@ -145,6 +231,7 @@
             polishingSolution: 0,
             designPlans: 0,
             lunarAmber: 0,
+            power: 0,
             svsPoints: 0
         };
 
@@ -167,6 +254,7 @@
                 totals.polishingSolution += costs.polishingSolution;
                 totals.designPlans += costs.designPlans;
                 totals.lunarAmber += costs.lunarAmber;
+                totals.power += costs.power;
                 totals.svsPoints += costs.svsPoints;
 
                 gearResults.push({
@@ -216,6 +304,7 @@
         html += `<p><strong>${t('polishing-solution')}:</strong> ${totals.polishingSolution.toLocaleString()}</p>`;
         html += `<p><strong>${t('design-plans')}:</strong> ${totals.designPlans.toLocaleString()}</p>`;
         html += `<p><strong>${t('lunar-amber')}:</strong> ${totals.lunarAmber.toLocaleString()}</p>`;
+        html += `<p style="background: var(--accent-secondary); color: white;"><strong>Power:</strong> ${totals.power.toLocaleString()}</p>`;
         html += `<p style="background: var(--accent); color: white;"><strong>${t('svs-points')}:</strong> ${totals.svsPoints.toLocaleString()}</p>`;
         html += '</div>';
 
@@ -311,7 +400,10 @@
     }
 
     // Initialize the module
-    function init() {
+    async function init() {
+        // Load chief gear costs from CSV (overrides default values)
+        await loadChiefGearCostsFromCsv();
+
         // Batch controls - auto-apply on change
         const batchCurrent = document.getElementById('batch-current');
         const batchDesired = document.getElementById('batch-desired');

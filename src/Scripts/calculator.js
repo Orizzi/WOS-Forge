@@ -15,26 +15,70 @@ const CalculatorModule = (function(){
   /**
    * costs: Resource table
    * Stores how much it costs to upgrade FROM level N-1 TO level N
-   * Example: To upgrade FROM level 0 TO level 1, you need 40 guides + 15 designs
+   * Will be loaded from charms_costs.csv if available, otherwise defaults below
    */
   const costs = {
-    0: { guides: 5, designs: 5, secrets: 0 },
-    1: { guides: 40, designs: 15, secrets: 0 },
-    2: { guides: 60, designs: 40, secrets: 0 },
-    3: { guides: 80, designs: 100, secrets: 0 },
-    4: { guides: 100, designs: 200, secrets: 0 },
-    5: { guides: 120, designs: 300, secrets: 0 },
-    6: { guides: 140, designs: 400, secrets: 0 },
-    7: { guides: 200, designs: 400, secrets: 0 },
-    8: { guides: 300, designs: 400, secrets: 0 },
-    9: { guides: 420, designs: 420, secrets: 0 },
-    10: { guides: 560, designs: 420, secrets: 0 },
-    11: { guides: 580, designs: 450, secrets: 15 },
-    12: { guides: 580, designs: 450, secrets: 30 },
-    13: { guides: 600, designs: 500, secrets: 45 },
-    14: { guides: 600, designs: 500, secrets: 70 },
-    15: { guides: 650, designs: 550, secrets: 100 }
+    0: { guides: 5, designs: 5, secrets: 0, power: 205700, svsPoints: 625 },
+    1: { guides: 40, designs: 15, secrets: 0, power: 288000, svsPoints: 1250 },
+    2: { guides: 60, designs: 40, secrets: 0, power: 370000, svsPoints: 3125 },
+    3: { guides: 80, designs: 100, secrets: 0, power: 452000, svsPoints: 8750 },
+    4: { guides: 100, designs: 200, secrets: 0, power: 576000, svsPoints: 11250 },
+    5: { guides: 120, designs: 300, secrets: 0, power: 700000, svsPoints: 12500 },
+    6: { guides: 140, designs: 400, secrets: 0, power: 824000, svsPoints: 12500 },
+    7: { guides: 200, designs: 400, secrets: 0, power: 948000, svsPoints: 13000 },
+    8: { guides: 300, designs: 400, secrets: 0, power: 1072000, svsPoints: 14000 },
+    9: { guides: 420, designs: 420, secrets: 0, power: 1196000, svsPoints: 15000 },
+    10: { guides: 560, designs: 420, secrets: 0, power: 1320000, svsPoints: 16000 },
+    11: { guides: 580, designs: 450, secrets: 15, power: 1536000, svsPoints: 17000 },
+    12: { guides: 580, designs: 450, secrets: 30, power: 1752000, svsPoints: 18000 },
+    13: { guides: 600, designs: 500, secrets: 45, power: 1968000, svsPoints: 19000 },
+    14: { guides: 600, designs: 500, secrets: 70, power: 2184000, svsPoints: 20000 },
+    15: { guides: 650, designs: 550, secrets: 100, power: 2400000, svsPoints: 21000 }
   };
+
+  /**
+   * Load charm costs from CSV and override defaults (optional)
+   */
+  async function loadCharmCostsFromCsv(url = 'assets/charms_costs.csv') {
+    try {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) return;
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+      if (lines.length === 0) return;
+      const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+      const idx = {
+        level: header.indexOf('level'),
+        guides: header.indexOf('guides'),
+        designs: header.indexOf('designs'),
+        secrets: header.indexOf('secrets'),
+        power: header.indexOf('power'),
+        svsPoints: header.indexOf('svspoints')
+      };
+      if (Object.values(idx).some(v => v === -1)) return;
+
+      let applied = 0;
+      for (let i = 1; i < lines.length; i++) {
+        const parts = lines[i].split(',');
+        if (parts.length < header.length) continue;
+        const level = parseInt(parts[idx.level], 10);
+        if (isNaN(level)) continue;
+        costs[level] = {
+          guides: parseInt(parts[idx.guides], 10) || 0,
+          designs: parseInt(parts[idx.designs], 10) || 0,
+          secrets: parseInt(parts[idx.secrets], 10) || 0,
+          power: parseInt(parts[idx.power], 10) || 0,
+          svsPoints: parseInt(parts[idx.svsPoints], 10) || 0
+        };
+        applied++;
+      }
+      if (applied > 0) {
+        console.info(`[Charms] Applied ${applied} cost overrides from CSV.`);
+      }
+    } catch (e) {
+      console.warn('[Charms] CSV override skipped:', e.message || e);
+    }
+  }
 
   /**
    * estimateDaysNeeded(totals)
@@ -63,10 +107,10 @@ const CalculatorModule = (function(){
    * 
    * @param {number} from - Starting level
    * @param {number} to - Ending level
-   * @returns {object} Object with guides, designs, secrets total
+   * @returns {object} Object with guides, designs, secrets, power, svsPoints total
    */
   function sumCosts(from, to){
-    const total = { guides: 0, designs: 0, secrets: 0 };
+    const total = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };
     const a = Number(from);
     const b = Number(to);
     
@@ -80,6 +124,8 @@ const CalculatorModule = (function(){
       total.guides += c.guides || 0;
       total.designs += c.designs || 0;
       total.secrets += c.secrets || 0;
+      total.power += c.power || 0;
+      total.svsPoints += c.svsPoints || 0;
     }
     return total;
   }
@@ -110,7 +156,7 @@ const CalculatorModule = (function(){
     // Example: 'hat-charm-1-start', 'ring-charm-2-start'
     const starts = Array.from(document.querySelectorAll('select[id$="-start"]'));
     
-    const grand = { guides: 0, designs: 0, secrets: 0 };  // Grand total
+    const grand = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };  // Grand total
     const details = [];  // Array to store each charm's cost
 
     // For each FROM select, find its matching TO select
@@ -137,6 +183,8 @@ const CalculatorModule = (function(){
         grand.guides += sum.guides;
         grand.designs += sum.designs;
         grand.secrets += sum.secrets;
+        grand.power += sum.power;
+        grand.svsPoints += sum.svsPoints;
       }
     });
 
@@ -151,6 +199,8 @@ const CalculatorModule = (function(){
         <p><strong>Total Guides:</strong> ${formatNumber(grand.guides)}</p>
         <p><strong>Total Designs:</strong> ${formatNumber(grand.designs)}</p>
         <p><strong>Total Secrets:</strong> ${formatNumber(grand.secrets)}</p>
+        <p><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
+        <p><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
@@ -282,7 +332,10 @@ const CalculatorModule = (function(){
    * Sets up all event handlers (what happens when user interacts with controls)
    * Called once when page loads
    */
-  function init(){
+  async function init(){
+    // Load charm costs from CSV (overrides default values)
+    await loadCharmCostsFromCsv();
+
     // Setup validation and calculation on select changes
     const types = ['hat','chestplate','ring','watch','pants','staff'];
     types.forEach(type => {
