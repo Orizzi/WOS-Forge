@@ -336,6 +336,32 @@ YOU (set Hat FROM 0, TO 5)
 
 ---
 
+## 📥 Importing building resources from Excel (F30 → FC10)
+
+You can keep your Excel workbook as the source of truth. The app will import base resource costs and override defaults at runtime.
+
+What it does:
+- Reads `src/assets/resource_data.xlsx` (sheets: Furnace, Embassy, Command Center, Infirmary, Infantry Camp, Marksman Camp, Lancer Camp, War Academy)
+- Extracts rows labeled `30-1`, `30-2`, `30-3`, `30-4`, `FC1..FC9` (+ sub-steps `-1..-4`), and `FC10`
+- Maps Meat/Wood/Coal/Iron totals and writes `src/assets/resource_costs.csv`
+- On page load, the Fire Crystals calculator automatically loads this CSV and overrides only the F30 → FC10 entries
+
+How to run:
+
+```powershell
+cd 'D:\CODE\Projet\Wos calculator'
+npm install
+npm run import:resources
+```
+
+After running, refresh the site. If the CSV is present, overrides apply; otherwise, built-in defaults are used.
+
+Notes:
+- No other data is changed; only the specified level keys for the buildings above are overridden.
+- If you update the Excel, rerun the import command.
+
+---
+
 ## 🆘 Troubleshooting
 
 ### "I opened charms.html but profiles don't save"

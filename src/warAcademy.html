@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WOSC-War Academy</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="Scripts/theme.js" defer></script>
+    <script src="Scripts/translations.js" defer></script>
+    <script src="Scripts/profiles.js" defer></script>
+    <script src="Scripts/fire-crystals-calculator.js" defer></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="title">WOS CALCULATOR</a>
+    </header>
+    <nav class="main-nav">
+        <a href="index.html">Home</a> |
+        <a href="charms.html" data-i18n="nav-charms">Charms</a> |
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a> |
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a> |
+        <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a> |
+        <a href="pets.html" data-i18n="nav-pets">Pets</a>
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="ko">🇰🇷 한국어</option>
+            <option value="ru">🇷🇺 Русский</option>
+        </select>
+    </nav>
+    <main>
+        <h2 data-i18n="nav-war-academy">War Academy</h2>
+
+        <!-- Inventory Section -->
+        <section class="inventory-section">
+            <h3 data-i18n="inventory-header">Your Inventory</h3>
+            <div class="inventory-grid">
+                <div class="inventory-item">
+                    <label for="inventory-fire-crystals">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/fire-crystals.png" alt="Fire Crystals" onerror="this.style.display='none'">
+                            <span data-i18n="fire-crystals">Fire Crystals</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-fire-crystals" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-refine-crystals">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/refine-crystals.png" alt="Refine Crystals" onerror="this.style.display='none'">
+                            <span data-i18n="refine-crystals">Refine Crystals</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-refine-crystals" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-speedup-days" data-i18n="speedup-days">Speedup Days</label>
+                    <input type="number" id="inventory-speedup-days" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-construction-speed" data-i18n="construction-speed">Construction Speed Bonus (%)</label>
+                    <input type="number" id="inventory-construction-speed" min="0" max="1000" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-meat">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/meat.png" alt="Meat" onerror="this.style.display='none'">
+                            <span data-i18n="meat">Meat</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-meat" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-wood">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/wood.png" alt="Wood" onerror="this.style.display='none'">
+                            <span data-i18n="wood">Wood</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-wood" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-coal">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/coal.png" alt="Coal" onerror="this.style.display='none'">
+                            <span data-i18n="coal">Coal</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-coal" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-iron">
+                        <span class="label-with-icon">
+                            <img class="res-icon" src="assets/resources/iron.png" alt="Iron" onerror="this.style.display='none'">
+                            <span data-i18n="iron">Iron</span>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-iron" min="0" value="0">
+                </div>
+            </div>
+        </section>
+
+        <!-- War Academy Building Only -->
+        <section class="buildings-section">
+            <h2>Building</h2>
+            <div class="buildings-grid">
+                <div class="building-card">
+                    <div class="building-header">
+                        <img class="building-icon" src="assets/buildings/war-academy.png" alt="War Academy" onerror="this.style.display='none'">
+                        <h3 data-i18n="War Academy">War Academy</h3>
+                    </div>
+                    <div class="building-selects">
+                        <div class="select-group">
+                            <label data-i18n="building-current">Current</label>
+                            <select id="war-academy-current" class="building-select">
+                                <option value="">--</option>
+                                <option value="FC1">FC1</option>
+                                <option value="FC1-1">FC1-1</option>
+                                <option value="FC1-2">FC1-2</option>
+                                <option value="FC1-3">FC1-3</option>
+                                <option value="FC1-4">FC1-4</option>
+                                <option value="FC2">FC2</option>
+                                <option value="FC2-1">FC2-1</option>
+                                <option value="FC2-2">FC2-2</option>
+                                <option value="FC2-3">FC2-3</option>
+                                <option value="FC2-4">FC2-4</option>
+                                <option value="FC3">FC3</option>
+                                <option value="FC3-1">FC3-1</option>
+                                <option value="FC3-2">FC3-2</option>
+                                <option value="FC3-3">FC3-3</option>
+                                <option value="FC3-4">FC3-4</option>
+                                <option value="FC4">FC4</option>
+                                <option value="FC4-1">FC4-1</option>
+                                <option value="FC4-2">FC4-2</option>
+                                <option value="FC4-3">FC4-3</option>
+                                <option value="FC4-4">FC4-4</option>
+                                <option value="FC5">FC5</option>
+                                <option value="FC5-1">FC5-1</option>
+                                <option value="FC5-2">FC5-2</option>
+                                <option value="FC5-3">FC5-3</option>
+                                <option value="FC5-4">FC5-4</option>
+                                <option value="FC6">FC6</option>
+                                <option value="FC6-1">FC6-1</option>
+                                <option value="FC6-2">FC6-2</option>
+                                <option value="FC6-3">FC6-3</option>
+                                <option value="FC6-4">FC6-4</option>
+                                <option value="FC7">FC7</option>
+                                <option value="FC7-1">FC7-1</option>
+                                <option value="FC7-2">FC7-2</option>
+                                <option value="FC7-3">FC7-3</option>
+                                <option value="FC7-4">FC7-4</option>
+                                <option value="FC8">FC8</option>
+                                <option value="FC8-1">FC8-1</option>
+                                <option value="FC8-2">FC8-2</option>
+                                <option value="FC8-3">FC8-3</option>
+                                <option value="FC8-4">FC8-4</option>
+                                <option value="FC9">FC9</option>
+                                <option value="FC9-1">FC9-1</option>
+                                <option value="FC9-2">FC9-2</option>
+                                <option value="FC9-3">FC9-3</option>
+                                <option value="FC9-4">FC9-4</option>
+                                <option value="FC10">FC10</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label data-i18n="building-desired">Desired</label>
+                            <select id="war-academy-desired" class="building-select">
+                                <option value="">--</option>
+                                <option value="FC1">FC1</option>
+                                <option value="FC1-1">FC1-1</option>
+                                <option value="FC1-2">FC1-2</option>
+                                <option value="FC1-3">FC1-3</option>
+                                <option value="FC1-4">FC1-4</option>
+                                <option value="FC2">FC2</option>
+                                <option value="FC2-1">FC2-1</option>
+                                <option value="FC2-2">FC2-2</option>
+                                <option value="FC2-3">FC2-3</option>
+                                <option value="FC2-4">FC2-4</option>
+                                <option value="FC3">FC3</option>
+                                <option value="FC3-1">FC3-1</option>
+                                <option value="FC3-2">FC3-2</option>
+                                <option value="FC3-3">FC3-3</option>
+                                <option value="FC3-4">FC3-4</option>
+                                <option value="FC4">FC4</option>
+                                <option value="FC4-1">FC4-1</option>
+                                <option value="FC4-2">FC4-2</option>
+                                <option value="FC4-3">FC4-3</option>
+                                <option value="FC4-4">FC4-4</option>
+                                <option value="FC5">FC5</option>
+                                <option value="FC5-1">FC5-1</option>
+                                <option value="FC5-2">FC5-2</option>
+                                <option value="FC5-3">FC5-3</option>
+                                <option value="FC5-4">FC5-4</option>
+                                <option value="FC6">FC6</option>
+                                <option value="FC6-1">FC6-1</option>
+                                <option value="FC6-2">FC6-2</option>
+                                <option value="FC6-3">FC6-3</option>
+                                <option value="FC6-4">FC6-4</option>
+                                <option value="FC7">FC7</option>
+                                <option value="FC7-1">FC7-1</option>
+                                <option value="FC7-2">FC7-2</option>
+                                <option value="FC7-3">FC7-3</option>
+                                <option value="FC7-4">FC7-4</option>
+                                <option value="FC8">FC8</option>
+                                <option value="FC8-1">FC8-1</option>
+                                <option value="FC8-2">FC8-2</option>
+                                <option value="FC8-3">FC8-3</option>
+                                <option value="FC8-4">FC8-4</option>
+                                <option value="FC9">FC9</option>
+                                <option value="FC9-1">FC9-1</option>
+                                <option value="FC9-2">FC9-2</option>
+                                <option value="FC9-3">FC9-3</option>
+                                <option value="FC9-4">FC9-4</option>
+                                <option value="FC10">FC10</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section">
+            <h3 data-i18n="totals-header">Items You Need</h3>
+            <div id="results-display"></div>
+        </section>
+
+        <section class="support-section">
+            <h3 data-i18n="support-header">Support This Project</h3>
+            <p data-i18n="support-message">I hope these calculators were helpful! If you'd like to support the project, my WOS ID is: 273994720. Thanks and happy surviving!</p>
+        </section>
+    </main>
+</body>
+</html>
