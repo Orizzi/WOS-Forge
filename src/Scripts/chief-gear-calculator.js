@@ -257,7 +257,6 @@
                 totals.polishingSolution += costs.polishingSolution;
                 totals.designPlans += costs.designPlans;
                 totals.lunarAmber += costs.lunarAmber;
-                totals.power += costs.power;
                 totals.svsPoints += costs.svsPoints;
 
                 gearResults.push({
@@ -268,6 +267,18 @@
                 });
             }
         });
+
+        // Compute total power as the sum of desired-level power across all 6 gear pieces
+        let desiredTotalPower = 0;
+        GEAR_TYPES.forEach(gear => {
+            const desiredSelect = document.getElementById(`${gear}-desired`);
+            const desired = desiredSelect && desiredSelect.value ? desiredSelect.value : '';
+            if (desired) {
+                const p = (typeof power[desired] === 'number') ? power[desired] : 0;
+                desiredTotalPower += p;
+            }
+        });
+        totals.power = desiredTotalPower;
 
         displayResults(totals, gearResults);
     }
