@@ -209,7 +209,7 @@
             svsPoints: 0
         };
 
-        // Sum up costs from fromLevel+1 to toLevel
+        // Sum up material costs and SvS points across levels
         for (let i = fromIndex + 1; i <= toIndex; i++) {
             const level = GEAR_LEVELS[i];
             const levelCost = chiefGearCosts[level];
@@ -217,9 +217,12 @@
             costs.polishingSolution += levelCost.polishingSolution;
             costs.designPlans += levelCost.designPlans;
             costs.lunarAmber += levelCost.lunarAmber;
-            costs.power += power[level] || 0;
             costs.svsPoints += svsPoints[level] || 0;
         }
+
+        // Power is NOT accumulated; set to the target level's power only
+        const targetLevel = GEAR_LEVELS[toIndex];
+        costs.power = (typeof power[targetLevel] === 'number') ? power[targetLevel] : 0;
 
         return costs;
     }

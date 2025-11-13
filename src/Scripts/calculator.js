@@ -117,16 +117,20 @@ const CalculatorModule = (function(){
     // If invalid (to <= from), return 0 cost
     if(isNaN(a) || isNaN(b) || b <= a) return total;
     
-    // Loop from (from+1) to (to), adding up all costs
+    // Loop from (from+1) to (to), adding up all costs (EXCEPT power)
     for(let lvl = a + 1; lvl <= b; lvl++){
       const c = costs[lvl];
       if(!c) continue;
       total.guides += c.guides || 0;
       total.designs += c.designs || 0;
       total.secrets += c.secrets || 0;
-      total.power += c.power || 0;
       total.svsPoints += c.svsPoints || 0;
     }
+    
+    // Power is NOT accumulated; it should reflect the latest upgrade's power only
+    const target = costs[b];
+    total.power = target && typeof target.power === 'number' ? target.power : 0;
+    
     return total;
   }
 
