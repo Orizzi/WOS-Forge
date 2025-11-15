@@ -1,0 +1,25 @@
+﻿# Image Replacement Guide
+
+## Save Your Attached Images:
+
+### Charms Folder (src/assets/resources/charms/):
+1. guides.png     - Brown book icon (Image 1)
+2. designs.png    - Golden scroll icon (Image 2)  
+3. secrets.png    - Red book with green emblem icon (Image 6)
+
+### Chief Gear Folder (src/assets/resources/chief-gear/):
+1. design-plans.png       - Gray/silver bar icon (Image 3)
+2. lunar-amber.png        - Golden amber/gem icon (Image 4)
+3. polishing-solution.png - Bottle with liquid icon (Image 5)
+4. hardened-alloy.png     - Golden scroll with emblem icon (Image 7)
+
+## After Saving Images:
+
+Run this command to delete old SVG files:
+Remove-Item 'src\assets\resources\*.svg'
+
+## Files Already Organized:
+ Base resources (PNG) moved to: src/assets/resources/base/
+ Icon helper updated to use new paths
+ All paths now use PNG format instead of SVG
+
