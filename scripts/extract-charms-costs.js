@@ -7,43 +7,47 @@ Output: src/assets/charms_costs.csv with header: level,guides,designs,secrets,po
 
 const fs = require('fs');
 const path = require('path');
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 
 const INPUT = path.resolve('src/assets/resource_data.xlsx');
 const OUTPUT = path.resolve('src/assets/charms_costs.csv');
 const SHEET_NAME = 'Charms Data';
 
-function main() {
+async function main() {
   if (!fs.existsSync(INPUT)) {
     console.error('Workbook not found:', INPUT);
     process.exit(1);
   }
-  const wb = XLSX.readFile(INPUT);
-  const ws = wb.Sheets[SHEET_NAME];
-  if (!ws) {
+  
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(INPUT);
+  const worksheet = workbook.getWorksheet(SHEET_NAME);
+  if (!worksheet) {
     console.error('Sheet not found:', SHEET_NAME);
     process.exit(1);
   }
 
-  const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: true });
-  if (!rows || rows.length === 0) {
-    console.error('No rows found in sheet:', SHEET_NAME);
-    process.exit(1);
-  }
-
   const out = [];
-  for (const r of rows) {
-    // Columns: 'Charm Upgrade Costs' (Level), __EMPTY (Guides), __EMPTY_1 (Designs), __EMPTY_2 (Secrets), __EMPTY_3 (Power), __EMPTY_4 (SvS Points)
-    const level = r['Charm Upgrade Costs'];
-    if (typeof level !== 'number' || level <= 0) continue; // skip header or invalid
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber <= 3) return; // Skip headers (rows 1-3)
+    
+    const values = row.values; // values array is 1-indexed
+    // Columns: 3=Level, 4=Guides, 5=Designs, 6=Secrets, 7=Power, 8=SvS Points
+    const level = values[3];
+    if (typeof level !== 'number' || level <= 0) return; // skip invalid
 
-    const guides = Number(r.__EMPTY) || 0;
-    const designs = Number(r.__EMPTY_1) || 0;
-    const secrets = Number(r.__EMPTY_2) || 0;
-    const power = Number(r.__EMPTY_3) || 0;
-    const svsPoints = Number(r.__EMPTY_4) || 0;
+    const guides = Number(values[4]) || 0;
+    const designs = Number(values[5]) || 0;
+    const secrets = Number(values[6]) || 0;
+    const power = Number(values[7]) || 0;
+    const svsPoints = Number(values[8]) || 0;
 
     out.push({ level, guides, designs, secrets, power, svsPoints });
+  });
+  
+  if (out.length === 0) {
+    console.error('No valid rows found in sheet:', SHEET_NAME);
+    process.exit(1);
   }
 
   // Write CSV
@@ -56,4 +60,7 @@ function main() {
   console.log(`Extracted ${out.length} charm levels to ${OUTPUT}`);
 }
 
-if (require.main === module) main();
+if (require.main === module) main().catch(err => {
+  console.error('Error:', err);
+  process.exit(1);
+});

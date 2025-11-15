@@ -10,7 +10,7 @@ Assumes the workbook sheet structure where:
 
 const fs = require('fs');
 const path = require('path');
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 
 const INPUT = path.resolve('src/assets/resource_data.xlsx');
 const OUTPUT = path.resolve('src/assets/resource_costs.csv');
@@ -31,62 +31,69 @@ function getAllowedKeys() {
   return new Set(keys);
 }
 
-function main() {
+async function main() {
   if (!fs.existsSync(INPUT)) {
     console.error('Workbook not found:', INPUT);
     process.exit(1);
   }
-  const wb = XLSX.readFile(INPUT);
+  
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(INPUT);
   const allowed = getAllowedKeys();
   const out = [];
 
   for (const sheetName of BUILDING_SHEETS) {
-    const ws = wb.Sheets[sheetName];
-    if (!ws) {
+    const worksheet = workbook.getWorksheet(sheetName);
+    if (!worksheet) {
       console.warn('Sheet missing, skipping:', sheetName);
       continue;
     }
-    const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: true });
+    
+    const rows = [];
+    worksheet.eachRow((row, rowNumber) => {
+      const rowData = {};
+      row.eachCell((cell, colNumber) => {
+        rowData[colNumber] = cell.value;
+      });
+      rows.push(rowData);
+    });
+    
     if (!rows || rows.length === 0) continue;
 
-    // Discover column keys
-    let levelKey = null, meatKey = null, woodKey = null, coalKey = null, ironKey = null;
+    // Discover column indices (1-based in ExcelJS)
+    let levelCol = null, meatCol = null, woodCol = null, coalCol = null, ironCol = null;
 
-    // pass 1: detect keys by header names
+    // pass 1: detect columns by header names
     for (const r of rows) {
-      for (const [k, v] of Object.entries(r)) {
-        const val = String(v).trim().toLowerCase();
-        if (!levelKey && (val === 'fc1' || val === 'fc2' || val.startsWith('fc') || val.startsWith('30-'))) levelKey = k;
-        if (!meatKey && val === 'meat') meatKey = k;
-        if (!woodKey && val === 'wood') woodKey = k;
-        if (!coalKey && val === 'coal') coalKey = k;
-        if (!ironKey && val === 'iron') ironKey = k;
+      for (const [colIdx, v] of Object.entries(r)) {
+        const val = String(v || '').trim().toLowerCase();
+        if (!levelCol && (val === 'fc1' || val === 'fc2' || val.startsWith('fc') || val.startsWith('30-'))) levelCol = colIdx;
+        if (!meatCol && val === 'meat') meatCol = colIdx;
+        if (!woodCol && val === 'wood') woodCol = colIdx;
+        if (!coalCol && val === 'coal') coalCol = colIdx;
+        if (!ironCol && val === 'iron') ironCol = colIdx;
       }
     }
 
-    // Fallbacks: if resource keys not found by header names, try common numeric columns
-    const fallbackNums = [' 3 ', '__EMPTY_3', '3'];
-    meatKey = meatKey || fallbackNums.find(k => rows[0].hasOwnProperty(k));
-    const fallbackWood = [' 5 ', '__EMPTY_5', '5'];
-    woodKey = woodKey || fallbackWood.find(k => rows[0].hasOwnProperty(k));
-    const fallbackCoal = [' 7 ', '__EMPTY_7', '7'];
-    coalKey = coalKey || fallbackCoal.find(k => rows[0].hasOwnProperty(k));
-    const fallbackIron = [' 9 ', '__EMPTY_9', '9'];
-    ironKey = ironKey || fallbackIron.find(k => rows[0].hasOwnProperty(k));
+    // Fallbacks: try common numeric columns (ExcelJS uses 1-based indexing)
+    meatCol = meatCol || '3';
+    woodCol = woodCol || '5';
+    coalCol = coalCol || '7';
+    ironCol = ironCol || '9';
 
-    if (!levelKey || !meatKey || !woodKey || !coalKey || !ironKey) {
-      console.warn('Could not map columns for sheet:', sheetName, { levelKey, meatKey, woodKey, coalKey, ironKey });
+    if (!levelCol || !meatCol || !woodCol || !coalCol || !ironCol) {
+      console.warn('Could not map columns for sheet:', sheetName, { levelCol, meatCol, woodCol, coalCol, ironCol });
       continue;
     }
 
     for (const r of rows) {
-      const level = r[levelKey];
+      const level = r[levelCol];
       if (typeof level !== 'string') continue;
       if (!allowed.has(level)) continue;
-      const meat = Number(r[meatKey]) || 0;
-      const wood = Number(r[woodKey]) || 0;
-      const coal = Number(r[coalKey]) || 0;
-      const iron = Number(r[ironKey]) || 0;
+      const meat = Number(r[meatCol]) || 0;
+      const wood = Number(r[woodCol]) || 0;
+      const coal = Number(r[coalCol]) || 0;
+      const iron = Number(r[ironCol]) || 0;
       out.push({ building: sheetName, level, meat, wood, coal, iron });
     }
   }
@@ -101,4 +108,7 @@ function main() {
   console.log(`Extracted ${out.length} rows to ${OUTPUT}`);
 }
 
-if (require.main === module) main();
+if (require.main === module) main().catch(err => {
+  console.error('Error:', err);
+  process.exit(1);
+});
