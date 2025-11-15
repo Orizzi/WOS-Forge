@@ -86,14 +86,31 @@ const CalculatorModule = (function(){
       return window.IconHelper.label(key, k=>k.charAt(0).toUpperCase()+k.slice(1));
     }
     const map = {
-      guides: 'assets/resources/charm-guides.svg',
-      designs: 'assets/resources/charm-designs.svg',
-      secrets: 'assets/resources/charm-secrets.svg'
+      guides: 'assets/resources/charms/guides.png',
+      designs: 'assets/resources/charms/designs.png',
+      secrets: 'assets/resources/charms/secrets.png'
     };
     const url = map[key];
     if(!url) return key;
     const pretty = key.charAt(0).toUpperCase() + key.slice(1);
     return `<img class="res-icon" src="${url}" alt="${pretty}" onerror="this.style.display='none'"> ${pretty}`;
+  }
+
+  // Custom label helper: "Total <Name>" with icon
+  function totalLabelWithIcon(key){
+    const name = key.charAt(0).toUpperCase()+key.slice(1);
+    if(window.IconHelper){
+      return window.IconHelper.label(key, () => `Total ${name}`);
+    }
+    const map = {
+      guides: 'assets/resources/charms/guides.png',
+      designs: 'assets/resources/charms/designs.png',
+      secrets: 'assets/resources/charms/secrets.png'
+    };
+    const url = map[key];
+    const text = `Total ${name}`;
+    if(!url) return text;
+    return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
   }
 
   /**
@@ -105,12 +122,8 @@ const CalculatorModule = (function(){
    * - 10 secrets/day
    * Returns the max days among the three resources.
    */
-  function estimateDaysNeeded(totals){
-    const daysForGuides = Math.ceil((totals.guides || 0) / 100);
-    const daysForDesigns = Math.ceil((totals.designs || 0) / 50);
-    const daysForSecrets = Math.ceil((totals.secrets || 0) / 10);
-    return Math.max(daysForGuides, daysForDesigns, daysForSecrets);
-  }
+  // Removed estimateDaysNeeded (no longer shown in UI)
+  // function estimateDaysNeeded(totals){ ... }
 
   /**
    * sumCosts(from, to)
@@ -227,42 +240,54 @@ const CalculatorModule = (function(){
     const gapSecrets = grand.secrets - invSecrets;
 
     function gapHtml(label, total, inv){
-      const gap = total - inv;
+      const gap = total - inv; // positive = need more, negative/zero = will have left
       const cls = gap > 0 ? 'deficit' : 'surplus';
-      const msg = gap > 0 ? `Need ${formatNumber(gap)}` : `Extra ${formatNumber(Math.abs(gap))}`;
-      return `<p><strong>${label}:</strong> ${formatNumber(total)} <span class="gap ${cls}" aria-label="${msg}">${msg}</span></p>`;
+      const text = gap > 0
+        ? `⚠ need ${formatNumber(gap)} more`
+        : `✅ will have ${formatNumber(Math.abs(gap))} left!`;
+      return `
+        <div class="total-line">
+          <p><strong>${label}:</strong> ${formatNumber(total)}</p>
+          <div class="gap-line ${cls}" aria-label="After inventory: ${text}">${text}</div>
+        </div>`;
     }
 
     const totalsHtml = `
       <div class="result-totals" aria-live="polite">
-        ${gapHtml(labelWithIcon('guides'), grand.guides, invGuides)}
-        ${gapHtml(labelWithIcon('designs'), grand.designs, invDesigns)}
-        ${gapHtml(labelWithIcon('secrets'), grand.secrets, invSecrets)}
-        <p style="background: var(--accent-secondary); color: white;"><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
-        <p style="background: var(--accent); color: white;"><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
+        ${gapHtml(totalLabelWithIcon('guides'), grand.guides, invGuides)}
+        ${gapHtml(totalLabelWithIcon('designs'), grand.designs, invDesigns)}
+        ${gapHtml(totalLabelWithIcon('secrets'), grand.secrets, invSecrets)}
+        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
+        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
-    const estDays = estimateDaysNeeded(grand);
-    const timeHtml = `<p class="result-estimate">Estimated time to gather: <strong>${formatNumber(estDays)} day${estDays===1?'':'s'}</strong></p>`;
+    // Removed estimated time line for clarity
 
-    // If no calculations, show message and exit
+    // If no calculations, just show totals and exit
     if(!details.length){
-      out.innerHTML = totalsHtml + '<p>No upgrades selected (finish &le; start for all slots).</p>';
+      out.innerHTML = totalsHtml;
       return;
     }
 
     // Build table rows
     // Each row shows: slot name, from level, to level, guides cost, designs cost, secrets cost
+    function prettySlotName(raw){
+      return raw
+        .split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+
     const rows = details.map(d => {
       return `
         <tr>
-          <td>${d.id.replace(/-/g,' ')}</td>
+          <td>${prettySlotName(d.id)}</td>
           <td>${d.from}</td>
           <td>${d.to}</td>
-          <td><img class="res-icon" src="assets/resources/charm-guides.svg" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
-          <td><img class="res-icon" src="assets/resources/charm-designs.svg" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
-          <td><img class="res-icon" src="assets/resources/charm-secrets.svg" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
+          <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
+          <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
+          <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
         </tr>`;
     }).join('\n');
 
@@ -287,15 +312,15 @@ const CalculatorModule = (function(){
           <tfoot>
             <tr>
               <td colspan="3">Totals</td>
-              <td><img class="res-icon" src="assets/resources/charm-guides.svg" alt="Guides"> ${formatNumber(grand.guides)}</td>
-              <td><img class="res-icon" src="assets/resources/charm-designs.svg" alt="Designs"> ${formatNumber(grand.designs)}</td>
-              <td><img class="res-icon" src="assets/resources/charm-secrets.svg" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
+              <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(grand.guides)}</td>
+              <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(grand.designs)}</td>
+              <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
             </tr>
           </tfoot>
         </table>
       </div>`;
 
-  out.innerHTML = totalsHtml + timeHtml + tableHtml;
+  out.innerHTML = totalsHtml + tableHtml;
 
     // Make the table sortable (clickable headers)
     if(typeof TableSortModule !== 'undefined'){
@@ -416,6 +441,14 @@ const CalculatorModule = (function(){
     // Setup reset button
     const resetBtn = document.getElementById('charms-reset');
     if(resetBtn) resetBtn.addEventListener('click', resetCharms);
+
+    // Setup inventory inputs to trigger recalculation on change
+    const invGuides = document.getElementById('inventory-guides');
+    const invDesigns = document.getElementById('inventory-designs');
+    const invSecrets = document.getElementById('inventory-secrets');
+    if(invGuides) invGuides.addEventListener('input', calculateAll);
+    if(invDesigns) invDesigns.addEventListener('input', calculateAll);
+    if(invSecrets) invSecrets.addEventListener('input', calculateAll);
 
     // Initial calculation on page load
     calculateAll();

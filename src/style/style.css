@@ -325,15 +325,151 @@ html.light-theme input:focus {
 .calculation-input, .calculation-output {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin: 20px;
-    padding: 12px;
+    gap: 10px;
+    margin: 12px;
+    padding: 8px;
     border-radius: 8px;
     border: 1px solid var(--border);
     width: calc(100% - 60px);
     box-sizing: border-box;
     background: var(--card);
 }
+
+/* Equipment Grid: 2 rows, 3 columns layout - compact version */
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 12px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Each equipment section (Hat, Chestplate, Ring, Watch, Pants, Staff) */
+.equipment-section {
+    background: var(--panel);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Explicit positioning: 2 rows × 3 columns */
+.equipment-grid > .equipment-section:nth-of-type(1) { grid-column: 1; grid-row: 1; }
+.equipment-grid > .equipment-section:nth-of-type(2) { grid-column: 2; grid-row: 1; }
+.equipment-grid > .equipment-section:nth-of-type(3) { grid-column: 3; grid-row: 1; }
+.equipment-grid > .equipment-section:nth-of-type(4) { grid-column: 1; grid-row: 2; }
+.equipment-grid > .equipment-section:nth-of-type(5) { grid-column: 2; grid-row: 2; }
+.equipment-grid > .equipment-section:nth-of-type(6) { grid-column: 3; grid-row: 2; }
+
+.equipment-section h3 {
+    margin: 0;
+    padding: 0 0 6px 0;
+    font-size: 1em;
+    border-bottom: 1px solid var(--border);
+    justify-content: flex-start;
+}
+
+/* Batch controls row - compact */
+.batch-controls-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    background: var(--muted);
+    border-radius: 4px;
+}
+
+.batch-controls-row .badge {
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.batch-controls-row .batch-inline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.batch-controls-row .batch-inline label {
+    font-size: 0.85em;
+    color: var(--muted-text);
+    margin: 0;
+}
+
+.batch-controls-row .batch-inline select {
+    flex: 1;
+    padding: 4px;
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+}
+
+/* Individual charm row - compact */
+.charm-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    background: var(--card);
+    border-radius: 4px;
+}
+
+.charm-row > label:first-child {
+    min-width: 60px;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.charm-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.charm-inputs label {
+    font-size: 0.8em;
+    color: var(--muted-text);
+    min-width: 40px;
+}
+
+.charm-inputs select {
+    flex: 1;
+    padding: 4px;
+    border-radius: 4px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+}
+
+/* Responsive: Stack appropriately on smaller screens */
+@media (max-width: 1200px) {
+    .equipment-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+    /* Reset explicit placement on narrow screens */
+    .equipment-grid > .equipment-section { grid-column: auto; grid-row: auto; }
+}
+
+@media (max-width: 768px) {
+    .equipment-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 input {
     padding: 8px 10px;
@@ -412,9 +548,9 @@ input {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin: 16px 20px;
-    padding: 16px;
+    gap: 8px;
+    margin: 8px 12px;
+    padding: 10px;
     border-radius: 8px;
     background: var(--card);
     border: 1px solid var(--border);
@@ -432,16 +568,16 @@ input {
 
 .batch-controls #charms-reset {
     /* Uses primary button styling from above */
-    font-size: 1em;
-    padding: 11px 18px;
+    font-size: 0.95em;
+    padding: 9px 14px;
 }
 
 .batch-help { 
     margin: 0; 
-    font-size: 0.95em; 
+    font-size: 0.9em; 
     color: var(--muted-text); 
     text-align:center;
-    line-height: 1.5;
+    line-height: 1.35;
 }
 
 html.light-theme .batch-help {
@@ -486,8 +622,8 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
 
 /* Profiles UI ------------------------------------------------------------ */
 .profiles{ 
-    margin: 12px 20px; 
-    padding: 16px; 
+    margin: 8px 12px; 
+    padding: 10px; 
     border-radius: 8px; 
     background: var(--card); 
     display:flex; 
@@ -496,26 +632,26 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
     border: 1px solid var(--border);
 }
 .profiles h3{ 
-    margin: 0 0 12px; 
+    margin: 0 0 8px; 
     color: var(--text);
-    font-size: 1.1em;
+    font-size: 1em;
 }
 .profiles-row{ 
     display:flex; 
-    gap: 12px; 
+    gap: 8px; 
     align-items:center; 
-    margin-bottom: 12px; 
+    margin-bottom: 8px; 
     justify-content:center;
     flex-wrap: wrap;
 }
 .profiles input[type="text"]{ 
-    padding: 10px 12px; 
+    padding: 8px 10px; 
     border-radius:6px; 
-    min-width:200px; 
+    min-width:180px; 
     background-color: #fff4c7; 
     color: #111;
     border: 1px solid rgb(0 0 0 / 10%);
-    font-size: 0.95em;
+    font-size: 0.9em;
     transition: all 150ms ease;
 }
 .profiles input[type="text"]:focus {
@@ -524,13 +660,13 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
     background-color: #ffff99;
 }
 .profiles .profiles-list{ 
-    padding: 10px 12px; 
+    padding: 8px 10px; 
     border-radius:6px; 
-    min-width:200px; 
+    min-width:180px; 
     background: var(--panel); 
     color:var(--text); 
     border:1px solid var(--muted);
-    font-size: 0.95em;
+    font-size: 0.9em;
     cursor: pointer;
 }
 .profiles-help{ 
@@ -559,12 +695,12 @@ html:not(.light-theme) .profiles input[type="text"]{
 .profiles-row button,
 .batch-controls button {
     flex: 0 1 auto;
-    min-width: 110px;
-    margin: 4px;
+    min-width: 96px;
+    margin: 2px;
 }
 
 .profiles-row button:not(:last-child) {
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 @media (max-width: 768px) {
@@ -585,8 +721,19 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 /* Results styling ------------------------------------------------------- */
 .calculation-output { background: transparent; padding: 10px 20px; }
-.result-totals { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:flex-start; margin-bottom:12px; }
-.result-totals p{ margin:0; padding:6px 10px; background: var(--card); border-radius:6px; border: 1px solid var(--border); }
+.result-totals { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:12px; }
+.result-totals .total-line{ padding:6px 10px; background: var(--card); border-radius:6px; border: 1px solid var(--border); }
+.result-totals .total-line p{ margin:0; }
+.gap-line{ margin-top:6px; font-size:0.95em; display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; border:1px solid transparent; }
+.gap-line.deficit{ color: var(--danger); background: rgba(255,123,123,0.15); border-color: rgba(255,123,123,0.35); font-weight:600; }
+.gap-line.surplus{ color: var(--success); background: rgba(106,210,154,0.15); border-color: rgba(106,210,154,0.35); font-weight:600; }
+/* Summary pills (Power and SvS) */
+.result-totals .summary-pill{
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0;
+}
 .results-wrap{ overflow:auto; border-radius:8px; background: var(--card); padding:12px; border: 1px solid var(--border); }
 .results-table{ width:100%; border-collapse:collapse; min-width:560px; }
 .results-table th, .results-table td{ padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); }
@@ -663,46 +810,79 @@ html:not(.light-theme) .profiles input[type="text"]{
 }
 
 .inventory-section {
-    margin: 20px;
-    padding: 20px;
+    margin: 8px 12px;
+    padding: 8px 10px;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
 }
 
-.inventory-section h3 {
-    margin-top: 0;
+.inventory-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
-.inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    max-width: 1000px;
-    margin: 0 auto;
+.inventory-row h3 {
+    margin: 0;
+    font-size: 1.1em;
+    white-space: nowrap;
+}
+
+.inventory-inputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .inventory-item {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 6px;
 }
 
 .inventory-item label {
-    margin-bottom: 6px;
-    color: var(--muted-text);
-    font-size: 0.95em;
+    margin: 0;
+    color: var(--text);
+    font-size: 1em;
+    white-space: nowrap;
 }
 
-.label-with-icon { display: inline-flex; align-items: center; gap: 6px; }
-.res-icon { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 1px 1px var(--shadow)); }
-
 .inventory-item input {
-    padding: 10px;
+    padding: 6px 8px;
     background: var(--muted);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 4px;
-    font-size: 1em;
+    font-size: 0.9em;
+    width: 70px;
+}
+
+@media (max-width: 900px) {
+    .inventory-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .inventory-inputs {
+        justify-content: space-around;
+    }
+}
+
+.label-with-icon { display: inline-flex; align-items: center; gap: 6px; }
+.res-icon { width: 16px; height: 16px; object-fit: contain; filter: drop-shadow(0 1px 1px var(--shadow)); }
+
+.inventory-item input {
+    padding: 8px;
+    background: var(--muted);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.95em;
 }
 
 .results-section {
