@@ -34,17 +34,12 @@
       <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
       <button id="profile-save" type="button" title="Save current charm setup as a new profile" class="primary">💾 Save New</button>
       <button id="profile-overwrite" type="button" title="Overwrite the currently selected profile" class="secondary">📝 Update</button>
-    </div>
-    <div class="profiles-row">
-      <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-      <button id="profile-rename" type="button" title="Rename the selected profile" class="secondary">✏️ Rename</button>
+      <div class="select-with-icon">
+        <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+        <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+      </div>
       <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ Delete</button>
     </div>
-    <div class="profiles-row">
-      <button id="export-profiles" type="button" title="Download all profiles as JSON" class="secondary">📤 Export</button>
-      <button id="import-profiles" type="button" title="Import profiles from a JSON file" class="secondary">📥 Import</button>
-    </div>
-    
   </section>
 
   <!-- Inventory for charms resources -->
@@ -71,8 +66,11 @@
 
   <section class="calculation-input" aria-label="Charm Level Inputs" role="region">
 
-  <!-- Equipment Grid Container: 2 columns, 3 rows -->
-  <div class="equipment-grid">
+  <!-- Main container for equipment and results side by side -->
+  <div class="main-layout-wrapper">
+    
+    <!-- Equipment Grid Container: 3 columns, 2 rows -->
+    <div class="equipment-grid">
 
   <!-- Hat Charms Section -->
   <section class="equipment-section">
@@ -1233,14 +1231,17 @@
   </section>
 
   </div><!-- End equipment-grid -->
-  </section><!-- End calculation-input -->
 
-  <section class="calculation-output" aria-label="Calculation results">
-            <h2>Results</h2>
-            <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
-                <!-- Calculation results will be displayed here -->
-            </div>
-        </section>
+  <!-- Results section - now on the right side -->
+  <div class="calculation-output" aria-label="Calculation results">
+    <h2>Results</h2>
+    <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
+      <!-- Calculation results will be displayed here -->
+    </div>
+  </div>
+
+  </div><!-- End main-layout-wrapper -->
+  </section><!-- End calculation-input -->
 </main>
 
 </body>

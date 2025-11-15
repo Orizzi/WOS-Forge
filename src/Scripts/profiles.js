@@ -288,47 +288,6 @@ const ProfilesModule = (function(){
   }
 
   /**
-   * exportProfiles()
-   * Downloads all saved profiles as a JSON file
-   */
-  function exportProfiles(){
-    const profiles = readProfiles();
-    const json = JSON.stringify(profiles, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wos-unified-profiles.json';
-    a.click();
-    setTimeout(()=> URL.revokeObjectURL(url), 0);
-  }
-
-  /**
-   * importProfiles()
-   * Prompts the user to pick a JSON file and imports profiles
-   */
-  function importProfiles(){
-    const picker = document.createElement('input');
-    picker.type = 'file';
-    picker.accept = 'application/json';
-    picker.addEventListener('change', async (e) => {
-      const file = e.target && e.target.files && e.target.files[0];
-      if(!file) return;
-      try{
-        const text = await file.text();
-        const data = JSON.parse(text);
-        if(!data || typeof data !== 'object') throw new Error('Invalid JSON');
-        writeProfiles(data);
-        renderProfilesList();
-        alert('Profiles imported successfully');
-      }catch(err){
-        alert('Import failed: invalid JSON file');
-      }
-    });
-    picker.click();
-  }
-
-  /**
    * init()
    * Wire up profile UI buttons and initialize
    * Called once when page loads
@@ -340,15 +299,11 @@ const ProfilesModule = (function(){
     const renameBtn = document.getElementById('profile-rename');
     const list = document.getElementById('profiles-list');
     const nameInput = document.getElementById('profile-name');
-  const exportBtn = document.getElementById('export-profiles');
-  const importBtn = document.getElementById('import-profiles');
 
     if(saveBtn) saveBtn.addEventListener('click', ()=> saveNewProfile(nameInput && nameInput.value && nameInput.value.trim()));
     if(overwriteBtn) overwriteBtn.addEventListener('click', ()=> overwriteProfile(list && list.value));
     if(deleteBtn) deleteBtn.addEventListener('click', deleteSelectedProfile);
     if(renameBtn) renameBtn.addEventListener('click', renameSelectedProfile);
-  if(exportBtn) exportBtn.addEventListener('click', exportProfiles);
-  if(importBtn) importBtn.addEventListener('click', importProfiles);
     
     // Auto-load when a profile is selected from the list
     if(list) list.addEventListener('change', loadSelectedProfile);
@@ -369,9 +324,7 @@ const ProfilesModule = (function(){
     overwriteProfile,
     loadSelectedProfile,
     deleteSelectedProfile,
-      renameSelectedProfile,
-      exportProfiles,
-      importProfiles
+    renameSelectedProfile
   };
 })();
 

@@ -313,6 +313,19 @@ html.light-theme select:focus {
     outline: 3px solid rgb(107 107 240 / 30%);
 }
 
+/* Disabled options styling */
+select option:disabled {
+    color: #666;
+    opacity: 0.6;
+    background: rgba(255, 0, 0, 0.1);
+}
+
+html.light-theme select option:disabled {
+    color: #ccc;
+    opacity: 0.7;
+    background: rgba(200, 0, 0, 0.08);
+}
+
 input:focus {
     outline: 3px solid rgb(124 108 255 / 30%);
     outline-offset: 2px;
@@ -323,16 +336,25 @@ html.light-theme input:focus {
 }
 
 .calculation-input, .calculation-output {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
     margin: 12px;
     padding: 8px;
     border-radius: 8px;
     border: 1px solid var(--border);
-    width: calc(100% - 60px);
     box-sizing: border-box;
     background: var(--card);
+}
+
+.calculation-input {
+    display: block;
+    width: calc(100% - 24px);
+}
+
+/* Main wrapper for side-by-side layout */
+.main-layout-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    align-items: start;
 }
 
 /* Equipment Grid: 2 rows, 3 columns layout - compact version */
@@ -342,8 +364,6 @@ html.light-theme input:focus {
     grid-template-rows: repeat(2, auto);
     gap: 12px;
     width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 /* Each equipment section (Hat, Chestplate, Ring, Watch, Pants, Staff) */
@@ -384,12 +404,13 @@ html.light-theme input:focus {
 }
 
 .batch-controls-row .badge {
-    background: var(--accent);
-    color: white;
+    background: var(--muted);
+    color: var(--muted-text);
     padding: 2px 6px;
     border-radius: 3px;
     font-size: 0.8em;
     font-weight: 600;
+    border: 1px solid var(--border);
 }
 
 .batch-controls-row .batch-inline {
@@ -452,22 +473,6 @@ html.light-theme input:focus {
     color: var(--text);
     border: 1px solid var(--border);
     font-size: 0.9em;
-}
-
-/* Responsive: Stack appropriately on smaller screens */
-@media (max-width: 1200px) {
-    .equipment-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: auto;
-    }
-    /* Reset explicit placement on narrow screens */
-    .equipment-grid > .equipment-section { grid-column: auto; grid-row: auto; }
-}
-
-@media (max-width: 768px) {
-    .equipment-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 
@@ -623,7 +628,7 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
 /* Profiles UI ------------------------------------------------------------ */
 .profiles{ 
     margin: 8px 12px; 
-    padding: 10px; 
+    padding: 8px 10px; 
     border-radius: 8px; 
     background: var(--card); 
     display:flex; 
@@ -632,20 +637,20 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
     border: 1px solid var(--border);
 }
 .profiles h3{ 
-    margin: 0 0 8px; 
+    margin: 0; 
     color: var(--text);
-    font-size: 1em;
+    font-size: 1.1em;
 }
 .profiles-row{ 
     display:flex; 
-    gap: 8px; 
+    gap: 12px; 
     align-items:center; 
-    margin-bottom: 8px; 
+    margin-bottom: 6px; 
     justify-content:center;
     flex-wrap: wrap;
 }
 .profiles input[type="text"]{ 
-    padding: 8px 10px; 
+    padding: 6px 8px; 
     border-radius:6px; 
     min-width:180px; 
     background-color: #fff4c7; 
@@ -660,7 +665,8 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
     background-color: #ffff99;
 }
 .profiles .profiles-list{ 
-    padding: 8px 10px; 
+    padding: 6px 8px; 
+    padding-right: 36px;
     border-radius:6px; 
     min-width:180px; 
     background: var(--panel); 
@@ -668,6 +674,38 @@ html.light-theme .batch-item{ background: rgb(0 0 0 / 2%); }
     border:1px solid var(--muted);
     font-size: 0.9em;
     cursor: pointer;
+}
+
+.select-with-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.select-with-icon .icon-button {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 4px 6px;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 150ms ease;
+    min-width: auto;
+    height: auto;
+    margin: 0;
+}
+
+.select-with-icon .icon-button:hover {
+    background: var(--accent);
+    color: #fff;
 }
 .profiles-help{ 
     font-size:0.9em; 
@@ -720,13 +758,69 @@ html:not(.light-theme) .profiles input[type="text"]{
 }
 
 /* Results styling ------------------------------------------------------- */
-.calculation-output { background: transparent; padding: 10px 20px; }
-.result-totals { display:flex; gap:18px; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:12px; }
-.result-totals .total-line{ padding:6px 10px; background: var(--card); border-radius:6px; border: 1px solid var(--border); }
-.result-totals .total-line p{ margin:0; }
-.gap-line{ margin-top:6px; font-size:0.95em; display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; border:1px solid transparent; }
-.gap-line.deficit{ color: var(--danger); background: rgba(255,123,123,0.15); border-color: rgba(255,123,123,0.35); font-weight:600; }
-.gap-line.surplus{ color: var(--success); background: rgba(106,210,154,0.15); border-color: rgba(106,210,154,0.35); font-weight:600; }
+.calculation-output { 
+    background: var(--panel); 
+    padding: 12px; 
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 12px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+}
+
+.calculation-output h2 {
+    margin: 0;
+    padding: 0 0 8px 0;
+    font-size: 1.2em;
+    border-bottom: 2px solid var(--border);
+}
+
+.result-totals { 
+    display: flex; 
+    flex-direction: column;
+    gap: 10px; 
+    align-items: stretch; 
+}
+
+.result-totals .total-line{ 
+    padding: 8px 12px; 
+    background: var(--card); 
+    border-radius: 6px; 
+    border: 1px solid var(--border); 
+}
+
+.result-totals .total-line p{ 
+    margin: 0; 
+}
+
+.gap-line{ 
+    margin-top: 4px; 
+    font-size: 0.9em; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    padding: 6px 10px; 
+    border-radius: 6px; 
+    border: 1px solid transparent; 
+}
+
+.gap-line.deficit{ 
+    color: var(--danger); 
+    background: rgba(255,123,123,0.15); 
+    border-color: rgba(255,123,123,0.35); 
+    font-weight: 600; 
+}
+
+.gap-line.surplus{ 
+    color: var(--success); 
+    background: rgba(106,210,154,0.15); 
+    border-color: rgba(106,210,154,0.35); 
+    font-weight: 600; 
+}
 /* Summary pills (Power and SvS) */
 .result-totals .summary-pill{
     border: 1px solid var(--border);
@@ -734,11 +828,60 @@ html:not(.light-theme) .profiles input[type="text"]{
     padding: 6px 10px;
     margin: 0;
 }
-.results-wrap{ overflow:auto; border-radius:8px; background: var(--card); padding:12px; border: 1px solid var(--border); }
-.results-table{ width:100%; border-collapse:collapse; min-width:560px; }
-.results-table th, .results-table td{ padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); }
-.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position:sticky; top:0; backdrop-filter: blur(2px); }
-.results-table tfoot td{ font-weight:700; border-top:2px solid var(--border); }
+.results-wrap{ 
+    overflow: auto; 
+    border-radius: 8px; 
+    background: var(--card); 
+    padding: 12px; 
+    border: 1px solid var(--border); 
+    max-height: 400px;
+}
+.results-table{ width: 100%; border-collapse: collapse; }
+.results-table th, .results-table td{ padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
+.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
+.results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+    .main-layout-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .calculation-output {
+        position: static;
+        max-height: none;
+    }
+    
+    .result-totals {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 900px) {
+    .equipment-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .equipment-grid > .equipment-section:nth-of-type(1) { grid-column: 1; grid-row: 1; }
+    .equipment-grid > .equipment-section:nth-of-type(2) { grid-column: 2; grid-row: 1; }
+    .equipment-grid > .equipment-section:nth-of-type(3) { grid-column: 1; grid-row: 2; }
+    .equipment-grid > .equipment-section:nth-of-type(4) { grid-column: 2; grid-row: 2; }
+    .equipment-grid > .equipment-section:nth-of-type(5) { grid-column: 1; grid-row: 3; }
+    .equipment-grid > .equipment-section:nth-of-type(6) { grid-column: 2; grid-row: 3; }
+}
+
+@media (max-width: 768px) {
+    .equipment-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .equipment-grid > .equipment-section { 
+        grid-column: 1; 
+        grid-row: auto; 
+    }
+}
 
 @media (width <=720px){
     .batch-inline .batch-select{ width:64px; }
