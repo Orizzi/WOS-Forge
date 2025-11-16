@@ -30,6 +30,32 @@
       }).catch(()=>{});
   }
 
+  function normalizeMilestone(levelKey){
+    if(!levelKey) return levelKey;
+    // Collapse sub-levels to milestone level (e.g., FC3-2 -> FC3)
+    const fcMatch = levelKey.match(/^FC\d+/i);
+    if(fcMatch) return fcMatch[0].toUpperCase();
+    // F30 and 30-1..30-4 collapse to 30
+    if(levelKey.toUpperCase()==='F30') return '30';
+    if(levelKey.startsWith('30')) return '30';
+    return levelKey;
+  }
+
+  function lookupPower(building, levelKey){
+    const map = POWER_MAP[building];
+    if(!map) return null;
+    if(levelKey && map[levelKey] != null) return map[levelKey];
+    const milestone = normalizeMilestone(levelKey);
+    if(milestone && map[milestone] != null) return map[milestone];
+    // Fallback: accept case variations
+    const lower = milestone && milestone.toLowerCase();
+    if(lower){
+      const key = Object.keys(map).find(k=>k.toLowerCase()===lower);
+      if(key) return map[key];
+    }
+    return null;
+  }
+
   function computeTotalPower(){
     if(!window.FireCrystalsCalculator) return 0;
     const buildings = ['Furnace','Embassy','Command Center','Infirmary','Infantry Camp','Marksman Camp','Lancer Camp','War Academy'];
@@ -38,9 +64,8 @@
       const id = b.toLowerCase().replace(/ /g,'-');
       const sel = document.getElementById(`${id}-desired`);
       const lvl = sel && sel.value;
-      if(lvl && POWER_MAP[b] && POWER_MAP[b][lvl]!=null){
-        total += POWER_MAP[b][lvl];
-      }
+      const p = lookupPower(b, lvl);
+      if(p!=null) total += p;
     });
     return total;
   }
