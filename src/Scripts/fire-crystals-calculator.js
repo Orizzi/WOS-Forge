@@ -1075,6 +1075,12 @@
             <span class="gap ${rfcGapClass}">${rfcGapText}</span>
         </div>`;
 
+        // Total Power row (updated by power extension once data is available)
+        html += `<div class="total-item" id="total-power-row">
+            <span class="resource-label">Total Power:</span>
+            <span class="resource-value" id="total-power-value">Data pending</span>
+        </div>`;
+
         // Total construction time
         const totalTimeFormatted = formatTime(totals.totalTime);
         html += `<div class="total-item">

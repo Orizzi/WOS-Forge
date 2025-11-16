@@ -62,7 +62,7 @@
     let total=0;
     buildings.forEach(b=>{
       const id = b.toLowerCase().replace(/ /g,'-');
-      const sel = document.getElementById(`${id}-desired`);
+      const sel = document.getElementById(`${id}-finish`);
       const lvl = sel && sel.value;
       const p = lookupPower(b, lvl);
       if(p!=null) total += p;
@@ -72,13 +72,9 @@
 
   function applyPowerToDom(){
     const total = computeTotalPower();
-    const items = Array.from(document.querySelectorAll('.total-item'));
-    const target = items.find(it => /Total Power:/i.test(it.textContent));
-    if(target){
-      const valueSpan = target.querySelector('.resource-value');
-      if(valueSpan){
-        valueSpan.innerHTML = `<strong>${total>0? total.toLocaleString():'Data pending'}</strong>`;
-      }
+    const valueSpan = document.getElementById('total-power-value');
+    if(valueSpan){
+      valueSpan.innerHTML = `<strong>${total>0? total.toLocaleString():'Data pending'}</strong>`;
     }
   }
 
