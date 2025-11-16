@@ -499,19 +499,34 @@ const ProfilesModule = (function(){
     if(list){
       const all = readProfiles();
       const last = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
-      if(last && all[last]){
-        list.value = last;
+      const applyAndRecalc = () => {
         loadSelectedProfile();
-      } else if(list.options.length > 0){
-        list.selectedIndex = 0;
-        loadSelectedProfile();
+        setTimeout(() => {
+          if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
+          if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
+          if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
+        }, 0);
+      };
+      // Wait for calculators to be ready (event-based)
+      if(window.FireCrystalsCalculator && window.FireCrystalsCalculator.init){
+        document.addEventListener('fc-calculator-ready', applyAndRecalc, { once: true });
       }
-      // Force recalculation after profile load (handles Netlify timing issues)
+      if(window.ChiefGearCalculator && window.ChiefGearCalculator.init){
+        document.addEventListener('chief-gear-calculator-ready', applyAndRecalc, { once: true });
+      }
+      if(window.CalculatorModule && window.CalculatorModule.init){
+        document.addEventListener('charms-calculator-ready', applyAndRecalc, { once: true });
+      }
+      // Fallback: if no event, apply after short delay
       setTimeout(() => {
-        if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
-        if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
-        if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
-      }, 0);
+        if(last && all[last]){
+          list.value = last;
+          applyAndRecalc();
+        } else if(list.options.length > 0){
+          list.selectedIndex = 0;
+          applyAndRecalc();
+        }
+      }, 300);
     }
   }
 
