@@ -426,9 +426,6 @@ const CalculatorModule = (function(){
    * @param {number} value - The level to set
    */
   function applyBatch(type, which, value){
-    // Skip if no value selected (placeholder option)
-    if(!value && value !== 0 && value !== '0') return;
-    
     // Determine if we're setting -start or -finish selects
     const suffix = which === 'from' ? '-start' : '-finish';
     
