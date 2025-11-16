@@ -19,6 +19,7 @@ const ExcelJS = require('exceljs');
 
 const INPUT = path.resolve('src/assets/resource_data.xlsx');
 const OUTPUT = path.resolve('src/assets/building_power.csv');
+const SHEETS_DIR = path.resolve('src/assets/sheets');
 
 const BUILDING_SHEETS = [
   'Furnace', 'Embassy', 'Command Center', 'Infirmary',
@@ -147,6 +148,15 @@ async function main(){
   if(!rows){
     rows = await deriveFromBuildingSheets(workbook);
   }
+  // Fallback: scan exported CSV sheets for a Power column
+  if((!rows || rows.length === 0) && fs.existsSync(SHEETS_DIR)){
+    try {
+      const fallback = scanCsvSheetsForPower(SHEETS_DIR);
+      if(fallback && fallback.length) rows = fallback;
+    } catch (e) {
+      // ignore
+    }
+  }
   if(!rows || rows.length === 0){
     console.warn('Building power could not be extracted automatically. Existing CSV left unchanged.');
     process.exit(0);
@@ -169,4 +179,96 @@ async function main(){
 
 if(require.main === module){
   main().catch(err => { console.error('Error:', err); process.exit(1); });
+}
+
+// -------- CSV fallback scanner ---------
+function scanCsvSheetsForPower(dir){
+  const files = fs.readdirSync(dir).filter(f => f.toLowerCase().endsWith('.csv'));
+  const out = [];
+  for(const file of files){
+    const full = path.join(dir, file);
+    const text = fs.readFileSync(full, 'utf8');
+    if(!/power/i.test(text)) continue; // quick filter
+    const rows = text.split(/\r?\n/).map(l=>l.split(','));
+    if(rows.length === 0) continue;
+
+    // Heuristic A: long form with headers building, level, power
+    const headerIdx = findHeaderRow(rows, ['building','level','power']);
+    if(headerIdx !== -1){
+      const header = rows[headerIdx].map(x=>x.toLowerCase().trim());
+      const bi = header.indexOf('building');
+      const li = header.indexOf('level');
+      const pi = header.indexOf('power');
+      for(let r=headerIdx+1;r<rows.length;r++){
+        const rr = rows[r]; if(!rr || rr.length === 0) continue;
+        const b = (rr[bi]||'').trim();
+        const lvl = (rr[li]||'').trim().toUpperCase();
+        const p = Number((rr[pi]||'').replace(/[^0-9.-]/g,''))||0;
+        if(b && /^FC(10|[1-9])$/.test(lvl) && p>0) out.push({ building: normalizeBuilding(b), level: lvl, power: p });
+      }
+      continue;
+    }
+
+    // Heuristic B: wide form: first row with FC1..FC10 columns, first column = building name, some column named Power beneath
+    const fcColsRow = findRowWithFcLabels(rows);
+    if(fcColsRow !== -1){
+      const labels = rows[fcColsRow];
+      const fcCols = [];
+      labels.forEach((v, idx) => {
+        const t = String(v||'').trim().toUpperCase();
+        if(/^FC(10|[1-9])$/.test(t)) fcCols.push({ level: t, col: idx });
+      });
+      if(fcCols.length >= 5){
+        // Assume next rows have building names and a column explicitly labeled 'Power' somewhere below; try direct values in those cells
+        for(let r=fcColsRow+1;r<rows.length;r++){
+          const rr = rows[r]; if(!rr || rr.length === 0) continue;
+          const building = (rr[0]||'').trim();
+          if(!building) continue;
+          for(const {level, col} of fcCols){
+            const p = Number(String(rr[col]||'').replace(/[^0-9.-]/g,''))||0;
+            if(p>0) out.push({ building: normalizeBuilding(building), level, power: p });
+          }
+        }
+      }
+    }
+  }
+  return dedupePowerRows(out);
+}
+
+function findHeaderRow(rows, keys){
+  for(let i=0;i<Math.min(rows.length,10);i++){
+    const lower = rows[i].map(x=>String(x||'').toLowerCase().trim());
+    if(keys.every(k=>lower.includes(k))) return i;
+  }
+  return -1;
+}
+
+function findRowWithFcLabels(rows){
+  for(let i=0;i<Math.min(rows.length,15);i++){
+    const hasFc = rows[i].some(x => /^FC(10|[1-9])$/i.test(String(x||'').trim()));
+    if(hasFc) return i;
+  }
+  return -1;
+}
+
+function normalizeBuilding(name){
+  const n = String(name).trim();
+  const map = new Map([
+    ['infantry','Infantry Camp'],
+    ['marksman','Marksman Camp'],
+    ['lancer','Lancer Camp'],
+  ]);
+  const lower = n.toLowerCase();
+  for(const [k,v] of map){ if(lower.startsWith(k)) return v; }
+  return n;
+}
+
+function dedupePowerRows(arr){
+  const key = r => `${r.building}|${r.level}`;
+  const seen = new Map();
+  for(const r of arr){
+    const k = key(r);
+    if(!seen.has(k) || (seen.get(k)?.power||0) < r.power) seen.set(k, r);
+  }
+  return Array.from(seen.values());
 }
