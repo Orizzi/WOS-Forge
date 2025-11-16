@@ -498,12 +498,31 @@ const ProfilesModule = (function(){
     const name = list.value;
     if(!name) return alert('Select a profile to delete');
 
-    const message = `<p>Are you sure you want to delete the profile <span class="warning">"${name}"</span>?<br>This action cannot be undone.</p>`;
+    const t = (window.I18n && window.I18n.t) ? window.I18n.t : (k => k);
+    const lang = (window.I18n && window.I18n.getCurrentLanguage) ? window.I18n.getCurrentLanguage() : 'en';
+    const localizedDefaults = {
+      es: '<p>¿Seguro que deseas borrar el perfil %s?<br>Esta acción no se puede deshacer.</p>',
+      ru: '<p>Вы уверены, что хотите удалить профиль %s?<br>Это действие нельзя отменить.</p>',
+      ko: '<p>프로필 %s 을(를) 정말 삭제할까요?<br>이 작업은 되돌릴 수 없습니다.</p>'
+    };
+    let msgTpl = t('delete-profile-message', lang);
+    // If the key is missing or falls back to the raw key, use our defaults
+    if(!msgTpl || msgTpl === 'delete-profile-message'){
+      msgTpl = localizedDefaults[lang] || msgTpl;
+    }
+    // If we still have the English default while in another language, override when possible
+    const englishDefault = '<p>Are you sure you want to delete the profile %s?<br>This action cannot be undone.</p>';
+    if(lang !== 'en' && msgTpl === englishDefault && localizedDefaults[lang]){
+      msgTpl = localizedDefaults[lang];
+    }
+    const message = msgTpl && typeof msgTpl === 'string'
+      ? msgTpl.replace('%s', `<span class="warning">"${name}"</span>`)
+      : englishDefault.replace('%s', `<span class="warning">"${name}"</span>`);
     showConfirmDialog({
-      title: 'Delete Profile',
+      title: t('delete-profile-title'),
       message,
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+      confirmText: t('delete-profile-confirm'),
+      cancelText: t('delete-profile-cancel'),
       danger: true
     }).then(ok => {
       if(!ok) return;

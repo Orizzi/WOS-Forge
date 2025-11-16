@@ -30,6 +30,10 @@
             "storage-consent-body": "<p>We keep your plans in your browser so you can find them after refresh.</p><p>Data stays on this device (localStorage), nothing is sent to a server.</p><p>You can switch or delete profiles anytime.</p>",
             "storage-consent-allow": "Allow",
             "storage-consent-deny": "No thanks",
+            "delete-profile-title": "Delete Profile",
+            "delete-profile-confirm": "Delete",
+            "delete-profile-cancel": "Cancel",
+            "delete-profile-message": "<p>Are you sure you want to delete the profile %s?<br>This action cannot be undone.</p>",
 
             // Coming soon page
             "coming-title": "New Calculators Are Coming Soon",
@@ -46,12 +50,18 @@
             "storage-consent-body": "<p>계획을 브라우저에 저장해 두면 새로고침 후에도 그대로 찾을 수 있습니다.</p><p>데이터는 이 기기(localStorage)에만 저장되고 서버로 보내지지 않습니다.</p><p>언제든 프로필을 변경하거나 삭제할 수 있습니다.</p>",
             "storage-consent-allow": "허용",
             "storage-consent-deny": "괜찮아요",
+            "delete-profile-title": "프로필 삭제",
+            "delete-profile-confirm": "삭제",
+            "delete-profile-cancel": "취소",
             
             // Storage consent
             "storage-consent-title": "Разрешить сохранять профили на этом устройстве?",
             "storage-consent-body": "<p>Планы сохраняются в вашем браузере, чтобы их найти после перезагрузки.</p><p>Данные остаются на этом устройстве (localStorage) и не отправляются на сервер.</p><p>Профили можно сменить или удалить в любой момент.</p>",
             "storage-consent-allow": "Разрешить",
             "storage-consent-deny": "Нет, спасибо",
+            "delete-profile-title": "Удалить профиль",
+            "delete-profile-confirm": "Удалить",
+            "delete-profile-cancel": "Отмена",
 
             // Charms page additions
             "charms-header": "Charms Calculator",
@@ -142,6 +152,10 @@
             
             // Results (dynamically translated in calculator)
             "svs-points": "SvS Points",
+            "svs-points-fc": "SvS Points (FC)",
+            "svs-points-rfc": "SvS Points (RFC)",
+            "svs-points-speedup": "SvS Points (Speedup)",
+            "total-svs-points": "Total SvS Points",
                 "still-needed": "Still Needed",
                 "gap-need-more": "need <span class=\"number\">%d</span> more!",
                 "gap-have-left": "will have <span class=\"number\">%d</span> left!",
@@ -173,6 +187,11 @@
             "storage-consent-body": "<p>Guardamos tus planes en el navegador para recuperarlos tras recargar.</p><p>Los datos se quedan en este dispositivo (localStorage); no se envían a ningún servidor.</p><p>Puedes cambiar o borrar perfiles cuando quieras.</p>",
             "storage-consent-allow": "Permitir",
             "storage-consent-deny": "No, gracias",
+            "delete-profile-title": "Eliminar perfil",
+            "delete-profile-confirm": "Eliminar",
+            "delete-profile-cancel": "Cancelar",
+            "delete-profile-message": "<p>¿Seguro que deseas borrar el perfil %s?<br>Esta acción no se puede deshacer.</p>",
+            "delete-profile-message": "<p>¿Seguro que deseas borrar el perfil %s?<br>Esta acción no se puede deshacer.</p>",
 
             // Coming soon page
             "coming-title": "Nuevos calculadores llegan pronto",
@@ -273,6 +292,10 @@
 
             // Results
             "svs-points": "Puntos SvS",
+            "svs-points-fc": "Puntos SvS (FC)",
+            "svs-points-rfc": "Puntos SvS (RFC)",
+            "svs-points-speedup": "Puntos SvS (Aceleraciones)",
+            "total-svs-points": "Puntos SvS Totales",
               "still-needed": "Aún Necesario",
               "gap-need-more": "necesita <span class=\"number\">%d</span> más!",
               "gap-have-left": "tendrá <span class=\"number\">%d</span> de sobra!",
@@ -620,7 +643,10 @@
     // Get translated text by key
     function t(key, lang) {
         lang = lang || getCurrentLanguage();
-        return translations[lang] && translations[lang][key] ? translations[lang][key] : key;
+        // Fallback to English before returning the raw key
+        if(translations[lang] && translations[lang][key]) return translations[lang][key];
+        if(translations.en && translations.en[key]) return translations.en[key];
+        return key;
     }
 
     // Initialize language selector and apply translations

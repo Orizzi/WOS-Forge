@@ -1126,17 +1126,22 @@
         </div>`;
 
         html += `<div class="total-item">
-            <span class="resource-label">SVS Points (RFC):</span>
-            <span class="resource-value">${rfcPoints.toLocaleString()}</span>
+            <span class="resource-label">${t('svs-points-fc', lang)}:</span>
+            <span class="resource-value">${Math.floor(fcPoints).toLocaleString()}</span>
         </div>`;
 
         html += `<div class="total-item">
-            <span class="resource-label">SVS Points (Speedup):</span>
+            <span class="resource-label">${t('svs-points-rfc', lang)}:</span>
+            <span class="resource-value">${Math.floor(rfcPoints).toLocaleString()}</span>
+        </div>`;
+
+        html += `<div class="total-item">
+            <span class="resource-label">${t('svs-points-speedup', lang)}:</span>
             <span class="resource-value">${Math.floor(speedupPoints).toLocaleString()}</span>
         </div>`;
 
         html += `<div class="total-item">
-            <span class="resource-label"><strong>Total SVS Points:</strong></span>
+            <span class="resource-label"><strong>${t('total-svs-points', lang)}:</strong></span>
             <span class="resource-value"><strong>${Math.floor(totalSVSPoints).toLocaleString()}</strong></span>
         </div>`;
 
