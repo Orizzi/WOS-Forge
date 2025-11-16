@@ -1,29 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
-    <link rel="stylesheet" href="style/style.css">
-        <script src="Scripts/min/icon-helper.min.js" defer></script>
-        <script src="Scripts/min/theme.min.js" defer></script>
-        <script src="Scripts/min/table-sort.min.js" defer></script>
-        <script src="Scripts/min/input-validators.min.js" defer></script>
-        <script src="Scripts/min/fire-crystals-costs.min.js" defer></script>
-        <script src="Scripts/min/fire-crystals-data-loader.min.js" defer></script>
-        <script src="Scripts/min/fire-crystals-calculator.min.js" defer></script>
-        <script src="Scripts/min/building-power.min.js" defer></script>
-        <script src="Scripts/min/fire-crystals-power-extension.min.js" defer></script>
-        <script src="Scripts/min/fc-status-ui.min.js" defer></script>
-        <script src="Scripts/min/profiles.min.js" defer="defer" type="module" async></script>
-        <script src="Scripts/min/translations.min.js" defer="defer" type="module" async></script>
-        <script type="module" async>
-            window.addEventListener('DOMContentLoaded', () => {
-                import('./Scripts/min/profiles.min.js');
-                import('./Scripts/min/translations.min.js');
-            });
-        </script>
-    </head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Fire Crystals calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every building.">
     <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
     <link rel="stylesheet" href="style/style.css">
     <script src="Scripts/icon-helper.js" defer></script>
@@ -39,35 +18,12 @@
     <script src="Scripts/fire-crystals-power-extension.js" defer></script>
     <script src="Scripts/fc-status-ui.js" defer></script>
     </head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
-    <link rel="stylesheet" href="style/style.min.css">
-    <link rel="manifest" href="manifest.json">
-    <script src="Scripts/icon-helper.js" defer></script>
-    <script src="Scripts/theme.js" defer></script>
-    <script src="Scripts/translations.js" defer></script>
-    <script src="Scripts/profiles.js" defer></script>
-    <script src="Scripts/table-sort.js" defer></script>
-    <script src="Scripts/fire-crystals-costs.js" defer></script>
-    <script src="Scripts/fire-crystals-data-loader.js" defer></script>
-    <script src="Scripts/fire-crystals-calculator.js" defer></script>
-    <script src="Scripts/fire-crystals-power-extension.js" defer></script>
-    <script src="Scripts/fc-status-ui.js" defer></script>
-    </head>
 <body>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('service-worker.js');
-                });
-            }
-        </script>
     <header role="banner">
         <a href="index.html" class="logo-link">
-            <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
+            <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
         </a>
-    <link rel="stylesheet" href="style/style.min.css">
+    </header>
     <nav class="main-nav" role="navigation" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="charms.html" data-i18n="nav-charms">Charms</a>
@@ -83,91 +39,170 @@
             <option value="ko">🇰🇷 한국어</option>
             <option value="ru">🇷🇺 Русский</option>
         </select>
-    <link rel="stylesheet" href="style/style.min.css">
+    </nav>
     <main role="main">
-        <h2 data-i18n="nav-fire-crystals" id="fire-crystals-heading">Fire Crystals</h2>
+        <h2 data-i18n="nav-fire-crystals">Fire Crystals</h2>
 
-        <!-- Inventory and Profiles row: horizontal flexbox -->
+        <!-- Profiles + Inventory row (inventory left) -->
         <div class="inventory-profiles-row">
-            <!-- Inventory Section (left) -->
-            <section class="inventory-section compact" aria-label="Your Fire Crystals Inventory" role="region">
-                <h3 data-i18n="inventory-header">Your Inventory</h3>
-                <div class="inventory-grid compact">
-                    <div class="inventory-item">
-                        <label for="inventory-fire-crystals" class="label-with-icon">
+        <!-- Inventory Section (kept first so it stays left; profiles will be right) -->
+        <section class="inventory-section compact">
+            <h3 data-i18n="inventory-header">Your Inventory</h3>
+            <div class="inventory-grid compact">
+                <div class="inventory-item">
+                    <label for="inventory-fire-crystals">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/fire-crystals.png" alt="Fire Crystals" onerror="this.style.display='none'">
                             <span data-i18n="fire-crystals">Fire Crystals</span>
-                            <span class="help-tooltip" title="Fire Crystals are used for building upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-fire-crystals" min="0" max="999999" step="1" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-refine-crystals" class="label-with-icon">
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-fire-crystals" min="0" max="999999" step="1" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-refine-crystals">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/refine-crystals.png" alt="Refine Crystals" onerror="this.style.display='none'">
                             <span data-i18n="refine-crystals">Refine Crystals</span>
-                            <span class="help-tooltip" title="Refine Crystals are required for advanced upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-refine-crystals" min="0" max="9999" step="1" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-speedup-days" data-i18n="speedup-days">Speedup Days</label>
-                        <input type="number" id="inventory-speedup-days" min="0" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-construction-speed" data-i18n="construction-speed">Construction Speed Bonus (%)</label>
-                        <input type="number" id="inventory-construction-speed" min="0" max="1000" value="0">
-                    </div>
-                    <!-- Optional base resources inventory (for gap calculations) -->
-                    <div class="inventory-item">
-                        <label for="inventory-meat" class="label-with-icon">
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-refine-crystals" min="0" max="9999" step="1" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-speedup-days" data-i18n="speedup-days">Speedup Days</label>
+                    <input type="number" id="inventory-speedup-days" min="0" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-construction-speed" data-i18n="construction-speed">Construction Speed Bonus (%)</label>
+                    <input type="number" id="inventory-construction-speed" min="0" max="1000" value="0">
+                </div>
+                <!-- Optional base resources inventory (for gap calculations) -->
+                <div class="inventory-item">
+                    <label for="inventory-meat">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/meat.png" alt="Meat" onerror="this.style.display='none'">
                             <span data-i18n="meat">Meat</span>
-                            <span class="help-tooltip" title="Meat is a basic resource for building upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-meat" min="0" max="999999999999" step="1" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-wood" class="label-with-icon">
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-meat" min="0" max="999999999999" step="1" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-wood">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/wood.png" alt="Wood" onerror="this.style.display='none'">
                             <span data-i18n="wood">Wood</span>
-                            <span class="help-tooltip" title="Wood is a basic resource for building upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-wood" min="0" max="999999999999" step="1" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-coal" class="label-with-icon">
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-wood" min="0" max="999999999999" step="1" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-coal">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/coal.png" alt="Coal" onerror="this.style.display='none'">
                             <span data-i18n="coal">Coal</span>
-                            <span class="help-tooltip" title="Coal is a basic resource for building upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-coal" min="0" max="99999999999" step="1" value="0">
-                    </div>
-                    <div class="inventory-item">
-                        <label for="inventory-iron" class="label-with-icon">
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-coal" min="0" max="99999999999" step="1" value="0">
+                </div>
+                <div class="inventory-item">
+                    <label for="inventory-iron">
+                        <span class="label-with-icon">
                             <img class="res-icon" src="assets/resources/base/iron.png" alt="Iron" onerror="this.style.display='none'">
                             <span data-i18n="iron">Iron</span>
-                            <span class="help-tooltip" title="Iron is a basic resource for building upgrades. Enter your current amount.">?</span>
-                        </label>
-                        <input type="number" id="inventory-iron" min="0" max="99999999999" step="1" value="0">
-                    </div>
+                        </span>
+                    </label>
+                    <input type="number" id="inventory-iron" min="0" max="99999999999" step="1" value="0">
                 </div>
-            </section>
-            <!-- Profiles Section (right) -->
-            <section class="profiles" aria-label="Fire Crystals profiles" role="region">
-                <h3 data-i18n="profiles-header">Profiles</h3>
-                <div class="profiles-row">
-                    <div class="input-with-icon">
-                        <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
-                        <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+            </div>
+        </section>
+
+                <!-- Profiles section (stacked vertically on this page) -->
+                <section class="profiles stacked" aria-label="Chief Gear profiles" role="region">
+                    <h3 data-i18n="profiles-header">Profiles</h3>
+                    <div class="profiles-row">
+                        <div class="input-with-icon">
+                            <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+                            <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+                        </div>
+                        <div class="select-with-icon">
+                            <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                            <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+                        </div>
+                        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
                     </div>
-                    <div class="select-with-icon">
-                        <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-                        <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
-                    </div>
-                    <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
-                </div>
-            </section>
+                </section>
         </div>
+
+        <!-- Buildings + Results two-column layout -->
+        <div class="fc-two-column">
+        <!-- Buildings Section -->
+        <section class="buildings-section">
+            <h2>Buildings</h2>
+            <div class="buildings-grid">
+                <!-- Furnace (Main Building) -->
+                <div class="building-card building-main">
+                    <div class="building-header">
+                        <img class="building-icon" src="assets/buildings/furnace.png" alt="Furnace" onerror="this.style.display='none'">
+                        <h3 data-i18n="Furnace">Furnace</h3>
+                    </div>
+                    <div class="building-selects">
+                        <div class="select-group">
+                            <label data-i18n="level.start">Current</label>
+                            <select id="furnace-start" class="building-select">                                <option value="F30">F30</option>
+                                <option value="30-1">30-1</option>
+                                <option value="30-2">30-2</option>
+                                <option value="30-3">30-3</option>
+                                <option value="30-4">30-4</option>
+                                <option value="FC1">FC1</option>
+                                <option value="FC1-1">FC1-1</option>
+                                <option value="FC1-2">FC1-2</option>
+                                <option value="FC1-3">FC1-3</option>
+                                <option value="FC1-4">FC1-4</option>
+                                <option value="FC2">FC2</option>
+                                <option value="FC2-1">FC2-1</option>
+                                <option value="FC2-2">FC2-2</option>
+                                <option value="FC2-3">FC2-3</option>
+                                <option value="FC2-4">FC2-4</option>
+                                <option value="FC3">FC3</option>
+                                <option value="FC3-1">FC3-1</option>
+                                <option value="FC3-2">FC3-2</option>
+                                <option value="FC3-3">FC3-3</option>
+                                <option value="FC3-4">FC3-4</option>
+                                <option value="FC4">FC4</option>
+                                <option value="FC4-1">FC4-1</option>
+                                <option value="FC4-2">FC4-2</option>
+                                <option value="FC4-3">FC4-3</option>
+                                <option value="FC4-4">FC4-4</option>
+                                <option value="FC5">FC5</option>
+                                <option value="FC5-1">FC5-1</option>
+                                <option value="FC5-2">FC5-2</option>
+                                <option value="FC5-3">FC5-3</option>
+                                <option value="FC5-4">FC5-4</option>
+                                <option value="FC6">FC6</option>
+                                <option value="FC6-1">FC6-1</option>
+                                <option value="FC6-2">FC6-2</option>
+                                <option value="FC6-3">FC6-3</option>
+                                <option value="FC6-4">FC6-4</option>
+                                <option value="FC7">FC7</option>
+                                <option value="FC7-1">FC7-1</option>
+                                <option value="FC7-2">FC7-2</option>
+                                <option value="FC7-3">FC7-3</option>
+                                <option value="FC7-4">FC7-4</option>
+                                <option value="FC8">FC8</option>
+                                <option value="FC8-1">FC8-1</option>
+                                <option value="FC8-2">FC8-2</option>
+                                <option value="FC8-3">FC8-3</option>
+                                <option value="FC8-4">FC8-4</option>
+                                <option value="FC9">FC9</option>
+                                <option value="FC9-1">FC9-1</option>
+                                <option value="FC9-2">FC9-2</option>
+                                <option value="FC9-3">FC9-3</option>
+                                <option value="FC9-4">FC9-4</option>
+                                <option value="FC10">FC10</option>
+                            </select>
+                        </div>
+                        <div class="select-group">
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="furnace-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -1056,8 +1091,8 @@
 
         <!-- Results Section (right column) -->
         <section class="results-section">
-            <h3 data-i18n="totals-header" id="results-section-heading">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data…</span></h3>
-            <div class="table-responsive"><div id="results-display" aria-live="polite" aria-label="Cost breakdown table" role="region" aria-labelledby="results-section-heading"></div></div>
+            <h3 data-i18n="totals-header">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data…</span></h3>
+            <div id="results-display"></div>
         </section>
         </div>
 
