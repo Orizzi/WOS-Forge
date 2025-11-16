@@ -10,77 +10,88 @@
   <script src="Scripts/table-sort.js" defer></script>
   <script src="Scripts/calculator.js" defer></script>
   <script src="Scripts/profiles.js" defer></script>
+  <script src="Scripts/translations.js" defer></script>
 </head>
 <body>
     <header role="banner">
-        <a href="index.html" class="title">WOS CALCULATOR</a>
+        <a href="index.html" class="logo-link">
+            <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+        </a>
     </header>
     <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="index.html">Home</a> |
-        <a href="charms.html">Charms</a> |
-        <a href="chiefGear.html">Chief Gear</a>
-        <a href="fireCrystals.html">Fire Crystals</a> |
-        <a href="warAcademy.html">War Academy</a> |
-        <a href="pets.html">Pets</a>
-        <a href="experts.html">Experts</a> |
-    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+      <a href="index.html" data-i18n="nav-home">Home</a>
+      <a href="charms.html" aria-current="page" data-i18n="nav-charms">Charms</a>
+      <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+      <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
+      <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a>
+      <a href="pets.html" data-i18n="nav-pets">Pets</a>
+      <a href="experts.html">Experts</a>
+      <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+      <select id="language-selector" aria-label="Language" title="Select language">
+        <option value="en">🇬🇧 English</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="ru">🇷🇺 Русский</option>
+      </select>
     </nav>
  <main role="main">  
-    <h2>Charms Calculator</h2>
-  <!-- Profiles / presets section: saved locally in browser -->
-  <section class="profiles" aria-label="Charm profiles" role="region">
-    <h3>Profiles</h3>
-    <div class="profiles-row">
-      <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
-      <button id="profile-save" type="button" title="Save current charm setup as a new profile" class="primary">💾 Save New</button>
-      <button id="profile-overwrite" type="button" title="Overwrite the currently selected profile" class="secondary">📝 Update</button>
-    </div>
-    <div class="profiles-row">
-      <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-      <button id="profile-rename" type="button" title="Rename the selected profile" class="secondary">✏️ Rename</button>
-      <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ Delete</button>
-    </div>
-    <div class="profiles-row">
-      <button id="export-profiles" type="button" title="Download all profiles as JSON" class="secondary">📤 Export</button>
-      <button id="import-profiles" type="button" title="Import profiles from a JSON file" class="secondary">📥 Import</button>
-    </div>
-    
-  </section>
-
-  <!-- Inventory for charms resources -->
-  <section class="inventory-section" aria-label="Your Charms Inventory" role="region">
-    <div class="inventory-row">
-      <h3>Charms Inventory</h3>
-      <div class="inventory-inputs">
-        <div class="inventory-item">
-          <label for="inventory-guides"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> Guides</span></label>
-          <input type="number" id="inventory-guides" min="0" value="0" aria-label="Guides inventory" />
+   <h2 data-i18n="charms-header">Charms Calculator</h2>
+  <!-- Inventory and Profiles side-by-side -->
+  <div class="inventory-profiles-row" role="group" aria-label="Inventory and profiles">
+    <!-- Inventory for charms resources -->
+    <section class="inventory-section" aria-label="Your Charms Inventory" role="region">
+      <div class="inventory-row">
+        <h3 data-i18n="charms-inventory">Charms Inventory</h3>
+        <div class="inventory-inputs">
+          <div class="inventory-item">
+            <label for="inventory-guides"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> <span data-i18n="guides">Guides</span></span></label>
+            <input type="number" id="inventory-guides" min="0" value="0" aria-label="Guides inventory" inputmode="numeric" maxlength="8" max="99999999" />
+          </div>
+          <div class="inventory-item">
+            <label for="inventory-designs"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> <span data-i18n="designs">Designs</span></span></label>
+            <input type="number" id="inventory-designs" min="0" value="0" aria-label="Designs inventory" inputmode="numeric" maxlength="8" max="99999999" />
+          </div>
+          <div class="inventory-item">
+            <label for="inventory-secrets"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> <span data-i18n="secrets">Secrets</span></span></label>
+            <input type="number" id="inventory-secrets" min="0" value="0" aria-label="Secrets inventory" inputmode="numeric" maxlength="6" max="999999" />
+          </div>
         </div>
-        <div class="inventory-item">
-          <label for="inventory-designs"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> Designs</span></label>
-          <input type="number" id="inventory-designs" min="0" value="0" aria-label="Designs inventory" />
-        </div>
-        <div class="inventory-item">
-          <label for="inventory-secrets"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> Secrets</span></label>
-          <input type="number" id="inventory-secrets" min="0" value="0" aria-label="Secrets inventory" />
-        </div>
+        <button id="charms-reset" type="button" title="Reset every charm level back to 0" class="secondary">🔄 <span data-i18n="reset-all">Reset All</span></button>
       </div>
-      <button id="charms-reset" type="button" title="Reset every charm level back to 0" class="secondary">🔄 Reset All</button>
-    </div>
-  </section>
+    </section>
+
+    <!-- Profiles / presets section: saved locally in browser -->
+    <section class="profiles" aria-label="Charm profiles" role="region">
+      <h3 data-i18n="profiles-header">Profiles</h3>
+      <div class="profiles-row">
+        <div class="input-with-icon">
+          <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+          <button id="profile-save" type="button" title="Save current charm setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+        </div>
+        <div class="select-with-icon">
+          <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+        </div>
+        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+      </div>
+    </section>
+  </div>
 
   <section class="calculation-input" aria-label="Charm Level Inputs" role="region">
 
-  <!-- Equipment Grid Container: 2 columns, 3 rows -->
-  <div class="equipment-grid">
+  <!-- Main container for equipment and results side by side -->
+  <div class="main-layout-wrapper">
+    
+    <!-- Equipment Grid Container: 3 columns, 2 rows -->
+    <div class="equipment-grid">
 
   <!-- Hat Charms Section -->
   <section class="equipment-section">
-    <h3>Hat Charms</h3>
+    <h3 data-i18n="hat-charms">Hat Charms</h3>
     
     <!-- Batch controls for all Hat charms -->
     <div class="batch-controls-row">
-      <label class="batch-label"><span class="badge">Batch All</span></label>
+      <label class="batch-label"><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label>FROM:</label>
         <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values">
@@ -127,9 +138,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="hat-charm-1-start" name="hat-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -149,7 +160,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="hat-charm-1-finish" name="hat-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -174,9 +185,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="hat-charm-2-start" name="hat-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -196,7 +207,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="hat-charm-2-finish" name="hat-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -221,9 +232,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="hat-charm-3-start" name="hat-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -243,7 +254,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="hat-charm-3-finish" name="hat-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -269,13 +280,13 @@
 
   <!-- Chestplate Charms Section -->
   <section class="equipment-section">
-    <h3>Chestplate Charms</h3>
+    <h3 data-i18n="chestplate-charms">Chestplate Charms</h3>
     
     <!-- Batch Controls -->
     <div class="batch-controls-row">
-      <label><span class="badge">Batch All</span></label>
+      <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -295,7 +306,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="chestplate-batch-to" class="batch-select" title="Set all Chestplate TO values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -320,9 +331,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="chestplate-charm-1-start" name="chestplate-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -342,7 +353,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="chestplate-charm-1-finish" name="chestplate-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -367,9 +378,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="chestplate-charm-2-start" name="chestplate-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -389,7 +400,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="chestplate-charm-2-finish" name="chestplate-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -414,9 +425,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="chestplate-charm-3-start" name="chestplate-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -436,7 +447,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="chestplate-charm-3-finish" name="chestplate-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -462,13 +473,13 @@
 
   <!-- Ring Charms Section -->
   <section class="equipment-section">
-    <h3>Ring Charms</h3>
+    <h3 data-i18n="ring-charms">Ring Charms</h3>
     
     <!-- Batch Controls -->
     <div class="batch-controls-row">
-      <label><span class="badge">Batch All</span></label>
+      <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="ring-batch-from" class="batch-select" title="Set all Ring FROM values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -488,7 +499,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="ring-batch-to" class="batch-select" title="Set all Ring TO values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -513,9 +524,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="ring-charm-1-start" name="ring-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -535,7 +546,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="ring-charm-1-finish" name="ring-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -560,9 +571,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="ring-charm-2-start" name="ring-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -582,7 +593,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="ring-charm-2-finish" name="ring-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -607,9 +618,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="ring-charm-3-start" name="ring-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -629,7 +640,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="ring-charm-3-finish" name="ring-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -655,13 +666,13 @@
 
   <!-- Watch Charms Section -->
   <section class="equipment-section">
-    <h3>Watch Charms</h3>
+    <h3 data-i18n="watch-charms">Watch Charms</h3>
     
     <!-- Batch Controls -->
     <div class="batch-controls-row">
-      <label><span class="badge">Batch All</span></label>
+      <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="watch-batch-from" class="batch-select" title="Set all Watch FROM values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -681,7 +692,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="watch-batch-to" class="batch-select" title="Set all Watch TO values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -706,9 +717,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="watch-charm-1-start" name="watch-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -728,7 +739,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="watch-charm-1-finish" name="watch-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -753,9 +764,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="watch-charm-2-start" name="watch-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -775,7 +786,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="watch-charm-2-finish" name="watch-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -800,9 +811,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="watch-charm-3-start" name="watch-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -822,7 +833,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="watch-charm-3-finish" name="watch-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -848,13 +859,13 @@
 
   <!-- Pants Charms Section -->
   <section class="equipment-section">
-    <h3>Pants Charms</h3>
+    <h3 data-i18n="pants-charms">Pants Charms</h3>
     
     <!-- Batch Controls -->
     <div class="batch-controls-row">
-      <label><span class="badge">Batch All</span></label>
+      <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="pants-batch-from" class="batch-select" title="Set all Pants FROM values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -874,7 +885,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="pants-batch-to" class="batch-select" title="Set all Pants TO values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -899,9 +910,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="pants-charm-1-start" name="pants-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -921,7 +932,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="pants-charm-1-finish" name="pants-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -946,9 +957,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="pants-charm-2-start" name="pants-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -968,7 +979,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="pants-charm-2-finish" name="pants-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -993,9 +1004,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="pants-charm-3-start" name="pants-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1015,7 +1026,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="pants-charm-3-finish" name="pants-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1041,13 +1052,13 @@
 
   <!-- Staff Charms Section -->
   <section class="equipment-section">
-    <h3>Staff Charms</h3>
+    <h3 data-i18n="staff-charms">Staff Charms</h3>
     
     <!-- Batch Controls -->
     <div class="batch-controls-row">
-      <label><span class="badge">Batch All</span></label>
+      <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="staff-batch-from" class="batch-select" title="Set all Staff FROM values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1067,7 +1078,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="staff-batch-to" class="batch-select" title="Set all Staff TO values to this">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1092,9 +1103,9 @@
 
     <!-- Charm 1 -->
     <div class="charm-row">
-      <label>Charm 1:</label>
+      <label data-i18n="charm-1">Charm 1:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="staff-charm-1-start" name="staff-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1114,7 +1125,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="staff-charm-1-finish" name="staff-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1139,9 +1150,9 @@
 
     <!-- Charm 2 -->
     <div class="charm-row">
-      <label>Charm 2:</label>
+      <label data-i18n="charm-2">Charm 2:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="staff-charm-2-start" name="staff-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1161,7 +1172,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="staff-charm-2-finish" name="staff-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1186,9 +1197,9 @@
 
     <!-- Charm 3 -->
     <div class="charm-row">
-      <label>Charm 3:</label>
+      <label data-i18n="charm-3">Charm 3:</label>
       <div class="charm-inputs">
-        <label>FROM:</label>
+        <label data-i18n="from">FROM:</label>
         <select id="staff-charm-3-start" name="staff-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1208,7 +1219,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label>TO:</label>
+        <label data-i18n="to">TO:</label>
         <select id="staff-charm-3-finish" name="staff-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1233,14 +1244,17 @@
   </section>
 
   </div><!-- End equipment-grid -->
-  </section><!-- End calculation-input -->
 
-  <section class="calculation-output" aria-label="Calculation results">
-            <h2>Results</h2>
-            <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
-                <!-- Calculation results will be displayed here -->
-            </div>
-        </section>
+  <!-- Results section - now on the right side -->
+  <div class="calculation-output" aria-label="Calculation results">
+    <h2 data-i18n="results">Results</h2>
+    <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
+      <!-- Calculation results will be displayed here -->
+    </div>
+  </div>
+
+  </div><!-- End main-layout-wrapper -->
+  </section><!-- End calculation-input -->
 </main>
 
 </body>

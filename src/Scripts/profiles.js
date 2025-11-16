@@ -15,6 +15,76 @@
 
 const ProfilesModule = (function(){
   const PROFILES_KEY = 'wos-unified-profiles';  // Key used for browser storage
+  const LAST_PROFILE_KEY = 'wos-last-profile';  // Remember last loaded profile name
+  let currentLoadedProfile = null;  // Track which profile is currently loaded
+  /**
+   * showConfirmDialog(options)
+   * Render a themed confirmation modal. Returns a Promise<boolean>.
+   */
+  function showConfirmDialog({
+    title = 'Confirm',
+    message = '',
+    confirmText = 'Delete',
+    cancelText = 'Cancel',
+    danger = false
+  } = {}){
+    return new Promise(resolve => {
+      // Prevent multiple dialogs
+      if(document.querySelector('.modal-overlay')){
+        resolve(false);
+        return;
+      }
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.setAttribute('role', 'presentation');
+
+      const dialog = document.createElement('div');
+      dialog.className = 'modal-dialog';
+      dialog.setAttribute('role', 'dialog');
+      dialog.setAttribute('aria-modal', 'true');
+      dialog.setAttribute('aria-labelledby', 'modal-title');
+
+      dialog.innerHTML = `
+        <div class="modal-header">
+          <h4 id="modal-title" class="modal-title">${title}</h4>
+        </div>
+        <div class="modal-body">${message}</div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" data-action="cancel">${cancelText}</button>
+          <button type="button" class="btn ${danger ? 'danger' : 'primary'}" data-action="confirm">${confirmText}</button>
+        </div>
+      `;
+
+      overlay.appendChild(dialog);
+      document.body.appendChild(overlay);
+
+      const cancelBtn = dialog.querySelector('[data-action="cancel"]');
+      const confirmBtn = dialog.querySelector('[data-action="confirm"]');
+
+      const cleanup = (result) => {
+        if(overlay && overlay.parentNode){ overlay.parentNode.removeChild(overlay); }
+        resolve(result);
+      };
+
+      cancelBtn.addEventListener('click', () => cleanup(false));
+      confirmBtn.addEventListener('click', () => cleanup(true));
+
+      // Close on overlay click
+      overlay.addEventListener('click', (e) => {
+        if(e.target === overlay) cleanup(false);
+      });
+
+      // Keyboard: Esc cancels, Enter confirms
+      const keyHandler = (e) => {
+        if(e.key === 'Escape'){ e.preventDefault(); cleanup(false); }
+        if(e.key === 'Enter'){ e.preventDefault(); cleanup(true); }
+      };
+      document.addEventListener('keydown', keyHandler, { once: true });
+
+      // Focus management
+      setTimeout(() => { confirmBtn.focus(); }, 0);
+    });
+  }
 
   /**
    * readProfiles()
@@ -113,6 +183,7 @@ const ProfilesModule = (function(){
     
       // Capture Inventory data (all inventory inputs from all pages)
       const inventoryIds = [
+        'inventory-guides', 'inventory-designs', 'inventory-secrets', // Charms inventory
         'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',  // Chief Gear
         'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed', // Fire Crystals
         'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron' // Base resources (optional)
@@ -139,6 +210,50 @@ const ProfilesModule = (function(){
       Object.keys(obj.charms).forEach(id => {
         const el = document.getElementById(id);
         if(el && el.tagName === 'SELECT') el.value = String(obj.charms[id]);
+      });
+      
+      // Update validation states for charm selects (disabled options)
+      const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
+        .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
+      
+      startSelects.forEach(startSel => {
+        const base = startSel.id.replace(/-start$/, '');
+        const finishSel = document.getElementById(base + '-finish');
+        if(finishSel){
+          // Update disabled options based on FROM value
+          const start = parseInt(startSel.value);
+          
+          if(!isNaN(start)){
+            Array.from(finishSel.options).forEach(option => {
+              const optValue = parseInt(option.value);
+              if(!isNaN(optValue) && optValue < start){
+                option.disabled = true;
+              } else {
+                option.disabled = false;
+              }
+            });
+          }
+        }
+      });
+      
+      // Also update batch control validation states
+      const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
+      batchTypes.forEach(type => {
+        const from = document.getElementById(`${type}-batch-from`);
+        const to = document.getElementById(`${type}-batch-to`);
+        if(from && to){
+          const fromVal = parseInt(from.value);
+          if(!isNaN(fromVal)){
+            Array.from(to.options).forEach(option => {
+              const optValue = parseInt(option.value);
+              if(!isNaN(optValue) && optValue < fromVal){
+                option.disabled = true;
+              } else {
+                option.disabled = false;
+              }
+            });
+          }
+        }
       });
     }
     
@@ -202,6 +317,7 @@ const ProfilesModule = (function(){
    */
   function saveNewProfile(name){
     if(!name) return alert('Enter a profile name');
+    name = String(name).trim().slice(0, 10);
     const profiles = readProfiles();
     if(profiles[name]) return alert('A profile with that name already exists. Use Overwrite or pick another name.');
     
@@ -232,6 +348,21 @@ const ProfilesModule = (function(){
     writeProfiles(profiles);
     renderProfilesList();
   }
+  
+  /**
+   * autoSaveCurrentProfile()
+   * Automatically saves changes to the currently loaded profile
+   */
+  function autoSaveCurrentProfile(){
+    if(!currentLoadedProfile) return; // No profile loaded, don't save
+    
+    const profiles = readProfiles();
+    if(!profiles[currentLoadedProfile]) return; // Profile was deleted
+    
+    // Silently update the profile with current selections
+    profiles[currentLoadedProfile] = captureCurrent();
+    writeProfiles(profiles);
+  }
 
   /**
    * loadSelectedProfile()
@@ -244,6 +375,10 @@ const ProfilesModule = (function(){
     const name = list.value;
     const profiles = readProfiles();
     if(!profiles[name]) return alert('Profile not found');
+    
+    // Track the currently loaded profile
+    currentLoadedProfile = name;
+    try { localStorage.setItem(LAST_PROFILE_KEY, name); } catch(e){}
     
     // Apply the saved profile's selections
     applyProfileObject(profiles[name]);
@@ -258,12 +393,21 @@ const ProfilesModule = (function(){
     if(!list) return;
     const name = list.value;
     if(!name) return alert('Select a profile to delete');
-    const ok = confirm(`Delete profile "${name}"?`);
-    if(!ok) return;
-    const profiles = readProfiles();
-    delete profiles[name];
-    writeProfiles(profiles);
-    renderProfilesList();
+
+    const message = `<p>Are you sure you want to delete the profile <span class="warning">"${name}"</span>?<br>This action cannot be undone.</p>`;
+    showConfirmDialog({
+      title: 'Delete Profile',
+      message,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      danger: true
+    }).then(ok => {
+      if(!ok) return;
+      const profiles = readProfiles();
+      delete profiles[name];
+      writeProfiles(profiles);
+      renderProfilesList();
+    });
   }
 
   /**
@@ -275,7 +419,7 @@ const ProfilesModule = (function(){
     const input = document.getElementById('profile-name');
     if(!list || !input) return;
     const from = list.value;
-    const to = input.value && input.value.trim();
+    const to = (input.value && input.value.trim().slice(0, 10));
     if(!from) return alert('Select a profile to rename');
     if(!to) return alert('Enter the new name in the textbox');
     const profiles = readProfiles();
@@ -288,73 +432,59 @@ const ProfilesModule = (function(){
   }
 
   /**
-   * exportProfiles()
-   * Downloads all saved profiles as a JSON file
-   */
-  function exportProfiles(){
-    const profiles = readProfiles();
-    const json = JSON.stringify(profiles, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wos-unified-profiles.json';
-    a.click();
-    setTimeout(()=> URL.revokeObjectURL(url), 0);
-  }
-
-  /**
-   * importProfiles()
-   * Prompts the user to pick a JSON file and imports profiles
-   */
-  function importProfiles(){
-    const picker = document.createElement('input');
-    picker.type = 'file';
-    picker.accept = 'application/json';
-    picker.addEventListener('change', async (e) => {
-      const file = e.target && e.target.files && e.target.files[0];
-      if(!file) return;
-      try{
-        const text = await file.text();
-        const data = JSON.parse(text);
-        if(!data || typeof data !== 'object') throw new Error('Invalid JSON');
-        writeProfiles(data);
-        renderProfilesList();
-        alert('Profiles imported successfully');
-      }catch(err){
-        alert('Import failed: invalid JSON file');
-      }
-    });
-    picker.click();
-  }
-
-  /**
    * init()
    * Wire up profile UI buttons and initialize
    * Called once when page loads
    */
   function init(){
     const saveBtn = document.getElementById('profile-save');
-    const overwriteBtn = document.getElementById('profile-overwrite');
     const deleteBtn = document.getElementById('profile-delete');
     const renameBtn = document.getElementById('profile-rename');
     const list = document.getElementById('profiles-list');
     const nameInput = document.getElementById('profile-name');
-  const exportBtn = document.getElementById('export-profiles');
-  const importBtn = document.getElementById('import-profiles');
 
     if(saveBtn) saveBtn.addEventListener('click', ()=> saveNewProfile(nameInput && nameInput.value && nameInput.value.trim()));
-    if(overwriteBtn) overwriteBtn.addEventListener('click', ()=> overwriteProfile(list && list.value));
     if(deleteBtn) deleteBtn.addEventListener('click', deleteSelectedProfile);
     if(renameBtn) renameBtn.addEventListener('click', renameSelectedProfile);
-  if(exportBtn) exportBtn.addEventListener('click', exportProfiles);
-  if(importBtn) importBtn.addEventListener('click', importProfiles);
     
     // Auto-load when a profile is selected from the list
     if(list) list.addEventListener('change', loadSelectedProfile);
     
+    // Auto-save when any charm select or inventory input changes
+    const allSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
+      .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
+    allSelects.forEach(sel => {
+      sel.addEventListener('change', autoSaveCurrentProfile);
+    });
+    
+    // Auto-save when batch controls change
+    const batchSelects = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
+    batchSelects.forEach(sel => {
+      sel.addEventListener('change', autoSaveCurrentProfile);
+    });
+    
+    // Auto-save when inventory inputs change
+    const inventoryInputs = ['inventory-guides', 'inventory-designs', 'inventory-secrets'];
+    inventoryInputs.forEach(id => {
+      const input = document.getElementById(id);
+      if(input) input.addEventListener('input', autoSaveCurrentProfile);
+    });
+    
     // Render existing profiles on load
     renderProfilesList();
+
+    // Auto-load last used profile (or first available) on page load
+    if(list){
+      const all = readProfiles();
+      const last = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
+      if(last && all[last]){
+        list.value = last;
+        loadSelectedProfile();
+      } else if(list.options.length > 0){
+        list.selectedIndex = 0;
+        loadSelectedProfile();
+      }
+    }
   }
 
   // Public API
@@ -366,12 +496,10 @@ const ProfilesModule = (function(){
     applyProfileObject,
     renderProfilesList,
     saveNewProfile,
-    overwriteProfile,
     loadSelectedProfile,
     deleteSelectedProfile,
-      renameSelectedProfile,
-      exportProfiles,
-      importProfiles
+    renameSelectedProfile,
+    autoSaveCurrentProfile
   };
 })();
 

@@ -11,12 +11,47 @@
         en: {
             // Page title and navigation
             title: "Whiteout Survival Chief Gear Calculator",
+            "nav-home": "Home",
             "nav-charms": "Charms",
             "nav-chief-gear": "Chief Gear",
                 "nav-hero-gear": "Hero Gear",
             "nav-fire-crystals": "Fire Crystals",
             "nav-war-academy": "War Academy",
             "nav-pets": "Pets",
+            
+            // Charms page additions
+            "charms-header": "Charms Calculator",
+            "charms-inventory": "Charms Inventory",
+            "profile-name-placeholder": "New profile name",
+            results: "Results",
+            total: "Total",
+            "total-power": "Total Power",
+            "total-svs-points": "Total SvS Points",
+            totals: "Totals",
+            slot: "Slot",
+            "need-more": "need",
+            more: "more",
+            "will-have": "will have",
+            left: "left!",
+            guides: "Guides",
+            designs: "Designs",
+            secrets: "Secrets",
+            "reset-all": "Reset All",
+            "profiles-header": "Profiles",
+            delete: "Delete",
+            batch: "BATCH",
+            from: "FROM:",
+            to: "TO:",
+            charm: "Charm",
+            "charm-1": "Charm 1:",
+            "charm-2": "Charm 2:",
+            "charm-3": "Charm 3:",
+            "hat-charms": "Hat Charms",
+            "chestplate-charms": "Chestplate Charms",
+            "ring-charms": "Ring Charms",
+            "watch-charms": "Watch Charms",
+            "pants-charms": "Pants Charms",
+            "staff-charms": "Staff Charms",
             
             // Headers
             header: "Chief Gear Calculator",
@@ -80,12 +115,47 @@
         es: {
             // Page title and navigation
             title: "Calculadora de Equipo de Jefe - Whiteout Survival",
+            "nav-home": "Inicio",
             "nav-charms": "Amuletos",
             "nav-chief-gear": "Equipo de Jefe",
                 "nav-hero-gear": "Equipo de Héroe",
             "nav-fire-crystals": "Cristales de Fuego",
             "nav-war-academy": "Academia de Guerra",
             "nav-pets": "Mascotas",
+            
+            // Charms page additions
+            "charms-header": "Calculadora de Amuletos",
+            "charms-inventory": "Inventario de Amuletos",
+            "profile-name-placeholder": "Nombre del perfil",
+            results: "Resultados",
+            total: "Total",
+            "total-power": "Poder Total",
+            "total-svs-points": "Puntos SvS Totales",
+            totals: "Totales",
+            slot: "Ranura",
+            "need-more": "necesita",
+            more: "más",
+            "will-have": "tendrá",
+            left: "de sobra!",
+            guides: "Guías",
+            designs: "Diseños",
+            secrets: "Secretos",
+            "reset-all": "Restablecer Todo",
+            "profiles-header": "Perfiles",
+            delete: "Eliminar",
+            batch: "LOTE",
+            from: "DE:",
+            to: "A:",
+            charm: "Amuleto",
+            "charm-1": "Amuleto 1:",
+            "charm-2": "Amuleto 2:",
+            "charm-3": "Amuleto 3:",
+            "hat-charms": "Amuletos de Casco",
+            "chestplate-charms": "Amuletos de Peto",
+            "ring-charms": "Amuletos de Anillo",
+            "watch-charms": "Amuletos de Reloj",
+            "pants-charms": "Amuletos de Pantalones",
+            "staff-charms": "Amuletos de Bastón",
             
             // Headers
             header: "Calculadora de Equipo de Jefe",
@@ -149,12 +219,47 @@
         ko: {
             // Page title and navigation
             title: "화이트아웃 서바이벌 대장 장비 계산기",
+            "nav-home": "홈",
             "nav-charms": "부적",
             "nav-chief-gear": "대장 장비",
               "nav-hero-gear": "영웅 장비",
             "nav-fire-crystals": "불 수정",
             "nav-war-academy": "전쟁 아카데미",
             "nav-pets": "펫",
+            
+            // Charms page additions
+            "charms-header": "부적 계산기",
+            "charms-inventory": "부적 인벤토리",
+            guides: "가이드",
+            designs: "도면",
+            secrets: "비밀",
+            "reset-all": "전체 초기화",
+            "profiles-header": "프로필",
+            delete: "삭제",
+            batch: "일괄",
+            from: "부터:",
+            to: "까지:",
+            charm: "부적",
+            "charm-1": "부적 1:",
+            "charm-2": "부적 2:",
+            "charm-3": "부적 3:",
+            "hat-charms": "모자 부적",
+            "chestplate-charms": "흉갑 부적",
+            "ring-charms": "반지 부적",
+            "watch-charms": "시계 부적",
+            "pants-charms": "바지 부적",
+            "staff-charms": "지팡이 부적",
+            "profile-name-placeholder": "프로필 이름",
+            results: "결과",
+            total: "총",
+            "total-power": "총 파워",
+            "total-svs-points": "총 SvS 포인트",
+            totals: "합계",
+            slot: "슬롯",
+            "need-more": "필요",
+            more: "더",
+            "will-have": "남음",
+            left: "!",
             
             // Headers
             header: "대장 장비 계산기",
@@ -222,12 +327,47 @@
         ru: {
             // Page title and navigation
             title: "Калькулятор Снаряжения Главы - Whiteout Survival",
+            "nav-home": "Главная",
             "nav-charms": "Талисманы",
             "nav-chief-gear": "Снаряжение Главы",
                 "nav-hero-gear": "Снаряжение Героя",
             "nav-fire-crystals": "Огненные Кристаллы",
             "nav-war-academy": "Военная Академия",
             "nav-pets": "Питомцы",
+            
+            // Charms page additions
+            "charms-header": "Калькулятор Талисманов",
+            "charms-inventory": "Инвентарь Талисманов",
+            guides: "Гайды",
+            designs: "Чертежи",
+            secrets: "Секреты",
+            "reset-all": "Сбросить Всё",
+            "profiles-header": "Профили",
+            delete: "Удалить",
+            batch: "ПАКЕТ",
+            from: "С:",
+            to: "ПО:",
+            charm: "Талисман",
+            "charm-1": "Талисман 1:",
+            "charm-2": "Талисман 2:",
+            "charm-3": "Талисман 3:",
+            "hat-charms": "Талисманы для Шлема",
+            "chestplate-charms": "Талисманы для Нагрудника",
+            "ring-charms": "Талисманы для Кольца",
+            "watch-charms": "Талисманы для Часов",
+            "pants-charms": "Талисманы для Штанов",
+            "staff-charms": "Талисманы для Посоха",
+            "profile-name-placeholder": "Имя профиля",
+            results: "Результаты",
+            total: "Всего",
+            "total-power": "Общая Мощь",
+            "total-svs-points": "Общие Очки SvS",
+            totals: "Итого",
+            slot: "Слот",
+            "need-more": "нужно",
+            more: "больше",
+            "will-have": "останется",
+            left: "!",
             
             // Headers
             header: "Калькулятор Снаряжения Главы",
@@ -329,6 +469,15 @@
                 if (el.tagName !== 'INPUT' && el.tagName !== 'SELECT') {
                     el.textContent = translations[lang][key];
                 }
+            }
+        });
+        
+        // Handle placeholder translations
+        const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+        placeholderElements.forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (translations[lang][key]) {
+                el.setAttribute('placeholder', translations[lang][key]);
             }
         });
     }

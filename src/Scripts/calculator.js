@@ -98,9 +98,12 @@ const CalculatorModule = (function(){
 
   // Custom label helper: "Total <Name>" with icon
   function totalLabelWithIcon(key){
-    const name = key.charAt(0).toUpperCase()+key.slice(1);
+    const t = window.I18n?.t || (k => k);
+    const resourceName = t(key) || (key.charAt(0).toUpperCase() + key.slice(1));
+    const totalText = t('total') || 'Total';
+    
     if(window.IconHelper){
-      return window.IconHelper.label(key, () => `Total ${name}`);
+      return window.IconHelper.label(key, () => `${totalText} ${resourceName}`);
     }
     const map = {
       guides: 'assets/resources/charms/guides.png',
@@ -108,7 +111,7 @@ const CalculatorModule = (function(){
       secrets: 'assets/resources/charms/secrets.png'
     };
     const url = map[key];
-    const text = `Total ${name}`;
+    const text = `${totalText} ${resourceName}`;
     if(!url) return text;
     return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
   }
@@ -191,6 +194,28 @@ const CalculatorModule = (function(){
     
   const grand = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };  // Grand total
     const details = [];  // Array to store each charm's cost
+    
+    // Detect which equipment types are in batch mode
+    // Check if all charms of a type have the same from/to values (indicating batch was used)
+    const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
+    const batchModeByType = {}; // Track batch mode per equipment type
+    
+    batchTypes.forEach(type => {
+      const typeSelects = Array.from(document.querySelectorAll(`select[id^="${type}-charm-"][id$="-start"]`));
+      if(typeSelects.length > 1){
+        const firstFrom = typeSelects[0]?.value;
+        const firstTo = document.getElementById(typeSelects[0]?.id.replace('-start', '-finish'))?.value;
+        const allSameFrom = typeSelects.every(s => s.value === firstFrom);
+        const allSameTo = typeSelects.every(s => {
+          const finishId = s.id.replace('-start', '-finish');
+          const finishSel = document.getElementById(finishId);
+          return finishSel && finishSel.value === firstTo;
+        });
+        if(allSameFrom && allSameTo && (firstFrom !== '0' || firstTo !== '0')){
+          batchModeByType[type] = true;
+        }
+      }
+    });
 
     // For each FROM select, find its matching TO select
     starts.forEach(startSel => {
@@ -239,12 +264,26 @@ const CalculatorModule = (function(){
     const gapDesigns = grand.designs - invDesigns;
     const gapSecrets = grand.secrets - invSecrets;
 
+    // Only show gap messages when there are actual calculations (totals > 0)
+    const hasCalculations = grand.guides > 0 || grand.designs > 0 || grand.secrets > 0;
+
     function gapHtml(label, total, inv){
       const gap = total - inv; // positive = need more, negative/zero = will have left
+      
+      // Don't show gap message if there are no calculations
+      if (!hasCalculations) {
+        return `
+          <div class="total-line">
+            <p><strong>${label}:</strong> ${formatNumber(total)}</p>
+          </div>`;
+      }
+      
+      // Get translations for gap messages
+      const t = window.I18n?.t || (k => k);
       const cls = gap > 0 ? 'deficit' : 'surplus';
       const text = gap > 0
-        ? `⚠ need ${formatNumber(gap)} more`
-        : `✅ will have ${formatNumber(Math.abs(gap))} left!`;
+        ? `⚠ ${t('need-more')} ${formatNumber(gap)} ${t('more')}`
+        : `✅ ${t('will-have')} ${formatNumber(Math.abs(gap))} ${t('left')}`;
       return `
         <div class="total-line">
           <p><strong>${label}:</strong> ${formatNumber(total)}</p>
@@ -257,8 +296,8 @@ const CalculatorModule = (function(){
         ${gapHtml(totalLabelWithIcon('guides'), grand.guides, invGuides)}
         ${gapHtml(totalLabelWithIcon('designs'), grand.designs, invDesigns)}
         ${gapHtml(totalLabelWithIcon('secrets'), grand.secrets, invSecrets)}
-        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
-        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
+        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>${window.I18n?.t('total-power') || 'Total Power'}:</strong> ${formatNumber(grand.power)}</p>
+        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>${window.I18n?.t('total-svs-points') || 'Total SvS Points'}:</strong> ${formatNumber(grand.svsPoints)}</p>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
@@ -270,48 +309,95 @@ const CalculatorModule = (function(){
       return;
     }
 
-    // Build table rows
-    // Each row shows: slot name, from level, to level, guides cost, designs cost, secrets cost
+    // Build table rows - group equipment types that are in batch mode, show individual charms for others
     function prettySlotName(raw){
       return raw
         .split('-')
         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ');
     }
-
-    const rows = details.map(d => {
-      return `
-        <tr>
-          <td>${prettySlotName(d.id)}</td>
-          <td>${d.from}</td>
-          <td>${d.to}</td>
-          <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
-          <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
-          <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
-        </tr>`;
-    }).join('\n');
+    
+    // Group charms by type
+    const grouped = {};
+    details.forEach(d => {
+      // Extract type from id: 'hat-charm-1' -> 'hat'
+      const type = d.id.split('-')[0];
+      if(!grouped[type]){
+        grouped[type] = {
+          type: type,
+          charms: []
+        };
+      }
+      grouped[type].charms.push(d);
+    });
+    
+    // Create rows: one line per type if in batch mode, individual lines otherwise
+    const rows = [];
+    Object.values(grouped).forEach(g => {
+      if(batchModeByType[g.type]){
+        // This type is in batch mode - show one aggregated line
+        const totals = {
+          guides: 0,
+          designs: 0,
+          secrets: 0,
+          from: g.charms[0].from,
+          to: g.charms[0].to
+        };
+        g.charms.forEach(c => {
+          totals.guides += c.sum.guides;
+          totals.designs += c.sum.designs;
+          totals.secrets += c.sum.secrets;
+        });
+        const typeName = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+        rows.push(`
+          <tr>
+            <td>${typeName} Charms</td>
+            <td>${totals.from}</td>
+            <td>${totals.to}</td>
+            <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(totals.guides)}</td>
+            <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(totals.designs)}</td>
+            <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(totals.secrets)}</td>
+          </tr>`);
+      } else {
+        // This type is NOT in batch mode - show individual charm lines
+        g.charms.forEach(d => {
+          rows.push(`
+            <tr>
+              <td>${prettySlotName(d.id)}</td>
+              <td>${d.from}</td>
+              <td>${d.to}</td>
+              <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
+              <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
+              <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
+            </tr>`);
+        });
+      }
+    });
+    
+    const rowsHtml = rows.join('\n');
 
     // Create the full table HTML
     // Includes colored dots for each resource type
+    const t = window.I18n?.t || (k => k);
     const tableHtml = `
       <div class="results-wrap">
         <table class="results-table" aria-live="polite">
           <thead>
             <tr>
-              <th data-key="slot">Slot</th>
-              <th data-key="from">From</th>
-              <th data-key="to">To</th>
+              <th data-key="slot">${t('slot')}</th>
+              <th data-key="from">${t('from')}</th>
+              <th data-key="to">${t('to')}</th>
               <th data-key="guides">${labelWithIcon('guides')}</th>
               <th data-key="designs">${labelWithIcon('designs')}</th>
               <th data-key="secrets">${labelWithIcon('secrets')}</th>
             </tr>
           </thead>
           <tbody>
-            ${rows}
+            ${rowsHtml}
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">Totals</td>
+              <td colspan="3">${t('totals')}</td>
               <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(grand.guides)}</td>
               <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(grand.designs)}</td>
               <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
@@ -349,7 +435,41 @@ const CalculatorModule = (function(){
       .filter(s => s.id.endsWith(suffix));
     
     // Set all matching selects to the same value
-    nodes.forEach(s => { s.value = String(value); });
+    nodes.forEach(s => { 
+      s.value = String(value);
+      
+      // If we're setting TO values, validate against the FROM value
+      if(which === 'to'){
+        const base = s.id.replace(/-finish$/, '');
+        const startSel = document.getElementById(base + '-start');
+        if(startSel){
+          const startVal = parseInt(startSel.value);
+          const finishVal = parseInt(value);
+          if(!isNaN(startVal) && !isNaN(finishVal) && startVal > finishVal){
+            // If FROM > TO, adjust FROM to match TO
+            startSel.value = String(value);
+          }
+          // Update disabled states for this TO select
+          validateLevels(startSel, s);
+        }
+      }
+      
+      // If we're setting FROM values, validate against the TO value
+      if(which === 'from'){
+        const base = s.id.replace(/-start$/, '');
+        const finishSel = document.getElementById(base + '-finish');
+        if(finishSel){
+          const startVal = parseInt(value);
+          const finishVal = parseInt(finishSel.value);
+          if(!isNaN(startVal) && !isNaN(finishVal) && startVal > finishVal){
+            // If FROM > TO, adjust TO to match FROM
+            finishSel.value = String(value);
+          }
+          // Update disabled states for this TO select
+          validateLevels(s, finishSel);
+        }
+      }
+    });
     
     // Recalculate totals since inputs changed
     calculateAll();
@@ -373,21 +493,56 @@ const CalculatorModule = (function(){
     const batchControls = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
     batchControls.forEach(b => { b.value = '0'; });
     
+    // Re-validate all TO selects to reset disabled states
+    const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
+      .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
+    
+    startSelects.forEach(startSel => {
+      const base = startSel.id.replace(/-start$/, '');
+      const finishSel = document.getElementById(base + '-finish');
+      if(finishSel){
+        validateLevels(startSel, finishSel);
+      }
+    });
+    
+    // Also reset batch control validation
+    const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
+    batchTypes.forEach(type => {
+      const from = document.getElementById(`${type}-batch-from`);
+      const to = document.getElementById(`${type}-batch-to`);
+      if(from && to){
+        validateLevels(from, to);
+      }
+    });
+    
     // Recalculate (should be 0 cost now)
     calculateAll();
   }
 
   /**
-   * validateLevels(currentSelect, desiredSelect)
-   * Ensures current level is not higher than desired level
+   * validateLevels(startSelect, finishSelect)
+   * Ensures start level is not higher than finish level
+   * Also disables options in finish select that are less than start value
    */
-  function validateLevels(currentSelect, desiredSelect){
-    const current = parseInt(currentSelect.value);
-    const desired = parseInt(desiredSelect.value);
+  function validateLevels(startSelect, finishSelect){
+    const start = parseInt(startSelect.value);
+    const finish = parseInt(finishSelect.value);
     
-    if(!isNaN(current) && !isNaN(desired) && current > desired){
-      // If current > desired, set current = desired
-      currentSelect.value = desired.toString();
+    // Disable options in finish select that are less than start
+    if(!isNaN(start)){
+      Array.from(finishSelect.options).forEach(option => {
+        const optValue = parseInt(option.value);
+        if(!isNaN(optValue) && optValue < start){
+          option.disabled = true;
+        } else {
+          option.disabled = false;
+        }
+      });
+    }
+    
+    if(!isNaN(start) && !isNaN(finish) && start > finish){
+      // If start > finish, set finish = start
+      finishSelect.value = start.toString();
     }
   }
 
@@ -400,31 +555,27 @@ const CalculatorModule = (function(){
     // Load charm costs from CSV (overrides default values)
     await loadCharmCostsFromCsv();
 
-    // Setup validation and calculation on select changes
-    const types = ['hat','chestplate','ring','watch','pants','staff'];
-    types.forEach(type => {
-      for(let i = 1; i <= 5; i++){
-        const currentSelect = document.getElementById(`${type}${i}-current`);
-        const desiredSelect = document.getElementById(`${type}${i}-desired`);
+    // Setup validation and calculation on charm select changes
+    // Find all -start selects and attach validation
+    const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
+      .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
+    
+    startSelects.forEach(startSel => {
+      const base = startSel.id.replace(/-start$/, '');
+      const finishSel = document.getElementById(base + '-finish');
+      
+      if(finishSel){
+        // Apply initial validation
+        validateLevels(startSel, finishSel);
         
-        if(currentSelect && desiredSelect){
-          currentSelect.addEventListener('change', () => {
-            validateLevels(currentSelect, desiredSelect);
-            calculateAll();
-          });
-          desiredSelect.addEventListener('change', () => {
-            validateLevels(currentSelect, desiredSelect);
-            calculateAll();
-          });
-        }
-      }
-    });
-
-    // When ANY other select changes, recalculate
-    const selects = Array.from(document.querySelectorAll('select'));
-    selects.forEach(s=> {
-      if(!s.id.includes('-current') && !s.id.includes('-desired')){
-        s.addEventListener('change', calculateAll);
+        startSel.addEventListener('change', () => {
+          validateLevels(startSel, finishSel);
+          calculateAll();
+        });
+        finishSel.addEventListener('change', () => {
+          validateLevels(startSel, finishSel);
+          calculateAll();
+        });
       }
     });
 
@@ -434,8 +585,20 @@ const CalculatorModule = (function(){
     batchTypes.forEach(type => {
       const from = document.getElementById(`${type}-batch-from`);
       const to = document.getElementById(`${type}-batch-to`);
-      if(from) from.addEventListener('change', ()=> applyBatch(type, 'from', from.value));
-      if(to) to.addEventListener('change', ()=> applyBatch(type, 'to', to.value));
+      
+      if(from && to){
+        // Apply initial validation
+        validateLevels(from, to);
+        
+        from.addEventListener('change', ()=> {
+          validateLevels(from, to);
+          applyBatch(type, 'from', from.value);
+        });
+        to.addEventListener('change', ()=> {
+          validateLevels(from, to);
+          applyBatch(type, 'to', to.value);
+        });
+      }
     });
 
     // Setup reset button
@@ -446,9 +609,33 @@ const CalculatorModule = (function(){
     const invGuides = document.getElementById('inventory-guides');
     const invDesigns = document.getElementById('inventory-designs');
     const invSecrets = document.getElementById('inventory-secrets');
-    if(invGuides) invGuides.addEventListener('input', calculateAll);
-    if(invDesigns) invDesigns.addEventListener('input', calculateAll);
-    if(invSecrets) invSecrets.addEventListener('input', calculateAll);
+
+    function enforceDigitsLimit(input, maxDigits){
+      if(!input) return;
+      input.addEventListener('input', () => {
+        let v = String(input.value || '');
+        v = v.replace(/\D+/g, '');
+        if(v.length > maxDigits){
+          v = v.slice(0, maxDigits);
+        }
+        if(input.value !== v){
+          input.value = v;
+        }
+        calculateAll();
+      });
+      // Also listen to change event for when field is cleared or loses focus
+      input.addEventListener('change', () => {
+        calculateAll();
+      });
+      // Listen to keyup for immediate feedback on delete/backspace
+      input.addEventListener('keyup', () => {
+        calculateAll();
+      });
+    }
+
+    enforceDigitsLimit(invGuides, 8);
+    enforceDigitsLimit(invDesigns, 8);
+    enforceDigitsLimit(invSecrets, 6);
 
     // Initial calculation on page load
     calculateAll();
