@@ -13,6 +13,13 @@ This guide documents the standard structure and patterns for creating new calcul
 8. [Validation Pattern](#validation-pattern)
 9. [Batch Controls](#batch-controls)
 10. [Complete Checklist](#complete-checklist)
+11. [Data Sources Pipeline](#data-sources-pipeline)
+12. [Profiles: Page-Scoped Saves](#profiles-page-scoped-saves)
+13. [Validation Rules](#validation-rules)
+14. [Formatting & Sorting](#formatting--sorting)
+15. [Layout Consistency](#layout-consistency)
+16. [Fire Crystals Lessons](#fire-crystals-lessons)
+17. [Migration & Compatibility](#migration--compatibility)
 
 ---
 
@@ -632,6 +639,116 @@ const ModuleName = (() => {
     };
 })();
 ```
+
+---
+
+## Data Sources Pipeline
+
+When a calculator depends on external data (e.g., costs or power tables), follow this preference order and wiring:
+
+- Prefer an embedded JavaScript data map when the data is stable and authoritative.
+- Provide a JSON snapshot alongside to ease inspection and testing.
+- Keep a CSV export for traceability to the original spreadsheet and ease of re-import.
+
+Loader recommendations:
+- Try JS first, then JSON, then CSV as a final fallback.
+- Emit a custom DOM event (e.g., `fc-data-ready`) when the data layer becomes ready; calculators should subscribe and recalc on this event.
+- For partial/missing rows in flat data, gracefully fall back to built-in tables for just the missing keys.
+
+Reference commits:
+- feat(fc): import from Excel and wire CSV workflows (74d42b3, ca5cb74)
+- feat(power): fallbacks for power import (6c8953f, e282db3)
+- feat(data): embed JS costs; prefer JS/JSON over CSV (1463877, b0e2153)
+
+---
+
+## Profiles: Page-Scoped Saves
+
+Use the unified `ProfilesModule`, but scope both capture and apply to the current page to avoid unintentionally overwriting other pages.
+
+Key rules:
+- Capture only fields present on the current page (feature-detect via element IDs).
+- Apply only fields found on the current page.
+- On overwrite/auto-save, merge the current page’s section into the existing profile instead of replacing the whole object.
+- If renaming input IDs (e.g., `-current/-desired` → `-start/-finish`), provide a backward-compat mapping during apply.
+
+Reference commits:
+- feat(profiles,fire-crystals): page-scoped profiles; integrate `-start/-finish`; inventory auto-save (c4f322f, a7674e5)
+
+---
+
+## Validation Rules
+
+Prefer simple, predictable validation that avoids bidirectional conflicts:
+
+- Rule of thumb: enforce `start <= finish` by constraining only the finish select based on the chosen start.
+- If `finish < start`, snap `finish` to `start`.
+- Avoid disabling start options based on finish — this caused "select start first" bugs.
+
+Reference commits:
+- simplify FC level validation (start<=finish) (c4f322f)
+
+---
+
+## Formatting & Sorting
+
+For large numbers in result tables:
+- Use compact K/M/B formatting in breakdown tables for readability.
+- Keep summary tiles full precision unless explicitly requested.
+- Ensure the table sorter understands K/M/B suffixes for accurate numeric sort.
+
+Reference commits:
+- Table sorter K/M/B parsing; compact formatting in breakdown (earlier FC work)
+
+---
+
+## Layout Consistency
+
+Headers/Banners:
+- Use the shared banner markup on all pages:
+    ```html
+    <header role="banner">
+        <a href="index.html" class="logo-link">
+            <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+        </a>
+    </header>
+    ```
+
+Inventory layout:
+- Charms & Chief Gear: one continuous row with horizontal scrolling (legacy style).
+- Fire Crystals (and data-heavy pages): use the compact grid to save space.
+
+Reference commits:
+- ui(home/fire-crystals): match Charms banner (bbb2cdb, 406d28f)
+- style(charms,chief-gear): single-row inventory (24e2445)
+
+---
+
+## Fire Crystals Lessons
+
+When adapting a new, more complex calculator (like Fire Crystals):
+
+- Levels: model explicit progression arrays; ensure the starting level’s milestone is included in sums.
+- Building names: derive DOM IDs via lowercase and hyphen replacement (e.g., `Command Center` → `command-center`).
+- Results: provide a full breakdown table; widen time column and keep it readable; make it sortable.
+- Events: recalc on any relevant input change and after data loaders signal readiness.
+- Inventory: add both domain-specific inventory (e.g., FC/RFC, speedup %, base resources) and gap calculations where helpful.
+
+Reference commits:
+- fix(fc): include starting level, enforce recalc on changes (ea85ad7 and related)
+- results table and readability improvements (multiple FC UI commits)
+
+---
+
+## Migration & Compatibility
+
+For future-proofing and smooth upgrades:
+
+- Maintain legacy ID mappings during apply so older profiles still load (e.g., map `-current/-desired` → `-start/-finish`).
+- Keep CSV/JSON snapshots in-repo to assist debugging and comparisons.
+- Use feature detection (presence of elements) to decide which sections to capture/apply.
+
+---
 
 ---
 
