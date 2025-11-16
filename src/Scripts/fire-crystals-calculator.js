@@ -745,19 +745,39 @@
     }
 
     /**
-     * Validate that current level is not higher than desired level
+     * Validate that start level is not higher than finish level (bidirectional)
      */
-    function validateLevels(currentSelect, desiredSelect, levelsArray) {
-        const currentValue = currentSelect.value;
-        const desiredValue = desiredSelect.value;
+    function validateLevels(startSelect, finishSelect, levelsArray) {
+        const startValue = startSelect.value;
+        const finishValue = finishSelect.value;
 
-        if (!currentValue || !desiredValue) return;
+        if (!startValue || !finishValue) return;
 
-        const currentIndex = levelsArray.indexOf(currentValue);
-        const desiredIndex = levelsArray.indexOf(desiredValue);
+        const startIndex = levelsArray.indexOf(startValue);
+        const finishIndex = levelsArray.indexOf(finishValue);
 
-        if (currentIndex > desiredIndex) {
-            currentSelect.value = desiredValue;
+        if (startIndex === -1 || finishIndex === -1) return;
+
+        // Disable finish options less than start
+        Array.from(finishSelect.options).forEach((option, idx) => {
+            const optionIndex = levelsArray.indexOf(option.value);
+            option.disabled = optionIndex !== -1 && optionIndex < startIndex;
+        });
+
+        // Disable start options greater than finish
+        Array.from(startSelect.options).forEach((option, idx) => {
+            const optionIndex = levelsArray.indexOf(option.value);
+            option.disabled = optionIndex !== -1 && optionIndex > finishIndex;
+        });
+
+        // Adjust finish if needed
+        if (finishIndex < startIndex) {
+            finishSelect.value = startValue;
+        }
+
+        // Adjust start if needed
+        if (startIndex > finishIndex) {
+            startSelect.value = finishValue;
         }
     }
 
@@ -834,8 +854,9 @@
                 totalNormalFC += levelData.normal[upgradeKey] || 0;
                 totalRefineFC += (levelData.refine && levelData.refine[upgradeKey]) || 0;
             } else {
-                // Pre-FC5 levels: direct properties
-                totalNormalFC += levelData[upgradeKey] || 0;
+                // Pre-FC5 (F30 → FC4) do not consume Fire Crystals. Some older data files
+                // include numeric placeholders for these levels; ignore them for FC totals.
+                // Keep time and base resources handled elsewhere.
             }
 
             // Add base resources using the nextLevel key
@@ -891,12 +912,12 @@
         // Calculate for each building
         BUILDINGS.forEach(building => {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
-            const currentSelect = document.getElementById(`${buildingId}-current`);
-            const desiredSelect = document.getElementById(`${buildingId}-desired`);
+            const startSelect = document.getElementById(`${buildingId}-start`);
+            const finishSelect = document.getElementById(`${buildingId}-finish`);
 
-            if (!currentSelect || !desiredSelect) return;
+            if (!startSelect || !finishSelect) return;
 
-            const costs = calculateBuildingCosts(building, currentSelect.value, desiredSelect.value);
+            const costs = calculateBuildingCosts(building, startSelect.value, finishSelect.value);
             
             if (costs) {
                 results[building] = costs;
@@ -974,35 +995,9 @@
             return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
         }
 
-        let html = '<div class="totals-summary">';
+        let html = '';
 
-        // Fire Crystals needed
-        const fcGap = totals.totalNormalFC - totals.inventoryFC;
-        const fcGapClass = fcGap > 0 ? 'deficit' : 'surplus';
-        const fcGapText = fcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(fcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(fcGap));
-
-        html += `<div class="total-item">
-            <span class="resource-label">${labelWithIcon('fire-crystals')}:</span>
-            <span class="resource-value">${totals.totalNormalFC.toLocaleString()}</span>
-            <span class="gap ${fcGapClass}">${fcGapText}</span>
-        </div>`;
-
-        // Refine Crystals needed
-        const rfcGap = totals.totalRefineFC - totals.inventoryRFC;
-        const rfcGapClass = rfcGap > 0 ? 'deficit' : 'surplus';
-        const rfcGapText = rfcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(rfcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(rfcGap));
-
-        html += `<div class="total-item">
-            <span class="resource-label">${labelWithIcon('refine-crystals')}:</span>
-            <span class="resource-value">${totals.totalRefineFC.toLocaleString()}</span>
-            <span class="gap ${rfcGapClass}">${rfcGapText}</span>
-        </div>`;
-
-        // Base resources (always display)
+        // Base resources first (these will occupy the first grid rows)
         const meatGap = (totals.totalMeat || 0) - (totals.inventoryMeat || 0);
         const meatGapClass = meatGap > 0 ? 'deficit' : 'surplus';
         const meatGapText = meatGap > 0 
@@ -1047,10 +1042,32 @@
             <span class="gap ${ironGapClass}">${ironGapText}</span>
         </div>`;
 
-        html += '</div>';
+        
 
-        // Time section (separate from resources)
-        html += '<div class="totals-summary time-section">';
+        // Fire/Refine Crystals after basic resources
+        const fcGap = totals.totalNormalFC - totals.inventoryFC;
+        const fcGapClass = fcGap > 0 ? 'deficit' : 'surplus';
+        const fcGapText = fcGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(fcGap))
+            : t('gap-have-left', lang).replace('%d', Math.abs(fcGap));
+
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('fire-crystals')}:</span>
+            <span class="resource-value">${totals.totalNormalFC.toLocaleString()}</span>
+            <span class="gap ${fcGapClass}">${fcGapText}</span>
+        </div>`;
+
+        const rfcGap = totals.totalRefineFC - totals.inventoryRFC;
+        const rfcGapClass = rfcGap > 0 ? 'deficit' : 'surplus';
+        const rfcGapText = rfcGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(rfcGap))
+            : t('gap-have-left', lang).replace('%d', Math.abs(rfcGap));
+
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('refine-crystals')}:</span>
+            <span class="resource-value">${totals.totalRefineFC.toLocaleString()}</span>
+            <span class="gap ${rfcGapClass}">${rfcGapText}</span>
+        </div>`;
 
         // Total construction time
         const totalTimeFormatted = formatTime(totals.totalTime);
@@ -1081,11 +1098,6 @@
             <span class="resource-value">${(totals.adjustedTime / 86400).toFixed(1)} days</span>
             <span class="gap ${timeGapClass}">${timeGapText}</span>
         </div>`;
-
-        html += '</div>';
-
-        // SVS Points section
-        html += '<div class="totals-summary time-section">';
         
         // Calculate SVS points: 1 FC = 2000 points, 1 RFC = 30000 points, 1m speedup = 30 points
         const fcPoints = totals.totalNormalFC * 2000;
@@ -1114,17 +1126,7 @@
             <span class="resource-value"><strong>${Math.floor(totalSVSPoints).toLocaleString()}</strong></span>
         </div>`;
 
-        html += '</div>';
-
-        // Power section (placeholder - actual power values would need to be defined per building level)
-        html += '<div class="totals-summary time-section">';
         
-        html += `<div class="total-item">
-            <span class="resource-label"><strong>Total Power:</strong></span>
-            <span class="resource-value"><strong>Coming soon</strong></span>
-        </div>`;
-
-        html += '</div>';
 
         // Building breakdown - compact format
         if (Object.keys(buildingResults).length > 0) {
@@ -1157,19 +1159,19 @@
         // Add event listeners to all building selects
         BUILDINGS.forEach(building => {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
-            const currentSelect = document.getElementById(`${buildingId}-current`);
-            const desiredSelect = document.getElementById(`${buildingId}-desired`);
+            const startSelect = document.getElementById(`${buildingId}-start`);
+            const finishSelect = document.getElementById(`${buildingId}-finish`);
 
-            if (currentSelect && desiredSelect) {
+            if (startSelect && finishSelect) {
                 const levelsArray = getLevelsForBuilding(building);
                 
-                currentSelect.addEventListener('change', () => {
-                    validateLevels(currentSelect, desiredSelect, levelsArray);
+                startSelect.addEventListener('change', () => {
+                    validateLevels(startSelect, finishSelect, levelsArray);
                     calculateAll();
                 });
 
-                desiredSelect.addEventListener('change', () => {
-                    validateLevels(currentSelect, desiredSelect, levelsArray);
+                finishSelect.addEventListener('change', () => {
+                    validateLevels(startSelect, finishSelect, levelsArray);
                     calculateAll();
                 });
             }
@@ -1210,6 +1212,8 @@
     // Public API
     window.FireCrystalsCalculator = {
         calculateAll: calculateAll,
+        validateLevels: validateLevels,
+        getLevelsForBuilding: getLevelsForBuilding,
         init: init
     };
 
