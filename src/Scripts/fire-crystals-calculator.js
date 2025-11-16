@@ -1,6 +1,17 @@
 (function() {
     'use strict';
 
+    function formatCompact(n){
+        if (n === null || n === undefined) return '0';
+        const sign = n < 0 ? '-' : '';
+        const abs = Math.abs(Number(n)) || 0;
+        const trim = (s) => s.replace(/\.0+$/,'').replace(/(\.[0-9]*?)0+$/,'$1');
+        if (abs >= 1e9) return sign + trim((abs/1e9).toFixed(3)) + 'B';
+        if (abs >= 1e6) return sign + trim((abs/1e6).toFixed(3)) + 'M';
+        if (abs >= 1e3) return sign + trim((abs/1e3).toFixed(3)) + 'K';
+        return sign + Math.floor(abs).toLocaleString();
+    }
+
     // Fire Crystal Costs Data
     const fireCrystalCosts = {
         "Furnace": {
@@ -745,19 +756,26 @@
     }
 
     /**
-     * Validate that current level is not higher than desired level
+     * Validate that start level is not higher than finish level (simple rule: start <= finish)
      */
-    function validateLevels(currentSelect, desiredSelect, levelsArray) {
-        const currentValue = currentSelect.value;
-        const desiredValue = desiredSelect.value;
+    function validateLevels(startSelect, finishSelect, levelsArray) {
+        const startValue = startSelect.value;
+        const finishValue = finishSelect.value;
+        if (!startValue || !finishValue) return;
 
-        if (!currentValue || !desiredValue) return;
+        const startIndex = levelsArray.indexOf(startValue);
+        const finishIndex = levelsArray.indexOf(finishValue);
+        if (startIndex === -1) return;
 
-        const currentIndex = levelsArray.indexOf(currentValue);
-        const desiredIndex = levelsArray.indexOf(desiredValue);
+        // Only constrain finish based on start: disable all finish options before the selected start
+        Array.from(finishSelect.options).forEach((option) => {
+            const optionIndex = levelsArray.indexOf(option.value);
+            option.disabled = optionIndex !== -1 && optionIndex < startIndex;
+        });
 
-        if (currentIndex > desiredIndex) {
-            currentSelect.value = desiredValue;
+        // If current finish is before start, snap it to start to keep start <= finish
+        if (finishIndex !== -1 && finishIndex < startIndex) {
+            finishSelect.value = startValue;
         }
     }
 
@@ -771,9 +789,39 @@
     }
 
     /**
-     * Calculate costs for a single building upgrade path
+     * Populate start/finish selects with the correct level list
      */
-    function calculateBuildingCosts(buildingName, fromLevel, toLevel) {
+    function populateBuildingSelectOptions(buildingName) {
+        const buildingId = buildingName.toLowerCase().replace(/ /g, '-');
+        const startSelect = document.getElementById(`${buildingId}-start`);
+        const finishSelect = document.getElementById(`${buildingId}-finish`);
+        if (!startSelect || !finishSelect) return;
+
+        const levels = getLevelsForBuilding(buildingName);
+
+        const makeOptions = (selectedValue, isFinish) => {
+            let html = '';
+            levels.forEach(lvl => {
+                const selected = (selectedValue ? selectedValue === lvl : (isFinish ? lvl === 'FC10' : lvl === levels[0]));
+                html += `<option value="${lvl}"${selected ? ' selected' : ''}>${lvl}</option>`;
+            });
+            return html;
+        };
+
+        const prevStart = startSelect.value;
+        const prevFinish = finishSelect.value;
+        startSelect.innerHTML = makeOptions(prevStart, false);
+        finishSelect.innerHTML = makeOptions(prevFinish, true);
+
+        // Validate once after population
+        validateLevels(startSelect, finishSelect, levels);
+    }
+
+    /**
+     * Calculate costs for a single building upgrade path
+     * Now uses CSV data from Excel sheets
+     */
+    async function calculateBuildingCosts(buildingName, fromLevel, toLevel) {
         if (!fromLevel || !toLevel) return null;
 
         const levelsArray = getLevelsForBuilding(buildingName);
@@ -784,58 +832,31 @@
             return null;
         }
 
+        // Get FC/RFC costs from embedded JS (authoritative)
+        let fcCosts = null;
+        try {
+            fcCosts = await window.calculateFireCrystalCosts(buildingName, fromLevel, toLevel, levelsArray);
+        } catch (e) {
+            console.error('[FireCrystals] Failed to compute FC costs from embedded data', e);
+            return null;
+        }
+
         const buildingData = fireCrystalCosts[buildingName];
-        let totalNormalFC = 0;
-        let totalRefineFC = 0;
         let totalTime = 0;
         let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
 
-        // Calculate costs for each step in the range
+        // Calculate time and resource costs for each step in the range
         for (let i = fromIndex; i < toIndex; i++) {
             const currentLevel = levelsArray[i];
             const nextLevel = levelsArray[i + 1];
             
             // Determine the base level (major level without sub-step suffix)
             const baseCurrent = currentLevel.includes('-') ? currentLevel.split('-')[0] : currentLevel;
-            const levelData = buildingData[baseCurrent];
-
-            if (!levelData) continue;
+            const levelData = buildingData && buildingData[baseCurrent];
 
             // Add time for this major level (only once per major level transition)
-            // Time is added when transitioning FROM a major level (e.g., F30 → 30-1) or when already at last sub-step
-            if (!currentLevel.includes('-')) {
+            if (levelData && !currentLevel.includes('-')) {
                 totalTime += levelData.time || 0;
-            }
-
-            // Determine the upgrade key for this specific step
-            let upgradeKey = '';
-            
-            if (currentLevel.includes('-')) {
-                // We're at a sub-level (e.g., 30-1, 30-2, etc.)
-                const subStep = currentLevel.split('-')[1]; // '1', '2', '3', or '4'
-                upgradeKey = subStep;
-            } else {
-                // We're at a major level (e.g., F30, FC1, etc.)
-                // Determine what the next major level will be
-                const nextBase = nextLevel.includes('-') ? nextLevel.split('-')[0] : nextLevel;
-                
-                if (nextBase === baseCurrent) {
-                    // Transitioning to first sub-level (e.g., F30 → 30-1)
-                    upgradeKey = '1';
-                } else {
-                    // Transitioning to next major level (e.g., 30-4 → FC1)
-                    upgradeKey = 'to' + nextBase;
-                }
-            }
-
-            // Add fire crystals based on level structure
-            if (levelData.normal) {
-                // FC5+ levels: use normal/refine structure
-                totalNormalFC += levelData.normal[upgradeKey] || 0;
-                totalRefineFC += (levelData.refine && levelData.refine[upgradeKey]) || 0;
-            } else {
-                // Pre-FC5 levels: direct properties
-                totalNormalFC += levelData[upgradeKey] || 0;
             }
 
             // Add base resources using the nextLevel key
@@ -849,8 +870,8 @@
         }
 
         return {
-            normalFC: totalNormalFC,
-            refineFC: totalRefineFC,
+            normalFC: fcCosts.normalFC,
+            refineFC: fcCosts.refineFC,
             time: totalTime,
             meat: totalMeat,
             wood: totalWood,
@@ -878,10 +899,12 @@
         return adjustedSeconds;
     }
 
+    // Built-in fallback removed: embedded flat data is authoritative
+
     /**
      * Main calculation function
      */
-    function calculateAll() {
+    async function calculateAll() {
         const results = {};
     let totalNormalFC = 0;
     let totalRefineFC = 0;
@@ -889,17 +912,19 @@
     let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
 
         // Calculate for each building
-        BUILDINGS.forEach(building => {
+        for (const building of BUILDINGS) {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
-            const currentSelect = document.getElementById(`${buildingId}-current`);
-            const desiredSelect = document.getElementById(`${buildingId}-desired`);
+            const startSelect = document.getElementById(`${buildingId}-start`);
+            const finishSelect = document.getElementById(`${buildingId}-finish`);
 
-            if (!currentSelect || !desiredSelect) return;
+            if (!startSelect || !finishSelect) continue;
 
-            const costs = calculateBuildingCosts(building, currentSelect.value, desiredSelect.value);
+            const fromVal = startSelect.value;
+            const toVal = finishSelect.value;
+            const costs = await calculateBuildingCosts(building, fromVal, toVal);
             
             if (costs) {
-                results[building] = costs;
+                results[building] = { ...costs, from: fromVal, to: toVal };
                 totalNormalFC += costs.normalFC;
                 totalRefineFC += costs.refineFC;
                 totalTime += costs.time;
@@ -908,7 +933,7 @@
                 totalCoal += costs.coal || 0;
                 totalIron += costs.iron || 0;
             }
-        });
+        }
 
         // Get inventory
     const inventoryFC = parseInt(document.getElementById('inventory-fire-crystals')?.value || 0);
@@ -955,8 +980,13 @@
         const t = window.I18n ? window.I18n.t : (key) => key;
 
         // Icon helper for resources (delegates to global IconHelper if available)
-        function labelWithIcon(key) {
+        function labelWithIcon(key, overrideText) {
             if (window.IconHelper && typeof window.IconHelper.label === 'function') {
+                // If a short label override is provided (e.g., FC/RFC), use it
+                if (overrideText) {
+                    const shortT = () => overrideText;
+                    return window.IconHelper.label(key, shortT);
+                }
                 return window.IconHelper.label(key, t);
             }
             // Fallback for when IconHelper isn't loaded
@@ -969,40 +999,17 @@
                 iron: 'assets/resources/iron.png'
             };
             const url = urlMap[key];
-            const text = t(key);
+            const text = overrideText || t(key);
             if (!url) return text;
             return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
         }
 
-        let html = '<div class="totals-summary">';
+        let html = '';
 
-        // Fire Crystals needed
-        const fcGap = totals.totalNormalFC - totals.inventoryFC;
-        const fcGapClass = fcGap > 0 ? 'deficit' : 'surplus';
-        const fcGapText = fcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(fcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(fcGap));
+        // Base resources first (these will occupy the first grid rows)
+        const hasCalc = (totals.totalTime || 0) > 0 || (totals.totalNormalFC || 0) > 0 || (totals.totalRefineFC || 0) > 0 ||
+                        (totals.totalMeat || 0) > 0 || (totals.totalWood || 0) > 0 || (totals.totalCoal || 0) > 0 || (totals.totalIron || 0) > 0;
 
-        html += `<div class="total-item">
-            <span class="resource-label">${labelWithIcon('fire-crystals')}:</span>
-            <span class="resource-value">${totals.totalNormalFC.toLocaleString()}</span>
-            <span class="gap ${fcGapClass}">${fcGapText}</span>
-        </div>`;
-
-        // Refine Crystals needed
-        const rfcGap = totals.totalRefineFC - totals.inventoryRFC;
-        const rfcGapClass = rfcGap > 0 ? 'deficit' : 'surplus';
-        const rfcGapText = rfcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(rfcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(rfcGap));
-
-        html += `<div class="total-item">
-            <span class="resource-label">${labelWithIcon('refine-crystals')}:</span>
-            <span class="resource-value">${totals.totalRefineFC.toLocaleString()}</span>
-            <span class="gap ${rfcGapClass}">${rfcGapText}</span>
-        </div>`;
-
-        // Base resources (always display)
         const meatGap = (totals.totalMeat || 0) - (totals.inventoryMeat || 0);
         const meatGapClass = meatGap > 0 ? 'deficit' : 'surplus';
         const meatGapText = meatGap > 0 
@@ -1011,7 +1018,7 @@
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('meat')}:</span>
             <span class="resource-value">${(totals.totalMeat || 0).toLocaleString()}</span>
-            <span class="gap ${meatGapClass}">${meatGapText}</span>
+            ${hasCalc ? `<span class="gap ${meatGapClass}">${meatGapText}</span>` : ''}
         </div>`;
 
         const woodGap = (totals.totalWood || 0) - (totals.inventoryWood || 0);
@@ -1022,7 +1029,7 @@
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('wood')}:</span>
             <span class="resource-value">${(totals.totalWood || 0).toLocaleString()}</span>
-            <span class="gap ${woodGapClass}">${woodGapText}</span>
+            ${hasCalc ? `<span class="gap ${woodGapClass}">${woodGapText}</span>` : ''}
         </div>`;
 
         const coalGap = (totals.totalCoal || 0) - (totals.inventoryCoal || 0);
@@ -1033,7 +1040,7 @@
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('coal')}:</span>
             <span class="resource-value">${(totals.totalCoal || 0).toLocaleString()}</span>
-            <span class="gap ${coalGapClass}">${coalGapText}</span>
+            ${hasCalc ? `<span class="gap ${coalGapClass}">${coalGapText}</span>` : ''}
         </div>`;
 
         const ironGap = (totals.totalIron || 0) - (totals.inventoryIron || 0);
@@ -1044,13 +1051,37 @@
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('iron')}:</span>
             <span class="resource-value">${(totals.totalIron || 0).toLocaleString()}</span>
-            <span class="gap ${ironGapClass}">${ironGapText}</span>
+            ${hasCalc ? `<span class="gap ${ironGapClass}">${ironGapText}</span>` : ''}
         </div>`;
 
-        html += '</div>';
+        
 
-        // Time section (separate from resources)
-        html += '<div class="totals-summary time-section">';
+        // Fire/Refine Crystals after basic resources
+        const fcGap = totals.totalNormalFC - totals.inventoryFC;
+        const fcGapClass = fcGap > 0 ? 'deficit' : 'surplus';
+        const fcGapText = fcGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(fcGap))
+            : t('gap-have-left', lang).replace('%d', Math.abs(fcGap));
+
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('fire-crystals')}:</span>
+            <span class="resource-value">${totals.totalNormalFC.toLocaleString()}</span>
+            ${hasCalc ? `<span class="gap ${fcGapClass}">${fcGapText}</span>` : ''}
+        </div>`;
+
+        const rfcGap = totals.totalRefineFC - totals.inventoryRFC;
+        const rfcGapClass = rfcGap > 0 ? 'deficit' : 'surplus';
+        const rfcGapText = rfcGap > 0 
+            ? t('gap-need-more', lang).replace('%d', Math.abs(rfcGap))
+            : t('gap-have-left', lang).replace('%d', Math.abs(rfcGap));
+
+        html += `<div class="total-item">
+            <span class="resource-label">${labelWithIcon('refine-crystals')}:</span>
+            <span class="resource-value">${totals.totalRefineFC.toLocaleString()}</span>
+            ${hasCalc ? `<span class="gap ${rfcGapClass}">${rfcGapText}</span>` : ''}
+        </div>`;
+
+        
 
         // Total construction time
         const totalTimeFormatted = formatTime(totals.totalTime);
@@ -1068,7 +1099,7 @@
             </div>`;
         }
 
-        // Speedup days comparison
+        // Speedup days comparison - only show gap message if calculations were made
         const timeGap = totals.adjustedTime - totals.inventorySpeedupSeconds;
         const timeGapFormatted = formatTime(Math.abs(timeGap));
         const timeGapClass = timeGap > 0 ? 'deficit' : 'surplus';
@@ -1079,13 +1110,8 @@
         html += `<div class="total-item">
             <span class="resource-label">${t('speedup-days', lang)}:</span>
             <span class="resource-value">${(totals.adjustedTime / 86400).toFixed(1)} days</span>
-            <span class="gap ${timeGapClass}">${timeGapText}</span>
+            ${hasCalc ? `<span class="gap ${timeGapClass}">${timeGapText}</span>` : ''}
         </div>`;
-
-        html += '</div>';
-
-        // SVS Points section
-        html += '<div class="totals-summary time-section">';
         
         // Calculate SVS points: 1 FC = 2000 points, 1 RFC = 30000 points, 1m speedup = 30 points
         const fcPoints = totals.totalNormalFC * 2000;
@@ -1114,40 +1140,74 @@
             <span class="resource-value"><strong>${Math.floor(totalSVSPoints).toLocaleString()}</strong></span>
         </div>`;
 
-        html += '</div>';
-
-        // Power section (placeholder - actual power values would need to be defined per building level)
-        html += '<div class="totals-summary time-section">';
         
-        html += `<div class="total-item">
-            <span class="resource-label"><strong>Total Power:</strong></span>
-            <span class="resource-value"><strong>Coming soon</strong></span>
-        </div>`;
 
-        html += '</div>';
+                // Building breakdown - table like Charms slots
+                if (Object.keys(buildingResults).length > 0) {
+                        const rows = Object.entries(buildingResults).map(([building, costs]) => {
+                                const tf = formatTime(costs.time || 0);
+                                return `<tr>
+                                        <td>${t(building, lang)}</td>
+                                        <td>${costs.from || ''}</td>
+                                        <td>${costs.to || ''}</td>
+                                    <td>${formatCompact(Number(costs.normalFC || 0))}</td>
+                                    <td>${formatCompact(Number(costs.refineFC || 0))}</td>
+                                    <td>${formatCompact(Number(costs.meat || 0))}</td>
+                                    <td>${formatCompact(Number(costs.wood || 0))}</td>
+                                    <td>${formatCompact(Number(costs.coal || 0))}</td>
+                                    <td>${formatCompact(Number(costs.iron || 0))}</td>
+                                        <td>${tf.days}d ${tf.hours}h ${tf.minutes}m</td>
+                                </tr>`;
+                        }).join('');
 
-        // Building breakdown - compact format
-        if (Object.keys(buildingResults).length > 0) {
-            html += `<div class="building-breakdown"><h3>${t('building-breakdown', lang)}</h3><div class="breakdown-grid">`;
-            
-            for (const [building, costs] of Object.entries(buildingResults)) {
-                const timeFormatted = formatTime(costs.time);
-                html += `<div class="building-result-compact">
-                    <strong>${t(building, lang)}</strong>
-                    <div class="compact-line">${labelWithIcon('fire-crystals')}: ${Number(costs.normalFC || 0).toLocaleString()}</div>
-                    ${costs.refineFC > 0 ? `<div class="compact-line">${labelWithIcon('refine-crystals')}: ${Number(costs.refineFC || 0).toLocaleString()}</div>` : ''}
-                    ${(costs.meat || 0) > 0 ? `<div class="compact-line">${labelWithIcon('meat')}: ${Number(costs.meat || 0).toLocaleString()}</div>` : ''}
-                    ${(costs.wood || 0) > 0 ? `<div class="compact-line">${labelWithIcon('wood')}: ${Number(costs.wood || 0).toLocaleString()}</div>` : ''}
-                    ${(costs.coal || 0) > 0 ? `<div class="compact-line">${labelWithIcon('coal')}: ${Number(costs.coal || 0).toLocaleString()}</div>` : ''}
-                    ${(costs.iron || 0) > 0 ? `<div class="compact-line">${labelWithIcon('iron')}: ${Number(costs.iron || 0).toLocaleString()}</div>` : ''}
-                    <div class="compact-line">${t('total-time', lang)}: ${timeFormatted.days}d ${timeFormatted.hours}h ${timeFormatted.minutes}m</div>
-                </div>`;
-            }
-            
-            html += '</div></div>';
-        }
+                        const totalTf = formatTime(totals.totalTime || 0);
+                        const buildingHeaderLabel = (t('building', lang) || 'Building');
+                        const buildingHeaderText = buildingHeaderLabel.charAt(0).toUpperCase() + buildingHeaderLabel.slice(1);
+                        html += `
+                        <div class="results-wrap">
+                            <h3>${t('building-breakdown', lang)}</h3>
+                            <table class="results-table" aria-live="polite">
+                                <thead>
+                                    <tr>
+                                        <th data-key="slot">${buildingHeaderText}</th>
+                                        <th data-key="from">${t('from', lang)}</th>
+                                        <th data-key="to">${t('to', lang)}</th>
+                                        <th data-key="fc">${labelWithIcon('fire-crystals', 'FC')}</th>
+                                        <th data-key="rfc">${labelWithIcon('refine-crystals', 'RFC')}</th>
+                                        <th data-key="meat">${labelWithIcon('meat')}</th>
+                                        <th data-key="wood">${labelWithIcon('wood')}</th>
+                                        <th data-key="coal">${labelWithIcon('coal')}</th>
+                                        <th data-key="iron">${labelWithIcon('iron')}</th>
+                                        <th data-key="time">${t('total-time', lang)}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">${t('totals', lang)}</td>
+                                        <td>${formatCompact(Number(totals.totalNormalFC || 0))}</td>
+                                        <td>${formatCompact(Number(totals.totalRefineFC || 0))}</td>
+                                        <td>${formatCompact(Number(totals.totalMeat || 0))}</td>
+                                        <td>${formatCompact(Number(totals.totalWood || 0))}</td>
+                                        <td>${formatCompact(Number(totals.totalCoal || 0))}</td>
+                                        <td>${formatCompact(Number(totals.totalIron || 0))}</td>
+                                        <td>${totalTf.days}d ${totalTf.hours}h ${totalTf.minutes}m</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>`;
+                }
 
         resultsDisplay.innerHTML = html;
+        // Make breakdown table sortable if present
+        try {
+            const table = resultsDisplay.querySelector('.results-table');
+            if (table && typeof TableSortModule !== 'undefined') {
+                TableSortModule.makeTableSortable(table);
+            }
+        } catch(_) {}
     }
 
     /**
@@ -1157,19 +1217,24 @@
         // Add event listeners to all building selects
         BUILDINGS.forEach(building => {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
-            const currentSelect = document.getElementById(`${buildingId}-current`);
-            const desiredSelect = document.getElementById(`${buildingId}-desired`);
+            const startSelect = document.getElementById(`${buildingId}-start`);
+            const finishSelect = document.getElementById(`${buildingId}-finish`);
 
-            if (currentSelect && desiredSelect) {
+            if (startSelect && finishSelect) {
                 const levelsArray = getLevelsForBuilding(building);
                 
-                currentSelect.addEventListener('change', () => {
-                    validateLevels(currentSelect, desiredSelect, levelsArray);
+                // Populate options if empty or incomplete
+                if (!startSelect.options.length || !finishSelect.options.length) {
+                    populateBuildingSelectOptions(building);
+                }
+
+                startSelect.addEventListener('change', () => {
+                    validateLevels(startSelect, finishSelect, levelsArray);
                     calculateAll();
                 });
 
-                desiredSelect.addEventListener('change', () => {
-                    validateLevels(currentSelect, desiredSelect, levelsArray);
+                finishSelect.addEventListener('change', () => {
+                    validateLevels(startSelect, finishSelect, levelsArray);
                     calculateAll();
                 });
             }
@@ -1194,6 +1259,17 @@
             }
         });
 
+        // Safety net: recalc on any building select change (delegated)
+        document.addEventListener('change', (e) => {
+            const el = e.target;
+            if (el && el.classList && el.classList.contains('building-select')) {
+                try { calculateAll(); } catch (_) {}
+            }
+        });
+
+        // Recalculate once CSV data loads/refreshes
+        try { window.addEventListener('fc-data-ready', () => { try { calculateAll(); } catch (_) {} }); } catch(_) {}
+
         // Try to apply CSV overrides for resource costs (F30 → FC10)
         // This will re-run calculateAll once applied.
         applyResourceOverridesFromCsv().then(() => {
@@ -1210,6 +1286,8 @@
     // Public API
     window.FireCrystalsCalculator = {
         calculateAll: calculateAll,
+        validateLevels: validateLevels,
+        getLevelsForBuilding: getLevelsForBuilding,
         init: init
     };
 

@@ -1,0 +1,89 @@
+building,level,fire_crystals,refined_crystals
+Furnace,F30,528,0
+Furnace,FC1,764,0
+Furnace,FC2,1110,0
+Furnace,FC3,1358,0
+Furnace,FC4,1620,0
+Furnace,FC5,1135,40
+Furnace,FC6,1060,80
+Furnace,FC7,1080,110
+Furnace,FC8,1240,160
+Furnace,FC9,1680,340
+Furnace,FC10,175,140
+Embassy,F30,132,0
+Embassy,FC1,189,0
+Embassy,FC2,275,0
+Embassy,FC3,339,0
+Embassy,FC4,402,0
+Embassy,FC5,283,8
+Embassy,FC6,265,17
+Embassy,FC7,270,27
+Embassy,FC8,310,39
+Embassy,FC9,383,83
+Embassy,FC10,43,35
+Command Center,F30,104,0
+Command Center,FC1,150,0
+Command Center,FC2,219,0
+Command Center,FC3,271,0
+Command Center,FC4,324,0
+Command Center,FC5,227,8
+Command Center,FC6,212,16
+Command Center,FC7,216,22
+Command Center,FC8,248,32
+Command Center,FC9,308,68
+Command Center,FC10,35,28
+Infirmary,F30,104,0
+Infirmary,FC1,150,0
+Infirmary,FC2,219,0
+Infirmary,FC3,271,0
+Infirmary,FC4,324,0
+Infirmary,FC5,227,8
+Infirmary,FC6,212,16
+Infirmary,FC7,216,22
+Infirmary,FC8,248,32
+Infirmary,FC9,308,68
+Infirmary,FC10,35,28
+Infantry Camp,F30,236,0
+Infantry Camp,FC1,343,0
+Infantry Camp,FC2,499,0
+Infantry Camp,FC3,611,0
+Infantry Camp,FC4,726,0
+Infantry Camp,FC5,510,16
+Infantry Camp,FC6,477,33
+Infantry Camp,FC7,486,49
+Infantry Camp,FC8,558,71
+Infantry Camp,FC9,691,151
+Infantry Camp,FC10,78,63
+Marksman Camp,F30,236,0
+Marksman Camp,FC1,343,0
+Marksman Camp,FC2,499,0
+Marksman Camp,FC3,611,0
+Marksman Camp,FC4,726,0
+Marksman Camp,FC5,510,16
+Marksman Camp,FC6,477,33
+Marksman Camp,FC7,486,49
+Marksman Camp,FC8,558,71
+Marksman Camp,FC9,691,151
+Marksman Camp,FC10,78,63
+Lancer Camp,F30,236,0
+Lancer Camp,FC1,343,0
+Lancer Camp,FC2,499,0
+Lancer Camp,FC3,611,0
+Lancer Camp,FC4,726,0
+Lancer Camp,FC5,510,16
+Lancer Camp,FC6,477,33
+Lancer Camp,FC7,486,49
+Lancer Camp,FC8,558,71
+Lancer Camp,FC9,691,151
+Lancer Camp,FC10,78,63
+War Academy,F30,0,0
+War Academy,FC1,284,0
+War Academy,FC2,499,0
+War Academy,FC3,611,0
+War Academy,FC4,726,0
+War Academy,FC5,510,16
+War Academy,FC6,477,33
+War Academy,FC7,486,49
+War Academy,FC8,558,70
+War Academy,FC9,691,151
+War Academy,FC10,78,61

@@ -7,10 +7,14 @@
     "start": "cd src && python -m http.server 8080",
     "lint": "stylelint \"src/style/**/*.css\"",
     "lint:fix": "stylelint \"src/style/**/*.css\" --fix",
-    "import:all": "node scripts/extract-building-resources.js && node scripts/extract-charms-costs.js && node scripts/extract-chief-gear-costs.js",
+    "import:all": "node scripts/extract-building-resources.js && node scripts/extract-charms-costs.js && node scripts/extract-chief-gear-costs.js && node scripts/extract-fc-csv.js && node scripts/extract-building-power.js",
     "import:buildings": "node scripts/extract-building-resources.js",
     "import:charms": "node scripts/extract-charms-costs.js",
-    "import:chief-gear": "node scripts/extract-chief-gear-costs.js"
+    "import:chief-gear": "node scripts/extract-chief-gear-costs.js",
+    "import:fc": "node scripts/extract-fc-csv.js",
+    "import:power": "node scripts/extract-building-power.js",
+    "export:sheets": "node scripts/export-all-sheets-to-csv.js",
+    "analyze:sheets": "node scripts/analyze-sheets.js"
   },
   "keywords": [
     "whiteout-survival",

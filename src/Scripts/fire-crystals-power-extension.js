@@ -1,6 +1,26 @@
 (function(){
   'use strict';
   const POWER_MAP = {}; // { BuildingName: { LevelKey: power } }
+  function applyInlineMap(){
+    try{
+      if(window.BuildingPowerMap){
+        let applied=0;
+        Object.keys(window.BuildingPowerMap).forEach(b=>{
+          if(!POWER_MAP[b]) POWER_MAP[b]={};
+          Object.assign(POWER_MAP[b], window.BuildingPowerMap[b]);
+          applied += Object.keys(window.BuildingPowerMap[b]).length;
+        });
+        if(applied>0){
+          console.info(`[FireCrystals Power] Inline map loaded ${applied} entries.`);
+          window.PowerDataStatus = { loaded: true, rows: applied };
+          try { window.dispatchEvent(new CustomEvent('power-csv-ready', { detail: { rows: applied } })); } catch(_) {}
+          return true;
+        }
+      }
+    }catch(_){}
+    return false;
+  }
+
   function loadCsv(url){
     return fetch(url,{cache:'no-cache'}).then(r=> r.ok ? r.text(): '')
       .then(text => {
@@ -22,8 +42,38 @@
           if(!POWER_MAP[b]) POWER_MAP[b]={};
           POWER_MAP[b][lvl]=p; applied++;
         }
-        if(applied>0) console.info(`[FireCrystals Power] Loaded ${applied} entries.`);
+        if(applied>0){
+          console.info(`[FireCrystals Power] Loaded ${applied} entries.`);
+          window.PowerDataStatus = { loaded: true, rows: applied };
+          try { window.dispatchEvent(new CustomEvent('power-csv-ready', { detail: { rows: applied } })); } catch(_) {}
+        }
       }).catch(()=>{});
+  }
+
+  function normalizeMilestone(levelKey){
+    if(!levelKey) return levelKey;
+    // Collapse sub-levels to milestone level (e.g., FC3-2 -> FC3)
+    const fcMatch = levelKey.match(/^FC\d+/i);
+    if(fcMatch) return fcMatch[0].toUpperCase();
+    // F30 and 30-1..30-4 collapse to 30
+    if(levelKey.toUpperCase()==='F30') return '30';
+    if(levelKey.startsWith('30')) return '30';
+    return levelKey;
+  }
+
+  function lookupPower(building, levelKey){
+    const map = POWER_MAP[building];
+    if(!map) return null;
+    if(levelKey && map[levelKey] != null) return map[levelKey];
+    const milestone = normalizeMilestone(levelKey);
+    if(milestone && map[milestone] != null) return map[milestone];
+    // Fallback: accept case variations
+    const lower = milestone && milestone.toLowerCase();
+    if(lower){
+      const key = Object.keys(map).find(k=>k.toLowerCase()===lower);
+      if(key) return map[key];
+    }
+    return null;
   }
 
   function computeTotalPower(){
@@ -32,24 +82,19 @@
     let total=0;
     buildings.forEach(b=>{
       const id = b.toLowerCase().replace(/ /g,'-');
-      const sel = document.getElementById(`${id}-desired`);
+      const sel = document.getElementById(`${id}-finish`);
       const lvl = sel && sel.value;
-      if(lvl && POWER_MAP[b] && POWER_MAP[b][lvl]!=null){
-        total += POWER_MAP[b][lvl];
-      }
+      const p = lookupPower(b, lvl);
+      if(p!=null) total += p;
     });
     return total;
   }
 
   function applyPowerToDom(){
     const total = computeTotalPower();
-    const items = Array.from(document.querySelectorAll('.total-item'));
-    const target = items.find(it => /Total Power:/i.test(it.textContent));
-    if(target){
-      const valueSpan = target.querySelector('.resource-value');
-      if(valueSpan){
-        valueSpan.innerHTML = `<strong>${total>0? total.toLocaleString():'Data pending'}</strong>`;
-      }
+    const valueSpan = document.getElementById('total-power-value');
+    if(valueSpan){
+      valueSpan.innerHTML = `<strong>${total>0? total.toLocaleString():'Data pending'}</strong>`;
     }
   }
 
@@ -63,6 +108,11 @@
   }
 
   function init(){
+    if(applyInlineMap()){
+      wrapCalculate();
+      setTimeout(applyPowerToDom, 200);
+      return;
+    }
     loadCsv('assets/building_power.csv').then(()=>{
       wrapCalculate();
       // Initial attempt after DOM paints

@@ -71,7 +71,7 @@
                 "wood": "Wood",
                 "coal": "Coal",
                 "iron": "Iron",
-                "construction-speed": "Construction Speed Bonus (%)",
+                "construction-speed": "Construction speed (%)",
                 "speedup-days": "Speedup Days",
                 "total-time": "Total Time",
                 "total-reduced-time": "Total Reduced Time",
@@ -100,6 +100,8 @@
             "gear-type": "Gear",
                 "building-current": "Current",
                 "building-desired": "Desired",
+            "level.start": "Start",
+            "level.finish": "Finish",
             
             // Results (dynamically translated in calculator)
             "svs-points": "SvS Points",
@@ -202,8 +204,10 @@
             "gear-current": "Actual",
             "gear-desired": "Deseado",
             "gear-type": "Equipo",
-              "building-current": "Actual",
-              "building-desired": "Deseado",
+                            "building-current": "Actual",
+                            "building-desired": "Deseado",
+                        "level.start": "Inicio",
+                        "level.finish": "Fin",
             
             // Results
             "svs-points": "Puntos SvS",
@@ -306,8 +310,10 @@
             "gear-current": "현재",
             "gear-desired": "목표",
             "gear-type": "장비",
-              "building-current": "현재",
-              "building-desired": "원하는",
+                            "building-current": "현재",
+                            "building-desired": "원하는",
+                        "level.start": "시작",
+                        "level.finish": "완료",
             
             // Resources
             "svs-points": "SvS 포인트",
@@ -416,6 +422,8 @@
             "gear-type": "Снаряжение",
                 "building-current": "Текущий",
                 "building-desired": "Желаемый",
+            "level.start": "Начало",
+            "level.finish": "Конец",
             
             // Results
             "svs-points": "Очки SvS",
