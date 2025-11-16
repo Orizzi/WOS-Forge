@@ -8,19 +8,27 @@
     // Public status for UI badges
     window.FCDataStatus = { loaded: false, rows: 0, source: 'loading' };
 
-    /**
-     * Load and parse the CSV file
-     */
+    // Attempt JSON first, then fallback to CSV
     async function loadFireCrystalCosts() {
+        // Try JSON
         try {
-            // Fetch relative to the document location (src/fireCrystals.html)
-            // Assets folder is at src/assets
+            const rj = await fetch('assets/fire_crystals_costs.json', { cache: 'no-cache' });
+            if (rj.ok) {
+                const flat = await rj.json();
+                if (Array.isArray(flat) && flat.length > 0) {
+                    console.info(`[FireCrystals] Loaded FC JSON rows: ${flat.length}`);
+                    window.FCDataStatus = { loaded: true, rows: flat.length, source: 'json' };
+                    try { window.dispatchEvent(new CustomEvent('fc-csv-ready', { detail: { rows: flat.length } })); } catch(_) {}
+                    return flat;
+                }
+            }
+        } catch (_) {}
+
+        // Fallback to CSV
+        try {
             const response = await fetch('assets/fire_crystals_costs.csv', { cache: 'no-cache' });
             const csvText = await response.text();
-            
             const lines = csvText.trim().split('\n');
-            
-            // Parse CSV into flat array
             const flatData = [];
             for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',');
@@ -31,10 +39,8 @@
                     rfc: parseInt(values[3]) || 0
                 });
             }
-            
             console.info(`[FireCrystals] Loaded FC CSV rows: ${flatData.length}`);
             window.FCDataStatus = { loaded: true, rows: flatData.length, source: 'csv' };
-            // Notify listeners (e.g., UI badge)
             try { window.dispatchEvent(new CustomEvent('fc-csv-ready', { detail: { rows: flatData.length } })); } catch(_) {}
             return flatData;
         } catch (error) {

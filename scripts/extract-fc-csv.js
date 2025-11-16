@@ -10,6 +10,7 @@ const ExcelJS = require('exceljs');
 
 const INPUT = path.resolve('src/assets/resource_data.xlsx');
 const OUTPUT_CSV = path.resolve('src/assets/fire_crystals_costs.csv');
+const OUTPUT_JSON = path.resolve('src/assets/fire_crystals_costs.json');
 
 const BUILDING_SHEETS = [
   'Furnace', 'Embassy', 'Command Center', 'Infirmary',
@@ -21,6 +22,7 @@ async function main() {
     await workbook.xlsx.readFile(INPUT);
     
     const rows = [['building', 'level', 'fire_crystals', 'refined_crystals']];
+    const flat = [];
     
     for (const sheetName of BUILDING_SHEETS) {
         const worksheet = workbook.getWorksheet(sheetName);
@@ -44,15 +46,19 @@ async function main() {
             const fcVal = typeof fc === 'number' ? fc : 0;
             const rfcVal = typeof rfc === 'number' ? rfc : 0;
             
-            rows.push([sheetName, levelName, fcVal, rfcVal]);
+                rows.push([sheetName, levelName, fcVal, rfcVal]);
+                flat.push({ building: sheetName, level: String(levelName), fc: fcVal, rfc: rfcVal });
         }
     }
     
     // Write CSV
     const csvContent = rows.map(r => r.join(',')).join('\n');
     fs.writeFileSync(OUTPUT_CSV, csvContent, 'utf8');
+    // Write JSON (flat array)
+    fs.writeFileSync(OUTPUT_JSON, JSON.stringify(flat, null, 2), 'utf8');
     
     console.log(`\nExtracted ${rows.length - 1} rows to ${OUTPUT_CSV}`);
+    console.log(`Also wrote JSON to ${OUTPUT_JSON}`);
     
     // Calculate totals
     let grandFC = 0, grandRFC = 0;
