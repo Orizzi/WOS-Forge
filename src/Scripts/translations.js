@@ -582,10 +582,6 @@
         }
     };
 
-    Object.entries(translationExtensions).forEach(([lang, data]) => {
-        translations[lang] = translations[lang] || {};
-        Object.assign(translations[lang], data);
-    });
 
     // Get current language from localStorage or default to English
     function getCurrentLanguage() {
