@@ -10,17 +10,17 @@
       el.textContent = `Data OK (rows: ${fc.rows})`;
     } else {
       el.dataset.status = 'warn';
-      el.textContent = `Using fallback data`;
+      el.textContent = `Data not loaded`;
     }
   }
 
   function onReady(){
-    const el = document.getElementById('csv-status');
+    const el = document.getElementById('fc-status');
     if(!el) return;
     setStatus(el);
 
-    // Update when FC CSV is ready
-    window.addEventListener('fc-csv-ready', function(){ setStatus(el); });
+    // Update when FC data is ready
+    window.addEventListener('fc-data-ready', function(){ setStatus(el); });
   }
 
   if(document.readyState === 'loading'){

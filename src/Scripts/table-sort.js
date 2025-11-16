@@ -22,15 +22,7 @@ const TableSortModule = (function(){
     const ths = table.querySelectorAll('thead th[data-key]');
     if(!ths || !ths.length) return;
     
-    // Map column names to column indices (position in table)
-    const colMap = { 
-      slot: 0,     // Column 0: Charm slot name
-      from: 1,     // Column 1: Starting level
-      to: 2,       // Column 2: Ending level
-      guides: 3,   // Column 3: Guides cost
-      designs: 4,  // Column 4: Designs cost
-      secrets: 5   // Column 5: Secrets cost
-    };
+    // Determine column indices dynamically from header positions
 
     // Make each header clickable and keyboard accessible
     ths.forEach(th => {
@@ -53,8 +45,8 @@ const TableSortModule = (function(){
      * @param {HTMLElement} th - The header that was clicked
      */
     function sortBy(th){
-      const key = th.dataset.key;  // Get the column name (e.g., 'guides')
-      const idx = colMap[key] ?? 0;  // Get the column index
+      // Determine index from header position for generic tables
+      const idx = Array.prototype.indexOf.call(th.parentNode.children, th);
       const tbody = table.tBodies[0];  // Get the table body
       if(!tbody) return;
       
@@ -84,14 +76,22 @@ const TableSortModule = (function(){
        * - Removes commas from numbers (e.g., "1,000" → 1000)
        */
       const parseCell = (row) => {
-        const cell = row.children[idx];  // Get cell at the column index
+        const cell = row.children[idx];
         if(!cell) return '';
         
-        let t = cell.textContent.trim();  // Get text, remove extra spaces
-        t = t.replace(/,/g,'');  // Remove commas (e.g., "1,000" → "1000")
+        let t = cell.textContent.trim();
+        t = t.replace(/,/g,'');
         
-        const v = parseFloat(t);  // Try to convert to number
-        // Return as number if it's numeric, otherwise as lowercase text
+        // Support compact suffixes like 9.5K, 3.2M, 1.1B
+        const suffixMatch = t.match(/^(-?\d+(?:\.\d+)?)([KMB])$/i);
+        if (suffixMatch) {
+          const num = parseFloat(suffixMatch[1]);
+          const suf = suffixMatch[2].toUpperCase();
+          const mult = suf === 'K' ? 1e3 : suf === 'M' ? 1e6 : 1e9;
+          return num * mult;
+        }
+        
+        const v = parseFloat(t);
         return isNaN(v) ? t.toLowerCase() : v;
       };
 

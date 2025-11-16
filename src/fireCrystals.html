@@ -9,6 +9,8 @@
     <script src="Scripts/theme.js" defer></script>
     <script src="Scripts/translations.js" defer></script>
     <script src="Scripts/profiles.js" defer></script>
+    <script src="Scripts/table-sort.js" defer></script>
+    <script src="Scripts/input-validators.js" defer></script>
     <script src="Scripts/fire-crystals-costs.js" defer></script>
     <script src="Scripts/fire-crystals-data-loader.js" defer></script>
     <script src="Scripts/fire-crystals-calculator.js" defer></script>
@@ -51,7 +53,7 @@
                             <span data-i18n="fire-crystals">Fire Crystals</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-fire-crystals" min="0" value="0">
+                    <input type="number" id="inventory-fire-crystals" min="0" max="999999" step="1" value="0">
                 </div>
                 <div class="inventory-item">
                     <label for="inventory-refine-crystals">
@@ -60,7 +62,7 @@
                             <span data-i18n="refine-crystals">Refine Crystals</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-refine-crystals" min="0" value="0">
+                    <input type="number" id="inventory-refine-crystals" min="0" max="9999" step="1" value="0">
                 </div>
                 <div class="inventory-item">
                     <label for="inventory-speedup-days" data-i18n="speedup-days">Speedup Days</label>
@@ -78,7 +80,7 @@
                             <span data-i18n="meat">Meat</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-meat" min="0" value="0">
+                    <input type="number" id="inventory-meat" min="0" max="999999999999" step="1" value="0">
                 </div>
                 <div class="inventory-item">
                     <label for="inventory-wood">
@@ -87,7 +89,7 @@
                             <span data-i18n="wood">Wood</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-wood" min="0" value="0">
+                    <input type="number" id="inventory-wood" min="0" max="999999999999" step="1" value="0">
                 </div>
                 <div class="inventory-item">
                     <label for="inventory-coal">
@@ -96,7 +98,7 @@
                             <span data-i18n="coal">Coal</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-coal" min="0" value="0">
+                    <input type="number" id="inventory-coal" min="0" max="99999999999" step="1" value="0">
                 </div>
                 <div class="inventory-item">
                     <label for="inventory-iron">
@@ -105,7 +107,7 @@
                             <span data-i18n="iron">Iron</span>
                         </span>
                     </label>
-                    <input type="number" id="inventory-iron" min="0" value="0">
+                    <input type="number" id="inventory-iron" min="0" max="99999999999" step="1" value="0">
                 </div>
             </div>
         </section>
@@ -1086,7 +1088,7 @@
 
         <!-- Results Section (right column) -->
         <section class="results-section">
-            <h3 data-i18n="totals-header">Items You Need <span id="csv-status" class="csv-status" data-status="loading">Loading data…</span></h3>
+            <h3 data-i18n="totals-header">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data…</span></h3>
             <div id="results-display"></div>
         </section>
         </div>

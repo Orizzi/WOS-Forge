@@ -37,6 +37,57 @@ body {
     padding: 0; 
 }
 
+/* ===== Results tables (shared: Charms, Fire Crystals) ===== */
+.results-wrap{ 
+    margin: 16px; 
+    padding: 12px; 
+    background: color-mix(in srgb, var(--panel) 80%, transparent); 
+    border: 1px solid var(--border); 
+    border-radius: 10px; 
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.results-table{ 
+    width: 100%; 
+    border-collapse: collapse; 
+    background: var(--panel);
+}
+
+.results-table thead th{ 
+    position: sticky; 
+    top: 0; 
+    background: color-mix(in srgb, var(--panel) 92%, transparent); 
+    text-align: left; 
+    padding: 10px 12px; 
+    border-bottom: 1px solid var(--border); 
+    font-weight: 700; 
+}
+
+.results-table tbody td{ 
+    padding: 10px 12px; 
+    border-bottom: 1px solid var(--border);
+}
+
+.results-table tbody tr:nth-child(even){ 
+    background: color-mix(in srgb, var(--card) 70%, transparent); 
+}
+
+.results-table tfoot td{ 
+    padding: 12px; 
+    border-top: 2px solid var(--border); 
+    font-weight: 700; 
+}
+
+/* Align numeric columns right, leave first three left-aligned */
+.results-table td:nth-child(n+4),
+.results-table th:nth-child(n+4){ text-align: right; }
+.results-table td:nth-child(-n+3),
+.results-table th:nth-child(-n+3){ text-align: left; }
+
+/* Sort indicators */
+.results-table thead th.sorted-asc::after{ content: ' \25B2'; opacity: 0.8; }
+.results-table thead th.sorted-desc::after{ content: ' \25BC'; opacity: 0.8; }
+
 /* CSV/data status pill for FC page */
 .csv-status{
     display: inline-flex;
@@ -1275,11 +1326,12 @@ html:not(.light-theme) .profiles input[type="text"]{
     max-width: 45%;
     text-align: right;
 }
-
-.inventory-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    .results-table{ 
+        width: 100%; 
+        border-collapse: collapse; 
+        background: var(--panel);
+        table-layout: fixed; /* stretch columns to fill available width */
+    }
     gap: 10px;
     flex-wrap: wrap;
 }
@@ -1393,10 +1445,39 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-radius: 10px;
 }
 
+/* Make FC results breakdown use full container width */
+.results-section #results-display{ width: 100%; }
+.results-section .results-wrap{ margin-left: 0; margin-right: 0; width: 100%; }
+.results-section #results-display .results-wrap{ grid-column: 1 / -1; }
+.results-table th, .results-table td{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* FC breakdown specific column sizing (10 columns) */
+.results-section .results-table th:nth-child(1),
+.results-section .results-table td:nth-child(1){ width: 18%; }
+.results-section .results-table th:nth-child(2),
+.results-section .results-table td:nth-child(2){ width: 8%; }
+.results-section .results-table th:nth-child(3),
+.results-section .results-table td:nth-child(3){ width: 8%; }
+.results-section .results-table th:nth-child(4),
+.results-section .results-table td:nth-child(4){ width: 8.5%; }
+.results-section .results-table th:nth-child(5),
+.results-section .results-table td:nth-child(5){ width: 8.5%; }
+.results-section .results-table th:nth-child(6),
+.results-section .results-table td:nth-child(6){ width: 8.5%; }
+.results-section .results-table th:nth-child(7),
+.results-section .results-table td:nth-child(7){ width: 8.5%; }
+.results-section .results-table th:nth-child(8),
+.results-section .results-table td:nth-child(8){ width: 8.5%; }
+.results-section .results-table th:nth-child(9),
+.results-section .results-table td:nth-child(9){ width: 8.5%; }
+.results-section .results-table th:nth-child(10),
+.results-section .results-table td:nth-child(10){ width: 15%; min-width: 130px; overflow: visible; text-overflow: clip; white-space: nowrap; }
+
 /* Fire Crystals: two-column layout for buildings (left) and results (right) */
 .fc-two-column{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Buildings wider to fit FC10 properly, results still spacious */
+    grid-template-columns: 5fr 6fr;
     gap: 16px;
     align-items: start;
     margin: 12px 20px;

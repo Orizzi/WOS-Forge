@@ -148,51 +148,58 @@ const ProfilesModule = (function(){
    * @returns {object} Current selections from all calculators
    */
   function captureCurrent(){
-    const data = {
-      charms: {},
-      chiefGear: {},
-        inventory: {},
-        fireCrystals: {}
-      };
-    
-    // Capture Charms data (all charm selects ending with -start or -finish)
-    const charmSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
-      .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    charmSelects.forEach(s => {
-      if(s.value) data.charms[s.id] = s.value;
-    });
-    
-    // Capture Chief Gear data (all gear -start and -finish selects)
-    const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
-    gearTypes.forEach(gear => {
-      const start = document.getElementById(`${gear}-start`);
-      const finish = document.getElementById(`${gear}-finish`);
-      if(start && start.value) data.chiefGear[`${gear}-start`] = start.value;
-      if(finish && finish.value) data.chiefGear[`${gear}-finish`] = finish.value;
-    });
-    
-      // Capture Fire Crystals buildings data (8 buildings from fireCrystals.html page)
-      const buildings = ['furnace', 'embassy', 'command-center', 'infirmary', 
-                         'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
+    // Page detection helpers
+    const isFireCrystals = !!document.getElementById('furnace-start');
+    const isChiefGear = !!document.getElementById('helmet-start');
+    const isCharms = !!document.querySelector('select[id*="-charm-"]');
+
+    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {} };
+
+    // Capture Charms data (only on Charms page; selects contain -charm- in id)
+    if(isCharms){
+      const charmSelects = Array.from(document.querySelectorAll('select[id*="-charm-"][id$="-start"], select[id*="-charm-"][id$="-finish"]'))
+        .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
+      charmSelects.forEach(s => { if(s.value) data.charms[s.id] = s.value; });
+    }
+
+    // Capture Chief Gear data (only on Chief Gear page)
+    if(isChiefGear){
+      const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
+      gearTypes.forEach(gear => {
+        const start = document.getElementById(`${gear}-start`);
+        const finish = document.getElementById(`${gear}-finish`);
+        if(start && start.value) data.chiefGear[`${gear}-start`] = start.value;
+        if(finish && finish.value) data.chiefGear[`${gear}-finish`] = finish.value;
+      });
+    }
+
+    // Capture Fire Crystals buildings data (only on Fire Crystals page)
+    if(isFireCrystals){
+      const buildings = ['furnace', 'embassy', 'command-center', 'infirmary', 'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
       buildings.forEach(building => {
-        const current = document.getElementById(`${building}-current`);
-        const desired = document.getElementById(`${building}-desired`);
-        if(current && current.value) data.fireCrystals[`${building}-current`] = current.value;
-        if(desired && desired.value) data.fireCrystals[`${building}-desired`] = desired.value;
+        const start = document.getElementById(`${building}-start`);
+        const finish = document.getElementById(`${building}-finish`);
+        if(start && start.value) data.fireCrystals[`${building}-start`] = start.value;
+        if(finish && finish.value) data.fireCrystals[`${building}-finish`] = finish.value;
       });
-    
-      // Capture Inventory data (all inventory inputs from all pages)
-      const inventoryIds = [
-        'inventory-guides', 'inventory-designs', 'inventory-secrets', // Charms inventory
-        'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',  // Chief Gear
-        'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed', // Fire Crystals
-        'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron' // Base resources (optional)
-      ];
-      inventoryIds.forEach(id => {
-        const input = document.getElementById(id);
-        if(input && input.value) data.inventory[id] = input.value;
-      });
-    
+    }
+
+    // Capture Inventory data (only inputs present on current page)
+    const inventoryIds = [
+      // Charms inventory
+      'inventory-guides', 'inventory-designs', 'inventory-secrets',
+      // Chief Gear inventory
+      'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',
+      // Fire Crystals inventory
+      'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
+      // Base resources
+      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'
+    ];
+    inventoryIds.forEach(id => {
+      const input = document.getElementById(id);
+      if(input && input.value !== undefined) data.inventory[id] = input.value;
+    });
+
     return data;
   }
 
@@ -205,66 +212,42 @@ const ProfilesModule = (function(){
   function applyProfileObject(obj){
     if(!obj) return;
     
-    // Apply Charms data
-    if(obj.charms){
+    // Detect page
+    const isFireCrystals = !!document.getElementById('furnace-start');
+    const isChiefGear = !!document.getElementById('helmet-start');
+    const isCharms = !!document.querySelector('select[id*="-charm-"]');
+
+    // Apply only for the current page
+    if(isCharms && obj.charms){
       Object.keys(obj.charms).forEach(id => {
         const el = document.getElementById(id);
         if(el && el.tagName === 'SELECT') el.value = String(obj.charms[id]);
       });
-      
-      // Update validation states for charm selects (disabled options)
-      const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
-        .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-      
+      // Update charms batch/select validations
+      const startSelects = Array.from(document.querySelectorAll('select[id*="-charm-"][id$="-start"]'));
       startSelects.forEach(startSel => {
         const base = startSel.id.replace(/-start$/, '');
         const finishSel = document.getElementById(base + '-finish');
         if(finishSel){
-          // Update disabled options based on FROM value
           const start = parseInt(startSel.value);
-          
           if(!isNaN(start)){
             Array.from(finishSel.options).forEach(option => {
               const optValue = parseInt(option.value);
-              if(!isNaN(optValue) && optValue < start){
-                option.disabled = true;
-              } else {
-                option.disabled = false;
-              }
+              option.disabled = !isNaN(optValue) && optValue < start;
             });
           }
         }
       });
-      
-      // Also update batch control validation states
-      const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
-      batchTypes.forEach(type => {
-        const from = document.getElementById(`${type}-batch-from`);
-        const to = document.getElementById(`${type}-batch-to`);
-        if(from && to){
-          const fromVal = parseInt(from.value);
-          if(!isNaN(fromVal)){
-            Array.from(to.options).forEach(option => {
-              const optValue = parseInt(option.value);
-              if(!isNaN(optValue) && optValue < fromVal){
-                option.disabled = true;
-              } else {
-                option.disabled = false;
-              }
-            });
-          }
-        }
-      });
+      if(typeof CalculatorModule !== 'undefined'){
+        try { CalculatorModule.calculateAll(); } catch(_) {}
+      }
     }
-    
-    // Apply Chief Gear data
-    if(obj.chiefGear){
+
+    if(isChiefGear && obj.chiefGear){
       Object.keys(obj.chiefGear).forEach(id => {
         const el = document.getElementById(id);
         if(el && el.tagName === 'SELECT') el.value = String(obj.chiefGear[id]);
       });
-      
-      // Trigger validation for all chief gear selects after loading
       const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
       gearTypes.forEach(gear => {
         const startSel = document.getElementById(`${gear}-start`);
@@ -273,45 +256,45 @@ const ProfilesModule = (function(){
           ChiefGearCalculator.validateLevels(startSel, finishSel);
         }
       });
+      if(typeof ChiefGearCalculator !== 'undefined'){
+        try { ChiefGearCalculator.calculateAll(); } catch(_) {}
+      }
     }
-    
-    // Apply Inventory data
+
+    if(isFireCrystals && obj.fireCrystals){
+      const fcData = { ...obj.fireCrystals };
+      Object.keys(obj.fireCrystals).forEach(key => {
+        if(key.endsWith('-current')){ const base = key.replace(/-current$/,''); fcData[`${base}-start`] = obj.fireCrystals[key]; }
+        if(key.endsWith('-desired')){ const base = key.replace(/-desired$/,''); fcData[`${base}-finish`] = obj.fireCrystals[key]; }
+      });
+      Object.keys(fcData).forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.tagName === 'SELECT') el.value = String(fcData[id]);
+      });
+      if(typeof FireCrystalsCalculator !== 'undefined'){
+        try {
+          const fcBuildings = ['furnace', 'embassy', 'command-center', 'infirmary', 'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
+          const buildingNames = ['Furnace', 'Embassy', 'Command Center', 'Infirmary', 'Infantry Camp', 'Marksman Camp', 'Lancer Camp', 'War Academy'];
+          fcBuildings.forEach((building, idx) => {
+            const start = document.getElementById(`${building}-start`);
+            const finish = document.getElementById(`${building}-finish`);
+            if (start && finish && FireCrystalsCalculator.validateLevels && FireCrystalsCalculator.getLevelsForBuilding) {
+              const levelsArray = FireCrystalsCalculator.getLevelsForBuilding(buildingNames[idx]);
+              FireCrystalsCalculator.validateLevels(start, finish, levelsArray);
+            }
+          });
+          FireCrystalsCalculator.calculateAll();
+        } catch(_) {}
+      }
+    }
+
+    // Apply Inventory (only inputs present on this page)
     if(obj.inventory){
       Object.keys(obj.inventory).forEach(id => {
         const el = document.getElementById(id);
         if(el && el.tagName === 'INPUT') el.value = String(obj.inventory[id]);
       });
     }
-    
-      // Apply Fire Crystals data
-      if(obj.fireCrystals){
-        Object.keys(obj.fireCrystals).forEach(id => {
-          const el = document.getElementById(id);
-          if(el && el.tagName === 'SELECT') el.value = String(obj.fireCrystals[id]);
-        });
-      }
-    
-    // Recalculate with new values (trigger both calculators if available)
-    if(typeof CalculatorModule !== 'undefined'){
-      CalculatorModule.calculateAll();
-    }
-    if(typeof ChiefGearCalculator !== 'undefined'){
-      ChiefGearCalculator.calculateAll();
-    }
-      if(typeof FireCrystalsCalculator !== 'undefined'){
-        // Validate all building levels after loading
-        const fcBuildings = ['furnace', 'embassy', 'command-center', 'infirmary', 'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
-        const buildingNames = ['Furnace', 'Embassy', 'Command Center', 'Infirmary', 'Infantry Camp', 'Marksman Camp', 'Lancer Camp', 'War Academy'];
-        fcBuildings.forEach((building, idx) => {
-          const start = document.getElementById(`${building}-start`);
-          const finish = document.getElementById(`${building}-finish`);
-          if (start && finish && FireCrystalsCalculator.validateLevels && FireCrystalsCalculator.getLevelsForBuilding) {
-            const levelsArray = FireCrystalsCalculator.getLevelsForBuilding(buildingNames[idx]);
-            FireCrystalsCalculator.validateLevels(start, finish, levelsArray);
-          }
-        });
-        FireCrystalsCalculator.calculateAll();
-      }
   }
 
   /**
@@ -341,8 +324,7 @@ const ProfilesModule = (function(){
     name = String(name).trim().slice(0, 10);
     const profiles = readProfiles();
     if(profiles[name]) return alert('A profile with that name already exists. Use Overwrite or pick another name.');
-    
-    // Capture current selections and save
+    // Capture current page selections only
     profiles[name] = captureCurrent();
     writeProfiles(profiles);
     
@@ -363,9 +345,14 @@ const ProfilesModule = (function(){
     if(!name) return alert('Select a profile to overwrite');
     const profiles = readProfiles();
     if(!profiles[name]) return alert('Profile not found');
-    
-    // Replace profile with current selections
-    profiles[name] = captureCurrent();
+    // Merge current page selections into existing profile
+    const current = captureCurrent();
+    const merged = { ...profiles[name] };
+    if(current.charms && Object.keys(current.charms).length){ merged.charms = { ...(profiles[name].charms||{}), ...current.charms }; }
+    if(current.chiefGear && Object.keys(current.chiefGear).length){ merged.chiefGear = { ...(profiles[name].chiefGear||{}), ...current.chiefGear }; }
+    if(current.fireCrystals && Object.keys(current.fireCrystals).length){ merged.fireCrystals = { ...(profiles[name].fireCrystals||{}), ...current.fireCrystals }; }
+    if(current.inventory && Object.keys(current.inventory).length){ merged.inventory = { ...(profiles[name].inventory||{}), ...current.inventory }; }
+    profiles[name] = merged;
     writeProfiles(profiles);
     renderProfilesList();
   }
@@ -379,9 +366,14 @@ const ProfilesModule = (function(){
     
     const profiles = readProfiles();
     if(!profiles[currentLoadedProfile]) return; // Profile was deleted
-    
-    // Silently update the profile with current selections
-    profiles[currentLoadedProfile] = captureCurrent();
+    // Silently merge current page selections with existing profile
+    const current = captureCurrent();
+    const existing = profiles[currentLoadedProfile];
+    if(current.charms && Object.keys(current.charms).length){ existing.charms = { ...(existing.charms||{}), ...current.charms }; }
+    if(current.chiefGear && Object.keys(current.chiefGear).length){ existing.chiefGear = { ...(existing.chiefGear||{}), ...current.chiefGear }; }
+    if(current.fireCrystals && Object.keys(current.fireCrystals).length){ existing.fireCrystals = { ...(existing.fireCrystals||{}), ...current.fireCrystals }; }
+    if(current.inventory && Object.keys(current.inventory).length){ existing.inventory = { ...(existing.inventory||{}), ...current.inventory }; }
+    profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
   }
 
@@ -484,8 +476,17 @@ const ProfilesModule = (function(){
       sel.addEventListener('change', autoSaveCurrentProfile);
     });
     
-    // Auto-save when inventory inputs change
-    const inventoryInputs = ['inventory-guides', 'inventory-designs', 'inventory-secrets'];
+    // Auto-save when inventory inputs change (Charms + Chief Gear + Fire Crystals + base resources)
+    const inventoryInputs = [
+      // Charms
+      'inventory-guides', 'inventory-designs', 'inventory-secrets',
+      // Chief Gear
+      'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',
+      // Fire Crystals specific
+      'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
+      // Optional base resources
+      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'
+    ];
     inventoryInputs.forEach(id => {
       const input = document.getElementById(id);
       if(input) input.addEventListener('input', autoSaveCurrentProfile);

@@ -1,362 +1,89 @@
 building,level,fire_crystals,refined_crystals
-Furnace,30-1,132,0
-Furnace,30-2,132,0
-Furnace,30-3,132,0
-Furnace,30-4,132,0
-Furnace,FC1,132,0
-Furnace,FC1-1,158,0
-Furnace,FC1-2,158,0
-Furnace,FC1-3,158,0
-Furnace,FC1-4,158,0
-Furnace,FC2,158,0
-Furnace,FC2-1,238,0
-Furnace,FC2-2,238,0
-Furnace,FC2-3,238,0
-Furnace,FC2-4,238,0
-Furnace,FC3,238,0
-Furnace,FC3-1,280,0
-Furnace,FC3-2,280,0
-Furnace,FC3-3,280,0
-Furnace,FC3-4,280,0
-Furnace,FC4,280,0
-Furnace,FC4-1,335,0
-Furnace,FC4-2,335,0
-Furnace,FC4-3,335,0
-Furnace,FC4-4,335,0
-Furnace,FC5,335,0
-Furnace,FC5-1,200,10
-Furnace,FC5-2,200,10
-Furnace,FC5-3,200,10
-Furnace,FC5-4,200,10
-Furnace,FC6,100,20
-Furnace,FC6-1,240,15
-Furnace,FC6-2,240,15
-Furnace,FC6-3,240,15
-Furnace,FC6-4,240,15
-Furnace,FC7,120,30
-Furnace,FC7-1,240,20
-Furnace,FC7-2,240,20
-Furnace,FC7-3,240,20
-Furnace,FC7-4,240,20
-Furnace,FC8,120,40
-Furnace,FC8-1,280,30
-Furnace,FC8-2,280,30
-Furnace,FC8-3,280,30
-Furnace,FC8-4,280,30
-Furnace,FC9,280,60
-Furnace,FC9-1,350,70
-Furnace,FC9-2,350,70
-Furnace,FC9-3,350,70
-Furnace,FC9-4,350,70
+Furnace,F30,528,0
+Furnace,FC1,764,0
+Furnace,FC2,1110,0
+Furnace,FC3,1358,0
+Furnace,FC4,1620,0
+Furnace,FC5,1135,40
+Furnace,FC6,1060,80
+Furnace,FC7,1080,110
+Furnace,FC8,1240,160
+Furnace,FC9,1680,340
 Furnace,FC10,175,140
-Embassy,30-1,33,0
-Embassy,30-2,33,0
-Embassy,30-3,33,0
-Embassy,30-4,33,0
-Embassy,FC1,33,0
-Embassy,FC1-1,39,0
-Embassy,FC1-2,39,0
-Embassy,FC1-3,39,0
-Embassy,FC1-4,39,0
-Embassy,FC2,39,0
-Embassy,FC2-1,59,0
-Embassy,FC2-2,59,0
-Embassy,FC2-3,59,0
-Embassy,FC2-4,59,0
-Embassy,FC3,59,0
-Embassy,FC3-1,70,0
-Embassy,FC3-2,70,0
-Embassy,FC3-3,70,0
-Embassy,FC3-4,70,0
-Embassy,FC4,70,0
-Embassy,FC4-1,83,0
-Embassy,FC4-2,83,0
-Embassy,FC4-3,83,0
-Embassy,FC4-4,83,0
-Embassy,FC5,83,0
-Embassy,FC5-1,50,2
-Embassy,FC5-2,50,2
-Embassy,FC5-3,50,2
-Embassy,FC5-4,50,2
-Embassy,FC6,25,5
-Embassy,FC6-1,60,3
-Embassy,FC6-2,60,3
-Embassy,FC6-3,60,3
-Embassy,FC6-4,60,3
-Embassy,FC7,30,7
-Embassy,FC7-1,60,5
-Embassy,FC7-2,60,5
-Embassy,FC7-3,60,5
-Embassy,FC7-4,60,5
-Embassy,FC8,30,11
-Embassy,FC8-1,70,7
-Embassy,FC8-2,70,7
-Embassy,FC8-3,70,7
-Embassy,FC8-4,70,7
-Embassy,FC9,35,15
-Embassy,FC9-1,87,17
-Embassy,FC9-2,87,17
-Embassy,FC9-3,87,17
-Embassy,FC9-4,87,17
+Embassy,F30,132,0
+Embassy,FC1,189,0
+Embassy,FC2,275,0
+Embassy,FC3,339,0
+Embassy,FC4,402,0
+Embassy,FC5,283,8
+Embassy,FC6,265,17
+Embassy,FC7,270,27
+Embassy,FC8,310,39
+Embassy,FC9,383,83
 Embassy,FC10,43,35
-Command Center,30-1,26,0
-Command Center,30-2,26,0
-Command Center,30-3,26,0
-Command Center,30-4,26,0
-Command Center,FC1,26,0
-Command Center,FC1-1,31,0
-Command Center,FC1-2,31,0
-Command Center,FC1-3,31,0
-Command Center,FC1-4,31,0
-Command Center,FC2,31,0
-Command Center,FC2-1,47,0
-Command Center,FC2-2,47,0
-Command Center,FC2-3,47,0
-Command Center,FC2-4,47,0
-Command Center,FC3,47,0
-Command Center,FC3-1,56,0
-Command Center,FC3-2,56,0
-Command Center,FC3-3,56,0
-Command Center,FC3-4,56,0
-Command Center,FC4,56,0
-Command Center,FC4-1,67,0
-Command Center,FC4-2,67,0
-Command Center,FC4-3,67,0
-Command Center,FC4-4,67,0
-Command Center,FC5,67,0
-Command Center,FC5-1,40,2
-Command Center,FC5-2,40,2
-Command Center,FC5-3,40,2
-Command Center,FC5-4,40,2
-Command Center,FC6,20,4
-Command Center,FC6-1,48,3
-Command Center,FC6-2,48,3
-Command Center,FC6-3,48,3
-Command Center,FC6-4,48,3
-Command Center,FC7,24,6
-Command Center,FC7-1,48,4
-Command Center,FC7-2,48,4
-Command Center,FC7-3,48,4
-Command Center,FC7-4,48,4
-Command Center,FC8,24,8
-Command Center,FC8-1,56,6
-Command Center,FC8-2,56,6
-Command Center,FC8-3,56,6
-Command Center,FC8-4,56,6
-Command Center,FC9,28,12
-Command Center,FC9-1,70,14
-Command Center,FC9-2,70,14
-Command Center,FC9-3,70,14
-Command Center,FC9-4,70,14
+Command Center,F30,104,0
+Command Center,FC1,150,0
+Command Center,FC2,219,0
+Command Center,FC3,271,0
+Command Center,FC4,324,0
+Command Center,FC5,227,8
+Command Center,FC6,212,16
+Command Center,FC7,216,22
+Command Center,FC8,248,32
+Command Center,FC9,308,68
 Command Center,FC10,35,28
-Infirmary,30-1,26,0
-Infirmary,30-2,26,0
-Infirmary,30-3,26,0
-Infirmary,30-4,26,0
-Infirmary,FC1,26,0
-Infirmary,FC1-1,31,0
-Infirmary,FC1-2,31,0
-Infirmary,FC1-3,31,0
-Infirmary,FC1-4,31,0
-Infirmary,FC2,31,0
-Infirmary,FC2-1,47,0
-Infirmary,FC2-2,47,0
-Infirmary,FC2-3,47,0
-Infirmary,FC2-4,47,0
-Infirmary,FC3,47,0
-Infirmary,FC3-1,56,0
-Infirmary,FC3-2,56,0
-Infirmary,FC3-3,56,0
-Infirmary,FC3-4,56,0
-Infirmary,FC4,56,0
-Infirmary,FC4-1,67,0
-Infirmary,FC4-2,67,0
-Infirmary,FC4-3,67,0
-Infirmary,FC4-4,67,0
-Infirmary,FC5,67,0
-Infirmary,FC5-1,40,2
-Infirmary,FC5-2,40,2
-Infirmary,FC5-3,40,2
-Infirmary,FC5-4,40,2
-Infirmary,FC6,20,4
-Infirmary,FC6-1,48,3
-Infirmary,FC6-2,48,3
-Infirmary,FC6-3,48,3
-Infirmary,FC6-4,48,3
-Infirmary,FC7,24,6
-Infirmary,FC7-1,48,4
-Infirmary,FC7-2,48,4
-Infirmary,FC7-3,48,4
-Infirmary,FC7-4,48,4
-Infirmary,FC8,24,8
-Infirmary,FC8-1,56,6
-Infirmary,FC8-2,56,6
-Infirmary,FC8-3,56,6
-Infirmary,FC8-4,56,6
-Infirmary,FC9,28,12
-Infirmary,FC9-1,70,14
-Infirmary,FC9-2,70,14
-Infirmary,FC9-3,70,14
-Infirmary,FC9-4,70,14
+Infirmary,F30,104,0
+Infirmary,FC1,150,0
+Infirmary,FC2,219,0
+Infirmary,FC3,271,0
+Infirmary,FC4,324,0
+Infirmary,FC5,227,8
+Infirmary,FC6,212,16
+Infirmary,FC7,216,22
+Infirmary,FC8,248,32
+Infirmary,FC9,308,68
 Infirmary,FC10,35,28
-Infantry Camp,30-1,59,0
-Infantry Camp,30-2,59,0
-Infantry Camp,30-3,59,0
-Infantry Camp,30-4,59,0
-Infantry Camp,FC1,59,0
-Infantry Camp,FC1-1,71,0
-Infantry Camp,FC1-2,71,0
-Infantry Camp,FC1-3,71,0
-Infantry Camp,FC1-4,71,0
-Infantry Camp,FC2,71,0
-Infantry Camp,FC2-1,107,0
-Infantry Camp,FC2-2,107,0
-Infantry Camp,FC2-3,107,0
-Infantry Camp,FC2-4,107,0
-Infantry Camp,FC3,107,0
-Infantry Camp,FC3-1,126,0
-Infantry Camp,FC3-2,126,0
-Infantry Camp,FC3-3,126,0
-Infantry Camp,FC3-4,126,0
-Infantry Camp,FC4,126,0
-Infantry Camp,FC4-1,150,0
-Infantry Camp,FC4-2,150,0
-Infantry Camp,FC4-3,150,0
-Infantry Camp,FC4-4,150,0
-Infantry Camp,FC5,150,0
-Infantry Camp,FC5-1,90,4
-Infantry Camp,FC5-2,90,4
-Infantry Camp,FC5-3,90,4
-Infantry Camp,FC5-4,90,4
-Infantry Camp,FC6,45,9
-Infantry Camp,FC6-1,108,6
-Infantry Camp,FC6-2,108,6
-Infantry Camp,FC6-3,108,6
-Infantry Camp,FC6-4,108,6
-Infantry Camp,FC7,54,13
-Infantry Camp,FC7-1,108,9
-Infantry Camp,FC7-2,108,9
-Infantry Camp,FC7-3,108,9
-Infantry Camp,FC7-4,108,9
-Infantry Camp,FC8,54,19
-Infantry Camp,FC8-1,126,13
-Infantry Camp,FC8-2,126,13
-Infantry Camp,FC8-3,126,13
-Infantry Camp,FC8-4,126,13
-Infantry Camp,FC9,63,27
-Infantry Camp,FC9-1,157,31
-Infantry Camp,FC9-2,157,31
-Infantry Camp,FC9-3,157,31
-Infantry Camp,FC9-4,157,31
+Infantry Camp,F30,236,0
+Infantry Camp,FC1,343,0
+Infantry Camp,FC2,499,0
+Infantry Camp,FC3,611,0
+Infantry Camp,FC4,726,0
+Infantry Camp,FC5,510,16
+Infantry Camp,FC6,477,33
+Infantry Camp,FC7,486,49
+Infantry Camp,FC8,558,71
+Infantry Camp,FC9,691,151
 Infantry Camp,FC10,78,63
-Marksman Camp,30-1,59,0
-Marksman Camp,30-2,59,0
-Marksman Camp,30-3,59,0
-Marksman Camp,30-4,59,0
-Marksman Camp,FC1,59,0
-Marksman Camp,FC1-1,71,0
-Marksman Camp,FC1-2,71,0
-Marksman Camp,FC1-3,71,0
-Marksman Camp,FC1-4,71,0
-Marksman Camp,FC2,71,0
-Marksman Camp,FC2-1,107,0
-Marksman Camp,FC2-2,107,0
-Marksman Camp,FC2-3,107,0
-Marksman Camp,FC2-4,107,0
-Marksman Camp,FC3,107,0
-Marksman Camp,FC3-1,126,0
-Marksman Camp,FC3-2,126,0
-Marksman Camp,FC3-3,126,0
-Marksman Camp,FC3-4,126,0
-Marksman Camp,FC4,126,0
-Marksman Camp,FC4-1,150,0
-Marksman Camp,FC4-2,150,0
-Marksman Camp,FC4-3,150,0
-Marksman Camp,FC4-4,150,0
-Marksman Camp,FC5,150,0
-Marksman Camp,FC5-1,90,4
-Marksman Camp,FC5-2,90,4
-Marksman Camp,FC5-3,90,4
-Marksman Camp,FC5-4,90,4
-Marksman Camp,FC6,45,9
-Marksman Camp,FC6-1,108,6
-Marksman Camp,FC6-2,108,6
-Marksman Camp,FC6-3,108,6
-Marksman Camp,FC6-4,108,6
-Marksman Camp,FC7,54,13
-Marksman Camp,FC7-1,108,9
-Marksman Camp,FC7-2,108,9
-Marksman Camp,FC7-3,108,9
-Marksman Camp,FC7-4,108,9
-Marksman Camp,FC8,54,19
-Marksman Camp,FC8-1,126,13
-Marksman Camp,FC8-2,126,13
-Marksman Camp,FC8-3,126,13
-Marksman Camp,FC8-4,126,13
-Marksman Camp,FC9,63,27
-Marksman Camp,FC9-1,157,31
-Marksman Camp,FC9-2,157,31
-Marksman Camp,FC9-3,157,31
-Marksman Camp,FC9-4,157,31
+Marksman Camp,F30,236,0
+Marksman Camp,FC1,343,0
+Marksman Camp,FC2,499,0
+Marksman Camp,FC3,611,0
+Marksman Camp,FC4,726,0
+Marksman Camp,FC5,510,16
+Marksman Camp,FC6,477,33
+Marksman Camp,FC7,486,49
+Marksman Camp,FC8,558,71
+Marksman Camp,FC9,691,151
 Marksman Camp,FC10,78,63
-Lancer Camp,30-1,59,0
-Lancer Camp,30-2,59,0
-Lancer Camp,30-3,59,0
-Lancer Camp,30-4,59,0
-Lancer Camp,FC1,59,0
-Lancer Camp,FC1-1,71,0
-Lancer Camp,FC1-2,71,0
-Lancer Camp,FC1-3,71,0
-Lancer Camp,FC1-4,71,0
-Lancer Camp,FC2,71,0
-Lancer Camp,FC2-1,107,0
-Lancer Camp,FC2-2,107,0
-Lancer Camp,FC2-3,107,0
-Lancer Camp,FC2-4,107,0
-Lancer Camp,FC3,107,0
-Lancer Camp,FC3-1,126,0
-Lancer Camp,FC3-2,126,0
-Lancer Camp,FC3-3,126,0
-Lancer Camp,FC3-4,126,0
-Lancer Camp,FC4,126,0
-Lancer Camp,FC4-1,150,0
-Lancer Camp,FC4-2,150,0
-Lancer Camp,FC4-3,150,0
-Lancer Camp,FC4-4,150,0
-Lancer Camp,FC5,150,0
-Lancer Camp,FC5-1,90,4
-Lancer Camp,FC5-2,90,4
-Lancer Camp,FC5-3,90,4
-Lancer Camp,FC5-4,90,4
-Lancer Camp,FC6,45,9
-Lancer Camp,FC6-1,108,6
-Lancer Camp,FC6-2,108,6
-Lancer Camp,FC6-3,108,6
-Lancer Camp,FC6-4,108,6
-Lancer Camp,FC7,54,13
-Lancer Camp,FC7-1,108,9
-Lancer Camp,FC7-2,108,9
-Lancer Camp,FC7-3,108,9
-Lancer Camp,FC7-4,108,9
-Lancer Camp,FC8,54,19
-Lancer Camp,FC8-1,126,13
-Lancer Camp,FC8-2,126,13
-Lancer Camp,FC8-3,126,13
-Lancer Camp,FC8-4,126,13
-Lancer Camp,FC9,63,27
-Lancer Camp,FC9-1,157,31
-Lancer Camp,FC9-2,157,31
-Lancer Camp,FC9-3,157,31
-Lancer Camp,FC9-4,157,31
+Lancer Camp,F30,236,0
+Lancer Camp,FC1,343,0
+Lancer Camp,FC2,499,0
+Lancer Camp,FC3,611,0
+Lancer Camp,FC4,726,0
+Lancer Camp,FC5,510,16
+Lancer Camp,FC6,477,33
+Lancer Camp,FC7,486,49
+Lancer Camp,FC8,558,71
+Lancer Camp,FC9,691,151
 Lancer Camp,FC10,78,63
-War Academy,FC8,54,18
-War Academy,FC8-1,126,13
-War Academy,FC8-2,126,13
-War Academy,FC8-3,126,13
-War Academy,FC8-4,126,13
-War Academy,FC9,63,27
-War Academy,FC9-1,157,31
-War Academy,FC9-2,157,31
-War Academy,FC9-3,157,31
-War Academy,FC9-4,157,31
+War Academy,F30,0,0
+War Academy,FC1,284,0
+War Academy,FC2,499,0
+War Academy,FC3,611,0
+War Academy,FC4,726,0
+War Academy,FC5,510,16
+War Academy,FC6,477,33
+War Academy,FC7,486,49
+War Academy,FC8,558,70
+War Academy,FC9,691,151
 War Academy,FC10,78,61
