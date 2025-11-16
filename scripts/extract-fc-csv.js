@@ -11,6 +11,7 @@ const ExcelJS = require('exceljs');
 const INPUT = path.resolve('src/assets/resource_data.xlsx');
 const OUTPUT_CSV = path.resolve('src/assets/fire_crystals_costs.csv');
 const OUTPUT_JSON = path.resolve('src/assets/fire_crystals_costs.json');
+const OUTPUT_JS = path.resolve('src/Scripts/fire-crystals-costs.js');
 
 const BUILDING_SHEETS = [
   'Furnace', 'Embassy', 'Command Center', 'Infirmary',
@@ -59,6 +60,10 @@ async function main() {
     
     console.log(`\nExtracted ${rows.length - 1} rows to ${OUTPUT_CSV}`);
     console.log(`Also wrote JSON to ${OUTPUT_JSON}`);
+    // Write JS assigning to window for direct browser use
+    const jsContent = `/* Auto-generated: Fire Crystal flat costs */\n(function(){\n  try { window.FireCrystalFlatCosts = ${JSON.stringify(flat, null, 2)}; } catch(_) {}\n})();\n`;
+    fs.writeFileSync(OUTPUT_JS, jsContent, 'utf8');
+    console.log(`Also wrote JS to ${OUTPUT_JS}`);
     
     // Calculate totals
     let grandFC = 0, grandRFC = 0;

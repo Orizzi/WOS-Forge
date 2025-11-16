@@ -8,8 +8,18 @@
     // Public status for UI badges
     window.FCDataStatus = { loaded: false, rows: 0, source: 'loading' };
 
-    // Attempt JSON first, then fallback to CSV
+    // Attempt in-memory JS first, then JSON, then CSV
     async function loadFireCrystalCosts() {
+        // Direct JS data (preferred if included)
+        try {
+            if (Array.isArray(window.FireCrystalFlatCosts) && window.FireCrystalFlatCosts.length > 0) {
+                console.info(`[FireCrystals] Using inline JS costs: ${window.FireCrystalFlatCosts.length} rows`);
+                window.FCDataStatus = { loaded: true, rows: window.FireCrystalFlatCosts.length, source: 'js' };
+                try { window.dispatchEvent(new CustomEvent('fc-csv-ready', { detail: { rows: window.FireCrystalFlatCosts.length } })); } catch(_) {}
+                return window.FireCrystalFlatCosts;
+            }
+        } catch (_) {}
+
         // Try JSON
         try {
             const rj = await fetch('assets/fire_crystals_costs.json', { cache: 'no-cache' });
