@@ -1213,6 +1213,17 @@
             }
         });
 
+        // Safety net: recalc on any building select change (delegated)
+        document.addEventListener('change', (e) => {
+            const el = e.target;
+            if (el && el.classList && el.classList.contains('building-select')) {
+                try { calculateAll(); } catch (_) {}
+            }
+        });
+
+        // Recalculate once CSV data loads/refreshes
+        try { window.addEventListener('fc-csv-ready', () => { try { calculateAll(); } catch (_) {} }); } catch(_) {}
+
         // Try to apply CSV overrides for resource costs (F30 → FC10)
         // This will re-run calculateAll once applied.
         applyResourceOverridesFromCsv().then(() => {
