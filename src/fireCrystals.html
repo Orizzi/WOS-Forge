@@ -17,11 +17,11 @@
         <a href="index.html" class="title">WOS CALCULATOR</a>
     </header>
     <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="index.html">Home</a> |
-        <a href="charms.html" data-i18n="nav-charms">Charms</a> |
-        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a> |
-        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a> |
-        <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a> |
+        <a href="index.html">Home</a>
+        <a href="charms.html" data-i18n="nav-charms">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals" aria-current="page">Fire Crystals</a>
+        <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a>
         <a href="pets.html" data-i18n="nav-pets">Pets</a>
         <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
         <select id="language-selector" aria-label="Language" title="Select language">
@@ -38,7 +38,7 @@
         <section class="profiles" aria-label="Fire Crystals profiles">
             <h3>Profiles</h3>
             <div class="profiles-row">
-                <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name">
+                <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name" maxlength="10">
                 <button id="profile-save" type="button" title="Save current setup" class="primary">💾 Save New</button>
                 <button id="profile-overwrite" type="button" title="Update selected profile" class="secondary">📝 Update</button>
             </div>
