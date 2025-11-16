@@ -194,12 +194,12 @@ const ChiefGearCalculatorModule = (function(){
     const startIdx = GEAR_LEVELS.indexOf(startVal);
     const finishIdx = GEAR_LEVELS.indexOf(finishVal);
     
-    // If FROM > TO, align TO to FROM (allow equality)
+    // If FROM > TO, adjust TO to match FROM (maintains FROM ≤ TO invariant)
     if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
       finishSelect.value = startVal;
     }
     
-    // Disable options in finishSelect that are less than startVal (allow equality)
+    // Disable TO options that are less than FROM (allow equality)
     Array.from(finishSelect.options).forEach(opt => {
       if(!opt.value) return;
       const optIdx = GEAR_LEVELS.indexOf(opt.value);
