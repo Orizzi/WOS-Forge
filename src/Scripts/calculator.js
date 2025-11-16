@@ -589,7 +589,7 @@ const CalculatorModule = (function(){
       if(from && to){
         // Apply initial validation
         validateLevels(from, to);
-        
+
         from.addEventListener('change', ()=> {
           const oldToValue = to.value;
           validateLevels(from, to);
@@ -598,10 +598,16 @@ const CalculatorModule = (function(){
           if(to.value !== oldToValue){
             applyBatch(type, 'to', to.value);
           }
+          if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+            ProfilesModule.autoSaveCurrentProfile();
+          }
         });
         to.addEventListener('change', ()=> {
           validateLevels(from, to);
           applyBatch(type, 'to', to.value);
+          if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+            ProfilesModule.autoSaveCurrentProfile();
+          }
         });
       }
     });

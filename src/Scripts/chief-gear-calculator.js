@@ -519,10 +519,16 @@ const ChiefGearCalculatorModule = (function(){
       globalFrom.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('from', globalFrom.value);
+        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+          ProfilesModule.autoSaveCurrentProfile();
+        }
       });
       globalTo.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('to', globalTo.value);
+        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+          ProfilesModule.autoSaveCurrentProfile();
+        }
       });
     }
 
