@@ -834,17 +834,22 @@
             return null;
         }
 
-        // Get FC/RFC costs from CSV
+        // Get FC/RFC costs from embedded JS/JSON/CSV
         let fcCosts = null;
         try {
             fcCosts = await window.calculateFireCrystalCostsFromCSV(buildingName, fromLevel, toLevel, levelsArray);
         } catch (e) {
             fcCosts = null;
         }
-        // Fallback: if FC CSV failed to load or missing rows, continue with 0 FC/RFC
-        if (!fcCosts) {
-            console.warn('[FireCrystals] FC CSV missing or failed for', buildingName, '— proceeding with 0 FC/RFC.');
-            fcCosts = { normalFC: 0, refineFC: 0 };
+        // Fallback: if external data missing or returns empty, compute from built-in table
+        if (!fcCosts || ((fcCosts.normalFC || 0) === 0 && (fcCosts.refineFC || 0) === 0)) {
+            const builtIn = sumBuiltInFireCrystalCosts(buildingName, fromLevel, toLevel, levelsArray);
+            if ((builtIn.normalFC || 0) + (builtIn.refineFC || 0) > 0) {
+                fcCosts = builtIn;
+            } else if (!fcCosts) {
+                console.warn('[FireCrystals] External FC data missing and built-in fallback yielded 0 for', buildingName);
+                fcCosts = { normalFC: 0, refineFC: 0 };
+            }
         }
 
         const buildingData = fireCrystalCosts[buildingName];
@@ -903,6 +908,51 @@
     function calculateAdjustedTime(totalSeconds, speedBonus) {
         const adjustedSeconds = totalSeconds * (100 / (100 + speedBonus));
         return adjustedSeconds;
+    }
+
+    // Built-in fallback: sum FC/RFC from the local table when external data is missing (e.g., War Academy)
+    function sumBuiltInFireCrystalCosts(buildingName, fromLevel, toLevel, levelsArray) {
+        const bdata = fireCrystalCosts[buildingName];
+        if (!bdata) return { normalFC: 0, refineFC: 0 };
+        const fromIndex = levelsArray.indexOf(fromLevel);
+        const toIndex = levelsArray.indexOf(toLevel);
+        if (fromIndex === -1 || toIndex === -1 || fromIndex >= toIndex) return { normalFC: 0, refineFC: 0 };
+
+        let normal = 0, refine = 0;
+        for (let i = fromIndex; i < toIndex; i++) {
+            const nextLevel = levelsArray[i + 1];
+            // Sub-level like FC3-2
+            const subMatch = /^FC(\d+)-(\d)$/.exec(nextLevel);
+            if (subMatch) {
+                const majorKey = `FC${subMatch[1]}`;
+                const sub = subMatch[2];
+                const node = bdata[majorKey];
+                if (!node) continue;
+                if (node.normal && node.refine) {
+                    normal += parseInt(node.normal[sub] || 0) || 0;
+                    refine += parseInt(node.refine[sub] || 0) || 0;
+                } else {
+                    normal += parseInt(node[sub] || 0) || 0;
+                }
+                continue;
+            }
+            // Major level like FC4 (cost stored in previous major as toFC4)
+            const majorMatch = /^FC(\d+)$/.exec(nextLevel);
+            if (majorMatch) {
+                const n = parseInt(majorMatch[1], 10);
+                const prevMajor = n > 1 ? `FC${n - 1}` : 'F30';
+                const prevNode = bdata[prevMajor];
+                if (!prevNode) continue;
+                const toKey = `toFC${n}`;
+                if (prevNode.normal && prevNode.refine) {
+                    normal += parseInt(prevNode.normal[toKey] || 0) || 0;
+                    refine += parseInt(prevNode.refine[toKey] || 0) || 0;
+                } else {
+                    normal += parseInt(prevNode[toKey] || 0) || 0;
+                }
+            }
+        }
+        return { normalFC: normal, refineFC: refine };
     }
 
     /**
