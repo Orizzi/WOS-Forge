@@ -586,10 +586,18 @@ const CalculatorModule = (function(){
         startSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
           calculateAll();
+          // Auto-save profile when a charm start level changes
+          if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+            setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
+          }
         });
         finishSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
           calculateAll();
+          // Auto-save profile when a charm finish level changes
+          if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+            setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
+          }
         });
       }
     });

@@ -17,6 +17,59 @@ const ProfilesModule = (function(){
   const PROFILES_KEY = 'wos-unified-profiles';  // Key used for browser storage
   const LAST_PROFILE_KEY = 'wos-last-profile';  // Remember last loaded profile name
   let currentLoadedProfile = null;  // Track which profile is currently loaded
+  const CONSENT_KEY = 'wos-storage-consent';     // Flag to remember user consent for storage
+  const CONSENT_DECLINED_SESSION = 'wos-storage-consent-declined-session';
+
+  /**
+   * canUseLocalStorage()
+   * Safely tests localStorage availability.
+   */
+  function canUseLocalStorage(){
+    try{
+      const testKey = '__wos_storage_test__';
+      localStorage.setItem(testKey, '1');
+      localStorage.removeItem(testKey);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  /**
+   * requestStorageConsent()
+   * Shows a one-time consent prompt to use localStorage for profiles.
+   * Returns true if consent exists or is newly granted.
+   */
+  async function requestStorageConsent(){
+    if(!canUseLocalStorage()){
+      console.warn('[Profiles] localStorage unavailable; profiles will not persist.');
+      return false;
+    }
+    try{
+      const prior = localStorage.getItem(CONSENT_KEY);
+      if(prior === 'granted') return true;
+    }catch(e){}
+
+    // Avoid re-prompting within the same session if declined
+    try{
+      if(sessionStorage.getItem(CONSENT_DECLINED_SESSION) === 'declined') return false;
+    }catch(e){}
+
+    const ok = await showConfirmDialog({
+      title: 'Allow profile saving?',
+      message: '<p>Profiles are saved in your browser storage so your plans persist after reload.</p><p>Allow this site to use localStorage?</p>',
+      confirmText: 'Allow',
+      cancelText: 'No thanks'
+    });
+
+    if(ok){
+      try{ localStorage.setItem(CONSENT_KEY, 'granted'); }catch(e){}
+      return true;
+    } else {
+      try{ sessionStorage.setItem(CONSENT_DECLINED_SESSION, 'declined'); }catch(e){}
+      return false;
+    }
+  }
   /**
    * showConfirmDialog(options)
    * Render a themed confirmation modal. Returns a Promise<boolean>.
@@ -370,9 +423,24 @@ const ProfilesModule = (function(){
    * Automatically saves changes to the currently loaded profile
    */
   function autoSaveCurrentProfile(){
-    if(!currentLoadedProfile) return; // No profile loaded, don't save
-    
     const profiles = readProfiles();
+    // If no current profile, try to use selected list option or last loaded
+    if(!currentLoadedProfile){
+      const list = document.getElementById('profiles-list');
+      const fromList = list && list.value;
+      const fromLast = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
+      currentLoadedProfile = fromList || fromLast || null;
+    }
+    // If no profile is marked current but exactly one exists, select it implicitly
+    if(!currentLoadedProfile){
+      const names = Object.keys(profiles);
+      if(names.length === 1){
+        currentLoadedProfile = names[0];
+        try { localStorage.setItem(LAST_PROFILE_KEY, currentLoadedProfile); } catch(e){}
+      } else {
+        return; // No current profile and ambiguous which to use
+      }
+    }
     if(!profiles[currentLoadedProfile]) return; // Profile was deleted
     // Silently merge current page selections with existing profile
     const current = captureCurrent();
@@ -383,6 +451,20 @@ const ProfilesModule = (function(){
     if(current.inventory && Object.keys(current.inventory).length){ existing.inventory = { ...(existing.inventory||{}), ...current.inventory }; }
     profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
+  }
+
+  /**
+   * wireAutoSaveListeners()
+   * Attach change/input handlers to calculator controls (including batch selects)
+   */
+  function wireAutoSaveListeners(){
+    // Capture all selects except profile/language controls
+    const selectNodes = document.querySelectorAll('select[id]:not(#profiles-list):not(#language-selector)');
+    selectNodes.forEach(sel => sel.addEventListener('change', autoSaveCurrentProfile));
+
+    // Inventory and other numeric inputs
+    const inputNodes = document.querySelectorAll('input[id^="inventory-"]');
+    inputNodes.forEach(input => input.addEventListener('input', autoSaveCurrentProfile));
   }
 
   /**
@@ -458,6 +540,27 @@ const ProfilesModule = (function(){
    * Called once when page loads
    */
   function init(){
+    // Ask for storage consent before wiring profiles
+    requestStorageConsent().then(consent => {
+      if(!consent){
+        const list = document.getElementById('profiles-list');
+        const nameInput = document.getElementById('profile-name');
+        const saveBtn = document.getElementById('profile-save');
+        const deleteBtn = document.getElementById('profile-delete');
+        const renameBtn = document.getElementById('profile-rename');
+        if(list) list.disabled = true;
+        if(nameInput) nameInput.disabled = true;
+        [saveBtn, deleteBtn, renameBtn].forEach(btn => { if(btn) btn.disabled = true; });
+        const profilesSection = document.querySelector('.profiles');
+        if(profilesSection){
+          const notice = document.createElement('p');
+          notice.className = 'muted';
+          notice.textContent = 'Profile saving is disabled (storage not allowed).';
+          profilesSection.appendChild(notice);
+        }
+        return; // Skip wiring if no consent
+      }
+
     const saveBtn = document.getElementById('profile-save');
     const deleteBtn = document.getElementById('profile-delete');
     const renameBtn = document.getElementById('profile-rename');
@@ -470,31 +573,16 @@ const ProfilesModule = (function(){
     
     // Auto-load when a profile is selected from the list
     if(list) list.addEventListener('change', loadSelectedProfile);
-    
-    // Auto-save when any charm select or inventory input changes
-    const allSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
-      .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    allSelects.forEach(sel => {
-      sel.addEventListener('change', autoSaveCurrentProfile);
+
+    // Auto-save for calculator controls (covers batch selects)
+    wireAutoSaveListeners();
+
+    // Last-chance save when leaving or hiding the tab
+    window.addEventListener('beforeunload', autoSaveCurrentProfile);
+    document.addEventListener('visibilitychange', () => {
+      if(document.visibilityState === 'hidden') autoSaveCurrentProfile();
     });
-    
-    
-    // Auto-save when inventory inputs change (Charms + Chief Gear + Fire Crystals + base resources)
-    const inventoryInputs = [
-      // Charms
-      'inventory-guides', 'inventory-designs', 'inventory-secrets',
-      // Chief Gear
-      'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',
-      // Fire Crystals specific
-      'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
-      // Optional base resources
-      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'
-    ];
-    inventoryInputs.forEach(id => {
-      const input = document.getElementById(id);
-      if(input) input.addEventListener('input', autoSaveCurrentProfile);
-    });
-    
+
     // Render existing profiles on load
     renderProfilesList();
 
@@ -531,6 +619,7 @@ const ProfilesModule = (function(){
         }
       }, 300);
     }
+    }); // end consent gate
   }
 
   // Public API
