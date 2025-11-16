@@ -331,6 +331,14 @@ const ProfilesModule = (function(){
     // Refresh the dropdown list
     renderProfilesList();
     
+    // Select the newly created profile and mark it as the current one
+    const list = document.getElementById('profiles-list');
+    if(list){
+      list.value = name;
+    }
+    currentLoadedProfile = name;
+    try { localStorage.setItem(LAST_PROFILE_KEY, name); } catch(e){}
+    
     // Clear the input field
     const nameInput = document.getElementById('profile-name');
     if(nameInput) nameInput.value = '';
@@ -470,11 +478,6 @@ const ProfilesModule = (function(){
       sel.addEventListener('change', autoSaveCurrentProfile);
     });
     
-    // Auto-save when batch controls change
-    const batchSelects = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
-    batchSelects.forEach(sel => {
-      sel.addEventListener('change', autoSaveCurrentProfile);
-    });
     
     // Auto-save when inventory inputs change (Charms + Chief Gear + Fire Crystals + base resources)
     const inventoryInputs = [

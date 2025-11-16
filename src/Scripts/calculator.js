@@ -1,3 +1,14 @@
+    // Add event listeners to all batch inputs to auto-save profile on any change
+    const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
+    allBatchInputs.forEach(batchInput => {
+      batchInput.addEventListener('change', () => {
+        console.log('[Charms] Batch input changed:', batchInput.id, 'Value:', batchInput.value);
+        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+          ProfilesModule.autoSaveCurrentProfile();
+          console.log('[Charms] Profile auto-saved after batch input change.');
+        }
+      });
+    });
 /**
  * ====== CHARMS CALCULATOR MODULE ======
  * 
@@ -473,6 +484,10 @@ const CalculatorModule = (function(){
     
     // Recalculate totals since inputs changed
     calculateAll();
+    // Save profile after all DOM updates
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
+    }
   }
 
   /**
@@ -598,16 +613,19 @@ const CalculatorModule = (function(){
           if(to.value !== oldToValue){
             applyBatch(type, 'to', to.value);
           }
+          calculateAll();
+          // Save profile after all DOM updates
           if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-            ProfilesModule.autoSaveCurrentProfile();
+            setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
           }
         });
         to.addEventListener('change', ()=> {
           validateLevels(from, to);
           applyBatch(type, 'to', to.value);
-          // Always auto-save after TO batch change
+          calculateAll();
+          // Save profile after all DOM updates
           if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-            ProfilesModule.autoSaveCurrentProfile();
+            setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
           }
         });
       }

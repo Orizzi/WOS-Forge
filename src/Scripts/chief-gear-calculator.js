@@ -1,3 +1,14 @@
+    // Add event listeners to all batch inputs to auto-save profile on any change
+    const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
+    allBatchInputs.forEach(batchInput => {
+      batchInput.addEventListener('change', () => {
+        console.log('[Chief Gear] Batch input changed:', batchInput.id, 'Value:', batchInput.value);
+        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+          ProfilesModule.autoSaveCurrentProfile();
+          console.log('[Chief Gear] Profile auto-saved after batch input change.');
+        }
+      });
+    });
 /**
  * ====== CHIEF GEAR CALCULATOR MODULE ======
  * 
@@ -412,6 +423,10 @@ const ChiefGearCalculatorModule = (function(){
     }
     
     calculateAll();
+    // Save profile after all DOM updates
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
+    }
   }
 
   /**
@@ -439,6 +454,10 @@ const ChiefGearCalculatorModule = (function(){
     });
     
     calculateAll();
+    // Save profile after all DOM updates
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
+    }
   }
 
   /**
@@ -519,16 +538,19 @@ const ChiefGearCalculatorModule = (function(){
       globalFrom.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('from', globalFrom.value);
+        calculateAll();
+        // Save profile after all DOM updates
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-          ProfilesModule.autoSaveCurrentProfile();
+          setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
         }
       });
       globalTo.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('to', globalTo.value);
-        // Always auto-save after TO batch change
+        calculateAll();
+        // Save profile after all DOM updates
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-          ProfilesModule.autoSaveCurrentProfile();
+          setTimeout(() => { ProfilesModule.autoSaveCurrentProfile(); }, 0);
         }
       });
     }
