@@ -466,7 +466,16 @@ const ChiefGearCalculatorModule = (function(){
       if(!startSel || !finishSel) return;
       
       if(which === 'from'){
+        // Setting FROM
         startSel.value = String(value);
+        // If FROM > TO, adjust TO to match FROM
+        const startIdx = GEAR_LEVELS.indexOf(String(value));
+        const finishIdx = GEAR_LEVELS.indexOf(finishSel.value);
+        if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
+          finishSel.value = String(value);
+        }
+        // Update disabled states
+        validateLevels(startSel, finishSel);
       } else {
         // Setting TO
         finishSel.value = String(value);
@@ -474,9 +483,15 @@ const ChiefGearCalculatorModule = (function(){
         if(!startSel.value){
           startSel.value = GEAR_LEVELS[0]; // "Green"
         }
+        // If FROM > TO, adjust FROM to match TO
+        const startIdx = GEAR_LEVELS.indexOf(startSel.value);
+        const finishIdx = GEAR_LEVELS.indexOf(String(value));
+        if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
+          startSel.value = String(value);
+        }
+        // Update disabled states
+        validateLevels(startSel, finishSel);
       }
-      
-      validateLevels(startSel, finishSel);
     });
     calculateAll();
   }
