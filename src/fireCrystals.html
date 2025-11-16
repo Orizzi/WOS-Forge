@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,29 +34,12 @@
     <main role="main">
         <h2 data-i18n="nav-fire-crystals">Fire Crystals</h2>
 
-        <!-- Profiles section (standardized) -->
-        <section class="profiles" aria-label="Fire Crystals profiles">
-            <h3>Profiles</h3>
-            <div class="profiles-row">
-                <input id="profile-name" type="text" placeholder="New profile name" aria-label="Profile name" maxlength="10">
-                <button id="profile-save" type="button" title="Save current setup" class="primary">💾 Save New</button>
-                <button id="profile-overwrite" type="button" title="Update selected profile" class="secondary">📝 Update</button>
-            </div>
-            <div class="profiles-row">
-                <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-                <button id="profile-rename" type="button" title="Rename selected profile" class="secondary">✏️ Rename</button>
-                <button id="profile-delete" type="button" title="Delete selected profile" class="danger">🗑️ Delete</button>
-            </div>
-            <div class="profiles-row">
-                <button id="export-profiles" type="button" title="Download all profiles as JSON" class="secondary">📤 Export</button>
-                <button id="import-profiles" type="button" title="Import profiles from JSON file" class="secondary">📥 Import</button>
-            </div>
-        </section>
-
-        <!-- Inventory Section -->
-        <section class="inventory-section">
+        <!-- Profiles + Inventory row (inventory left) -->
+        <div class="inventory-profiles-row">
+        <!-- Inventory Section (kept first so it stays left; profiles will be right) -->
+        <section class="inventory-section compact">
             <h3 data-i18n="inventory-header">Your Inventory</h3>
-            <div class="inventory-grid">
+            <div class="inventory-grid compact">
                 <div class="inventory-item">
                     <label for="inventory-fire-crystals">
                         <span class="label-with-icon">
@@ -123,6 +106,25 @@
             </div>
         </section>
 
+                <!-- Profiles section (stacked vertically on this page) -->
+                <section class="profiles stacked" aria-label="Chief Gear profiles" role="region">
+                    <h3 data-i18n="profiles-header">Profiles</h3>
+                    <div class="profiles-row">
+                        <div class="input-with-icon">
+                            <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+                            <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+                        </div>
+                        <div class="select-with-icon">
+                            <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                            <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+                        </div>
+                        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+                    </div>
+                </section>
+        </div>
+
+        <!-- Buildings + Results two-column layout -->
+        <div class="fc-two-column">
         <!-- Buildings Section -->
         <section class="buildings-section">
             <h2>Buildings</h2>
@@ -135,8 +137,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="furnace-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="furnace-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -190,8 +192,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="furnace-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="furnace-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -254,8 +256,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="embassy-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="embassy-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -309,8 +311,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="embassy-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="embassy-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -374,8 +376,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="command-center-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="command-center-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -429,8 +431,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="command-center-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="command-center-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -494,8 +496,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="infirmary-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="infirmary-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -549,8 +551,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="infirmary-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="infirmary-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -614,8 +616,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="infantry-camp-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="infantry-camp-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -669,8 +671,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="infantry-camp-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="infantry-camp-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -734,8 +736,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="marksman-camp-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="marksman-camp-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -789,8 +791,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="marksman-camp-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="marksman-camp-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -854,8 +856,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="lancer-camp-current" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="lancer-camp-start" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -909,8 +911,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="lancer-camp-desired" class="building-select">                                <option value="F30">F30</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="lancer-camp-finish" class="building-select">                                <option value="F30">F30</option>
                                 <option value="30-1">30-1</option>
                                 <option value="30-2">30-2</option>
                                 <option value="30-3">30-3</option>
@@ -974,8 +976,8 @@
                     </div>
                     <div class="building-selects">
                         <div class="select-group">
-                            <label data-i18n="building-current">Current</label>
-                            <select id="war-academy-current" class="building-select">                                <option value="FC1">FC1</option>
+                            <label data-i18n="level.start">Current</label>
+                            <select id="war-academy-start" class="building-select">                                <option value="FC1">FC1</option>
                                 <option value="FC1-1">FC1-1</option>
                                 <option value="FC1-2">FC1-2</option>
                                 <option value="FC1-3">FC1-3</option>
@@ -1024,8 +1026,8 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label data-i18n="building-desired">Desired</label>
-                            <select id="war-academy-desired" class="building-select">                                <option value="FC1">FC1</option>
+                            <label data-i18n="level.finish">Desired</label>
+                            <select id="war-academy-finish" class="building-select">                                <option value="FC1">FC1</option>
                                 <option value="FC1-1">FC1-1</option>
                                 <option value="FC1-2">FC1-2</option>
                                 <option value="FC1-3">FC1-3</option>
@@ -1078,18 +1080,16 @@
             </div>
         </section>
 
-        <!-- Results Section -->
+        <!-- Results Section (right column) -->
         <section class="results-section">
             <h3 data-i18n="totals-header">Items You Need</h3>
             <div id="results-display"></div>
         </section>
+        </div>
 
-        <!-- Support Section -->
-        <section class="support-section">
-            <h3 data-i18n="support-header">Support This Project</h3>
-            <p data-i18n="support-message">I hope these calculators were helpful! If you'd like to support the project, my WOS ID is: 273994720. Thanks and happy surviving!</p>
-        </section>
+       
     </main>
 </body>
 </html>
+
 

@@ -37,6 +37,49 @@ body {
     padding: 0; 
 }
 
+/* ===== Inventory + Profiles Row (shared) ===== */
+.inventory-profiles-row{
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin: 12px 16px;
+}
+
+.inventory-section{ flex: 1 1 480px; order: 1; }
+.profiles{ flex: 1 1 420px; order: 2; }
+
+/* Keep inventory on the left on wide layouts */
+@media (min-width: 900px){
+    .inventory-section{ order: 1; }
+    .profiles{ order: 2; }
+}
+
+/* Profiles rows */
+.profiles .profiles-row{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+/* Minor helpers for inputs with icons (used by Chief Gear markup) */
+.input-with-icon, .select-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
+.icon-button{ padding: 10px 12px; min-width: 40px; }
+
+/* ===== Inventory grid (compact) ===== */
+.inventory-grid{ display: grid; gap: 10px 12px; }
+.inventory-grid.compact{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 1100px){
+    .inventory-grid.compact{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.inventory-item label{ font-size: 0.95rem; color: var(--text); opacity: 0.9; }
+.inventory-item input[type="number"]{ width: 100%; box-sizing: border-box; text-align: right; }
+.label-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
+.res-icon{ width: 18px; height: 18px; object-fit: contain; }
+
 main {
     background-image: url('../assets/background.png');
     background-size: cover;
@@ -676,8 +719,8 @@ input {
     gap: 10px;
 }
 .building-header .building-icon {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
     filter: drop-shadow(0 1px 1px var(--shadow));
 }
@@ -933,6 +976,21 @@ html:not(.light-theme) .profiles input[type="text"]{
     filter: none;
 }
 
+/* Fire Crystals page: stack profile controls vertically */
+.profiles.stacked { flex-direction: column; align-items: flex-start; }
+.profiles.stacked .profiles-row { 
+    flex-direction: column; 
+    align-items: stretch; 
+    justify-content: flex-start; 
+    gap: 8px;
+    width: 100%;
+}
+.profiles.stacked .input-with-icon,
+.profiles.stacked .select-with-icon { width: 100%; }
+.profiles.stacked .profiles-list,
+.profiles.stacked input[type="text"] { width: 100%; box-sizing: border-box; }
+.profiles.stacked button.icon-button { align-self: flex-end; }
+
 @media (max-width: 768px) {
     .profiles-row {
         gap: 6px;
@@ -1161,8 +1219,10 @@ html:not(.light-theme) .profiles input[type="text"]{
 .inventory-profiles-row .profiles {
     align-self: stretch; /* ensure equal heights */
 }
-.inventory-profiles-row .inventory-section { flex: 1 1 auto; }
-.inventory-profiles-row .profiles { flex: 0 0 auto; }
+.inventory-profiles-row .inventory-section { flex: 2 1 0; }
+.inventory-profiles-row .profiles { flex: 1 1 0; min-width: 360px; }
+.inventory-profiles-row .inventory-section { order: 1; }
+.inventory-profiles-row .profiles { order: 2; }
 
 .inventory-section {
     margin: 8px 12px;
@@ -1177,6 +1237,26 @@ html:not(.light-theme) .profiles input[type="text"]{
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-top: 8px;
+}
+
+/* Compact inventory variant for sidebar */
+.inventory-section.compact h3 { margin: 0 0 8px; }
+.inventory-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+@media (min-width: 1100px) {
+    .inventory-grid.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.inventory-grid.compact .inventory-item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.inventory-grid.compact .inventory-item input[type=number] {
+    width: 110px;
+    max-width: 45%;
+    text-align: right;
 }
 
 .inventory-row {
@@ -1288,6 +1368,56 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-radius: 10px;
 }
 
+/* Fire Crystals: two-column layout for buildings (left) and results (right) */
+.fc-two-column{
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 16px;
+    align-items: start;
+    margin: 12px 20px;
+}
+.fc-two-column .buildings-section,
+.fc-two-column .results-section{ margin: 0; }
+.fc-two-column .results-section{
+    padding: 12px;
+    position: sticky;
+    top: 12px;
+    max-height: calc(100vh - 160px);
+    overflow: auto;
+}
+/* Results content: 3-column grid on desktop */
+.results-section #results-display{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+}
+/* Direct grid items (flattened results) */
+.results-section #results-display .total-item{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+}
+.results-section #results-display .resource-label{ color: var(--muted-text); font-size: 0.95em; }
+.results-section #results-display .resource-value{ font-weight: 700; font-size: 1.05em; }
+.results-section #results-display .gap.deficit{ color: var(--danger); font-weight: 600; }
+.results-section #results-display .gap.surplus{ color: var(--success); font-weight: 600; }
+@media (max-width: 1200px){
+    .results-section #results-display{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px){
+    .results-section #results-display{ grid-template-columns: 1fr; }
+}
+@media (max-width: 1200px){
+    .fc-two-column{ grid-template-columns: 1fr; }
+    .fc-two-column .results-section{ position: static; max-height: none; }
+}
+
 .results-container {
     margin-top: 12px;
 }
@@ -1307,9 +1437,9 @@ html:not(.light-theme) .profiles input[type="text"]{
 .building-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 6px 16px var(--shadow);
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
     text-align: center;
     min-width: 0;
     display: flex;
@@ -1323,7 +1453,7 @@ html:not(.light-theme) .profiles input[type="text"]{
 .building-selects {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 6px;
     align-items: start;
     width: 100%;
 }
@@ -1331,8 +1461,8 @@ html:not(.light-theme) .profiles input[type="text"]{
 .select-group {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 8px;
+    padding: 8px;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
@@ -1346,10 +1476,13 @@ html:not(.light-theme) .profiles input[type="text"]{
 }
 
 .buildings-grid {
-    margin-top: 12px;
+    margin-top: 8px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    /* Desktop: arrange items into exactly 3 rows, auto-expanding columns */
+    grid-auto-flow: column;
+    grid-template-rows: repeat(3, auto);
+    grid-auto-columns: 1fr;
+    gap: 12px;
     width: 100%;
 }
 
@@ -1403,6 +1536,9 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 @media (max-width: 1200px) {
     .buildings-grid { 
+        /* Tablet: simple 2-column grid */
+        grid-auto-flow: row;
+        grid-template-rows: none;
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
@@ -1410,6 +1546,9 @@ html:not(.light-theme) .profiles input[type="text"]{
 @media (max-width: 900px) {
     .building-selects { grid-template-columns: 1fr; }
     .buildings-grid { 
+        /* Mobile: stack vertically */
+        grid-auto-flow: row;
+        grid-template-rows: none;
         grid-template-columns: 1fr;
         gap: 12px;
     }

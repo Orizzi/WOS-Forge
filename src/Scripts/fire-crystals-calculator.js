@@ -821,8 +821,9 @@
 
     /**
      * Calculate costs for a single building upgrade path
+     * Now uses CSV data from Excel sheets
      */
-    function calculateBuildingCosts(buildingName, fromLevel, toLevel) {
+    async function calculateBuildingCosts(buildingName, fromLevel, toLevel) {
         if (!fromLevel || !toLevel) return null;
 
         const levelsArray = getLevelsForBuilding(buildingName);
@@ -833,58 +834,30 @@
             return null;
         }
 
+        // Get FC/RFC costs from CSV
+        const fcCosts = await window.calculateFireCrystalCostsFromCSV(buildingName, fromLevel, toLevel, levelsArray);
+        
+        if (!fcCosts) {
+            console.error('Failed to calculate FC costs for', buildingName);
+            return null;
+        }
+
         const buildingData = fireCrystalCosts[buildingName];
-        let totalNormalFC = 0;
-        let totalRefineFC = 0;
         let totalTime = 0;
         let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
 
-        // Calculate costs for each step in the range
+        // Calculate time and resource costs for each step in the range
         for (let i = fromIndex; i < toIndex; i++) {
             const currentLevel = levelsArray[i];
             const nextLevel = levelsArray[i + 1];
             
             // Determine the base level (major level without sub-step suffix)
             const baseCurrent = currentLevel.includes('-') ? currentLevel.split('-')[0] : currentLevel;
-            const levelData = buildingData[baseCurrent];
-
-            if (!levelData) continue;
+            const levelData = buildingData && buildingData[baseCurrent];
 
             // Add time for this major level (only once per major level transition)
-            // Time is added when transitioning FROM a major level (e.g., F30 → 30-1) or when already at last sub-step
-            if (!currentLevel.includes('-')) {
+            if (levelData && !currentLevel.includes('-')) {
                 totalTime += levelData.time || 0;
-            }
-
-            // Determine the upgrade key for this specific step
-            let upgradeKey = '';
-            
-            if (currentLevel.includes('-')) {
-                // We're at a sub-level (e.g., 30-1, 30-2, etc.)
-                const subStep = currentLevel.split('-')[1]; // '1', '2', '3', or '4'
-                upgradeKey = subStep;
-            } else {
-                // We're at a major level (e.g., F30, FC1, etc.)
-                // Determine what the next major level will be
-                const nextBase = nextLevel.includes('-') ? nextLevel.split('-')[0] : nextLevel;
-                
-                if (nextBase === baseCurrent) {
-                    // Transitioning to first sub-level (e.g., F30 → 30-1)
-                    upgradeKey = '1';
-                } else {
-                    // Transitioning to next major level (e.g., 30-4 → FC1)
-                    upgradeKey = 'to' + nextBase;
-                }
-            }
-
-            // Add fire crystals based on level structure
-            if (levelData.normal) {
-                // FC5+ levels: use normal/refine structure (FC5-1 onwards also uses RFC)
-                totalNormalFC += levelData.normal[upgradeKey] || 0;
-                totalRefineFC += (levelData.refine && levelData.refine[upgradeKey]) || 0;
-            } else {
-                // Pre-FC5 levels (F30 → FC4): direct FC properties, no RFC
-                totalNormalFC += levelData[upgradeKey] || 0;
             }
 
             // Add base resources using the nextLevel key
@@ -898,8 +871,8 @@
         }
 
         return {
-            normalFC: totalNormalFC,
-            refineFC: totalRefineFC,
+            normalFC: fcCosts.normalFC,
+            refineFC: fcCosts.refineFC,
             time: totalTime,
             meat: totalMeat,
             wood: totalWood,
@@ -930,7 +903,7 @@
     /**
      * Main calculation function
      */
-    function calculateAll() {
+    async function calculateAll() {
         const results = {};
     let totalNormalFC = 0;
     let totalRefineFC = 0;
@@ -938,14 +911,14 @@
     let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
 
         // Calculate for each building
-        BUILDINGS.forEach(building => {
+        for (const building of BUILDINGS) {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
             const startSelect = document.getElementById(`${buildingId}-start`);
             const finishSelect = document.getElementById(`${buildingId}-finish`);
 
-            if (!startSelect || !finishSelect) return;
+            if (!startSelect || !finishSelect) continue;
 
-            const costs = calculateBuildingCosts(building, startSelect.value, finishSelect.value);
+            const costs = await calculateBuildingCosts(building, startSelect.value, finishSelect.value);
             
             if (costs) {
                 results[building] = costs;

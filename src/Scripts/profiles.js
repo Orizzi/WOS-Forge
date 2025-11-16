@@ -299,6 +299,17 @@ const ProfilesModule = (function(){
       ChiefGearCalculator.calculateAll();
     }
       if(typeof FireCrystalsCalculator !== 'undefined'){
+        // Validate all building levels after loading
+        const fcBuildings = ['furnace', 'embassy', 'command-center', 'infirmary', 'infantry-camp', 'marksman-camp', 'lancer-camp', 'war-academy'];
+        const buildingNames = ['Furnace', 'Embassy', 'Command Center', 'Infirmary', 'Infantry Camp', 'Marksman Camp', 'Lancer Camp', 'War Academy'];
+        fcBuildings.forEach((building, idx) => {
+          const start = document.getElementById(`${building}-start`);
+          const finish = document.getElementById(`${building}-finish`);
+          if (start && finish && FireCrystalsCalculator.validateLevels && FireCrystalsCalculator.getLevelsForBuilding) {
+            const levelsArray = FireCrystalsCalculator.getLevelsForBuilding(buildingNames[idx]);
+            FireCrystalsCalculator.validateLevels(start, finish, levelsArray);
+          }
+        });
         FireCrystalsCalculator.calculateAll();
       }
   }
