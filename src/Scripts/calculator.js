@@ -591,8 +591,13 @@ const CalculatorModule = (function(){
         validateLevels(from, to);
         
         from.addEventListener('change', ()=> {
+          const oldToValue = to.value;
           validateLevels(from, to);
           applyBatch(type, 'from', from.value);
+          // If validateLevels adjusted the batch TO, apply it to all individual charms
+          if(to.value !== oldToValue){
+            applyBatch(type, 'to', to.value);
+          }
         });
         to.addEventListener('change', ()=> {
           validateLevels(from, to);
