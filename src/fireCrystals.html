@@ -155,29 +155,26 @@
 
                 <!-- Profiles section (stacked vertically on this page) -->
                 <section class="profiles stacked" aria-label="Chief Gear profiles" role="region">
-                    <h3 data-i18n="profiles-header">Profiles</h3>
-                    <div class="profiles-row">
-                        <div class="input-with-icon">
-                            <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
-                            <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
-                        </div>
-                        <div class="select-with-icon">
-                            <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-                            <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
-                        </div>
-                        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
-                    </div>
-                </section>
-        </div>
-
-        <!-- Buildings + Results two-column layout -->
-        <div class="fc-two-column">
-        <!-- Buildings Section -->
-        <section class="buildings-section">
-            <h2>Buildings</h2>
-            <div class="buildings-grid">
-                <!-- Furnace (Main Building) -->
-                <div class="building-card building-main">
+        <section class="inventory-section" aria-label="Your Fire Crystals Inventory" role="region">
+            <h3 data-i18n="inventory-header">Your Inventory</h3>
+            <div class="inventory-inputs">
+                ...inventory items...
+            </div>
+        </section>
+        <section class="profiles" aria-label="Fire Crystals profiles" role="region">
+            <h3 data-i18n="profiles-header">Profiles</h3>
+            <div class="profiles-row">
+                <div class="input-with-icon">
+                    <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+                    <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+                </div>
+                <div class="select-with-icon">
+                    <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                    <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+                </div>
+                <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+            </div>
+        </section>
                     <div class="building-header">
                         <img class="building-icon" src="assets/buildings/furnace.png" alt="Furnace" onerror="this.style.display='none'">
                         <h3 data-i18n="Furnace">Furnace</h3>
