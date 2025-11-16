@@ -1,6 +1,26 @@
 (function(){
   'use strict';
   const POWER_MAP = {}; // { BuildingName: { LevelKey: power } }
+  function applyInlineMap(){
+    try{
+      if(window.BuildingPowerMap){
+        let applied=0;
+        Object.keys(window.BuildingPowerMap).forEach(b=>{
+          if(!POWER_MAP[b]) POWER_MAP[b]={};
+          Object.assign(POWER_MAP[b], window.BuildingPowerMap[b]);
+          applied += Object.keys(window.BuildingPowerMap[b]).length;
+        });
+        if(applied>0){
+          console.info(`[FireCrystals Power] Inline map loaded ${applied} entries.`);
+          window.PowerDataStatus = { loaded: true, rows: applied };
+          try { window.dispatchEvent(new CustomEvent('power-csv-ready', { detail: { rows: applied } })); } catch(_) {}
+          return true;
+        }
+      }
+    }catch(_){}
+    return false;
+  }
+
   function loadCsv(url){
     return fetch(url,{cache:'no-cache'}).then(r=> r.ok ? r.text(): '')
       .then(text => {
@@ -88,6 +108,11 @@
   }
 
   function init(){
+    if(applyInlineMap()){
+      wrapCalculate();
+      setTimeout(applyPowerToDom, 200);
+      return;
+    }
     loadCsv('assets/building_power.csv').then(()=>{
       wrapCalculate();
       // Initial attempt after DOM paints
