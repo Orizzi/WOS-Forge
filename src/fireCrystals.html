@@ -92,7 +92,7 @@
         <!-- Inventory Section (kept first so it stays left; profiles will be right) -->
         <section class="inventory-section compact">
             <h3 data-i18n="inventory-header">Your Inventory</h3>
-            <div class="inventory-grid compact">
+            <div class="inventory-grid compact" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
                 <div class="inventory-item">
                     <label for="inventory-fire-crystals" class="label-with-icon">
                         <img class="res-icon" src="assets/resources/base/fire-crystals.png" alt="Fire Crystals" onerror="this.style.display='none'">
