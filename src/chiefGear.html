@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOSC-Chief Gear</title>
     <link rel="stylesheet" href="style/style.css">
@@ -12,10 +11,21 @@
     <script src="Scripts/profiles.js" defer></script>
     <script src="Scripts/translations.js" defer></script>
 </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chief Gear calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every gear type.">
+    <title>WOSC-Chief Gear</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="Scripts/icon-helper.js" defer></script>
+    <script src="Scripts/theme.js" defer></script>
+    <script src="Scripts/table-sort.js" defer></script>
+    <script src="Scripts/chief-gear-calculator.js" defer></script>
+    <script src="Scripts/profiles.js" defer></script>
+    <script src="Scripts/translations.js" defer></script>
 <body>
     <header role="banner">
         <a href="index.html" class="logo-link">
-            <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+            <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
         </a>
     </header>
     <nav class="main-nav" role="navigation" aria-label="Main navigation">
@@ -83,7 +93,8 @@
 
   
 
-  <section class="calculation-input" aria-label="Chief Gear Level Inputs" role="region">
+  <section class="calculation-input" aria-label="Chief Gear Level Inputs" role="region" tabindex="0" aria-describedby="gear-level-desc">
+    <span id="gear-level-desc" class="sr-only">Select chief gear levels to calculate required resources. Use batch controls for quick selection. Results update automatically.</span>
 
   <!-- Main container for equipment and results side by side -->
   <div class="main-layout-wrapper">
@@ -91,7 +102,7 @@
     <div class="left-column">
       <!-- Global Batch Controls for All Gear (moved inside left column) -->
       <div class="batch-controls" aria-label="Set all gear levels" role="group">
-        <h3 data-i18n="select-all-header">Set All Gear Levels</h3>
+        <h3 data-i18n="select-all-header" id="batch-controls-heading">Set All Gear Levels</h3>
         <div class="batch-row">
           <label for="gear-batch-from" data-i18n="from">FROM:</label>
           <select id="gear-batch-from" title="Apply FROM level to all gear" aria-label="Set all gear FROM levels">
@@ -203,7 +214,7 @@
 
     <!-- Gear level row -->
     <div class="gear-item-row">
-      <label data-i18n="from">FROM:</label>
+      <label data-i18n="from" for="helmet-start">FROM:</label>
       <select id="helmet-start" name="helmet">
         
         <option value="Green">Green</option>
@@ -253,7 +264,7 @@
         <option value="Red T4 2">Red T4 2</option>
         <option value="Red T4 3">Red T4 3</option>
       </select>
-      <label data-i18n="to">TO:</label>
+      <label data-i18n="to" for="helmet-finish">TO:</label>
       <select id="helmet-finish" name="helmet">
         
         <option value="Green">Green</option>
@@ -856,8 +867,8 @@
 
   <!-- Results section - now on the right side -->
   <div class="calculation-output" aria-label="Calculation results">
-    <h2 data-i18n="results">Results</h2>
-    <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table">
+    <h2 data-i18n="results" id="results-heading">Results</h2>
+    <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table" role="region" aria-labelledby="results-heading">
       <div class="table-responsive">
         <!-- Calculation results will be displayed here -->
       </div>
