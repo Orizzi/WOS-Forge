@@ -162,13 +162,13 @@ const ProfilesModule = (function(){
       if(s.value) data.charms[s.id] = s.value;
     });
     
-    // Capture Chief Gear data (all gear -current and -desired selects)
+    // Capture Chief Gear data (all gear -start and -finish selects)
     const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
     gearTypes.forEach(gear => {
-      const current = document.getElementById(`${gear}-current`);
-      const desired = document.getElementById(`${gear}-desired`);
-      if(current && current.value) data.chiefGear[`${gear}-current`] = current.value;
-      if(desired && desired.value) data.chiefGear[`${gear}-desired`] = desired.value;
+      const start = document.getElementById(`${gear}-start`);
+      const finish = document.getElementById(`${gear}-finish`);
+      if(start && start.value) data.chiefGear[`${gear}-start`] = start.value;
+      if(finish && finish.value) data.chiefGear[`${gear}-finish`] = finish.value;
     });
     
       // Capture Fire Crystals buildings data (8 buildings from fireCrystals.html page)
@@ -262,6 +262,16 @@ const ProfilesModule = (function(){
       Object.keys(obj.chiefGear).forEach(id => {
         const el = document.getElementById(id);
         if(el && el.tagName === 'SELECT') el.value = String(obj.chiefGear[id]);
+      });
+      
+      // Trigger validation for all chief gear selects after loading
+      const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
+      gearTypes.forEach(gear => {
+        const startSel = document.getElementById(`${gear}-start`);
+        const finishSel = document.getElementById(`${gear}-finish`);
+        if(startSel && finishSel && typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.validateLevels){
+          ChiefGearCalculator.validateLevels(startSel, finishSel);
+        }
       });
     }
     

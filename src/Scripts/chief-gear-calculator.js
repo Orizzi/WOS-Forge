@@ -591,7 +591,8 @@ const ChiefGearCalculatorModule = (function(){
     calculateAll,
     resetGear,
     applyBatch,
-    sumCosts
+    sumCosts,
+    validateLevels
   };
 
 })();
