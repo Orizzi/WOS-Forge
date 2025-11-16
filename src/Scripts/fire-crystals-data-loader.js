@@ -5,6 +5,8 @@
     'use strict';
 
     let fireCrystalCostsCache = null;
+    // Public status for UI badges
+    window.FCDataStatus = { loaded: false, rows: 0, source: 'loading' };
 
     /**
      * Load and parse the CSV file
@@ -31,9 +33,14 @@
             }
             
             console.info(`[FireCrystals] Loaded FC CSV rows: ${flatData.length}`);
+            window.FCDataStatus = { loaded: true, rows: flatData.length, source: 'csv' };
+            // Notify listeners (e.g., UI badge)
+            try { window.dispatchEvent(new CustomEvent('fc-csv-ready', { detail: { rows: flatData.length } })); } catch(_) {}
             return flatData;
         } catch (error) {
             console.error('Error loading fire crystal costs:', error);
+            window.FCDataStatus = { loaded: false, rows: 0, source: 'fallback' };
+            try { window.dispatchEvent(new CustomEvent('fc-csv-ready', { detail: { rows: 0, error: true } })); } catch(_) {}
             return null;
         }
     }

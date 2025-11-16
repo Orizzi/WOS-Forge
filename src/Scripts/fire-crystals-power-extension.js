@@ -22,7 +22,11 @@
           if(!POWER_MAP[b]) POWER_MAP[b]={};
           POWER_MAP[b][lvl]=p; applied++;
         }
-        if(applied>0) console.info(`[FireCrystals Power] Loaded ${applied} entries.`);
+        if(applied>0){
+          console.info(`[FireCrystals Power] Loaded ${applied} entries.`);
+          window.PowerDataStatus = { loaded: true, rows: applied };
+          try { window.dispatchEvent(new CustomEvent('power-csv-ready', { detail: { rows: applied } })); } catch(_) {}
+        }
       }).catch(()=>{});
   }
 

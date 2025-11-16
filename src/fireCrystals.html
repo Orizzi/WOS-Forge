@@ -12,6 +12,7 @@
     <script src="Scripts/fire-crystals-data-loader.js" defer></script>
     <script src="Scripts/fire-crystals-calculator.js" defer></script>
     <script src="Scripts/fire-crystals-power-extension.js" defer></script>
+    <script src="Scripts/fc-status-ui.js" defer></script>
     </head>
 <body>
     <header role="banner">
@@ -1083,7 +1084,7 @@
 
         <!-- Results Section (right column) -->
         <section class="results-section">
-            <h3 data-i18n="totals-header">Items You Need</h3>
+            <h3 data-i18n="totals-header">Items You Need <span id="csv-status" class="csv-status" data-status="loading">Loading data…</span></h3>
             <div id="results-display"></div>
         </section>
         </div>
