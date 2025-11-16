@@ -12,7 +12,9 @@
     "import:charms": "node scripts/extract-charms-costs.js",
     "import:chief-gear": "node scripts/extract-chief-gear-costs.js",
     "import:fc": "node scripts/extract-fc-csv.js",
-    "import:power": "node scripts/extract-building-power.js"
+    "import:power": "node scripts/extract-building-power.js",
+    "export:sheets": "node scripts/export-all-sheets-to-csv.js",
+    "analyze:sheets": "node scripts/analyze-sheets.js"
   },
   "keywords": [
     "whiteout-survival",
