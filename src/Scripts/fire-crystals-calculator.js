@@ -835,11 +835,16 @@
         }
 
         // Get FC/RFC costs from CSV
-        const fcCosts = await window.calculateFireCrystalCostsFromCSV(buildingName, fromLevel, toLevel, levelsArray);
-        
+        let fcCosts = null;
+        try {
+            fcCosts = await window.calculateFireCrystalCostsFromCSV(buildingName, fromLevel, toLevel, levelsArray);
+        } catch (e) {
+            fcCosts = null;
+        }
+        // Fallback: if FC CSV failed to load or missing rows, continue with 0 FC/RFC
         if (!fcCosts) {
-            console.error('Failed to calculate FC costs for', buildingName);
-            return null;
+            console.warn('[FireCrystals] FC CSV missing or failed for', buildingName, '— proceeding with 0 FC/RFC.');
+            fcCosts = { normalFC: 0, refineFC: 0 };
         }
 
         const buildingData = fireCrystalCosts[buildingName];
@@ -930,7 +935,7 @@
                 totalCoal += costs.coal || 0;
                 totalIron += costs.iron || 0;
             }
-        });
+        }
 
         // Get inventory
     const inventoryFC = parseInt(document.getElementById('inventory-fire-crystals')?.value || 0);

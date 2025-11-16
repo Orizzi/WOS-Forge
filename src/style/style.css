@@ -495,7 +495,7 @@ html.light-theme input:focus {
 /* Main wrapper for side-by-side layout */
 .main-layout-wrapper {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
     align-items: start;
 }
@@ -1332,9 +1332,17 @@ html:not(.light-theme) .profiles input[type="text"]{
 .results-section {
     margin: 20px;
     padding: 20px;
-    background: var(--card);
+    background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 8px;
+    min-height: 200px;
+}
+
+.results-section h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--text);
+    font-size: 1.3em;
 }
 
 /* Fire Crystals results summary */
@@ -1371,7 +1379,7 @@ html:not(.light-theme) .profiles input[type="text"]{
 /* Fire Crystals: two-column layout for buildings (left) and results (right) */
 .fc-two-column{
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
     align-items: start;
     margin: 12px 20px;
@@ -1385,10 +1393,10 @@ html:not(.light-theme) .profiles input[type="text"]{
     max-height: calc(100vh - 160px);
     overflow: auto;
 }
-/* Results content: 3-column grid on desktop */
+/* Results content: 2-column grid on desktop (better for 50/50 layout) */
 .results-section #results-display{
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     align-items: start;
 }
@@ -1493,10 +1501,14 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 /* Building breakdown compact styles */
 .building-breakdown {
+    grid-column: 1 / -1;
     margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid var(--border);
 }
 
 .building-breakdown h3 {
+        margin-top: 0;
     margin-bottom: 12px;
 }
 

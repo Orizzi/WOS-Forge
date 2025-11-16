@@ -11,7 +11,9 @@
      */
     async function loadFireCrystalCosts() {
         try {
-            const response = await fetch('../assets/fire_crystals_costs.csv');
+            // Fetch relative to the document location (src/fireCrystals.html)
+            // Assets folder is at src/assets
+            const response = await fetch('assets/fire_crystals_costs.csv', { cache: 'no-cache' });
             const csvText = await response.text();
             
             const lines = csvText.trim().split('\n');
@@ -28,6 +30,7 @@
                 });
             }
             
+            console.info(`[FireCrystals] Loaded FC CSV rows: ${flatData.length}`);
             return flatData;
         } catch (error) {
             console.error('Error loading fire crystal costs:', error);
