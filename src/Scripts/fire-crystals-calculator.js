@@ -791,6 +791,35 @@
     }
 
     /**
+     * Populate start/finish selects with the correct level list
+     */
+    function populateBuildingSelectOptions(buildingName) {
+        const buildingId = buildingName.toLowerCase().replace(/ /g, '-');
+        const startSelect = document.getElementById(`${buildingId}-start`);
+        const finishSelect = document.getElementById(`${buildingId}-finish`);
+        if (!startSelect || !finishSelect) return;
+
+        const levels = getLevelsForBuilding(buildingName);
+
+        const makeOptions = (selectedValue, isFinish) => {
+            let html = '';
+            levels.forEach(lvl => {
+                const selected = (selectedValue ? selectedValue === lvl : (isFinish ? lvl === 'FC10' : lvl === levels[0]));
+                html += `<option value="${lvl}"${selected ? ' selected' : ''}>${lvl}</option>`;
+            });
+            return html;
+        };
+
+        const prevStart = startSelect.value;
+        const prevFinish = finishSelect.value;
+        startSelect.innerHTML = makeOptions(prevStart, false);
+        finishSelect.innerHTML = makeOptions(prevFinish, true);
+
+        // Validate once after population
+        validateLevels(startSelect, finishSelect, levels);
+    }
+
+    /**
      * Calculate costs for a single building upgrade path
      */
     function calculateBuildingCosts(buildingName, fromLevel, toLevel) {
@@ -850,13 +879,12 @@
 
             // Add fire crystals based on level structure
             if (levelData.normal) {
-                // FC5+ levels: use normal/refine structure
+                // FC5+ levels: use normal/refine structure (FC5-1 onwards also uses RFC)
                 totalNormalFC += levelData.normal[upgradeKey] || 0;
                 totalRefineFC += (levelData.refine && levelData.refine[upgradeKey]) || 0;
             } else {
-                // Pre-FC5 (F30 → FC4) do not consume Fire Crystals. Some older data files
-                // include numeric placeholders for these levels; ignore them for FC totals.
-                // Keep time and base resources handled elsewhere.
+                // Pre-FC5 levels (F30 → FC4): direct FC properties, no RFC
+                totalNormalFC += levelData[upgradeKey] || 0;
             }
 
             // Add base resources using the nextLevel key
@@ -1165,6 +1193,11 @@
             if (startSelect && finishSelect) {
                 const levelsArray = getLevelsForBuilding(building);
                 
+                // Populate options if empty or incomplete
+                if (!startSelect.options.length || !finishSelect.options.length) {
+                    populateBuildingSelectOptions(building);
+                }
+
                 startSelect.addEventListener('change', () => {
                     validateLevels(startSelect, finishSelect, levelsArray);
                     calculateAll();
