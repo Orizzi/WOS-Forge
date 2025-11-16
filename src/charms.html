@@ -9,7 +9,12 @@
         <script src="Scripts/min/table-sort.min.js" defer></script>
         <script src="Scripts/min/calculator.min.js" defer></script>
         <script src="Scripts/min/profiles.min.js" defer></script>
-        <script src="Scripts/min/translations.min.js" defer></script>
+        <script src="Scripts/min/translations.min.js" defer="defer" type="module" async></script>
+        <script type="module" async>
+          window.addEventListener('DOMContentLoaded', () => {
+            import('./Scripts/min/translations.min.js');
+          });
+        </script>
 </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
