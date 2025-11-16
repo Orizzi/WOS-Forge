@@ -3,18 +3,24 @@
 <head>
     <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
     <link rel="stylesheet" href="style/style.css">
-    <script src="Scripts/min/icon-helper.min.js" defer></script>
-    <script src="Scripts/min/theme.min.js" defer></script>
-    <script src="Scripts/min/translations.min.js" defer></script>
-    <script src="Scripts/min/profiles.min.js" defer></script>
-    <script src="Scripts/min/table-sort.min.js" defer></script>
-    <script src="Scripts/min/input-validators.min.js" defer></script>
-    <script src="Scripts/min/fire-crystals-costs.min.js" defer></script>
-    <script src="Scripts/min/fire-crystals-data-loader.min.js" defer></script>
-    <script src="Scripts/min/fire-crystals-calculator.min.js" defer></script>
-    <script src="Scripts/min/building-power.min.js" defer></script>
-    <script src="Scripts/min/fire-crystals-power-extension.min.js" defer></script>
-    <script src="Scripts/min/fc-status-ui.min.js" defer></script>
+        <script src="Scripts/min/icon-helper.min.js" defer></script>
+        <script src="Scripts/min/theme.min.js" defer></script>
+        <script src="Scripts/min/table-sort.min.js" defer></script>
+        <script src="Scripts/min/input-validators.min.js" defer></script>
+        <script src="Scripts/min/fire-crystals-costs.min.js" defer></script>
+        <script src="Scripts/min/fire-crystals-data-loader.min.js" defer></script>
+        <script src="Scripts/min/fire-crystals-calculator.min.js" defer></script>
+        <script src="Scripts/min/building-power.min.js" defer></script>
+        <script src="Scripts/min/fire-crystals-power-extension.min.js" defer></script>
+        <script src="Scripts/min/fc-status-ui.min.js" defer></script>
+        <script src="Scripts/min/profiles.min.js" defer="defer" type="module" async></script>
+        <script src="Scripts/min/translations.min.js" defer="defer" type="module" async></script>
+        <script type="module" async>
+            window.addEventListener('DOMContentLoaded', () => {
+                import('./Scripts/min/profiles.min.js');
+                import('./Scripts/min/translations.min.js');
+            });
+        </script>
     </head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Fire Crystals calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every building.">
