@@ -23,3 +23,6 @@ Thumbs.db
 *.zip
 *.tar
 *.tar.gz
+
+# Generated from Excel exports
+src/assets/sheets/
