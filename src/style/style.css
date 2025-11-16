@@ -609,9 +609,6 @@ html.light-theme input:focus {
     font-size: 0.9em;
 }
 
-/* Hide batch controls in chief gear equipment grid (uses global batch instead) */
-.equipment-grid .equipment-section .batch-controls-row { display: none; }
-
 
 input {
     padding: 8px 10px;
