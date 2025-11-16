@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOSC-HOME</title>
     <link rel="stylesheet" href="style/style.min.css">
+    <link rel="manifest" href="manifest.json">
     <script src="Scripts/theme.js" defer></script>
 </head>
     <meta charset="UTF-8">
@@ -13,6 +14,13 @@
     <link rel="stylesheet" href="style/style.min.css">
     <script src="Scripts/theme.js" defer></script>
 <body>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('service-worker.js');
+                });
+            }
+        </script>
     <header role="banner">
         <a href="index.html" class="logo-link">
             <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
