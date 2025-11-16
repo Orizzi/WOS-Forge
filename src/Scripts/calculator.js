@@ -98,9 +98,12 @@ const CalculatorModule = (function(){
 
   // Custom label helper: "Total <Name>" with icon
   function totalLabelWithIcon(key){
-    const name = key.charAt(0).toUpperCase()+key.slice(1);
+    const t = window.I18n?.t || (k => k);
+    const resourceName = t(key) || (key.charAt(0).toUpperCase() + key.slice(1));
+    const totalText = t('total') || 'Total';
+    
     if(window.IconHelper){
-      return window.IconHelper.label(key, () => `Total ${name}`);
+      return window.IconHelper.label(key, () => `${totalText} ${resourceName}`);
     }
     const map = {
       guides: 'assets/resources/charms/guides.png',
@@ -108,7 +111,7 @@ const CalculatorModule = (function(){
       secrets: 'assets/resources/charms/secrets.png'
     };
     const url = map[key];
-    const text = `Total ${name}`;
+    const text = `${totalText} ${resourceName}`;
     if(!url) return text;
     return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
   }
@@ -261,12 +264,26 @@ const CalculatorModule = (function(){
     const gapDesigns = grand.designs - invDesigns;
     const gapSecrets = grand.secrets - invSecrets;
 
+    // Only show gap messages when there are actual calculations (totals > 0)
+    const hasCalculations = grand.guides > 0 || grand.designs > 0 || grand.secrets > 0;
+
     function gapHtml(label, total, inv){
       const gap = total - inv; // positive = need more, negative/zero = will have left
+      
+      // Don't show gap message if there are no calculations
+      if (!hasCalculations) {
+        return `
+          <div class="total-line">
+            <p><strong>${label}:</strong> ${formatNumber(total)}</p>
+          </div>`;
+      }
+      
+      // Get translations for gap messages
+      const t = window.I18n?.t || (k => k);
       const cls = gap > 0 ? 'deficit' : 'surplus';
       const text = gap > 0
-        ? `⚠ need ${formatNumber(gap)} more`
-        : `✅ will have ${formatNumber(Math.abs(gap))} left!`;
+        ? `⚠ ${t('need-more')} ${formatNumber(gap)} ${t('more')}`
+        : `✅ ${t('will-have')} ${formatNumber(Math.abs(gap))} ${t('left')}`;
       return `
         <div class="total-line">
           <p><strong>${label}:</strong> ${formatNumber(total)}</p>
@@ -279,8 +296,8 @@ const CalculatorModule = (function(){
         ${gapHtml(totalLabelWithIcon('guides'), grand.guides, invGuides)}
         ${gapHtml(totalLabelWithIcon('designs'), grand.designs, invDesigns)}
         ${gapHtml(totalLabelWithIcon('secrets'), grand.secrets, invSecrets)}
-        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>Total Power:</strong> ${formatNumber(grand.power)}</p>
-        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>Total SvS Points:</strong> ${formatNumber(grand.svsPoints)}</p>
+        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>${window.I18n?.t('total-power') || 'Total Power'}:</strong> ${formatNumber(grand.power)}</p>
+        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>${window.I18n?.t('total-svs-points') || 'Total SvS Points'}:</strong> ${formatNumber(grand.svsPoints)}</p>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
@@ -361,14 +378,15 @@ const CalculatorModule = (function(){
 
     // Create the full table HTML
     // Includes colored dots for each resource type
+    const t = window.I18n?.t || (k => k);
     const tableHtml = `
       <div class="results-wrap">
         <table class="results-table" aria-live="polite">
           <thead>
             <tr>
-              <th data-key="slot">Slot</th>
-              <th data-key="from">From</th>
-              <th data-key="to">To</th>
+              <th data-key="slot">${t('slot')}</th>
+              <th data-key="from">${t('from')}</th>
+              <th data-key="to">${t('to')}</th>
               <th data-key="guides">${labelWithIcon('guides')}</th>
               <th data-key="designs">${labelWithIcon('designs')}</th>
               <th data-key="secrets">${labelWithIcon('secrets')}</th>
@@ -379,7 +397,7 @@ const CalculatorModule = (function(){
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">Totals</td>
+              <td colspan="3">${t('totals')}</td>
               <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(grand.guides)}</td>
               <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(grand.designs)}</td>
               <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
@@ -591,9 +609,33 @@ const CalculatorModule = (function(){
     const invGuides = document.getElementById('inventory-guides');
     const invDesigns = document.getElementById('inventory-designs');
     const invSecrets = document.getElementById('inventory-secrets');
-    if(invGuides) invGuides.addEventListener('input', calculateAll);
-    if(invDesigns) invDesigns.addEventListener('input', calculateAll);
-    if(invSecrets) invSecrets.addEventListener('input', calculateAll);
+
+    function enforceDigitsLimit(input, maxDigits){
+      if(!input) return;
+      input.addEventListener('input', () => {
+        let v = String(input.value || '');
+        v = v.replace(/\D+/g, '');
+        if(v.length > maxDigits){
+          v = v.slice(0, maxDigits);
+        }
+        if(input.value !== v){
+          input.value = v;
+        }
+        calculateAll();
+      });
+      // Also listen to change event for when field is cleared or loses focus
+      input.addEventListener('change', () => {
+        calculateAll();
+      });
+      // Listen to keyup for immediate feedback on delete/backspace
+      input.addEventListener('keyup', () => {
+        calculateAll();
+      });
+    }
+
+    enforceDigitsLimit(invGuides, 8);
+    enforceDigitsLimit(invDesigns, 8);
+    enforceDigitsLimit(invSecrets, 6);
 
     // Initial calculation on page load
     calculateAll();
