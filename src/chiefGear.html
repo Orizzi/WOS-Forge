@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOSC-Chief Gear</title>
     <link rel="stylesheet" href="style/style.min.css">
+    <link rel="manifest" href="manifest.json">
     <script src="Scripts/min/icon-helper.min.js" defer></script>
     <script src="Scripts/min/theme.min.js" defer></script>
     <script src="Scripts/min/table-sort.min.js" defer></script>
@@ -28,6 +29,13 @@
     <script src="Scripts/min/profiles.min.js" defer></script>
     <script src="Scripts/min/translations.min.js" defer></script>
 <body>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js');
+        });
+      }
+    </script>
     <header role="banner">
         <a href="index.html" class="logo-link">
             <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">

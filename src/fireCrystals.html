@@ -43,6 +43,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
     <link rel="stylesheet" href="style/style.min.css">
+    <link rel="manifest" href="manifest.json">
     <script src="Scripts/icon-helper.js" defer></script>
     <script src="Scripts/theme.js" defer></script>
     <script src="Scripts/translations.js" defer></script>
@@ -55,6 +56,13 @@
     <script src="Scripts/fc-status-ui.js" defer></script>
     </head>
 <body>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('service-worker.js');
+                });
+            }
+        </script>
     <header role="banner">
         <a href="index.html" class="logo-link">
             <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
