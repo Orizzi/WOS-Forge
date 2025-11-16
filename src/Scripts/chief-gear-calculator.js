@@ -512,11 +512,18 @@ const ChiefGearCalculatorModule = (function(){
     // Global batch controls
     const globalFrom = document.getElementById('gear-batch-from');
     const globalTo = document.getElementById('gear-batch-to');
-    if(globalFrom){
-      globalFrom.addEventListener('change', e => applyGlobalBatch('from', e.target.value));
-    }
-    if(globalTo){
-      globalTo.addEventListener('change', e => applyGlobalBatch('to', e.target.value));
+    if(globalFrom && globalTo){
+      // Apply initial validation to batch controls
+      validateLevels(globalFrom, globalTo);
+      
+      globalFrom.addEventListener('change', () => {
+        validateLevels(globalFrom, globalTo);
+        applyGlobalBatch('from', globalFrom.value);
+      });
+      globalTo.addEventListener('change', () => {
+        validateLevels(globalFrom, globalTo);
+        applyGlobalBatch('to', globalTo.value);
+      });
     }
 
     // Individual gear selects
@@ -525,6 +532,9 @@ const ChiefGearCalculatorModule = (function(){
       const finishSel = document.getElementById(`${gear}-finish`);
       
       if(startSel && finishSel){
+        // Apply initial validation
+        validateLevels(startSel, finishSel);
+        
         startSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
           calculateAll();
