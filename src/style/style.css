@@ -609,8 +609,8 @@ html.light-theme input:focus {
     font-size: 0.9em;
 }
 
-/* Hide per-equipment batch controls now replaced by global batch */
-.equipment-section .batch-controls-row { display: none; }
+/* Hide batch controls in chief gear equipment grid (uses global batch instead) */
+.equipment-grid .equipment-section .batch-controls-row { display: none; }
 
 
 input {
