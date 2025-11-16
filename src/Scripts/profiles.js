@@ -506,6 +506,12 @@ const ProfilesModule = (function(){
         list.selectedIndex = 0;
         loadSelectedProfile();
       }
+      // Force recalculation after profile load (handles Netlify timing issues)
+      setTimeout(() => {
+        if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
+        if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
+        if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
+      }, 0);
     }
   }
 
