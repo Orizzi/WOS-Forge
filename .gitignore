@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Backups and generated files
+*.backup
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Build outputs (if any)
+dist/
+build/
+.tmp/
+.cache/
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
