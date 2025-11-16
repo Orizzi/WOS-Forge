@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,12 +26,12 @@
       <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a>
       <a href="pets.html" data-i18n="nav-pets">Pets</a>
       <a href="experts.html">Experts</a>
-      <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+      <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">ðŸŒ™ Theme</button>
       <select id="language-selector" aria-label="Language" title="Select language">
-        <option value="en">🇬🇧 English</option>
-        <option value="es">🇪🇸 Español</option>
-        <option value="ko">🇰🇷 한국어</option>
-        <option value="ru">🇷🇺 Русский</option>
+        <option value="en">ðŸ‡¬ðŸ‡§ English</option>
+        <option value="es">ðŸ‡ªðŸ‡¸ EspaÃ±ol</option>
+        <option value="ko">ðŸ‡°ðŸ‡· í•œêµ­ì–´</option>
+        <option value="ru">ðŸ‡·ðŸ‡º Ð ÑƒÑÑÐºÐ¸Ð¹</option>
       </select>
     </nav>
  <main role="main">  
@@ -56,7 +56,7 @@
             <input type="number" id="inventory-secrets" min="0" value="0" aria-label="Secrets inventory" inputmode="numeric" maxlength="6" max="999999" />
           </div>
         </div>
-        <button id="charms-reset" type="button" title="Reset every charm level back to 0" class="secondary">🔄 <span data-i18n="reset-all">Reset All</span></button>
+        <button id="charms-reset" type="button" title="Reset every charm level back to 0" class="secondary">ðŸ”„ <span data-i18n="reset-all">Reset All</span></button>
       </div>
     </section>
 
@@ -66,13 +66,13 @@
       <div class="profiles-row">
         <div class="input-with-icon">
           <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
-          <button id="profile-save" type="button" title="Save current charm setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+          <button id="profile-save" type="button" title="Save current charm setup as a new profile" aria-label="Save new profile" class="icon-button">ðŸ’¾</button>
         </div>
         <div class="select-with-icon">
           <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">âœï¸</button>
         </div>
-        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">ðŸ—‘ï¸ <span data-i18n="delete">Delete</span></button>
       </div>
     </section>
   </div>
@@ -94,7 +94,8 @@
       <label class="batch-label"><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label>FROM:</label>
-        <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values">`n          <option value="0" selected>0</option>
+        <select id="hat-batch-from" class="batch-select" title="Set all Hat FROM values">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -113,7 +114,8 @@
           <option value="16">16</option>
         </select>
         <label>TO:</label>
-        <select id="hat-batch-to" class="batch-select" title="Set all Hat TO values">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="hat-batch-to" class="batch-select" title="Set all Hat TO values">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -285,7 +287,8 @@
       <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label data-i18n="from">FROM:</label>
-        <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="chestplate-batch-from" class="batch-select" title="Set all Chestplate FROM values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -304,7 +307,8 @@
           <option value="16">16</option>
         </select>
         <label data-i18n="to">TO:</label>
-        <select id="chestplate-batch-to" class="batch-select" title="Set all Chestplate TO values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="chestplate-batch-to" class="batch-select" title="Set all Chestplate TO values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -476,7 +480,8 @@
       <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label data-i18n="from">FROM:</label>
-        <select id="ring-batch-from" class="batch-select" title="Set all Ring FROM values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="ring-batch-from" class="batch-select" title="Set all Ring FROM values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -495,7 +500,8 @@
           <option value="16">16</option>
         </select>
         <label data-i18n="to">TO:</label>
-        <select id="ring-batch-to" class="batch-select" title="Set all Ring TO values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="ring-batch-to" class="batch-select" title="Set all Ring TO values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -667,7 +673,8 @@
       <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label data-i18n="from">FROM:</label>
-        <select id="watch-batch-from" class="batch-select" title="Set all Watch FROM values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="watch-batch-from" class="batch-select" title="Set all Watch FROM values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -686,7 +693,8 @@
           <option value="16">16</option>
         </select>
         <label data-i18n="to">TO:</label>
-        <select id="watch-batch-to" class="batch-select" title="Set all Watch TO values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="watch-batch-to" class="batch-select" title="Set all Watch TO values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -858,7 +866,8 @@
       <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label data-i18n="from">FROM:</label>
-        <select id="pants-batch-from" class="batch-select" title="Set all Pants FROM values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="pants-batch-from" class="batch-select" title="Set all Pants FROM values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -877,7 +886,8 @@
           <option value="16">16</option>
         </select>
         <label data-i18n="to">TO:</label>
-        <select id="pants-batch-to" class="batch-select" title="Set all Pants TO values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="pants-batch-to" class="batch-select" title="Set all Pants TO values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -1049,7 +1059,8 @@
       <label><span class="badge" data-i18n="batch">BATCH</span></label>
       <div class="batch-inline">
         <label data-i18n="from">FROM:</label>
-        <select id="staff-batch-from" class="batch-select" title="Set all Staff FROM values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="staff-batch-from" class="batch-select" title="Set all Staff FROM values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -1068,7 +1079,8 @@
           <option value="16">16</option>
         </select>
         <label data-i18n="to">TO:</label>
-        <select id="staff-batch-to" class="batch-select" title="Set all Staff TO values to this">`n          <option value="" selected>--</option>`n          <option value="0">0</option>
+        <select id="staff-batch-to" class="batch-select" title="Set all Staff TO values to this">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -1247,5 +1259,6 @@
 
 </body>
 </html>
+
 
 
