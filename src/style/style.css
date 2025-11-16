@@ -148,6 +148,34 @@ body {
 .label-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
 .res-icon{ width: 18px; height: 18px; object-fit: contain; }
 
+/* ===== Single-row inventory (Charms & Chief Gear) ===== */
+/* Keep their legacy inventory layout as one continuous row */
+.inventory-section .inventory-row{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px; /* space for potential scrollbar */
+}
+
+.inventory-section .inventory-row h3{ flex: 0 0 auto; margin: 0; }
+
+.inventory-section .inventory-row .inventory-inputs{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap; /* force single row */
+}
+
+.inventory-section .inventory-row .inventory-item{
+    flex: 0 0 auto;
+    min-width: 200px;
+}
+
+.inventory-section .inventory-row button.secondary{
+    margin-left: auto; /* push reset to the far right */
+}
+
 main {
     background-image: url('../assets/background.png');
     background-size: cover;
