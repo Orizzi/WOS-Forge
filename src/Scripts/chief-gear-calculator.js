@@ -526,6 +526,7 @@ const ChiefGearCalculatorModule = (function(){
       globalTo.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('to', globalTo.value);
+        // Always auto-save after TO batch change
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
           ProfilesModule.autoSaveCurrentProfile();
         }

@@ -605,6 +605,7 @@ const CalculatorModule = (function(){
         to.addEventListener('change', ()=> {
           validateLevels(from, to);
           applyBatch(type, 'to', to.value);
+          // Always auto-save after TO batch change
           if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
             ProfilesModule.autoSaveCurrentProfile();
           }
