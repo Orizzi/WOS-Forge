@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="refresh" content="0; url=coming-soon.html" />
-  <title>WOSC-War Academy</title>
+  <title>WOSC-Coming Soon</title>
   <link rel="stylesheet" href="style/style.css" />
   <script src="Scripts/theme.js" defer></script>
   <script src="Scripts/translations.js" defer></script>
@@ -21,8 +20,8 @@
     <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
     <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
     <a href="coming-soon.html" aria-current="page" data-i18n="nav-war-academy">War Academy</a>
-        <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
-        <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
+    <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
+    <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
     <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">Toggle Theme</button>
     <select id="language-selector" aria-label="Language" title="Select language">
       <option value="en">English</option>
@@ -31,10 +30,19 @@
       <option value="ru">Русский</option>
     </select>
   </nav>
-  <main role="main" class="introduction">
-    <h1>War Academy Calculators Are Moving</h1>
-    <p>You’ll be redirected to our Coming Soon hub for War Academy and Pets. If you aren’t redirected automatically, use the button below.</p>
-    <p><a href="coming-soon.html" class="button primary">Go to Coming Soon</a></p>
+  <main role="main">
+    <section class="introduction" aria-labelledby="coming-title">
+      <h1 id="coming-title" data-i18n="coming-title">New Calculators Are Coming Soon</h1>
+      <p data-i18n="coming-lede">We're forging brand new tools for <strong>War Academy</strong> research and <strong>Pets</strong> progression. These will plug straight into your existing profiles so you can plan smarter, faster, and with more confidence.</p>
+      <p data-i18n="coming-highlights-label">Highlights on the way:</p>
+      <ul>
+        <li data-i18n="coming-highlight-research">Research roadmaps with resource, time, and power projections</li>
+        <li data-i18n="coming-highlight-pets">Pet upgrade planners with feeding, evolution, and synergy tracking</li>
+        <li data-i18n="coming-highlight-experts">Expert upgrade planner to map out boosts and resource needs</li>
+        <li data-i18n="coming-highlight-combined">Combined profile view that blends charms, chief gear, fire crystals, pets, and academy boosts</li>
+      </ul>
+      <p data-i18n="coming-outro">Stay tuned—this page will light up with the new calculators as soon as they're ready.</p>
+    </section>
   </main>
 </body>
 </html>

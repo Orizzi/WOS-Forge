@@ -18,6 +18,22 @@
             "nav-fire-crystals": "Fire Crystals",
             "nav-war-academy": "War Academy",
             "nav-pets": "Pets",
+            "nav-experts": "Experts",
+
+            // Home (index)
+            "home-hero-title": "Welcome to the WOS Calculator",
+            "home-hero-body-1": "This calculator is designed to help you optimize your gameplay in Whiteout Survival (WOS). Whether you're looking to enhance your charms, upgrade your chief gear, or manage your fire crystals, our tools are here to assist you.",
+            "home-hero-body-2": "Use the navigation links above to explore different sections of the calculator tailored to various aspects of the game. Happy gaming!",
+
+            // Coming soon page
+            "coming-title": "New Calculators Are Coming Soon",
+            "coming-lede": "We're forging brand new tools for War Academy research and Pets progression. These will plug straight into your existing profiles so you can plan smarter, faster, and with more confidence.",
+            "coming-highlights-label": "Highlights on the way:",
+            "coming-highlight-research": "Research roadmaps with resource, time, and power projections",
+            "coming-highlight-pets": "Pet upgrade planners with feeding, evolution, and synergy tracking",
+            "coming-highlight-experts": "Expert upgrade planner to map out boosts and resource needs",
+            "coming-highlight-combined": "Combined profile view that blends charms, chief gear, fire crystals, pets, and academy boosts",
+            "coming-outro": "Stay tuned—this page will light up with the new calculators as soon as they're ready.",
             
             // Charms page additions
             "charms-header": "Charms Calculator",
@@ -111,7 +127,7 @@
                 "gap-time-need-more": "Need <span class=\"number\">%dd %dh %dm</span> more!",
                 "gap-time-have-left": "Will have <span class=\"number\">%dd %dh %dm</span> left!",
                 "support-header": "Support This Project",
-                "support-message": "I hope these calculators were helpful! If you'd like to support the project, my WOS ID is: 273994720. Thanks and happy surviving!"
+                "support-message": "I hope these calculators were helpful! If you'd like to support the project, my WOS ID is: 146631801. Thanks and happy surviving!"
         },
         
         es: {
@@ -124,6 +140,22 @@
             "nav-fire-crystals": "Cristales de Fuego",
             "nav-war-academy": "Academia de Guerra",
             "nav-pets": "Mascotas",
+            "nav-experts": "Expertos",
+            
+            // Home (index)
+            "home-hero-title": "Bienvenido al Calculador de WOS",
+            "home-hero-body-1": "Este calculador te ayuda a optimizar tu progreso en Whiteout Survival (WOS). Ya sea que mejores amuletos, equipo de jefe o gestiones cristales de fuego, las herramientas están aquí para ayudarte.",
+            "home-hero-body-2": "Usa la navegación superior para explorar cada sección del calculador según lo que quieras planificar.",
+
+            // Coming soon page
+            "coming-title": "Nuevos calculadores llegan pronto",
+            "coming-lede": "Estamos forjando nuevas herramientas para la Academia de Guerra y la progresión de Mascotas. Se conectarán con tus perfiles actuales para que planifiques más rápido y con confianza.",
+            "coming-highlights-label": "Lo que viene:",
+            "coming-highlight-research": "Rutas de investigación con recursos, tiempo y proyecciones de poder",
+            "coming-highlight-pets": "Planificadores de mejora de mascotas con alimentación, evolución y sinergias",
+            "coming-highlight-experts": "Planificador de expertos para mapear impulsos y recursos necesarios",
+            "coming-highlight-combined": "Vista combinada que mezcla amuletos, equipo de jefe, cristales de fuego, mascotas y la Academia",
+            "coming-outro": "Muy pronto esta página se encenderá con los nuevos calculadores.",
             
             // Charms page additions
             "charms-header": "Calculadora de Amuletos",
@@ -217,7 +249,7 @@
               "gap-time-need-more": "¡Necesita <span class=\"number\">%dd %dh %dm</span> más!",
               "gap-time-have-left": "¡Tendrá <span class=\"number\">%dd %dh %dm</span> de sobra!",
               "support-header": "Apoya Este Proyecto",
-              "support-message": "¡Espero que estas calculadoras hayan sido útiles! Si quieres apoyar el proyecto, mi ID de WOS es: 273994720. ¡Gracias y feliz supervivencia!"
+              "support-message": "¡Espero que estas calculadoras hayan sido útiles! Si quieres apoyar el proyecto, mi ID de WOS es: 146631801. ¡Gracias y feliz supervivencia!"
         },
         
         ko: {
@@ -327,7 +359,7 @@
                 "coal": "Уголь",
                 "iron": "Железо",
               "support-header": "이 프로젝트 지원",
-              "support-message": "이 계산기가 도움이 되었기를 바랍니다! 프로젝트를 지원하고 싶다면 제 WOS ID는 273994720입니다. 감사하고 행복한 생존을 기원합니다!"
+              "support-message": "이 계산기가 도움이 되었기를 바랍니다! 프로젝트를 지원하고 싶다면 제 WOS ID는 146631801입니다. 감사하고 행복한 생존을 기원합니다!"
         },
         
         ru: {
@@ -433,9 +465,74 @@
                 "gap-time-need-more": "Нужно ещё <span class=\"number\">%dd %dh %dm</span>!",
                 "gap-time-have-left": "Останется <span class=\"number\">%dd %dh %dm</span>!",
                 "support-header": "Поддержать Проект",
-                "support-message": "Надеюсь, калькуляторы были полезны! Если хотите поддержать проект, мой ID в WOS: 273994720. Спасибо и удачной игры!"
+                "support-message": "Надеюсь, калькуляторы были полезны! Если хотите поддержать проект, мой ID в WOS: 146631801. Спасибо и удачной игры!"
         }
     };
+
+    // Additional translations for home and coming-soon pages + Experts nav
+    const translationExtensions = {
+        en: {
+            "nav-experts": "Experts",
+            "home-hero-title": "Welcome to the WOS Calculator",
+            "home-hero-body-1": "This calculator is designed to help you optimize your gameplay in Whiteout Survival (WOS). Whether you're looking to enhance your charms, upgrade your chief gear, or manage your fire crystals, our tools are here to assist you.",
+            "home-hero-body-2": "Use the navigation links above to explore different sections of the calculator tailored to various aspects of the game. Happy gaming!",
+            "coming-title": "New Calculators Are Coming Soon",
+            "coming-lede": "We're forging brand new tools for War Academy research and Pets progression. These will plug straight into your existing profiles so you can plan smarter, faster, and with more confidence.",
+            "coming-highlights-label": "Highlights on the way:",
+            "coming-highlight-research": "Research roadmaps with resource, time, and power projections",
+            "coming-highlight-pets": "Pet upgrade planners with feeding, evolution, and synergy tracking",
+            "coming-highlight-experts": "Expert upgrade planner to map out boosts and resource needs",
+            "coming-highlight-combined": "Combined profile view that blends charms, chief gear, fire crystals, pets, and academy boosts",
+            "coming-outro": "Stay tuned—this page will light up with the new calculators as soon as they're ready."
+        },
+        es: {
+            "nav-experts": "Expertos",
+            "home-hero-title": "Bienvenido al Calculador de WOS",
+            "home-hero-body-1": "Este calculador te ayuda a optimizar tu progreso en Whiteout Survival (WOS). Ya sea que mejores amuletos, equipo de jefe o gestiones cristales de fuego, las herramientas están aquí para ayudarte.",
+            "home-hero-body-2": "Usa la navegación superior para explorar cada sección del calculador según lo que quieras planificar.",
+            "coming-title": "Nuevos calculadores llegan pronto",
+            "coming-lede": "Estamos forjando nuevas herramientas para la Academia de Guerra y la progresión de Mascotas. Se conectarán con tus perfiles actuales para que planifiques más rápido y con confianza.",
+            "coming-highlights-label": "Lo que viene:",
+            "coming-highlight-research": "Rutas de investigación con recursos, tiempo y proyecciones de poder",
+            "coming-highlight-pets": "Planificadores de mejora de mascotas con alimentación, evolución y sinergias",
+            "coming-highlight-experts": "Planificador de expertos para mapear impulsos y recursos necesarios",
+            "coming-highlight-combined": "Vista combinada que mezcla amuletos, equipo de jefe, cristales de fuego, mascotas y la Academia",
+            "coming-outro": "Muy pronto esta página se encenderá con los nuevos calculadores."
+        },
+        ko: {
+            "nav-experts": "전문가",
+            "home-hero-title": "WOS 계산기에 오신 것을 환영합니다",
+            "home-hero-body-1": "이 계산기는 화이트아웃 서바이벌(WOS)에서 부적, 치프 장비, 화염 크리스탈을 더 효율적으로 관리하도록 도와줍니다.",
+            "home-hero-body-2": "상단 내비게이션을 사용해 원하는 기능을 빠르게 찾아보세요.",
+            "coming-title": "새 계산기가 곧 공개됩니다",
+            "coming-lede": "전쟁 아카데미와 펫 성장을 위한 새로운 도구를 준비 중입니다. 기존 프로필과 바로 연결되어 더 빠르고 정확하게 계획할 수 있습니다.",
+            "coming-highlights-label": "예정 기능:",
+            "coming-highlight-research": "자원·시간·전투력 전망을 포함한 연구 로드맵",
+            "coming-highlight-pets": "먹이·진화·시너지 추적을 포함한 펫 성장 플래너",
+            "coming-highlight-experts": "강화 자원과 부스트를 정리하는 전문가 업그레이드 플래너",
+            "coming-highlight-combined": "부적, 치프 장비, 화염 크리스탈, 펫, 아카데미를 아우르는 통합 프로필 뷰",
+            "coming-outro": "신규 계산기가 준비되는 대로 이 페이지에서 바로 만나보세요."
+        },
+        ru: {
+            "nav-experts": "Эксперты",
+            "home-hero-title": "Добро пожаловать в калькулятор WOS",
+            "home-hero-body-1": "Этот калькулятор помогает оптимизировать игру в Whiteout Survival (WOS): улучшайте амулеты, снаряжение вождя и управляйте огненными кристаллами эффективнее.",
+            "home-hero-body-2": "Используйте навигацию сверху, чтобы перейти к нужному разделу калькулятора.",
+            "coming-title": "Новые калькуляторы скоро",
+            "coming-lede": "Мы готовим новые инструменты для исследований в Военной академии и развития Питомцев. Они подключатся к вашим текущим профилям, чтобы планировать быстрее и точнее.",
+            "coming-highlights-label": "Скоро появится:",
+            "coming-highlight-research": "Дорожные карты исследований с ресурсами, временем и приростом мощи",
+            "coming-highlight-pets": "Планировщик прокачки питомцев (корм, эволюция, синергии)",
+            "coming-highlight-experts": "Планировщик улучшений экспертов с расчётом бустов и ресурсов",
+            "coming-highlight-combined": "Единый профиль: амулеты, снаряжение вождя, огненные кристаллы, питомцы и академия",
+            "coming-outro": "Страница обновится, как только новые калькуляторы будут готовы."
+        }
+    };
+
+    Object.entries(translationExtensions).forEach(([lang, data]) => {
+        translations[lang] = translations[lang] || {};
+        Object.assign(translations[lang], data);
+    });
 
     // Get current language from localStorage or default to English
     function getCurrentLanguage() {
