@@ -173,7 +173,7 @@ const ProfilesModule = (function(){
         writeProfiles(migratedProfiles);
         
         // Keep old profiles as backup (don't delete)
-        console.log('Migrated old charm profiles to unified format');
+        // Migrated old charm profiles to unified format
         
         return migratedProfiles;
       }

@@ -2,10 +2,10 @@
     const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
     allBatchInputs.forEach(batchInput => {
       batchInput.addEventListener('change', () => {
-        console.log('[Chief Gear] Batch input changed:', batchInput.id, 'Value:', batchInput.value);
+        // [Chief Gear] Batch input changed: removed for production
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
           ProfilesModule.autoSaveCurrentProfile();
-          console.log('[Chief Gear] Profile auto-saved after batch input change.');
+          // [Chief Gear] Profile auto-saved after batch input change: removed for production
         }
       });
     });
