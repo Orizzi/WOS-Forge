@@ -320,8 +320,19 @@ const CalculatorModule = (function(){
       return;
     }
 
+    // Translation helper
+    const t = window.I18n?.t || (k => k);
+
     // Build table rows - group equipment types that are in batch mode, show individual charms for others
     function prettySlotName(raw){
+      const match = raw.match(/^([a-z]+)-charm-(\d+)/i);
+      if(match){
+        const typeKey = `${match[1]}-charms`;
+        const numKey = `charm-${match[2]}`;
+        const typeLabel = t(typeKey) || `${match[1].charAt(0).toUpperCase() + match[1].slice(1)} Charms`;
+        const slotLabel = t(numKey) || `Charm ${match[2]}`;
+        return `${typeLabel} - ${slotLabel}`;
+      }
       return raw
         .split('-')
         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
@@ -359,10 +370,10 @@ const CalculatorModule = (function(){
           totals.designs += c.sum.designs;
           totals.secrets += c.sum.secrets;
         });
-        const typeName = g.type.charAt(0).toUpperCase() + g.type.slice(1);
+        const typeName = t(`${g.type}-charms`) || (g.type.charAt(0).toUpperCase() + g.type.slice(1) + ' Charms');
         rows.push(`
           <tr>
-            <td>${typeName} Charms</td>
+            <td>${typeName}</td>
             <td>${totals.from}</td>
             <td>${totals.to}</td>
             <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(totals.guides)}</td>
@@ -389,7 +400,6 @@ const CalculatorModule = (function(){
 
     // Create the full table HTML
     // Includes colored dots for each resource type
-    const t = window.I18n?.t || (k => k);
     const tableHtml = `
       <div class="results-wrap">
         <table class="results-table" aria-live="polite">

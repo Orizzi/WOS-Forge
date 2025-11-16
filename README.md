@@ -137,10 +137,10 @@ Click the **"Dark mode toggle"** button in the top-right to switch themes.
 - File: `Scripts/calculator.js` (look for `sumCosts()` and `calculateAll()`)
 
 ### 3. **Profiles (Save & Load)**
-- Saves your input values to browser storage
+- Saves your input values to browser storage (auto-saves on every change, batch controls included, and on tab hide/reload)
 - You can have multiple profiles
-- Stored with key: `wos-charm-profiles`
-- File: `Scripts/profiles.js` (look for `saveNewProfile()`, `loadSelectedProfile()`)
+- Stored with keys: `wos-unified-profiles` (data) + `wos-last-profile` (current)
+- File: `Scripts/profiles.js` (look for `saveNewProfile()`, `loadSelectedProfile()`, `autoSaveCurrentProfile()`)
 
 ### 4. **Sortable Table**
 - Click any table header to sort by that column
@@ -207,7 +207,8 @@ Instead of one large file, logic is split for clarity:
 
 3. **`profiles.js` – Profiles/Presets**
   - Save / load / overwrite / rename / delete profile sets
-  - Uses localStorage key `wos-charm-profiles`
+  - Auto-save on any calculator change (including batch selects) and when the tab is hidden or reloaded
+  - Uses localStorage keys `wos-unified-profiles` (data) and `wos-last-profile` (active profile)
 
 4. **`table-sort.js` – Sortable Results Table**
   - `TableSortModule.makeTableSortable()` adds click + keyboard sorting

@@ -41,6 +41,7 @@ const ProfilesModule = (function(){
    * Returns true if consent exists or is newly granted.
    */
   async function requestStorageConsent(){
+    const t = (window.I18n && window.I18n.t) ? window.I18n.t : (k => k);
     if(!canUseLocalStorage()){
       console.warn('[Profiles] localStorage unavailable; profiles will not persist.');
       return false;
@@ -56,10 +57,10 @@ const ProfilesModule = (function(){
     }catch(e){}
 
     const ok = await showConfirmDialog({
-      title: 'Allow profile saving?',
-      message: '<p>Profiles are saved in your browser storage so your plans persist after reload.</p><p>Allow this site to use localStorage?</p>',
-      confirmText: 'Allow',
-      cancelText: 'No thanks'
+      title: t('storage-consent-title'),
+      message: t('storage-consent-body'),
+      confirmText: t('storage-consent-allow'),
+      cancelText: t('storage-consent-deny')
     });
 
     if(ok){

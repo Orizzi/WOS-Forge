@@ -25,6 +25,12 @@
             "home-hero-body-1": "This calculator is designed to help you optimize your gameplay in Whiteout Survival (WOS). Whether you're looking to enhance your charms, upgrade your chief gear, or manage your fire crystals, our tools are here to assist you.",
             "home-hero-body-2": "Use the navigation links above to explore different sections of the calculator tailored to various aspects of the game. Happy gaming!",
 
+            // Storage consent
+            "storage-consent-title": "Allow saving profiles on this device?",
+            "storage-consent-body": "<p>We keep your plans in your browser so you can find them after refresh.</p><p>Data stays on this device (localStorage), nothing is sent to a server.</p><p>You can switch or delete profiles anytime.</p>",
+            "storage-consent-allow": "Allow",
+            "storage-consent-deny": "No thanks",
+
             // Coming soon page
             "coming-title": "New Calculators Are Coming Soon",
             "coming-lede": "We're forging brand new tools for War Academy research and Pets progression. These will plug straight into your existing profiles so you can plan smarter, faster, and with more confidence.",
@@ -35,6 +41,18 @@
             "coming-highlight-combined": "Combined profile view that blends charms, chief gear, fire crystals, pets, and academy boosts",
             "coming-outro": "Stay tuned—this page will light up with the new calculators as soon as they're ready.",
             
+            // Storage consent
+            "storage-consent-title": "이 기기에 프로필을 저장할까요?",
+            "storage-consent-body": "<p>계획을 브라우저에 저장해 두면 새로고침 후에도 그대로 찾을 수 있습니다.</p><p>데이터는 이 기기(localStorage)에만 저장되고 서버로 보내지지 않습니다.</p><p>언제든 프로필을 변경하거나 삭제할 수 있습니다.</p>",
+            "storage-consent-allow": "허용",
+            "storage-consent-deny": "괜찮아요",
+            
+            // Storage consent
+            "storage-consent-title": "Разрешить сохранять профили на этом устройстве?",
+            "storage-consent-body": "<p>Планы сохраняются в вашем браузере, чтобы их найти после перезагрузки.</p><p>Данные остаются на этом устройстве (localStorage) и не отправляются на сервер.</p><p>Профили можно сменить или удалить в любой момент.</p>",
+            "storage-consent-allow": "Разрешить",
+            "storage-consent-deny": "Нет, спасибо",
+
             // Charms page additions
             "charms-header": "Charms Calculator",
             "charms-inventory": "Charms Inventory",
@@ -76,6 +94,8 @@
             "totals-header": "Items You Need",
             "building-breakdown": "Building Breakdown",
             
+            building: "건물",
+
             // Resources
             "hardened-alloy": "Hardened Alloy",
             "polishing-solution": "Polishing Solution",
@@ -114,10 +134,11 @@
             "gear-current": "Current",
             "gear-desired": "Desired",
             "gear-type": "Gear",
-                "building-current": "Current",
-                "building-desired": "Desired",
+            "building-current": "Current",
+            "building-desired": "Desired",
             "level.start": "Start",
             "level.finish": "Finish",
+            building: "Building",
             
             // Results (dynamically translated in calculator)
             "svs-points": "SvS Points",
@@ -146,6 +167,12 @@
             "home-hero-title": "Bienvenido al Calculador de WOS",
             "home-hero-body-1": "Este calculador te ayuda a optimizar tu progreso en Whiteout Survival (WOS). Ya sea que mejores amuletos, equipo de jefe o gestiones cristales de fuego, las herramientas están aquí para ayudarte.",
             "home-hero-body-2": "Usa la navegación superior para explorar cada sección del calculador según lo que quieras planificar.",
+
+            // Storage consent
+            "storage-consent-title": "¿Permitir guardar perfiles en este dispositivo?",
+            "storage-consent-body": "<p>Guardamos tus planes en el navegador para recuperarlos tras recargar.</p><p>Los datos se quedan en este dispositivo (localStorage); no se envían a ningún servidor.</p><p>Puedes cambiar o borrar perfiles cuando quieras.</p>",
+            "storage-consent-allow": "Permitir",
+            "storage-consent-deny": "No, gracias",
 
             // Coming soon page
             "coming-title": "Nuevos calculadores llegan pronto",
@@ -236,11 +263,14 @@
             "gear-current": "Actual",
             "gear-desired": "Deseado",
             "gear-type": "Equipo",
-                            "building-current": "Actual",
-                            "building-desired": "Deseado",
-                        "level.start": "Inicio",
-                        "level.finish": "Fin",
+            "building-current": "Actual",
+            "building-desired": "Deseado",
+            "level.start": "Inicio",
+            "level.finish": "Fin",
+            building: "Edificio",
             
+            building: "Здание",
+
             // Results
             "svs-points": "Puntos SvS",
               "still-needed": "Aún Necesario",
