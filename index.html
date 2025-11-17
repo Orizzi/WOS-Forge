@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="src/style/style.min.css">
     <link rel="manifest" href="src/manifest.json">
     <script src="src/Scripts/theme.js" defer></script>
+    <script src="src/Scripts/translations.js" defer></script>
 </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +41,13 @@
         <option value="ko"> 한국어</option>
         <option value="ru"> Русский</option>
         </select>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var lang = localStorage.getItem('wos-language') || 'en';
+          var selector = document.getElementById('language-selector');
+          if(selector) selector.value = lang;
+        });
+        </script>
       </nav>
     </header>
     <main role="main">  
