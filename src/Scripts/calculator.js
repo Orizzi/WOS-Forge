@@ -97,9 +97,9 @@ const CalculatorModule = (function(){
       return window.IconHelper.label(key, k=>k.charAt(0).toUpperCase()+k.slice(1));
     }
     const map = {
-      guides: 'assets/resources/charms/guides.png',
-      designs: 'assets/resources/charms/designs.png',
-      secrets: 'assets/resources/charms/secrets.png'
+      guides: '../src/assets/resources/charms/guides.png',
+      designs: '../src/assets/resources/charms/designs.png',
+      secrets: '../src/assets/resources/charms/secrets.png'
     };
     const url = map[key];
     if(!url) return key;
@@ -117,9 +117,9 @@ const CalculatorModule = (function(){
       return window.IconHelper.label(key, () => `${totalText} ${resourceName}`);
     }
     const map = {
-      guides: 'assets/resources/charms/guides.png',
-      designs: 'assets/resources/charms/designs.png',
-      secrets: 'assets/resources/charms/secrets.png'
+      guides: '../src/assets/resources/charms/guides.png',
+      designs: '../src/assets/resources/charms/designs.png',
+      secrets: '../src/assets/resources/charms/secrets.png'
     };
     const url = map[key];
     const text = `${totalText} ${resourceName}`;
