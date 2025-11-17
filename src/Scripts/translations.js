@@ -1,3 +1,20 @@
+        fr: {
+            // Page title and navigation
+            title: "Calculateur d'équipement de chef - Whiteout Survival",
+            "nav-home": "Accueil",
+            "nav-charms": "Charms",
+            "nav-chief-gear": "Équipement de chef",
+            "nav-hero-gear": "Équipement de héros",
+            "nav-fire-crystals": "Cristaux de feu",
+            "nav-war-academy": "Académie de guerre",
+            "nav-pets": "Animaux",
+            "nav-experts": "Experts",
+
+            // Home (index)
+            "home-hero-title": "Bienvenue sur le Calculateur WOS",
+            "home-hero-body-1": "Ce calculateur vous aide à optimiser votre progression dans Whiteout Survival (WOS). Que vous amélioriez vos charms, votre équipement de chef ou que vous gériez vos cristaux de feu, nos outils sont là pour vous aider.",
+            "home-hero-body-2": "Utilisez la barre de navigation ci-dessus pour explorer les différentes sections du calculateur selon vos besoins. Bon jeu !",
+        },
 // Translations Module
 // Handles multi-language support for the WOS Calculator
 
