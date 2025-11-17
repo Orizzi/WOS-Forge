@@ -234,6 +234,30 @@ header[role="banner"] {
     display: block;
 }
 
+.header-with-nav{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--panel);
+}
+.header-with-nav .logo-link{
+    flex: 0 0 520px;
+    height: 170px;
+}
+.header-with-nav .site-logo{
+    height: 170px;
+    width: 100%;
+    object-fit: cover;
+}
+.header-with-nav .main-nav{
+    position: sticky;
+    top: 0;
+    flex: 1;
+    height: 170px;
+    box-shadow: none;
+    border-bottom: none;
+}
+
 .main-nav{
     position: sticky;
     top: 0;

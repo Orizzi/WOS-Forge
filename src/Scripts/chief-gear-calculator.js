@@ -1,6 +1,6 @@
     // Add event listeners to all batch inputs to auto-save profile on any change
-    const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
-    allBatchInputs.forEach(batchInput => {
+    const chiefGearBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
+    chiefGearBatchInputs.forEach(batchInput => {
       batchInput.addEventListener('change', () => {
         // [Chief Gear] Batch input changed: removed for production
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {

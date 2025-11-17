@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WOSC-Charms</title>
       <link rel="stylesheet" href="style/style.min.css">
-      <link rel="manifest" href="manifest.json">
         <script src="Scripts/min/icon-helper.min.js" defer></script>
         <script src="Scripts/min/theme.min.js" defer></script>
         <script src="Scripts/min/table-sort.min.js" defer></script>
@@ -22,6 +21,14 @@
     <meta name="description" content="Calculate and optimize your Whiteout Survival charms upgrades. Save profiles, batch edit, and get resource breakdowns for every charm.">
     <title>WOSC-Charms</title>
     <link rel="stylesheet" href="style/style.min.css">
+    <style>
+      /* Ensure header-with-nav matches fireCrystals layout when using the minified CSS bundle */
+      .header-with-nav{display:flex;align-items:center;justify-content:flex-start;background:var(--panel);}
+      .header-with-nav .logo-link{flex:0 0 520px;height:170px;}
+      .header-with-nav .site-logo{height:170px;width:100%;object-fit:cover;}
+      .header-with-nav .main-nav{position:sticky;top:0;flex:1;height:170px;box-shadow:none;border-bottom:none;}
+      h2 { margin-top: 0; } /* Set top margin of all H2 elements to 0 */
+    </style>
     <script src="Scripts/min/icon-helper.min.js" defer></script>
     <script src="Scripts/min/theme.min.js" defer></script>
     <script src="Scripts/min/table-sort.min.js" defer></script>
@@ -29,34 +36,29 @@
     <script src="Scripts/min/profiles.min.js" defer></script>
     <script src="Scripts/min/translations.min.js" defer></script>
 <body>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js');
-        });
-      }
-    </script>
-    <header role="banner">
-        <a href="index.html" class="logo-link">
-            <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
-        </a>
-    </header>
-    <nav class="main-nav" role="navigation" aria-label="Main navigation">
-      <a href="index.html" data-i18n="nav-home">Home</a>
-      <a href="charms.html" aria-current="page" data-i18n="nav-charms">Charms</a>
-      <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
-      <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
-      <a href="coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
-      <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
-      <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
-      <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">™ Theme</button>
-      <select id="language-selector" aria-label="Language" title="Select language">
+  <header class="header-with-nav" role="banner">
+      <a href="index.html" class="logo-link">
+        <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html" data-i18n="nav-home">Home</a>
+        <a href="charms.html" data-i18n="nav-charms" aria-current="page">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals" >Fire Crystals</a>
+        <a href="coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
+        <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
+        <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
         <option value="en"> English</option>
         <option value="es"> Español</option>
         <option value="ko"> 한국어</option>
         <option value="ru"> Русский</option>
-      </select>
-    </nav>
+        </select>
+      </nav>
+    </header>
+  <!-- main starts here -->
+
  <main role="main">  
    <h2 data-i18n="charms-header">Charms Calculator</h2>
   <!-- Inventory and Profiles side-by-side -->
@@ -67,15 +69,15 @@
         <h3 data-i18n="charms-inventory">Charms Inventory</h3>
         <div class="inventory-inputs">
           <div class="inventory-item">
-            <label for="inventory-guides"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> <span data-i18n="guides">Guides</span> <span class="help-tooltip" title="Guides are used to upgrade charms. Enter the number you currently own.">?</span></span></label>
+            <label for="inventory-guides"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> <span data-i18n="guides">Guides</span></span></label>
             <input type="number" id="inventory-guides" min="0" value="0" aria-label="Guides inventory" inputmode="numeric" maxlength="8" max="99999999" />
           </div>
           <div class="inventory-item">
-            <label for="inventory-designs"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> <span data-i18n="designs">Designs</span> <span class="help-tooltip" title="Designs are required for higher-level charm upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-designs"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> <span data-i18n="designs">Designs</span></span></label>
             <input type="number" id="inventory-designs" min="0" value="0" aria-label="Designs inventory" inputmode="numeric" maxlength="8" max="99999999" />
           </div>
           <div class="inventory-item">
-            <label for="inventory-secrets"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> <span data-i18n="secrets">Secrets</span> <span class="help-tooltip" title="Secrets are a rare resource for advanced charm upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-secrets"><span class="label-with-icon"><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> <span data-i18n="secrets">Secrets</span></span></label>
             <input type="number" id="inventory-secrets" min="0" value="0" aria-label="Secrets inventory" inputmode="numeric" maxlength="6" max="999999" />
           </div>
         </div>
@@ -570,7 +572,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="ring-charm-1-finish">TO:</label>
         <select id="ring-charm-1-finish" name="ring-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -617,7 +619,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="ring-charm-2-finish">TO:</label>
         <select id="ring-charm-2-finish" name="ring-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -664,7 +666,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="ring-charm-3-finish">TO:</label>
         <select id="ring-charm-3-finish" name="ring-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -763,7 +765,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="watch-charm-1-finish">TO:</label>
         <select id="watch-charm-1-finish" name="watch-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -810,7 +812,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="watch-charm-2-finish">TO:</label>
         <select id="watch-charm-2-finish" name="watch-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -857,7 +859,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="watch-charm-3-finish">TO:</label>
         <select id="watch-charm-3-finish" name="watch-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -956,7 +958,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="pants-charm-1-finish">TO:</label>
         <select id="pants-charm-1-finish" name="pants-charm-1">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1003,7 +1005,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="pants-charm-2-finish">TO:</label>
         <select id="pants-charm-2-finish" name="pants-charm-2">
           <option value="0" selected>0</option>
           <option value="1">1</option>
@@ -1050,7 +1052,7 @@
           <option value="15">15</option>
           <option value="16">16</option>
         </select>
-        <label data-i18n="to">TO:</label>
+        <label data-i18n="to" for="pants-charm-3-finish">TO:</label>
         <select id="pants-charm-3-finish" name="pants-charm-3">
           <option value="0" selected>0</option>
           <option value="1">1</option>

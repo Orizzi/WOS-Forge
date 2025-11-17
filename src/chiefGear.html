@@ -22,6 +22,13 @@
     <meta name="description" content="Chief Gear calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every gear type.">
     <title>WOSC-Chief Gear</title>
     <link rel="stylesheet" href="style/style.min.css">
+    <style>
+      /* Match fireCrystals header layout (banner left, nav right) */
+      .header-with-nav{display:flex;align-items:center;justify-content:flex-start;background:var(--panel);}
+      .header-with-nav .logo-link{flex:0 0 520px;height:170px;}
+      .header-with-nav .site-logo{height:170px;width:100%;object-fit:cover;}
+      .header-with-nav .main-nav{position:sticky;top:0;flex:1;height:170px;box-shadow:none;border-bottom:none;}
+    </style>
     <script src="Scripts/min/icon-helper.min.js" defer></script>
     <script src="Scripts/min/theme.min.js" defer></script>
     <script src="Scripts/min/table-sort.min.js" defer></script>
@@ -36,29 +43,29 @@
         });
       }
     </script>
-    <header role="banner">
-        <a href="index.html" class="logo-link">
-            <img src="assets/wos-forge-banner.png" alt="Whiteout Survival Forge Banner" class="site-logo">
-        </a>
-    </header>
-    <nav class="main-nav" role="navigation" aria-label="Main navigation">
-      <a href="index.html" data-i18n="nav-home">Home</a>
-      <a href="charms.html" data-i18n="nav-charms">Charms</a>
-      <a href="chiefGear.html" aria-current="page" data-i18n="nav-chief-gear">Chief Gear</a>
-      <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
-      <a href="coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
-      <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
-      <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
-      <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme"> Theme</button>
-      <select id="language-selector" aria-label="Language" title="Select language">
+   <header class="header-with-nav" role="banner">
+      <a href="index.html" class="logo-link">
+        <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html" data-i18n="nav-home">Home</a>
+        <a href="charms.html" data-i18n="nav-charms">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear" aria-current="page">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals" >Fire Crystals</a>
+        <a href="coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
+        <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
+        <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
         <option value="en"> English</option>
-        <option value="es"> Espa�ol</option>
-        <option value="ko"> ???</option>
-        <option value="ru"> ???????</option>
-      </select>
-    </nav>
+        <option value="es"> Español</option>
+        <option value="ko"> 한국어</option>
+        <option value="ru"> Русский</option>
+        </select>
+      </nav>
+    </header>
  <main role="main">  
-   <h2 data-i18n="header">Chief Gear Calculator</h2>
+   <h2 style="margin-top:0;" data-i18n="header">Chief Gear Calculator</h2>
   <!-- Inventory and Profiles side-by-side -->
   <div class="inventory-profiles-row" role="group" aria-label="Inventory and profiles">
     <!-- Inventory for chief gear resources -->
@@ -67,19 +74,19 @@
         <h3 data-i18n="inventory-header">Your Inventory</h3>
         <div class="inventory-inputs">
           <div class="inventory-item">
-            <label for="inventory-alloy"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/hardened-alloy.png" alt="Hardened Alloy"> <span data-i18n="hardened-alloy">Hardened Alloy</span> <span class="help-tooltip" title="Hardened Alloy is used for chief gear upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-alloy"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/hardened-alloy.png" alt="Hardened Alloy"> <span data-i18n="hardened-alloy">Hardened Alloy</span></span></label>
             <input type="number" id="inventory-alloy" min="0" value="0" aria-label="Hardened Alloy inventory" inputmode="numeric" maxlength="7" max="9999999" pattern="[0-9]{1,7}" />
           </div>
           <div class="inventory-item">
-            <label for="inventory-solution"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/polishing-solution.png" alt="Polishing Solution"> <span data-i18n="polishing-solution">Polishing Solution</span> <span class="help-tooltip" title="Polishing Solution is required for chief gear upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-solution"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/polishing-solution.png" alt="Polishing Solution"> <span data-i18n="polishing-solution">Polishing Solution</span> </span></label>
             <input type="number" id="inventory-solution" min="0" value="0" aria-label="Polishing Solution inventory" inputmode="numeric" maxlength="7" max="9999999" pattern="[0-9]{1,7}" />
           </div>
           <div class="inventory-item">
-            <label for="inventory-plans"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/design-plans.png" alt="Design Plans"> <span data-i18n="design-plans">Design Plans</span> <span class="help-tooltip" title="Design Plans are needed for advanced chief gear upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-plans"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/design-plans.png" alt="Design Plans"> <span data-i18n="design-plans">Design Plans</span> </span></label>
             <input type="number" id="inventory-plans" min="0" value="0" aria-label="Design Plans inventory" inputmode="numeric" maxlength="6" max="999999" pattern="[0-9]{1,6}" />
           </div>
           <div class="inventory-item">
-            <label for="inventory-amber"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/lunar-amber.png" alt="Lunar Amber"> <span data-i18n="lunar-amber">Lunar Amber</span> <span class="help-tooltip" title="Lunar Amber is a rare resource for top-level chief gear upgrades. Enter your current amount.">?</span></span></label>
+            <label for="inventory-amber"><span class="label-with-icon"><img class="res-icon" src="assets/resources/chief-gear/lunar-amber.png" alt="Lunar Amber"> <span data-i18n="lunar-amber">Lunar Amber</span></span></label>
             <input type="number" id="inventory-amber" min="0" value="0" aria-label="Lunar Amber inventory" inputmode="numeric" maxlength="5" max="99999" pattern="[0-9]{1,5}" />
           </div>
         </div>
