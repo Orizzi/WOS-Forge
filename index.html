@@ -46,6 +46,9 @@
           var lang = localStorage.getItem('wos-language') || 'en';
           var selector = document.getElementById('language-selector');
           if(selector) selector.value = lang;
+          if(window.I18n && typeof window.I18n.setLanguage === 'function') {
+            window.I18n.setLanguage(lang);
+          }
         });
         </script>
       </nav>
