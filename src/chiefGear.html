@@ -69,12 +69,13 @@
         </div>
       </nav>
     </header>
- <main role="main">  
+ <div class="app-shell">
+    <main role="main">  
    <h2 style="margin-top:0;" data-i18n="header">Chief Gear Calculator</h2>
   <!-- Inventory and Profiles side-by-side -->
   <div class="inventory-profiles-row" role="group" aria-label="Inventory and profiles">
     <!-- Inventory for chief gear resources -->
-    <section class="inventory-section" aria-label="Your Chief Gear Inventory" role="region">
+    <section class="inventory-section card" aria-label="Your Chief Gear Inventory" role="region">
       <div class="inventory-row">
         <h3 data-i18n="inventory-header">Your Inventory</h3>
         <div class="inventory-inputs">
@@ -100,7 +101,7 @@
     </section>
 
     <!-- Profiles / presets section: saved locally in browser -->
-    <section class="profiles" aria-label="Chief Gear profiles" role="region">
+    <section class="profiles card" aria-label="Chief Gear profiles" role="region">
       <h3 data-i18n="profiles-header">Profiles</h3>
       <div class="profiles-row">
         <div class="input-with-icon">
@@ -118,7 +119,7 @@
 
   
 
-  <section class="calculation-input" aria-label="Chief Gear Level Inputs" role="region" tabindex="0" aria-describedby="gear-level-desc">
+  <section class="calculation-input card" aria-label="Chief Gear Level Inputs" role="region" tabindex="0" aria-describedby="gear-level-desc">
     <span id="gear-level-desc" class="sr-only">Select chief gear levels to calculate required resources. Use batch controls for quick selection. Results update automatically.</span>
 
   <!-- Main container for equipment and results side by side -->
@@ -891,7 +892,7 @@
   </div><!-- End left-column -->
 
   <!-- Results section - now on the right side -->
-  <div class="calculation-output" aria-label="Calculation results">
+  <div class="calculation-output card" aria-label="Calculation results">
     <h2 data-i18n="results" id="results-heading">Results</h2>
     <div id="calculation-results" aria-live="polite" aria-label="Cost breakdown table" role="region" aria-labelledby="results-heading">
       <div class="table-responsive">
@@ -903,9 +904,11 @@
   </div><!-- End main-layout-wrapper -->
   </section><!-- End calculation-input -->
 </main>
+</div>
 
 </body>
 </html>
+
 
 
 

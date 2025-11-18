@@ -44,13 +44,14 @@
         </select>
       </div>
       </nav>
-    </header><main role="main">
+    </header><div class="app-shell">
+    <main role="main">
         <h2 style="margin-top:0;" data-i18n="nav-fire-crystals" id="fire-crystals-heading">Fire Crystals</h2>
 
         <!-- Profiles + Inventory row (inventory left) -->
         <div class="inventory-profiles-row">
         <!-- Inventory Section (kept first so it stays left; profiles will be right) -->
-        <section class="inventory-section compact">
+        <section class="inventory-section compact card">
             <h3 data-i18n="inventory-header">Your Inventory</h3>
             <div class="inventory-grid compact">
                 <div class="inventory-item">
@@ -131,7 +132,7 @@
         </section>
 
                 <!-- Profiles section (stacked vertically on this page) -->
-                <section class="profiles stacked" aria-label="Chief Gear profiles" role="region">
+                <section class="profiles stacked card" aria-label="Chief Gear profiles" role="region">
                     <h3 data-i18n="profiles-header">Profiles</h3>
                     <div class="profiles-row">
                         <div class="input-with-icon">
@@ -150,7 +151,7 @@
         <!-- Buildings + Results two-column layout -->
         <div class="fc-two-column">
         <!-- Buildings Section -->
-        <section class="buildings-section">
+        <section class="buildings-section card">
             <h2>Buildings</h2>
             <div class="buildings-grid">
                 <!-- Furnace (Main Building) -->
@@ -1105,7 +1106,7 @@
         </section>
 
         <!-- Results Section (right column) -->
-        <section class="results-section">
+        <section class="results-section card">
             <h3 data-i18n="totals-header">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data�</span></h3>
             <div id="results-display"></div>
         </section>
@@ -1113,8 +1114,10 @@
 
        
     </main>
+</div>
 </body>
 </html>
+
 
 
 
