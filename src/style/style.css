@@ -137,6 +137,102 @@ body {
 .icon-button{ padding: 10px 12px; min-width: 40px; }
 .icon-button img{ width: 16px; height: 16px; display: block; }
 
+/* Responsive nav -------------------------------------------------------- */
+.header-with-nav{flex-wrap:wrap; gap:12px;}
+.nav-toggle{
+    display:none;
+    background: transparent;
+    border:1px solid var(--border);
+    color: var(--text);
+    font-size: 1.4rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+}
+.main-nav{
+    display:flex;
+    align-items:center;
+    flex:1;
+    gap:12px;
+}
+.nav-links{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+.nav-actions{
+    display:flex;
+    gap:10px;
+    margin-left:auto;
+    align-items:center;
+}
+
+@media (max-width: 900px){
+    .nav-toggle{ display:inline-flex; align-items:center; justify-content:center; }
+    .main-nav{
+        width:100%;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:0;
+        display:none;
+    }
+    .main-nav.is-open,
+    .header-with-nav.nav-open .main-nav,
+    body.nav-open .main-nav{
+        display:flex;
+    }
+    .nav-links{
+        flex-direction:column;
+        width:100%;
+    }
+    .nav-links a{
+        width:100%;
+        padding:10px 0;
+        border-bottom:1px solid var(--border);
+    }
+    .nav-actions{
+        width:100%;
+        justify-content:space-between;
+        padding:8px 0;
+    }
+    .header-with-nav{align-items:flex-start;}
+}
+
+/* Responsive layout helpers -------------------------------------------- */
+.table-responsive{ overflow-x:auto; width:100%; }
+.table-responsive table{ width:100%; min-width:600px; }
+
+@media (max-width: 1024px){
+    .inventory-profiles-row{ flex-direction:column; }
+    .profiles-row{ flex-direction:column; align-items:stretch; }
+    .profiles.stacked .profiles-row{ align-items:stretch; }
+    .profiles .profiles-list,
+    .profiles input[type="text"]{ width:100%; }
+    .fc-two-column,
+    .buildings-section,
+    .results-section{ width:100%; }
+    .buildings-grid{ grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+}
+
+@media (max-width: 768px){
+    body{ padding: 0 10px; }
+    .inventory-section,
+    .profiles{ width:100%; }
+    .fc-two-column{ flex-direction:column; gap:16px; }
+    .buildings-grid{ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .calculation-input, .calculation-output{ padding:12px; }
+    .main-layout-wrapper{ flex-direction:column; }
+}
+
+@media (max-width: 480px){
+    .nav-actions{ flex-direction:column; align-items:flex-start; }
+    .main-layout-wrapper{ gap:12px; }
+    .profiles-row button,
+    .profiles-row input,
+    .profiles-row select{ width:100%; }
+    .inventory-grid{ grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); }
+}
+
 /* ===== Inventory grid (compact) ===== */
 .inventory-grid{ display: grid; gap: 10px 12px; }
 .inventory-grid.compact{ grid-template-columns: repeat(2, minmax(0, 1fr)); }

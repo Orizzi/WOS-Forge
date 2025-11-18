@@ -16,27 +16,33 @@
     </style>
     <script src="src/Scripts/theme.js" defer></script>
     <script src="src/Scripts/translations.js" defer></script>
+    <script src="src/Scripts/nav.js" defer></script>
 </head>
 <body>
     <header class="header-with-nav" role="banner">
       <a href="./index.html" class="logo-link">
         <img src="src/assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
       </a>
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="./index.html" data-i18n="nav-home" aria-current="page">Home</a>
-        <a href="src/charms.html" data-i18n="nav-charms">Charms</a>
-        <a href="src/chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
-        <a href="src/fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
-        <a href="src/coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
-        <a href="src/coming-soon.html" data-i18n="nav-pets">Pets</a>
-        <a href="src/coming-soon.html" data-i18n="nav-experts">Experts</a>
-        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
-                <select id="language-selector" aria-label="Language" title="Select language">
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="ko">한국어</option>
-          <option value="ru">Русский</option>
-        </select>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">☰</button>
+      <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-links">
+          <a href="./index.html" data-i18n="nav-home" aria-current="page">Home</a>
+          <a href="src/charms.html" data-i18n="nav-charms">Charms</a>
+          <a href="src/chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+          <a href="src/fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
+          <a href="src/coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
+          <a href="src/coming-soon.html" data-i18n="nav-pets">Pets</a>
+          <a href="src/coming-soon.html" data-i18n="nav-experts">Experts</a>
+        </div>
+        <div class="nav-actions">
+          <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+          <select id="language-selector" aria-label="Language" title="Select language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ko">한국어</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
       </nav>
     </header>
     <main role="main">
