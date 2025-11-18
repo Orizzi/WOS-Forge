@@ -3,11 +3,15 @@
 
   function setStatus(el, state){
     if(!el) return;
-    const fc = window.FCDataStatus || { loaded:false, rows:0, source:'fallback' };
+    const fc = state || window.FCDataStatus || { loaded:false, rows:0, source:'fallback' };
 
-    if(fc.loaded && fc.rows > 0){
+    if(fc.loaded && fc.rows > 0 && !fc.error){
       el.dataset.status = 'ok';
-      el.textContent = `Data OK (rows: ${fc.rows})`;
+      const src = fc.source || 'data';
+      el.textContent = `Data OK (${fc.rows} rows, ${src})`;
+    } else if (fc.error) {
+      el.dataset.status = 'warn';
+      el.textContent = 'Data failed to load';
     } else {
       el.dataset.status = 'warn';
       el.textContent = `Data not loaded`;

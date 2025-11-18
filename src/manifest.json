@@ -1,0 +1,21 @@
+{
+  "name": "Whiteout Survival Calculator",
+  "short_name": "WOS Calculator",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#222831",
+  "theme_color": "#222831",
+  "description": "Optimize charms, chief gear, and fire crystals for Whiteout Survival. Save upgrade profiles and plan resources.",
+  "icons": [
+    {
+      "src": "assets/wos-forge-banner.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/wos-forge-banner.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,7 +1,61 @@
-(function() {
+﻿(function() {
     'use strict';
+    const FC_DEBUG = false;
+
+    // Lazy-load shared modules when available (no HTML changes).
+    async function ensureModules() {
+        const scripts = [
+            'Scripts/modules/helpers/number-format.js',
+            'Scripts/modules/helpers/icons.js',
+            'Scripts/modules/helpers/csv.js',
+            'Scripts/modules/data/data-loader.js',
+            'Scripts/modules/calculators/fire-crystals.js',
+            'Scripts/modules/ui/fire-crystals-ui.js'
+        ];
+        const loaders = scripts.map((src) => loadScriptOnce(src));
+        await Promise.all(loaders);
+    }
+
+    function loadScriptOnce(src) {
+        return new Promise((resolve) => {
+            if (typeof document === 'undefined') return resolve();
+            if (document.querySelector(`script[data-wos="${src}"]`)) {
+                resolve();
+                return;
+            }
+            const s = document.createElement('script');
+            s.src = src;
+            s.dataset.wos = src;
+            s.onload = () => resolve();
+            s.onerror = () => resolve();
+            document.head.appendChild(s);
+        });
+    }
+
+    // Zinman helpers
+    function getZinmanReduction(level){
+        const lvl = Math.max(0, Math.min(5, parseInt(level, 10) || 0));
+        const map = {0:0,1:0.03,2:0.06,3:0.09,4:0.12,5:0.15};
+        return map[lvl] || 0;
+    }
+
+    function applyZinmanReductionToResources(totals, level){
+        const factor = 1 - getZinmanReduction(level);
+        const round = (v) => Math.round((v || 0) * factor);
+        return {
+            ...totals,
+            meat: round(totals.meat),
+            wood: round(totals.wood),
+            coal: round(totals.coal),
+            iron: round(totals.iron)
+        };
+    }
 
     function formatCompact(n){
+        const helper = window.WOSHelpers && window.WOSHelpers.number;
+        if (helper && typeof helper.formatCompact === 'function') {
+            return helper.formatCompact(Number(n) || 0);
+        }
         if (n === null || n === undefined) return '0';
         const sign = n < 0 ? '-' : '';
         const abs = Math.abs(Number(n)) || 0;
@@ -673,7 +727,7 @@
         }
     };
 
-    // Optional: CSV override for resource costs (F30 → FC10 only)
+    // Optional: CSV override for resource costs (F30 â†’ FC10 only)
     // Expected CSV header: building,level,meat,wood,coal,iron
     // Example level values: 30-1, 30-2, 30-3, 30-4, FC1, FC1-1, ..., FC9-4, FC10
     function getF30ToFC10Keys() {
@@ -687,7 +741,28 @@
         return new Set(keys);
     }
 
-    function parseCsv(text) {
+        function parseCsv(text) {
+        const helper = window.WOSHelpers && window.WOSHelpers.csv;
+        if (helper && typeof helper.parseCsv === 'function') {
+            const parsed = helper.parseCsv(text);
+            if (parsed && parsed.header && parsed.rows) {
+                const header = parsed.header.map((h) => (h || '').toLowerCase());
+                const getNum = (s) => {
+                    const cleaned = String(s || '').replace(/[$�'�\s,]/g, '');
+                    const n = parseInt(cleaned, 10);
+                    return isNaN(n) ? 0 : n;
+                };
+                return parsed.rows.map((parts) => ({
+                    building: (parts[header.indexOf('building')] || '').trim(),
+                    level: (parts[header.indexOf('level')] || '').trim(),
+                    meat: getNum(parts[header.indexOf('meat')]),
+                    wood: getNum(parts[header.indexOf('wood')]),
+                    coal: getNum(parts[header.indexOf('coal')]),
+                    iron: getNum(parts[header.indexOf('iron')])
+                }));
+            }
+        }
+
         const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if (lines.length === 0) return [];
         const header = lines[0].split(',').map(h => h.trim().toLowerCase());
@@ -699,7 +774,6 @@
             coal: header.indexOf('coal'),
             iron: header.indexOf('iron')
         };
-        // Basic header validation
         if (Object.values(idx).some(v => v === -1)) return [];
 
         const rows = [];
@@ -707,7 +781,7 @@
             const parts = lines[i].split(',');
             if (parts.length < header.length) continue;
             const getNum = (s) => {
-                const cleaned = String(s || '').replace(/[$€\s,]/g, '');
+                const cleaned = String(s || '').replace(/[$�'�\s,]/g, '');
                 const n = parseInt(cleaned, 10);
                 return isNaN(n) ? 0 : n;
             };
@@ -724,12 +798,22 @@
         return rows;
     }
 
-    async function applyResourceOverridesFromCsv(url = 'assets/resource_costs.csv') {
+        async function applyResourceOverridesFromCsv(url = 'assets/resource_costs.csv') {
         try {
-            const res = await fetch(url, { cache: 'no-cache' });
-            if (!res.ok) return; // silently skip if not found
-            const text = await res.text();
-            const rows = parseCsv(text);
+            let rows = [];
+            const loader = window.WOSData && window.WOSData.loader;
+            if (loader && loader.loadCsv) {
+                const parsed = await loader.loadCsv(url);
+                if (parsed && parsed.header && parsed.rows) {
+                    rows = parseCsv([parsed.header.join(','), ...parsed.rows.map(r => r.join(','))].join('\n'));
+                }
+            }
+            if (!rows || rows.length === 0) {
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) return;
+                const text = await res.text();
+                rows = parseCsv(text);
+            }
             if (!rows || rows.length === 0) return;
 
             const allowed = getF30ToFC10Keys();
@@ -745,12 +829,10 @@
                 applied++;
             });
             if (applied > 0) {
-                console.info(`[FireCrystals] Applied ${applied} resource overrides from CSV (F30 → FC10).`);
-                // Recalculate if UI is ready
+                console.info(`[FireCrystals] Applied ${applied} resource overrides from CSV (F30 -> FC10).`);
                 try { calculateAll(); } catch (_) {}
             }
         } catch (e) {
-            // ignore network/parse errors
             console.warn('[FireCrystals] Resource CSV override skipped:', e.message || e);
         }
     }
@@ -818,6 +900,123 @@
     }
 
     /**
+     * Normalize a level id to its base (major) level key.
+     * Examples: "FC9-1" -> "FC9", "30-1" -> "F30"
+     */
+    function getBaseLevel(levelId) {
+        if (!levelId) return levelId;
+        const base = levelId.split('-')[0];
+        if (base === '30') return 'F30';
+        if (/^\d+$/.test(base)) return `F${base}`;
+        return base;
+    }
+
+    /**
+     * Count how many upgrade steps (edges) exist for each base level.
+     * Steps are counted on edges where the CURRENT level shares the base.
+     */
+    // --- Per-step Fire Crystal dataset (from fire_crystals_steps.json) ---
+    let fireCrystalStepsCache = null;
+
+    async function loadFireCrystalSteps() {
+        if (fireCrystalStepsCache) return fireCrystalStepsCache;
+        try {
+            const res = await fetch('assets/fire_crystals_steps.json', { cache: 'no-cache' });
+            if (!res.ok) {
+                console.warn('[FireCrystals] Failed to load fire_crystals_steps.json');
+                return null;
+            }
+            const data = await res.json();
+            fireCrystalStepsCache = data;
+            return data;
+        } catch (e) {
+            console.error('[FireCrystals] Error loading fire_crystals_steps.json', e);
+            return null;
+        }
+    }
+
+    function getStepsByBuilding(data) {
+        const map = {};
+        (data || []).forEach((row) => {
+            if (!row.building) return;
+            if (!map[row.building]) map[row.building] = [];
+            map[row.building].push(row);
+        });
+        // Sort by orderIndex then levelId for stability
+        Object.keys(map).forEach((b) => {
+            map[b].sort((a, b) => {
+                if (a.orderIndex !== b.orderIndex) return a.orderIndex - b.orderIndex;
+                return a.levelId.localeCompare(b.levelId);
+            });
+        });
+        return map;
+    }
+
+    /**
+     * Compute totals for Fire Crystal upgrades using real per-step data.
+     */
+    async function computeFireCrystalsUpgrade(buildingId, fromId, toId) {
+        const stepsData = await loadFireCrystalSteps();
+        if (!stepsData) return null;
+        const byBuilding = getStepsByBuilding(stepsData);
+        const steps = byBuilding[buildingId];
+        if (!steps || steps.length === 0) {
+            console.warn('[FireCrystals] No step data for building', buildingId);
+            return null;
+        }
+
+        const fromIndex = steps.findIndex((s) => s.levelId === fromId);
+        const toIndex = steps.findIndex((s) => s.levelId === toId);
+        if (fromIndex === -1 || toIndex === -1) {
+            console.warn('[FireCrystals] Level not found in step data', { buildingId, fromId, toId });
+            return null;
+        }
+        if (toIndex <= fromIndex) {
+            return {
+                totalFc: 0,
+                totalRfc: 0,
+                totalTimeSeconds: 0,
+                totalMeat: 0,
+                totalWood: 0,
+                totalCoal: 0,
+                totalIron: 0
+            };
+        }
+
+        const totals = {
+            totalFc: 0,
+            totalRfc: 0,
+            totalTimeSeconds: 0,
+            totalMeat: 0,
+            totalWood: 0,
+            totalCoal: 0,
+            totalIron: 0
+        };
+
+        if (FC_DEBUG) {
+            console.debug('[FC DEBUG] computeFireCrystalsUpgrade', { buildingId, fromId, toId, steps: steps.length, fromIndex, toIndex });
+        }
+
+        for (let i = fromIndex + 1; i <= toIndex; i++) {
+            const step = steps[i];
+            if (!step) continue;
+            totals.totalFc += step.fc || 0;
+            totals.totalRfc += step.rfc || 0;
+            totals.totalTimeSeconds += step.timeSeconds || 0;
+            totals.totalMeat += step.meat || 0;
+            totals.totalWood += step.wood || 0;
+            totals.totalCoal += step.coal || 0;
+            totals.totalIron += step.iron || 0;
+        }
+
+        if (FC_DEBUG) {
+            console.debug('[FC DEBUG] totals', totals);
+        }
+
+        return totals;
+    }
+
+    /**
      * Calculate costs for a single building upgrade path
      * Now uses CSV data from Excel sheets
      */
@@ -829,55 +1028,22 @@
         const toIndex = levelsArray.indexOf(toLevel);
 
         if (fromIndex === -1 || toIndex === -1 || fromIndex >= toIndex) {
+            console.warn('[FireCrystals] Invalid level range', { buildingName, fromLevel, toLevel });
             return null;
         }
 
-        // Get FC/RFC costs from embedded JS (authoritative)
-        let fcCosts = null;
-        try {
-            fcCosts = await window.calculateFireCrystalCosts(buildingName, fromLevel, toLevel, levelsArray);
-        } catch (e) {
-            console.error('[FireCrystals] Failed to compute FC costs from embedded data', e);
-            return null;
-        }
+    const totals = await computeFireCrystalsUpgrade(buildingName, fromLevel, toLevel);
+    if (!totals) return null;
 
-        const buildingData = fireCrystalCosts[buildingName];
-        let totalTime = 0;
-        let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
-
-        // Calculate time and resource costs for each step in the range
-        for (let i = fromIndex; i < toIndex; i++) {
-            const currentLevel = levelsArray[i];
-            const nextLevel = levelsArray[i + 1];
-            
-            // Determine the base level (major level without sub-step suffix)
-            const baseCurrent = currentLevel.includes('-') ? currentLevel.split('-')[0] : currentLevel;
-            const levelData = buildingData && buildingData[baseCurrent];
-
-            // Add time for this major level (only once per major level transition)
-            if (levelData && !currentLevel.includes('-')) {
-                totalTime += levelData.time || 0;
-            }
-
-            // Add base resources using the nextLevel key
-            const resMap = buildingResourceCosts[buildingName] && buildingResourceCosts[buildingName][nextLevel];
-            if (resMap) {
-                totalMeat += resMap.meat || 0;
-                totalWood += resMap.wood || 0;
-                totalCoal += resMap.coal || 0;
-                totalIron += resMap.iron || 0;
-            }
-        }
-
-        return {
-            normalFC: fcCosts.normalFC,
-            refineFC: fcCosts.refineFC,
-            time: totalTime,
-            meat: totalMeat,
-            wood: totalWood,
-            coal: totalCoal,
-            iron: totalIron
-        };
+    return {
+        normalFC: totals.totalFc,
+        refineFC: totals.totalRfc,
+        time: totals.totalTimeSeconds,
+        meat: totals.totalMeat,
+        wood: totals.totalWood,
+        coal: totals.totalCoal,
+        iron: totals.totalIron
+    };
     }
 
     /**
@@ -906,10 +1072,11 @@
      */
     async function calculateAll() {
         const results = {};
-    let totalNormalFC = 0;
-    let totalRefineFC = 0;
-    let totalTime = 0;
-    let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
+        let totalNormalFC = 0;
+        let totalRefineFC = 0;
+        let totalTime = 0;
+        let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
+        const zinmanLevel = parseInt(document.getElementById('zinman-level')?.value || 0, 10) || 0;
 
         // Calculate for each building
         for (const building of BUILDINGS) {
@@ -921,17 +1088,18 @@
 
             const fromVal = startSelect.value;
             const toVal = finishSelect.value;
-            const costs = await calculateBuildingCosts(building, fromVal, toVal);
+            let costs = await calculateBuildingCosts(building, fromVal, toVal);
             
             if (costs) {
-                results[building] = { ...costs, from: fromVal, to: toVal };
-                totalNormalFC += costs.normalFC;
-                totalRefineFC += costs.refineFC;
-                totalTime += costs.time;
-                totalMeat += costs.meat || 0;
-                totalWood += costs.wood || 0;
-                totalCoal += costs.coal || 0;
-                totalIron += costs.iron || 0;
+                const reduced = applyZinmanReductionToResources(costs, zinmanLevel);
+                results[building] = { ...reduced, from: fromVal, to: toVal };
+                totalNormalFC += reduced.normalFC;
+                totalRefineFC += reduced.refineFC;
+                totalTime += reduced.time;
+                totalMeat += reduced.meat || 0;
+                totalWood += reduced.wood || 0;
+                totalCoal += reduced.coal || 0;
+                totalIron += reduced.iron || 0;
             }
         }
 
@@ -979,8 +1147,12 @@
         const lang = window.I18n ? window.I18n.getCurrentLanguage() : 'en';
         const t = window.I18n ? window.I18n.t : (key) => key;
 
-        // Icon helper for resources (delegates to global IconHelper if available)
+        // Icon helper for resources (delegates to shared helpers when available)
         function labelWithIcon(key, overrideText) {
+            const icons = window.WOSHelpers && window.WOSHelpers.icons;
+            if (icons && typeof icons.label === 'function') {
+                return icons.label(key, overrideText ? () => overrideText : (k) => t(k));
+            }
             if (window.IconHelper && typeof window.IconHelper.label === 'function') {
                 // If a short label override is provided (e.g., FC/RFC), use it
                 if (overrideText) {
@@ -991,12 +1163,12 @@
             }
             // Fallback for when IconHelper isn't loaded
             const urlMap = {
-                'fire-crystals': 'assets/resources/fire-crystals.png',
-                'refine-crystals': 'assets/resources/refine-crystals.png',
-                meat: 'assets/resources/meat.png',
-                wood: 'assets/resources/wood.png',
-                coal: 'assets/resources/coal.png',
-                iron: 'assets/resources/iron.png'
+                'fire-crystals': 'assets/resources/base/fire-crystals.png',
+                'refine-crystals': 'assets/resources/base/refine-crystals.png',
+                meat: 'assets/resources/base/meat.png',
+                wood: 'assets/resources/base/wood.png',
+                coal: 'assets/resources/base/coal.png',
+                iron: 'assets/resources/base/iron.png'
             };
             const url = urlMap[key];
             const text = overrideText || t(key);
@@ -1121,11 +1293,6 @@
         const totalSVSPoints = fcPoints + rfcPoints + speedupPoints;
 
         html += `<div class="total-item">
-            <span class="resource-label">SVS Points (FC):</span>
-            <span class="resource-value">${fcPoints.toLocaleString()}</span>
-        </div>`;
-
-        html += `<div class="total-item">
             <span class="resource-label">${t('svs-points-fc', lang)}:</span>
             <span class="resource-value">${Math.floor(fcPoints).toLocaleString()}</span>
         </div>`;
@@ -1216,9 +1383,9 @@
     }
 
     /**
-     * Initialize the calculator
+     * Legacy initializer: binds DOM events and runs calculations.
      */
-    function init() {
+    async function legacyInit() {
         // Add event listeners to all building selects
         BUILDINGS.forEach(building => {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
@@ -1254,13 +1421,15 @@
             'inventory-meat',
             'inventory-wood',
             'inventory-coal',
-            'inventory-iron'
+            'inventory-iron',
+            'zinman-level'
         ];
 
         inventoryInputs.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
-                input.addEventListener('input', calculateAll);
+                const evt = id === 'zinman-level' ? 'change' : 'input';
+                input.addEventListener(evt, calculateAll);
             }
         });
 
@@ -1272,10 +1441,18 @@
             }
         });
 
+        // Fallback: recalc on any level select change (even if IDs change or were not wired above)
+        const levelSelects = document.querySelectorAll('select[id$="-start"], select[id$="-finish"]');
+        levelSelects.forEach(sel => {
+            sel.addEventListener('change', () => {
+                try { calculateAll(); } catch (_) {}
+            });
+        });
+
         // Recalculate once CSV data loads/refreshes
         try { window.addEventListener('fc-data-ready', () => { try { calculateAll(); } catch (_) {} }); } catch(_) {}
 
-        // Try to apply CSV overrides for resource costs (F30 → FC10)
+        // Try to apply CSV overrides for resource costs (F30 â†’ FC10)
         // This will re-run calculateAll once applied.
         applyResourceOverridesFromCsv().then(() => {
             // Initial calculation after potential overrides
@@ -1288,12 +1465,25 @@
         }, 0);
     }
 
+    /**
+     * Initialize the calculator (loads shared modules, then delegates to UI module or legacy init)
+     */
+    async function init() {
+        await ensureModules();
+        const ui = window.WOS && window.WOS.ui && window.WOS.ui.fireCrystals;
+        if (ui && typeof ui.initPage === 'function') {
+            return ui.initPage({ legacyInit });
+        }
+        return legacyInit();
+    }
+
     // Public API
     window.FireCrystalsCalculator = {
         calculateAll: calculateAll,
         validateLevels: validateLevels,
         getLevelsForBuilding: getLevelsForBuilding,
-        init: init
+        init: init,
+        legacyInit: legacyInit
     };
 
     // Auto-initialize when DOM is ready
@@ -1304,3 +1494,5 @@
     }
 
 })();
+
+

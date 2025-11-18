@@ -135,6 +135,7 @@ body {
 /* Minor helpers for inputs with icons (used by Chief Gear markup) */
 .input-with-icon, .select-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
 .icon-button{ padding: 10px 12px; min-width: 40px; }
+.icon-button img{ width: 16px; height: 16px; display: block; }
 
 /* ===== Inventory grid (compact) ===== */
 .inventory-grid{ display: grid; gap: 10px 12px; }
@@ -232,6 +233,30 @@ header[role="banner"] {
     width: 100%;
     object-fit: cover;
     display: block;
+}
+
+.header-with-nav{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--panel);
+}
+.header-with-nav .logo-link{
+    flex: 0 0 520px;
+    height: 170px;
+}
+.header-with-nav .site-logo{
+    height: 170px;
+    width: 100%;
+    object-fit: cover;
+}
+.header-with-nav .main-nav{
+    position: sticky;
+    top: 0;
+    flex: 1;
+    height: 170px;
+    box-shadow: none;
+    border-bottom: none;
 }
 
 .main-nav{

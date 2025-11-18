@@ -1,47 +1,46 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="title">Whiteout Survival Chief Gear Calculator</title>
-    <link rel="stylesheet" href="style/style.css">
-    <script src="Scripts/icon-helper.js" defer></script>
-    <script src="Scripts/theme.js" defer></script>
-    <script src="Scripts/translations.js" defer></script>
-    <script src="Scripts/profiles.js" defer></script>
-    <script src="Scripts/table-sort.js" defer></script>
-    <script src="Scripts/input-validators.js" defer></script>
-    <script src="Scripts/fire-crystals-costs.js" defer></script>
-    <script src="Scripts/fire-crystals-data-loader.js" defer></script>
-    <script src="Scripts/fire-crystals-calculator.js" defer></script>
-    <script src="Scripts/building-power.js" defer></script>
-    <script src="Scripts/fire-crystals-power-extension.js" defer></script>
-    <script src="Scripts/fc-status-ui.js" defer></script>
+    <link rel="stylesheet" href="../src/style/style.css">
+    <script src="../src/Scripts/icon-helper.js" defer></script>
+    <script src="../src/Scripts/theme.js" defer></script>
+    <script src="../src/Scripts/translations.js" defer></script>
+    <script src="../src/Scripts/profiles.js" defer></script>
+    <script src="../src/Scripts/table-sort.js" defer></script>
+    <script src="../src/Scripts/input-validators.js" defer></script>
+    <script src="../src/Scripts/fire-crystals-costs.js" defer></script>
+    <script src="../src/Scripts/fire-crystals-data-loader.js" defer></script>
+    <script src="../src/Scripts/fire-crystals-calculator.js" defer></script>
+    <script src="../src/Scripts/building-power.js" defer></script>
+    <script src="../src/Scripts/fire-crystals-power-extension.js" defer></script>
+    <script src="../src/Scripts/fc-status-ui.js" defer></script>
     </head>
 <body>
-    <header role="banner">
-        <a href="index.html" class="logo-link">
-            <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
-        </a>
-    </header>
-    <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="index.html">Home</a>
+    <header class="header-with-nav" role="banner">
+    <a href="../index.html" class="logo-link">
+        <img src="../src/assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+      </a>
+      <nav class="main-nav" role="navigation" aria-label="Main navigation">
+        <a href="../index.html" data-i18n="nav-home">Home</a>
         <a href="charms.html" data-i18n="nav-charms">Charms</a>
         <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
         <a href="fireCrystals.html" data-i18n="nav-fire-crystals" aria-current="page">Fire Crystals</a>
         <a href="coming-soon.html" data-i18n="nav-war-academy">War Academy</a>
         <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
         <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
-        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light theme">🌙 Theme</button>
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
         <select id="language-selector" aria-label="Language" title="Select language">
-            <option value="en">🇬🇧 English</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="ko">🇰🇷 한국어</option>
-            <option value="ru">🇷🇺 Русский</option>
+        <option value="en"> English</option>
+        <option value="es"> Español</option>
+        <option value="ko"> 한국어</option>
+        <option value="ru"> Русский</option>
         </select>
-    </nav>
-    <main role="main">
-        <h2 data-i18n="nav-fire-crystals">Fire Crystals</h2>
+      </nav>
+    </header><main role="main">
+        <h2 style="margin-top:0;" data-i18n="nav-fire-crystals" id="fire-crystals-heading">Fire Crystals</h2>
 
         <!-- Profiles + Inventory row (inventory left) -->
         <div class="inventory-profiles-row">
@@ -52,7 +51,7 @@
                 <div class="inventory-item">
                     <label for="inventory-fire-crystals">
                         <span class="label-with-icon">
-                            <img class="res-icon" src="assets/resources/base/fire-crystals.png" alt="Fire Crystals" onerror="this.style.display='none'">
+                            <img class="res-icon" src="../src/assets/resources/base/fire-crystals.png" alt="Fire Crystals" onerror="this.style.display='none'">
                             <span data-i18n="fire-crystals">Fire Crystals</span>
                         </span>
                     </label>
@@ -112,6 +111,17 @@
                     </label>
                     <input type="number" id="inventory-iron" min="0" max="99999999999" step="1" value="0">
                 </div>
+                <div class="inventory-item">
+                    <label for="zinman-level" data-i18n="zinman-level-label">Zinman skill level</label>
+                    <select id="zinman-level">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -121,13 +131,13 @@
                     <div class="profiles-row">
                         <div class="input-with-icon">
                             <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
-                            <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+                            <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
                         </div>
                         <div class="select-with-icon">
                             <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-                            <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+                            <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
                         </div>
-                        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+                        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">??? <span data-i18n="delete">Delete</span></button>
                     </div>
                 </section>
         </div>
@@ -1091,7 +1101,7 @@
 
         <!-- Results Section (right column) -->
         <section class="results-section">
-            <h3 data-i18n="totals-header">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data…</span></h3>
+            <h3 data-i18n="totals-header">Items You Need <span id="fc-status" class="csv-status" data-status="loading">Loading data�</span></h3>
             <div id="results-display"></div>
         </section>
         </div>

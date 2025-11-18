@@ -173,7 +173,7 @@ const ProfilesModule = (function(){
         writeProfiles(migratedProfiles);
         
         // Keep old profiles as backup (don't delete)
-        console.log('Migrated old charm profiles to unified format');
+        // Migrated old charm profiles to unified format
         
         return migratedProfiles;
       }
@@ -207,7 +207,7 @@ const ProfilesModule = (function(){
     const isChiefGear = !!document.getElementById('helmet-start');
     const isCharms = !!document.querySelector('select[id*="-charm-"]');
 
-    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {} };
+    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {}, meta: {} };
 
     // Capture Charms data (only on Charms page; selects contain -charm- in id)
     if(isCharms){
@@ -253,6 +253,10 @@ const ProfilesModule = (function(){
       const input = document.getElementById(id);
       if(input && input.value !== undefined) data.inventory[id] = input.value;
     });
+    const zinmanSel = document.getElementById('zinman-level');
+    if (zinmanSel) {
+      data.meta.zinmanLevel = parseInt(zinmanSel.value, 10) || 0;
+    }
 
     return data;
   }
@@ -348,6 +352,10 @@ const ProfilesModule = (function(){
         const el = document.getElementById(id);
         if(el && el.tagName === 'INPUT') el.value = String(obj.inventory[id]);
       });
+    }
+    if (obj.meta && obj.meta.zinmanLevel !== undefined) {
+      const zinSel = document.getElementById('zinman-level');
+      if (zinSel) zinSel.value = String(obj.meta.zinmanLevel || 0);
     }
   }
 
@@ -450,6 +458,7 @@ const ProfilesModule = (function(){
     if(current.chiefGear && Object.keys(current.chiefGear).length){ existing.chiefGear = { ...(existing.chiefGear||{}), ...current.chiefGear }; }
     if(current.fireCrystals && Object.keys(current.fireCrystals).length){ existing.fireCrystals = { ...(existing.fireCrystals||{}), ...current.fireCrystals }; }
     if(current.inventory && Object.keys(current.inventory).length){ existing.inventory = { ...(existing.inventory||{}), ...current.inventory }; }
+    if(current.meta && Object.keys(current.meta).length){ existing.meta = { ...(existing.meta||{}), ...current.meta }; }
     profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
   }
@@ -466,6 +475,11 @@ const ProfilesModule = (function(){
     // Inventory and other numeric inputs
     const inputNodes = document.querySelectorAll('input[id^="inventory-"]');
     inputNodes.forEach(input => input.addEventListener('input', autoSaveCurrentProfile));
+    const zinSel = document.getElementById('zinman-level');
+    if (zinSel) zinSel.addEventListener('change', () => {
+      autoSaveCurrentProfile();
+      try { FireCrystalsCalculator.calculateAll(); } catch(_) {}
+    });
   }
 
   /**

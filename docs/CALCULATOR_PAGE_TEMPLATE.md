@@ -1,3 +1,21 @@
+# Calculator Page Adaptation Checklist
+
+Use this checklist to adapt any calculator page to the shared template and ensure consistency across all calculators (Charms, Chief Gear, Fire Crystals, etc.):
+
+1. **Shared Banner/Header**: Use the same header markup and logo as other calculator pages.
+2. **Inventory Section**: Compact, left-aligned sidebar for inventory. Use `.inventory-section.compact` and `.inventory-grid.compact` classes.
+3. **Profile Controls**: Standard profile buttons (Save, Load, Delete, Export, Import) using the unified `ProfilesModule`.
+4. **Batch Controls**: Per-type batch controls for multi-item pages; global batch controls for single-type pages. Batch controls must update all relevant selects and trigger profile save after DOM update.
+5. **Level Selects**: Use `{itemType}-start` and `{itemType}-finish` IDs for all items. Validation: enforce `start <= finish` by constraining finish only.
+6. **Results Section**: Show total resources and power required. Use sortable tables with K/M/B formatting for large numbers.
+7. **Script Imports**: Import all required modules: translations, profiles, icon-helper, data-loader, calculator, theme.
+8. **CSS Classes**: Use standard classes for layout, controls, resources, totals, and buttons.
+9. **Profile Integration**: Profile capture/apply must only affect fields present on the current page. Save profile after batch changes using a delayed call (`setTimeout` after DOM update).
+10. **Internationalization**: Add translation keys for all labels, buttons, and sections.
+11. **Data Pipeline**: Load data from JS/JSON/CSV as needed. Emit a custom event when data is ready for recalculation.
+12. **Migration/Compatibility**: Maintain legacy ID mappings for backward compatibility. Use feature detection for profile capture/apply.
+
+Refer to the detailed sections below for code samples and best practices.
 # Calculator Page Implementation Guide
 
 This guide documents the standard structure and patterns for creating new calculator pages in the Whiteout Survival Calculator project, based on the charms and chief gear implementations.
