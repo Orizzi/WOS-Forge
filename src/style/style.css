@@ -234,7 +234,11 @@ body {
 }
 
 /* App-like shell for mobile/tablet ------------------------------------- */
+html, body{
+    overflow-x: hidden;
+}
 .app-shell{
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 16px;
@@ -298,9 +302,11 @@ body {
 }
 .inventory-profiles-row{
     align-items: stretch;
+    width: 100%;
 }
 .fc-two-column{
     gap: 16px;
+    width: 100%;
 }
 .results-section .results-display{
     width: 100%;
@@ -313,16 +319,23 @@ body {
     left: 0;
     right: 0;
     display: none;
-    background: color-mix(in srgb, var(--panel) 94%, transparent);
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -6px 18px color-mix(in srgb, var(--shadow) 40%, transparent);
+    background: color-mix(in srgb, var(--panel) 96%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: 0 -10px 24px color-mix(in srgb, var(--shadow) 45%, transparent);
     z-index: 250;
+    margin: 0 auto 10px;
+    width: 94%;
+    max-width: 900px;
+    border-radius: 18px;
+    overflow: hidden;
 }
 .bottom-nav__list{
     margin: 0;
     padding: 0;
     list-style: none;
     display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 .bottom-nav__item{
     flex: 1;
@@ -333,7 +346,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 10px 6px;
+    padding: 12px 10px;
     color: var(--text);
     text-decoration: none;
     font-size: 0.95rem;
@@ -341,15 +354,28 @@ body {
 .bottom-nav__item a.is-active,
 .bottom-nav__item a[aria-current="page"]{
     color: #fff;
-    background: color-mix(in srgb, var(--accent) 70%, transparent);
+    background: color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 @media (max-width: 1024px){
     .bottom-nav{ display: block; }
-    .app-shell{ padding-bottom: 96px; } /* reserve space for bottom nav */
+    .app-shell{ padding-bottom: 96px; width: 100%; max-width: none; }
+    .fc-two-column{ flex-direction: column; }
+    .inventory-profiles-row{ flex-direction: column; gap: 16px; }
+    .buildings-section,
+    .results-section,
+    .calculation-output,
+    .calculation-input,
+    .inventory-section,
+    .profiles{ width: 100%; }
+    .card{ width: 100%; margin-left: 0; margin-right: 0; }
 }
 @media (min-width: 1025px){
     .bottom-nav{ display: none; }
+    .app-shell{ max-width: none; width: 100%; padding-left: 32px; padding-right: 32px; }
+    .inventory-profiles-row{ flex-direction: row; }
+    .fc-two-column{ flex-direction: row; }
+    .main-layout-wrapper{ flex-direction: row; gap: 20px; }
 }
 
 /* ===== Inventory grid (compact) ===== */
