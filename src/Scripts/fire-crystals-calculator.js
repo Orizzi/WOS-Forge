@@ -1,5 +1,6 @@
 ﻿(function() {
     'use strict';
+    const FC_DEBUG = false;
 
     // Lazy-load shared modules when available (no HTML changes).
     async function ensureModules() {
@@ -880,6 +881,123 @@
     }
 
     /**
+     * Normalize a level id to its base (major) level key.
+     * Examples: "FC9-1" -> "FC9", "30-1" -> "F30"
+     */
+    function getBaseLevel(levelId) {
+        if (!levelId) return levelId;
+        const base = levelId.split('-')[0];
+        if (base === '30') return 'F30';
+        if (/^\d+$/.test(base)) return `F${base}`;
+        return base;
+    }
+
+    /**
+     * Count how many upgrade steps (edges) exist for each base level.
+     * Steps are counted on edges where the CURRENT level shares the base.
+     */
+    // --- Per-step Fire Crystal dataset (from fire_crystals_steps.json) ---
+    let fireCrystalStepsCache = null;
+
+    async function loadFireCrystalSteps() {
+        if (fireCrystalStepsCache) return fireCrystalStepsCache;
+        try {
+            const res = await fetch('assets/fire_crystals_steps.json', { cache: 'no-cache' });
+            if (!res.ok) {
+                console.warn('[FireCrystals] Failed to load fire_crystals_steps.json');
+                return null;
+            }
+            const data = await res.json();
+            fireCrystalStepsCache = data;
+            return data;
+        } catch (e) {
+            console.error('[FireCrystals] Error loading fire_crystals_steps.json', e);
+            return null;
+        }
+    }
+
+    function getStepsByBuilding(data) {
+        const map = {};
+        (data || []).forEach((row) => {
+            if (!row.building) return;
+            if (!map[row.building]) map[row.building] = [];
+            map[row.building].push(row);
+        });
+        // Sort by orderIndex then levelId for stability
+        Object.keys(map).forEach((b) => {
+            map[b].sort((a, b) => {
+                if (a.orderIndex !== b.orderIndex) return a.orderIndex - b.orderIndex;
+                return a.levelId.localeCompare(b.levelId);
+            });
+        });
+        return map;
+    }
+
+    /**
+     * Compute totals for Fire Crystal upgrades using real per-step data.
+     */
+    async function computeFireCrystalsUpgrade(buildingId, fromId, toId) {
+        const stepsData = await loadFireCrystalSteps();
+        if (!stepsData) return null;
+        const byBuilding = getStepsByBuilding(stepsData);
+        const steps = byBuilding[buildingId];
+        if (!steps || steps.length === 0) {
+            console.warn('[FireCrystals] No step data for building', buildingId);
+            return null;
+        }
+
+        const fromIndex = steps.findIndex((s) => s.levelId === fromId);
+        const toIndex = steps.findIndex((s) => s.levelId === toId);
+        if (fromIndex === -1 || toIndex === -1) {
+            console.warn('[FireCrystals] Level not found in step data', { buildingId, fromId, toId });
+            return null;
+        }
+        if (toIndex <= fromIndex) {
+            return {
+                totalFc: 0,
+                totalRfc: 0,
+                totalTimeSeconds: 0,
+                totalMeat: 0,
+                totalWood: 0,
+                totalCoal: 0,
+                totalIron: 0
+            };
+        }
+
+        const totals = {
+            totalFc: 0,
+            totalRfc: 0,
+            totalTimeSeconds: 0,
+            totalMeat: 0,
+            totalWood: 0,
+            totalCoal: 0,
+            totalIron: 0
+        };
+
+        if (FC_DEBUG) {
+            console.debug('[FC DEBUG] computeFireCrystalsUpgrade', { buildingId, fromId, toId, steps: steps.length, fromIndex, toIndex });
+        }
+
+        for (let i = fromIndex + 1; i <= toIndex; i++) {
+            const step = steps[i];
+            if (!step) continue;
+            totals.totalFc += step.fc || 0;
+            totals.totalRfc += step.rfc || 0;
+            totals.totalTimeSeconds += step.timeSeconds || 0;
+            totals.totalMeat += step.meat || 0;
+            totals.totalWood += step.wood || 0;
+            totals.totalCoal += step.coal || 0;
+            totals.totalIron += step.iron || 0;
+        }
+
+        if (FC_DEBUG) {
+            console.debug('[FC DEBUG] totals', totals);
+        }
+
+        return totals;
+    }
+
+    /**
      * Calculate costs for a single building upgrade path
      * Now uses CSV data from Excel sheets
      */
@@ -891,55 +1009,22 @@
         const toIndex = levelsArray.indexOf(toLevel);
 
         if (fromIndex === -1 || toIndex === -1 || fromIndex >= toIndex) {
+            console.warn('[FireCrystals] Invalid level range', { buildingName, fromLevel, toLevel });
             return null;
         }
 
-        // Get FC/RFC costs from embedded JS (authoritative)
-        let fcCosts = null;
-        try {
-            fcCosts = await window.calculateFireCrystalCosts(buildingName, fromLevel, toLevel, levelsArray);
-        } catch (e) {
-            console.error('[FireCrystals] Failed to compute FC costs from embedded data', e);
-            return null;
-        }
+    const totals = await computeFireCrystalsUpgrade(buildingName, fromLevel, toLevel);
+    if (!totals) return null;
 
-        const buildingData = fireCrystalCosts[buildingName];
-        let totalTime = 0;
-        let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
-
-        // Calculate time and resource costs for each step in the range
-        for (let i = fromIndex; i < toIndex; i++) {
-            const currentLevel = levelsArray[i];
-            const nextLevel = levelsArray[i + 1];
-            
-            // Determine the base level (major level without sub-step suffix)
-            const baseCurrent = currentLevel.includes('-') ? currentLevel.split('-')[0] : currentLevel;
-            const levelData = buildingData && buildingData[baseCurrent];
-
-            // Add time for this major level (only once per major level transition)
-            if (levelData && !currentLevel.includes('-')) {
-                totalTime += levelData.time || 0;
-            }
-
-            // Add base resources using the nextLevel key
-            const resMap = buildingResourceCosts[buildingName] && buildingResourceCosts[buildingName][nextLevel];
-            if (resMap) {
-                totalMeat += resMap.meat || 0;
-                totalWood += resMap.wood || 0;
-                totalCoal += resMap.coal || 0;
-                totalIron += resMap.iron || 0;
-            }
-        }
-
-        return {
-            normalFC: fcCosts.normalFC,
-            refineFC: fcCosts.refineFC,
-            time: totalTime,
-            meat: totalMeat,
-            wood: totalWood,
-            coal: totalCoal,
-            iron: totalIron
-        };
+    return {
+        normalFC: totals.totalFc,
+        refineFC: totals.totalRfc,
+        time: totals.totalTimeSeconds,
+        meat: totals.totalMeat,
+        wood: totals.totalWood,
+        coal: totals.totalCoal,
+        iron: totals.totalIron
+    };
     }
 
     /**

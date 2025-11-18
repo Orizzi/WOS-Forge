@@ -15,4 +15,5 @@ Runtime (browser)
 
 Caveats
 - Keep file paths stable for GH Pages.
-- Ensure CSV headers match expected columns before overriding defaults.
+- Ensure CSV headers match expected columns before overriding defaults.- Fire Crystals per-step data: 
+ode scripts/extract-fire-crystals-steps.js -> src/assets/fire_crystals_steps.json (using building sheets for FC rows and time in seconds)

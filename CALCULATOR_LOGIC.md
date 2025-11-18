@@ -17,3 +17,6 @@ Profiles
 
 Formatting
 - Number formatting and icon labels should be centralized (helpers) for consistent rendering
+## Fire Crystals (YOLO update)
+- Data: ire_crystals_steps.json (per-step FC/ RFC / resources / timeSeconds) generated via scripts/extract-fire-crystals-steps.js from building sheets (FC rows).
+- Calculation: sum real per-step values from (from+1) to target inclusive (FC1->FC2 sums FC1-1..FC1-4 + FC2; FC9-1->FC10 sums remaining FC9 substeps + FC10). No proportional time splitting.
