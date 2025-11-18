@@ -1,7 +1,41 @@
-(function() {
+﻿(function() {
     'use strict';
 
+    // Lazy-load shared modules when available (no HTML changes).
+    async function ensureModules() {
+        const scripts = [
+            'Scripts/modules/helpers/number-format.js',
+            'Scripts/modules/helpers/icons.js',
+            'Scripts/modules/helpers/csv.js',
+            'Scripts/modules/data/data-loader.js',
+            'Scripts/modules/calculators/fire-crystals.js',
+            'Scripts/modules/ui/fire-crystals-ui.js'
+        ];
+        const loaders = scripts.map((src) => loadScriptOnce(src));
+        await Promise.all(loaders);
+    }
+
+    function loadScriptOnce(src) {
+        return new Promise((resolve) => {
+            if (typeof document === 'undefined') return resolve();
+            if (document.querySelector(`script[data-wos="${src}"]`)) {
+                resolve();
+                return;
+            }
+            const s = document.createElement('script');
+            s.src = src;
+            s.dataset.wos = src;
+            s.onload = () => resolve();
+            s.onerror = () => resolve();
+            document.head.appendChild(s);
+        });
+    }
+
     function formatCompact(n){
+        const helper = window.WOSHelpers && window.WOSHelpers.number;
+        if (helper && typeof helper.formatCompact === 'function') {
+            return helper.formatCompact(Number(n) || 0);
+        }
         if (n === null || n === undefined) return '0';
         const sign = n < 0 ? '-' : '';
         const abs = Math.abs(Number(n)) || 0;
@@ -673,7 +707,7 @@
         }
     };
 
-    // Optional: CSV override for resource costs (F30 → FC10 only)
+    // Optional: CSV override for resource costs (F30 â†’ FC10 only)
     // Expected CSV header: building,level,meat,wood,coal,iron
     // Example level values: 30-1, 30-2, 30-3, 30-4, FC1, FC1-1, ..., FC9-4, FC10
     function getF30ToFC10Keys() {
@@ -687,7 +721,28 @@
         return new Set(keys);
     }
 
-    function parseCsv(text) {
+        function parseCsv(text) {
+        const helper = window.WOSHelpers && window.WOSHelpers.csv;
+        if (helper && typeof helper.parseCsv === 'function') {
+            const parsed = helper.parseCsv(text);
+            if (parsed && parsed.header && parsed.rows) {
+                const header = parsed.header.map((h) => (h || '').toLowerCase());
+                const getNum = (s) => {
+                    const cleaned = String(s || '').replace(/[$�'�\s,]/g, '');
+                    const n = parseInt(cleaned, 10);
+                    return isNaN(n) ? 0 : n;
+                };
+                return parsed.rows.map((parts) => ({
+                    building: (parts[header.indexOf('building')] || '').trim(),
+                    level: (parts[header.indexOf('level')] || '').trim(),
+                    meat: getNum(parts[header.indexOf('meat')]),
+                    wood: getNum(parts[header.indexOf('wood')]),
+                    coal: getNum(parts[header.indexOf('coal')]),
+                    iron: getNum(parts[header.indexOf('iron')])
+                }));
+            }
+        }
+
         const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if (lines.length === 0) return [];
         const header = lines[0].split(',').map(h => h.trim().toLowerCase());
@@ -699,7 +754,6 @@
             coal: header.indexOf('coal'),
             iron: header.indexOf('iron')
         };
-        // Basic header validation
         if (Object.values(idx).some(v => v === -1)) return [];
 
         const rows = [];
@@ -707,7 +761,7 @@
             const parts = lines[i].split(',');
             if (parts.length < header.length) continue;
             const getNum = (s) => {
-                const cleaned = String(s || '').replace(/[$€\s,]/g, '');
+                const cleaned = String(s || '').replace(/[$�'�\s,]/g, '');
                 const n = parseInt(cleaned, 10);
                 return isNaN(n) ? 0 : n;
             };
@@ -724,12 +778,22 @@
         return rows;
     }
 
-    async function applyResourceOverridesFromCsv(url = 'assets/resource_costs.csv') {
+        async function applyResourceOverridesFromCsv(url = 'assets/resource_costs.csv') {
         try {
-            const res = await fetch(url, { cache: 'no-cache' });
-            if (!res.ok) return; // silently skip if not found
-            const text = await res.text();
-            const rows = parseCsv(text);
+            let rows = [];
+            const loader = window.WOSData && window.WOSData.loader;
+            if (loader && loader.loadCsv) {
+                const parsed = await loader.loadCsv(url);
+                if (parsed && parsed.header && parsed.rows) {
+                    rows = parseCsv([parsed.header.join(','), ...parsed.rows.map(r => r.join(','))].join('\n'));
+                }
+            }
+            if (!rows || rows.length === 0) {
+                const res = await fetch(url, { cache: 'no-cache' });
+                if (!res.ok) return;
+                const text = await res.text();
+                rows = parseCsv(text);
+            }
             if (!rows || rows.length === 0) return;
 
             const allowed = getF30ToFC10Keys();
@@ -745,12 +809,10 @@
                 applied++;
             });
             if (applied > 0) {
-                console.info(`[FireCrystals] Applied ${applied} resource overrides from CSV (F30 → FC10).`);
-                // Recalculate if UI is ready
+                console.info(`[FireCrystals] Applied ${applied} resource overrides from CSV (F30 -> FC10).`);
                 try { calculateAll(); } catch (_) {}
             }
         } catch (e) {
-            // ignore network/parse errors
             console.warn('[FireCrystals] Resource CSV override skipped:', e.message || e);
         }
     }
@@ -979,8 +1041,12 @@
         const lang = window.I18n ? window.I18n.getCurrentLanguage() : 'en';
         const t = window.I18n ? window.I18n.t : (key) => key;
 
-        // Icon helper for resources (delegates to global IconHelper if available)
+        // Icon helper for resources (delegates to shared helpers when available)
         function labelWithIcon(key, overrideText) {
+            const icons = window.WOSHelpers && window.WOSHelpers.icons;
+            if (icons && typeof icons.label === 'function') {
+                return icons.label(key, overrideText ? () => overrideText : (k) => t(k));
+            }
             if (window.IconHelper && typeof window.IconHelper.label === 'function') {
                 // If a short label override is provided (e.g., FC/RFC), use it
                 if (overrideText) {
@@ -991,12 +1057,12 @@
             }
             // Fallback for when IconHelper isn't loaded
             const urlMap = {
-                'fire-crystals': 'assets/resources/fire-crystals.png',
-                'refine-crystals': 'assets/resources/refine-crystals.png',
-                meat: 'assets/resources/meat.png',
-                wood: 'assets/resources/wood.png',
-                coal: 'assets/resources/coal.png',
-                iron: 'assets/resources/iron.png'
+                'fire-crystals': 'assets/resources/base/fire-crystals.png',
+                'refine-crystals': 'assets/resources/base/refine-crystals.png',
+                meat: 'assets/resources/base/meat.png',
+                wood: 'assets/resources/base/wood.png',
+                coal: 'assets/resources/base/coal.png',
+                iron: 'assets/resources/base/iron.png'
             };
             const url = urlMap[key];
             const text = overrideText || t(key);
@@ -1216,9 +1282,9 @@
     }
 
     /**
-     * Initialize the calculator
+     * Legacy initializer: binds DOM events and runs calculations.
      */
-    function init() {
+    async function legacyInit() {
         // Add event listeners to all building selects
         BUILDINGS.forEach(building => {
             const buildingId = building.toLowerCase().replace(/ /g, '-');
@@ -1275,7 +1341,7 @@
         // Recalculate once CSV data loads/refreshes
         try { window.addEventListener('fc-data-ready', () => { try { calculateAll(); } catch (_) {} }); } catch(_) {}
 
-        // Try to apply CSV overrides for resource costs (F30 → FC10)
+        // Try to apply CSV overrides for resource costs (F30 â†’ FC10)
         // This will re-run calculateAll once applied.
         applyResourceOverridesFromCsv().then(() => {
             // Initial calculation after potential overrides
@@ -1288,12 +1354,25 @@
         }, 0);
     }
 
+    /**
+     * Initialize the calculator (loads shared modules, then delegates to UI module or legacy init)
+     */
+    async function init() {
+        await ensureModules();
+        const ui = window.WOS && window.WOS.ui && window.WOS.ui.fireCrystals;
+        if (ui && typeof ui.initPage === 'function') {
+            return ui.initPage({ legacyInit });
+        }
+        return legacyInit();
+    }
+
     // Public API
     window.FireCrystalsCalculator = {
         calculateAll: calculateAll,
         validateLevels: validateLevels,
         getLevelsForBuilding: getLevelsForBuilding,
-        init: init
+        init: init,
+        legacyInit: legacyInit
     };
 
     // Auto-initialize when DOM is ready
@@ -1304,3 +1383,5 @@
     }
 
 })();
+
+
