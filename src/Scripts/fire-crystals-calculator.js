@@ -1293,11 +1293,6 @@
         const totalSVSPoints = fcPoints + rfcPoints + speedupPoints;
 
         html += `<div class="total-item">
-            <span class="resource-label">SVS Points (FC):</span>
-            <span class="resource-value">${fcPoints.toLocaleString()}</span>
-        </div>`;
-
-        html += `<div class="total-item">
             <span class="resource-label">${t('svs-points-fc', lang)}:</span>
             <span class="resource-value">${Math.floor(fcPoints).toLocaleString()}</span>
         </div>`;

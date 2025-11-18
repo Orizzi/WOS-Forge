@@ -135,6 +135,7 @@ body {
 /* Minor helpers for inputs with icons (used by Chief Gear markup) */
 .input-with-icon, .select-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
 .icon-button{ padding: 10px 12px; min-width: 40px; }
+.icon-button img{ width: 16px; height: 16px; display: block; }
 
 /* ===== Inventory grid (compact) ===== */
 .inventory-grid{ display: grid; gap: 10px 12px; }

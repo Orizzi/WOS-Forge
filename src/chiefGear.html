@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,9 +58,9 @@
         <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
         <select id="language-selector" aria-label="Language" title="Select language">
         <option value="en"> English</option>
-        <option value="es"> Español</option>
-        <option value="ko"> 한국어</option>
-        <option value="ru"> Русский</option>
+        <option value="es"> Espa�ol</option>
+        <option value="ko"> ???</option>
+        <option value="ru"> ???????</option>
         </select>
       </nav>
     </header>
@@ -90,7 +90,7 @@
             <input type="number" id="inventory-amber" min="0" value="0" aria-label="Lunar Amber inventory" inputmode="numeric" maxlength="5" max="99999" pattern="[0-9]{1,5}" />
           </div>
         </div>
-        <button id="chief-gear-reset" type="button" title="Reset all gear levels" class="secondary">🔄 <span data-i18n="reset-all">Reset All</span></button>
+        <button id="chief-gear-reset" type="button" title="Reset all gear levels" class="secondary">?? <span data-i18n="reset-all">Reset All</span></button>
       </div>
     </section>
 
@@ -100,13 +100,13 @@
       <div class="profiles-row">
         <div class="input-with-icon">
           <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
-          <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button">💾</button>
+          <button id="profile-save" type="button" title="Save current gear setup as a new profile" aria-label="Save new profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
         </div>
         <div class="select-with-icon">
           <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
-          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button">✏️</button>
+          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
         </div>
-        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">🗑️ <span data-i18n="delete">Delete</span></button>
+        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger">??? <span data-i18n="delete">Delete</span></button>
       </div>
     </section>
   </div>
