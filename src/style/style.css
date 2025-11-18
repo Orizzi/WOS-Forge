@@ -523,6 +523,60 @@ main{ width: 100%; box-sizing: border-box; }
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
+    /* Text-heavy pages: readable on mobile */
+    p{
+        margin: 12px 0;
+        text-align: left;
+        letter-spacing: normal;
+        word-spacing: normal;
+        line-height: 1.6;
+    }
+    .introduction,
+    .introduction p,
+    .introduction li{
+        text-align: left;
+        letter-spacing: normal;
+        word-spacing: normal;
+        line-height: 1.6;
+    }
+    .introduction p{ margin: 12px 0; }
+    .introduction ul{ padding-left: 20px; margin: 0 0 12px; }
+
+    /* Charms & Chief Gear: force single-column stack */
+    .calculation-input,
+    .calculation-output,
+    .left-column,
+    .equipment-section,
+    .gear-grid-two-columns{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .equipment-section,
+    .gear-grid-two-columns{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .gear-selects,
+    .batch-controls,
+    .profiles-row{
+        flex-wrap: wrap;
+    }
+    .batch-controls .button-group,
+    .gear-selects > div{
+        width: 100%;
+    }
+
+    /* Fire Crystals: keep all cards aligned full width */
+    .buildings-section,
+    .results-section,
+    .building-card{
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Keep wide tables contained */
+    .table-responsive{ max-width: 100%; }
 }
 @media (min-width: 1200px){
     .app-shell{
