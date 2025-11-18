@@ -572,10 +572,16 @@
 
     function getCurrentLanguage() {
         try {
-            return localStorage.getItem(LANGUAGE_KEY) || 'en';
+            const stored = localStorage.getItem(LANGUAGE_KEY);
+            if (stored && translations[stored]) return stored;
         } catch (e) {
-            return 'en';
+            // ignore storage errors
         }
+        const docLang = (document && document.documentElement && document.documentElement.lang)
+            ? document.documentElement.lang.trim().toLowerCase()
+            : '';
+        if (docLang && translations[docLang]) return docLang;
+        return 'en';
     }
 
     function saveLanguage(lang) {
@@ -645,6 +651,10 @@
 
         const currentLang = getCurrentLanguage();
         selector.value = currentLang;
+        if (!selector.value || selector.selectedIndex === -1) {
+            selector.value = 'en';
+            saveLanguage('en');
+        }
         console.debug('[I18n] init: applying language', currentLang);
 
         applyTranslations(currentLang);
