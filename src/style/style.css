@@ -227,10 +227,10 @@ body {
 @media (max-width: 480px){
     .nav-actions{ flex-direction:column; align-items:flex-start; }
     .main-layout-wrapper{ gap:12px; }
-    .profiles-row button,
-    .profiles-row input,
-    .profiles-row select{ width:100%; }
-    .inventory-grid{ grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); }
+.profiles-row button,
+.profiles-row input,
+.profiles-row select{ width:100%; }
+.inventory-grid{ grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); }
 }
 
 /* App-like shell for mobile/tablet ------------------------------------- */
@@ -287,6 +287,69 @@ body {
     .card{ padding: 14px; border-radius: 14px; }
     input, select, button{ font-size: 1rem; }
     .nav-links a{ font-size: 1rem; }
+}
+
+/* Cards keep form controls aligned */
+.card input[type="number"],
+.card select,
+.card input[type="text"]{
+    width: 100%;
+    box-sizing: border-box;
+}
+.inventory-profiles-row{
+    align-items: stretch;
+}
+.fc-two-column{
+    gap: 16px;
+}
+.results-section .results-display{
+    width: 100%;
+}
+
+/* Bottom navigation (mobile/tablet only) */
+.bottom-nav{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 18px color-mix(in srgb, var(--shadow) 40%, transparent);
+    z-index: 250;
+}
+.bottom-nav__list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+}
+.bottom-nav__item{
+    flex: 1;
+}
+.bottom-nav__item a{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+.bottom-nav__item a.is-active,
+.bottom-nav__item a[aria-current="page"]{
+    color: #fff;
+    background: color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+@media (max-width: 1024px){
+    .bottom-nav{ display: block; }
+    .app-shell{ padding-bottom: 96px; } /* reserve space for bottom nav */
+}
+@media (min-width: 1025px){
+    .bottom-nav{ display: none; }
 }
 
 /* ===== Inventory grid (compact) ===== */
