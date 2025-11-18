@@ -1,4 +1,4 @@
-# AI Agent Guide (Draft)
+Ôªø# AI Agent Guide (Draft)
 
 Mental Model
 - Static GH Pages site; `index.html` at repo root. App pages live in `src/` with relative asset/script paths. Minified bundles in `src/Scripts/min/` are what pages load today.
@@ -7,7 +7,7 @@ Mental Model
 - Cross-cutting: translations.js (data-i18n), theme.js (data-theme), profiles.js (autosave/localStorage), table-sort.js (sortable tables), IconHelper (labels), DataLoader (fetch/cache).
 
 Conventions & Vocabulary
-- Preserve WOS game terms (building/resource names, level labels). Do not ìcorrectî them unless clearly a typo unrelated to the game.
+- Preserve WOS game terms (building/resource names, level labels). Do not ‚Äúcorrect‚Äù them unless clearly a typo unrelated to the game.
 - Keep `index.html` at root. Preserve script/asset paths; when rebuilding, output minified bundles with the same filenames under `src/Scripts/min/`.
 - Namespace future code under `window.WOS` (helpers, data, calcs, ui) while keeping legacy globals bridged.
 
@@ -16,7 +16,7 @@ Fragile Areas
 - Stale minified bundles vs sources (only update when ready to rebuild all needed files).
 - FC data events: `FCDataStatus` + `fc-data-ready` used by status badge.
 - Language options show mojibake; fix encoding but keep keys.
-- Relative asset paths (`../src/...` vs `Scripts/...`) are brittleóverify before changes.
+- Relative asset paths (`../src/...` vs `Scripts/...`) are brittle‚Äîverify before changes.
 
 System Locations
 - Calculators and UI logic: `src/Scripts/*.js`; minified in `src/Scripts/min/`.

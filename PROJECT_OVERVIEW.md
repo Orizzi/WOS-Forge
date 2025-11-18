@@ -1,4 +1,4 @@
-# Project Overview (Draft)
+Ôªø# Project Overview (Draft)
 
 Whiteout Survival (WOS) Calculator provides web-based calculators for charms, chief gear, and fire crystals. Data is sourced from an authoritative Excel workbook and converted to CSV/JS artifacts consumed by static pages hosted via GitHub Pages (index.html stays at repo root).
 
@@ -15,5 +15,5 @@ Whiteout Survival (WOS) Calculator provides web-based calculators for charms, ch
 
 ## Constraints
 - `index.html` must remain at repo root for GitHub Pages.
-- Game vocabulary must be preserved (do not ìcorrectî domain terms).
+- Game vocabulary must be preserved (do not ‚Äúcorrect‚Äù domain terms).
 - Paths referenced by HTML (scripts/assets) must stay stable.
