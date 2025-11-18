@@ -505,6 +505,7 @@ main{ width: 100%; box-sizing: border-box; }
         position: static;
         max-height: none;
     }
+    .inventory-grid,
     .inventory-grid.compact,
     .buildings-grid,
     .gear-grid-two-columns{
@@ -543,6 +544,7 @@ main{ width: 100%; box-sizing: border-box; }
         word-spacing: normal;
         line-height: 1.6;
     }
+    .introduction{ margin: 0; padding: 16px; }
     .introduction p{ margin: 12px 0; }
     .introduction ul{ padding-left: 20px; margin: 0 0 12px; }
 
@@ -585,8 +587,6 @@ main{ width: 100%; box-sizing: border-box; }
         flex-direction: column;
         gap: 12px;
     }
-    .inventory-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .inventory-grid.compact{ grid-template-columns: 1fr; }
     .inventory-section input,
     .inventory-section select{
         width: 100%;
@@ -595,6 +595,7 @@ main{ width: 100%; box-sizing: border-box; }
 
     /* Keep wide tables contained */
     .table-responsive{ max-width: 100%; overflow-x: auto; }
+    .results-wrap{ width: 100%; overflow-x: auto; }
 }
 @media (min-width: 1200px){
     .app-shell{
