@@ -34,12 +34,23 @@
     <script src="Scripts/min/table-sort.min.js" defer></script>
     <script src="Scripts/min/chief-gear-calculator.min.js" defer></script>
     <script src="Scripts/min/profiles.min.js" defer></script>
-    <script src="Scripts/min/translations.min.js" defer></script>`n    <script src="Scripts/nav.js" defer></script>
+    <script src="Scripts/min/translations.min.js" defer></script>
+    <script src="Scripts/nav.js" defer></script>
 <body>
     <script>
       if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        const swVersion = 'v2';
+        const swUrl = `service-worker.js?v=${swVersion}`;
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('service-worker.js');
+          navigator.serviceWorker.getRegistrations().then(regs => {
+            regs.forEach(reg => {
+              if (!reg.active || (reg.active && !reg.active.scriptURL.endsWith(swUrl))) {
+                reg.unregister();
+              }
+            });
+          }).finally(() => {
+            navigator.serviceWorker.register(swUrl);
+          });
         });
       }
     </script>

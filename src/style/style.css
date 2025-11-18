@@ -2342,6 +2342,8 @@ button, .dark-mode-toggle, select, input[type="number"] {
         flex-direction: column;
         gap: 12px;
         width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
         box-sizing: border-box;
     }
     .table-responsive,
@@ -2393,6 +2395,12 @@ button, .dark-mode-toggle, select, input[type="number"] {
         margin-left: auto;
         margin-right: auto;
         box-sizing: border-box;
+    }
+    .inventory-profiles-row{
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+        align-items: stretch;
     }
     .inventory-profiles-row{
         width: 100%;
@@ -2452,6 +2460,37 @@ button, .dark-mode-toggle, select, input[type="number"] {
         box-sizing: border-box;
         justify-content: center;
         gap: 8px;
+    }
+    .buildings-section,
+    .results-section{
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+    .results-section #results-display{
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-x: hidden;
+    }
+    .results-section #results-display > *{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .results-section .results-table{
+        min-width: 480px;
+    }
+    .results-section .table-responsive{
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+    .results-section #results-display{
+        width: 100%;
+        box-sizing: border-box;
     }
 }
 
