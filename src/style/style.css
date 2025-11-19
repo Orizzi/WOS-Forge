@@ -889,7 +889,7 @@ button, input[type="button"] {
     border-radius: 8px;
     font-size: 1em;
     font-family: "Segoe UI Emoji","Apple Color Emoji","Segoe UI Symbol", Inter, Arial, sans-serif;
-    background-color: var(--accent);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 90%, transparent), color-mix(in srgb, var(--accent) 70%, transparent));
     color: #fff;
     box-shadow: 0 3px 10px rgb(0 0 0 / 18%);
     display: inline-flex;
@@ -899,6 +899,18 @@ button, input[type="button"] {
     white-space: nowrap;
     position: relative;
     overflow: hidden;
+}
+/* Profile / reset buttons: refined look */
+.profiles-row button,
+.inventory-section .inventory-row button.secondary{
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, transparent), color-mix(in srgb, var(--accent-secondary) 65%, transparent));
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--shadow) 35%, transparent);
+}
+.profiles-row button.danger{
+    background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 85%, transparent), color-mix(in srgb, var(--danger) 65%, transparent));
+    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--shadow) 35%, transparent);
 }
 
 button:not(.icon-button):hover, input[type="button"]:hover {
@@ -2282,6 +2294,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
 .modal-body {
     font-size: 0.95em;
     color: var(--text);
+    line-height: 1.5;
+}
+.modal-body p{
+    margin: 8px 0;
 }
 .modal-body .warning {
     color: var(--danger);
@@ -2329,6 +2345,24 @@ button, .dark-mode-toggle, select, input[type="number"] {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px color-mix(in srgb, var(--shadow) 45%, transparent);
 }
+
+/* Alert banner (Charms/Chief Gear) ----------------------------------------- */
+.calc-warning{
+    position: sticky;
+    top: 8px;
+    z-index: 180;
+    background: color-mix(in srgb, var(--danger) 70%, transparent);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 700;
+    opacity: 0.5;
+    backdrop-filter: blur(4px);
+    border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--shadow) 45%, transparent);
+}
+.calc-warning small{ display:block; font-weight: 600; opacity: 0.9; }
 
 /* Final mobile overrides to keep calculators single-column */
 @media (max-width: 900px){
@@ -2610,6 +2644,17 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
     button{
         justify-content: center;
+    }
+    /* Refinements for profile/reset buttons */
+    .profiles-row button,
+    .inventory-section .inventory-row button.secondary{
+        background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, transparent), color-mix(in srgb, var(--accent-secondary) 65%, transparent));
+        border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+        box-shadow: 0 6px 16px color-mix(in srgb, var(--shadow) 35%, transparent);
+    }
+    .profiles-row button.danger{
+        background: linear-gradient(180deg, color-mix(in srgb, var(--danger) 85%, transparent), color-mix(in srgb, var(--danger) 65%, transparent));
+        border-color: color-mix(in srgb, var(--danger) 45%, transparent);
     }
     .results-section .results-wrap{
         width: 100%;
