@@ -145,7 +145,19 @@ body {
 .icon-button img{ width: 16px; height: 16px; display: block; }
 
 /* Responsive nav -------------------------------------------------------- */
-.header-with-nav{flex-wrap:wrap; gap:12px;}
+.header-with-nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+}
+.header-with-nav,
+.header-with-nav > *{
+    min-width:0;
+}
+.header-with-nav .logo-link{
+    flex:0 0 auto;
+}
 .nav-toggle{
     display:none;
     background: transparent;
@@ -158,20 +170,28 @@ body {
 .main-nav{
     display:flex;
     align-items:center;
-    flex:1;
+    flex:1 1 auto;
     gap:12px;
+    flex-wrap:wrap;
+    min-width:0;
 }
 .nav-links{
     display:flex;
     gap:12px;
     flex-wrap:wrap;
     align-items:center;
+    flex:1 1 60%;
+    min-width:0;
+    justify-content:flex-start;
 }
 .nav-actions{
     display:flex;
     gap:10px;
     margin-left:auto;
     align-items:center;
+    flex:0 0 auto;
+    flex-wrap:wrap;
+    justify-content:flex-end;
 }
 
 @media (max-width: 900px){
