@@ -307,8 +307,12 @@ const CalculatorModule = (function(){
         ${gapHtml(totalLabelWithIcon('guides'), grand.guides, invGuides)}
         ${gapHtml(totalLabelWithIcon('designs'), grand.designs, invDesigns)}
         ${gapHtml(totalLabelWithIcon('secrets'), grand.secrets, invSecrets)}
-        <p class="summary-pill power-pill" style="background: var(--accent-secondary); color: white;"><strong>${window.I18n?.t('total-power') || 'Total Power'}:</strong> ${formatNumber(grand.power)}</p>
-        <p class="summary-pill svs-pill" style="background: var(--accent); color: white;"><strong>${window.I18n?.t('total-svs-points') || 'Total SvS Points'}:</strong> ${formatNumber(grand.svsPoints)}</p>
+        <div class="total-item summary-pill power-pill" style="background: var(--accent-secondary); color: white;">
+          <p><strong>${window.I18n?.t('total-power') || 'Total Power'}:</strong> ${formatNumber(grand.power)}</p>
+        </div>
+        <div class="total-item summary-pill svs-pill" style="background: var(--accent); color: white;">
+          <p><strong>${window.I18n?.t('total-svs-points') || 'Total SvS Points'}:</strong> ${formatNumber(grand.svsPoints)}</p>
+        </div>
       </div>`;
 
     // Add an estimated time to gather resources (based on simple rates)
