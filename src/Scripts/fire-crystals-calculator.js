@@ -51,6 +51,22 @@
         };
     }
 
+    function formatNumberLocale(value, options = {}){
+        const num = Number(value) || 0;
+        const helper = window.WOSHelpers && window.WOSHelpers.number;
+        const merged = Object.assign({ maximumFractionDigits: 0 }, options);
+        if(helper && typeof helper.formatNumber === 'function'){
+            try{
+                return helper.formatNumber(num, merged, 'en-US');
+            }catch(e){}
+        }
+        try{
+            return num.toLocaleString('en-US', merged);
+        }catch(e){
+            return String(num);
+        }
+    }
+
     function formatCompact(n){
         const helper = window.WOSHelpers && window.WOSHelpers.number;
         if (helper && typeof helper.formatCompact === 'function') {
@@ -63,7 +79,7 @@
         if (abs >= 1e9) return sign + trim((abs/1e9).toFixed(3)) + 'B';
         if (abs >= 1e6) return sign + trim((abs/1e6).toFixed(3)) + 'M';
         if (abs >= 1e3) return sign + trim((abs/1e3).toFixed(3)) + 'K';
-        return sign + Math.floor(abs).toLocaleString();
+        return formatNumberLocale(sign === '-' ? -Math.floor(abs) : Math.floor(abs));
     }
 
     // Fire Crystal Costs Data
@@ -1185,44 +1201,44 @@
         const meatGap = (totals.totalMeat || 0) - (totals.inventoryMeat || 0);
         const meatGapClass = meatGap > 0 ? 'deficit' : 'surplus';
         const meatGapText = meatGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(meatGap).toLocaleString())
-            : t('gap-have-left', lang).replace('%d', Math.abs(meatGap).toLocaleString());
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(meatGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(meatGap)));
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('meat')}:</span>
-            <span class="resource-value">${(totals.totalMeat || 0).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalMeat || 0)}</span>
             ${hasCalc ? `<span class="gap ${meatGapClass}">${meatGapText}</span>` : ''}
         </div>`;
 
         const woodGap = (totals.totalWood || 0) - (totals.inventoryWood || 0);
         const woodGapClass = woodGap > 0 ? 'deficit' : 'surplus';
         const woodGapText = woodGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(woodGap).toLocaleString())
-            : t('gap-have-left', lang).replace('%d', Math.abs(woodGap).toLocaleString());
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(woodGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(woodGap)));
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('wood')}:</span>
-            <span class="resource-value">${(totals.totalWood || 0).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalWood || 0)}</span>
             ${hasCalc ? `<span class="gap ${woodGapClass}">${woodGapText}</span>` : ''}
         </div>`;
 
         const coalGap = (totals.totalCoal || 0) - (totals.inventoryCoal || 0);
         const coalGapClass = coalGap > 0 ? 'deficit' : 'surplus';
         const coalGapText = coalGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(coalGap).toLocaleString())
-            : t('gap-have-left', lang).replace('%d', Math.abs(coalGap).toLocaleString());
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(coalGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(coalGap)));
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('coal')}:</span>
-            <span class="resource-value">${(totals.totalCoal || 0).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalCoal || 0)}</span>
             ${hasCalc ? `<span class="gap ${coalGapClass}">${coalGapText}</span>` : ''}
         </div>`;
 
         const ironGap = (totals.totalIron || 0) - (totals.inventoryIron || 0);
         const ironGapClass = ironGap > 0 ? 'deficit' : 'surplus';
         const ironGapText = ironGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(ironGap).toLocaleString())
-            : t('gap-have-left', lang).replace('%d', Math.abs(ironGap).toLocaleString());
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(ironGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(ironGap)));
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('iron')}:</span>
-            <span class="resource-value">${(totals.totalIron || 0).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalIron || 0)}</span>
             ${hasCalc ? `<span class="gap ${ironGapClass}">${ironGapText}</span>` : ''}
         </div>`;
 
@@ -1232,24 +1248,24 @@
         const fcGap = totals.totalNormalFC - totals.inventoryFC;
         const fcGapClass = fcGap > 0 ? 'deficit' : 'surplus';
         const fcGapText = fcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(fcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(fcGap));
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(fcGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(fcGap)));
 
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('fire-crystals')}:</span>
-            <span class="resource-value">${totals.totalNormalFC.toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalNormalFC)}</span>
             ${hasCalc ? `<span class="gap ${fcGapClass}">${fcGapText}</span>` : ''}
         </div>`;
 
         const rfcGap = totals.totalRefineFC - totals.inventoryRFC;
         const rfcGapClass = rfcGap > 0 ? 'deficit' : 'surplus';
         const rfcGapText = rfcGap > 0 
-            ? t('gap-need-more', lang).replace('%d', Math.abs(rfcGap))
-            : t('gap-have-left', lang).replace('%d', Math.abs(rfcGap));
+            ? t('gap-need-more', lang).replace('%d', formatNumberLocale(Math.abs(rfcGap)))
+            : t('gap-have-left', lang).replace('%d', formatNumberLocale(Math.abs(rfcGap)));
 
         html += `<div class="total-item">
             <span class="resource-label">${labelWithIcon('refine-crystals')}:</span>
-            <span class="resource-value">${totals.totalRefineFC.toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(totals.totalRefineFC)}</span>
             ${hasCalc ? `<span class="gap ${rfcGapClass}">${rfcGapText}</span>` : ''}
         </div>`;
 
@@ -1294,22 +1310,22 @@
 
         html += `<div class="total-item">
             <span class="resource-label">${t('svs-points-fc', lang)}:</span>
-            <span class="resource-value">${Math.floor(fcPoints).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(Math.floor(fcPoints))}</span>
         </div>`;
 
         html += `<div class="total-item">
             <span class="resource-label">${t('svs-points-rfc', lang)}:</span>
-            <span class="resource-value">${Math.floor(rfcPoints).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(Math.floor(rfcPoints))}</span>
         </div>`;
 
         html += `<div class="total-item">
             <span class="resource-label">${t('svs-points-speedup', lang)}:</span>
-            <span class="resource-value">${Math.floor(speedupPoints).toLocaleString()}</span>
+            <span class="resource-value">${formatNumberLocale(Math.floor(speedupPoints))}</span>
         </div>`;
 
         html += `<div class="total-item">
             <span class="resource-label"><strong>${t('total-svs-points', lang)}:</strong></span>
-            <span class="resource-value"><strong>${Math.floor(totalSVSPoints).toLocaleString()}</strong></span>
+            <span class="resource-value"><strong>${formatNumberLocale(Math.floor(totalSVSPoints))}</strong></span>
         </div>`;
 
         
