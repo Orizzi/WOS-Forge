@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  const SW_VERSION = 'v2';
+  const SW_VERSION = 'v3';
   const SW_FILE = 'service-worker.js';
   const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1']);
 
