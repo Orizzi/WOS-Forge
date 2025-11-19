@@ -2667,7 +2667,6 @@ button, .dark-mode-toggle, select, input[type="number"] {
     /* ---- MOBILE RESULTS NUMBER FIX ---- */
     .results-section,
     .results-section * {
-        text-align: left !important;
         letter-spacing: normal !important;
         word-spacing: normal !important;
         text-justify: auto !important;
@@ -2692,11 +2691,28 @@ button, .dark-mode-toggle, select, input[type="number"] {
         vertical-align: middle !important;
     }
 
-    /* Prevent accidental justification of large numbers */
-    .results-section p,
-    .card p {
-        text-align: left !important;
-        text-justify: auto !important;
+    /* Prevent accidental justification of large numbers & center content */
+    .results-section .results-table th,
+    .results-section .results-table td,
+    .results-section .result-value,
+    .results-section .result-line,
+    .results-section .result-totals,
+    .results-section .result-totals .total-line,
+    .results-section .result-totals .total-line p,
+    .results-section .summary-pill,
+    .card .results-table th,
+    .card .results-table td {
+        text-align: center !important;
+    }
+    .results-section .result-line,
+    .results-section .result-totals,
+    .results-section .result-totals .total-line,
+    .results-section .result-totals .total-line p{
+        justify-content: center;
+    }
+    .results-section .results-table td,
+    .results-section .results-table th{
+        white-space: nowrap;
     }
 
     /* ---- OPTIONAL (IMPROVES READABILITY) ---- */
