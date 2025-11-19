@@ -26,9 +26,9 @@
         <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
         <select id="language-selector" aria-label="Language" title="Select language">
         <option value="en"> English</option>
-        <option value="es"> Español</option>
-        <option value="ko"> 한국어</option>
-        <option value="ru"> Русский</option>
+        <option value="es"> Espa�ol</option>
+        <option value="ko"> ???</option>
+        <option value="ru"> ???????</option>
         </select>
       </nav>
   <main>
@@ -40,16 +40,10 @@
 
     <section class="results-section card">
       <h3>Items You Need</h3>
-      <div id="results-display">Pending data integration…</div>
+      <div id="results-display">Pending data integration�</div>
     </section>
-  </main>
+    </main>
 </div>
-</body>
-</html>
-
-
-
-
     <nav class="bottom-nav" aria-label="Mobile navigation">
       <ul class="bottom-nav__list">
         <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
@@ -61,6 +55,14 @@
         <li class="bottom-nav__item"><a href="experts.html" aria-current="page" class="is-active">Experts</a></li>
       </ul>
     </nav>
-  <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+  <a href="#top" class="back-to-top" aria-label="Back to top">&#8593;</a>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+      if(active && active.scrollIntoView){
+        active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
+      }
+    });
+  </script>
 </body>
 </html>
