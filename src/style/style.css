@@ -2295,6 +2295,8 @@ button, .dark-mode-toggle, select, input[type="number"] {
     font-size: 0.95em;
     color: var(--text);
     line-height: 1.5;
+    white-space: normal;
+    word-break: break-word;
 }
 .modal-body p{
     margin: 8px 0;
