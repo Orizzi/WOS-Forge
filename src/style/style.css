@@ -2449,6 +2449,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
         margin-right: auto;
         box-sizing: border-box;
         align-items: center;
+        overflow: visible;
     }
     .left-column{
         width: 100%;
@@ -2467,6 +2468,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
         max-width: 520px;
         margin: 0 auto;
         box-sizing: border-box;
+        overflow: visible;
     }
     .results-section #results-display{
         width: 100%;
@@ -2491,14 +2493,21 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
     .results-section .result-totals .total-line{
         width: 100%;
+        border-width: 1px;
+        border-radius: 6px;
+        padding: 6px 8px;
+        overflow: hidden;
     }
     .results-section .result-totals .total-line p{
         margin: 0;
         width: 100%;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        text-align: center;
+        word-break: break-word;
         box-sizing: border-box;
     }
     .results-section #results-display > *{
@@ -2512,12 +2521,24 @@ button, .dark-mode-toggle, select, input[type="number"] {
         box-sizing: border-box;
     }
     .results-section .results-table{
-        min-width: 480px;
+        min-width: 640px;
+        width: max-content;
     }
     .results-section .table-responsive{
         width: 100%;
         box-sizing: border-box;
         overflow-x: auto;
+    }
+    /* Make first column sticky inside horizontal scroll */
+    .results-section .results-table th:first-child,
+    .results-section .results-table td:first-child{
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: var(--panel);
+    }
+    .results-section .results-table thead th:first-child{
+        z-index: 3;
     }
     /* Align result stacks on all calculators (mobile) */
     .result-totals{
@@ -2530,6 +2551,19 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
     .result-totals .total-line{
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .result-totals .total-line p{
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-sizing: border-box;
     }
     .result-totals .summary-pill{
         display: block;
@@ -2541,6 +2575,23 @@ button, .dark-mode-toggle, select, input[type="number"] {
         width: 100%;
         box-sizing: border-box;
         overflow-x: auto;
+    }
+    .results-section .results-wrap{
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+        position: relative;
+    }
+    /* Make first column sticky inside horizontal scroll */
+    .results-section .results-table th:first-child,
+    .results-section .results-table td:first-child{
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        background: var(--panel);
+    }
+    .results-section .results-table thead th:first-child{
+        z-index: 3;
     }
 }
 
