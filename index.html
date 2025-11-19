@@ -71,19 +71,11 @@
   <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
 
     <script>
-      // Lightweight debug + safety: confirm I18n/selector are ready when the page is interactive.
-      document.addEventListener('DOMContentLoaded', function() {
-        const selector = document.getElementById('language-selector');
-        if (!selector) {
-          console.error('[DEBUG] language selector not found');
-          return;
-        }
-        console.debug('[DEBUG] language selector ready', selector.value);
-
-        if (window.I18n && typeof window.I18n.init === 'function') {
-          console.debug('[DEBUG] I18n loaded; current language', window.I18n.getCurrentLanguage());
-        } else {
-          console.error('[DEBUG] I18n is not available on DOMContentLoaded');
+      // Center active bottom nav item on load (mobile)
+      document.addEventListener('DOMContentLoaded', function(){
+        const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+        if(active && active.scrollIntoView){
+          active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
         }
       });
     </script>

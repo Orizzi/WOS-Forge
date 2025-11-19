@@ -59,17 +59,25 @@
 
 
 
-    <nav class="bottom-nav" aria-label="Mobile navigation">
-      <ul class="bottom-nav__list">
-        <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
-        <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
-        <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <ul class="bottom-nav__list">
+      <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
+      <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
+      <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
         <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
         <li class="bottom-nav__item"><a href="warAcademy.html">War Academy</a></li>
         <li class="bottom-nav__item"><a href="pets.html" aria-current="page" class="is-active">Pets</a></li>
-        <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
-      </ul>
-    </nav>
+      <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
+    </ul>
+  </nav>
     <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+        if(active && active.scrollIntoView){
+          active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
+        }
+      });
+    </script>
 </body>
 </html>

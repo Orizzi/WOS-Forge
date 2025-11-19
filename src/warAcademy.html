@@ -62,5 +62,13 @@
       </ul>
     </nav>
     <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+        if(active && active.scrollIntoView){
+          active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
+        }
+      });
+    </script>
 </body>
 </html>
