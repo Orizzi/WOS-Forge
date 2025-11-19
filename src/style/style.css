@@ -2476,8 +2476,39 @@ button, .dark-mode-toggle, select, input[type="number"] {
         gap: 12px;
         overflow-x: hidden;
     }
+    .results-section #results-display .result-totals{
+        flex-direction: column !important;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .results-section .result-totals{
+        display: flex;
+        flex-direction: column !important;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .results-section .result-totals .total-line{
+        width: 100%;
+    }
+    .results-section .result-totals .total-line p{
+        margin: 0;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        box-sizing: border-box;
+    }
     .results-section #results-display > *{
         width: 100%;
+        box-sizing: border-box;
+    }
+    .results-section #results-display .summary-pill{
+        display: block;
+        width: 100%;
+        text-align: center;
         box-sizing: border-box;
     }
     .results-section .results-table{
@@ -2488,9 +2519,28 @@ button, .dark-mode-toggle, select, input[type="number"] {
         box-sizing: border-box;
         overflow-x: auto;
     }
-    .results-section #results-display{
+    /* Align result stacks on all calculators (mobile) */
+    .result-totals{
+        display: flex;
+        flex-direction: column !important;
+        flex-wrap: nowrap;
+        gap: 10px;
         width: 100%;
         box-sizing: border-box;
+    }
+    .result-totals .total-line{
+        width: 100%;
+    }
+    .result-totals .summary-pill{
+        display: block;
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .calculation-results .table-responsive{
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
     }
 }
 
