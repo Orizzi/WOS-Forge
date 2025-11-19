@@ -2644,6 +2644,67 @@ button, .dark-mode-toggle, select, input[type="number"] {
         text-align: center;
         text-align-last: center;
     }
+    /* ---- MOBILE FORM CONTROL FIX ---- */
+    select,
+    input[type="number"],
+    input[type="text"] {
+        line-height: 1.4 !important;
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        font-size: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Fix Safari/iOS baseline issue */
+    select,
+    input {
+        -webkit-appearance: none !important;
+    }
+
+    /* ---- MOBILE RESULTS NUMBER FIX ---- */
+    .results-section,
+    .results-section * {
+        text-align: left !important;
+        letter-spacing: normal !important;
+        word-spacing: normal !important;
+        text-justify: auto !important;
+    }
+
+    /* Normalize numeric punctuation and baseline */
+    .results-section .result-value,
+    .card .result-value,
+    .result-number,
+    .number-output {
+        font-feature-settings: "tnum", "lnum" !important;
+        font-variant-numeric: tabular-nums lining-nums !important;
+        letter-spacing: 0 !important;
+        line-height: 1.6 !important;
+        display: inline-block !important;
+        vertical-align: middle !important;
+    }
+
+    /* Ensure apostrophes stay on correct baseline */
+    .results-section .result-value::after,
+    .results-section .result-value::before {
+        vertical-align: middle !important;
+    }
+
+    /* Prevent accidental justification of large numbers */
+    .results-section p,
+    .card p {
+        text-align: left !important;
+        text-justify: auto !important;
+    }
+
+    /* ---- OPTIONAL (IMPROVES READABILITY) ---- */
+    .card p,
+    .card span,
+    .card div {
+        line-height: 1.55 !important;
+    }
     button{
         justify-content: center;
     }
