@@ -1731,10 +1731,13 @@ html:not(.light-theme) .profiles input[type="text"]{
     background: var(--card); 
     border-radius: 6px; 
     border: 1px solid var(--border); 
+    align-items: center;
 }
 
 .result-totals .total-line p{ 
     margin: 0; 
+    width: 100%;
+    text-align: center;
 }
 
 .gap-line{ 
@@ -1742,6 +1745,8 @@ html:not(.light-theme) .profiles input[type="text"]{
     font-size: 0.9em; 
     display: flex; 
     align-items: center; 
+    justify-content: center;
+    text-align: center;
     gap: 6px; 
     padding: 6px 10px; 
     border-radius: 6px; 
