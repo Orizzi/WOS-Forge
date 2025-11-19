@@ -12,6 +12,9 @@
     --danger: #ff7b7b;
     --border: rgb(0 217 255 / 12%);
     --shadow: rgb(0 0 0 / 30%);
+    --field-bg: color-mix(in srgb, var(--panel) 85%, transparent);
+    --field-border: color-mix(in srgb, var(--border) 150%, transparent);
+    --field-focus: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 html.light-theme, body.light-theme{ 
@@ -27,6 +30,9 @@ html.light-theme, body.light-theme{
     --danger: #ff6b6b;
     --border: rgb(0 153 204 / 20%);
     --shadow: rgb(0 153 204 / 15%);
+    --field-bg: #fff;
+    --field-border: #dcdde6;
+    --field-focus: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 body { 
@@ -35,6 +41,44 @@ body {
     color: var(--text);
     margin: 0; 
     padding: 0; 
+}
+
+.form-field,
+input[type="number"],
+input[type="text"],
+select{
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    min-height: 44px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+input[type="number"],
+select{
+    text-align: center;
+    text-align-last: center;
+    font-feature-settings: "tnum","lnum";
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+input[type="text"]{
+    text-align: left;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus{
+    outline: 2px solid var(--field-focus);
+    outline-offset: 2px;
+    background: color-mix(in srgb, var(--field-bg) 90%, var(--accent) 5%);
 }
 
 /* ===== Results tables (shared: Charms, Fire Crystals) ===== */
