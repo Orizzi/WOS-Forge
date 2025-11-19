@@ -2853,3 +2853,29 @@ button, .dark-mode-toggle, select, input[type="number"] {
 
 
 
+@media (max-width: 900px){
+    #calculation-results .results-table{
+        width: auto;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #calculation-results .results-table th,
+    #calculation-results .results-table td{
+        text-align: center;
+        white-space: nowrap;
+    }
+    #calculation-results .results-table td:nth-child(n+4),
+    #calculation-results .results-table th:nth-child(n+4){
+        text-align: center;
+    }
+    #calculation-results .results-table td:nth-child(-n+3),
+    #calculation-results .results-table th:nth-child(-n+3){
+        text-align: center;
+    }
+    #calculation-results .results-table tfoot td{
+        text-align: center;
+    }
+    #calculation-results .results-wrap{
+        align-items: center;
+    }
+}
