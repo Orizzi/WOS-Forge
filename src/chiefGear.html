@@ -21,6 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Chief Gear calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every gear type.">
     <title>WOSC-Chief Gear</title>
+    <link rel="icon" href="../src/assets/app-icon.png">
     <link rel="stylesheet" href="style/style.min.css">
     <style>
       /* Match fireCrystals header layout (banner left, nav right) */
@@ -37,6 +38,7 @@
     <script src="Scripts/min/translations.min.js" defer></script>
     <script src="Scripts/nav.js" defer></script>
 <body>
+    <div id="top"></div>
     <script>
       if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
         const swVersion = 'v2';
@@ -928,6 +930,7 @@
         <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
       </ul>
     </nav>
+    <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
 
 </body>
 </html>

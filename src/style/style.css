@@ -2305,6 +2305,31 @@ button, .dark-mode-toggle, select, input[type="number"] {
 .modal-actions .btn.danger { background: #ff6b6b; color: #fff; }
 .modal-actions .btn.danger:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
 
+/* Back to top button -------------------------------------------------------- */
+.back-to-top{
+    position: fixed;
+    right: 18px;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 80%, transparent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--shadow) 40%, transparent);
+    z-index: 260;
+    opacity: 0.85;
+    transition: opacity 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.back-to-top:hover{
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--shadow) 45%, transparent);
+}
+
 /* Final mobile overrides to keep calculators single-column */
 @media (max-width: 900px){
     .main-layout-wrapper{
@@ -2576,6 +2601,16 @@ button, .dark-mode-toggle, select, input[type="number"] {
         box-sizing: border-box;
         overflow-x: auto;
     }
+    /* Center form/control text on mobile */
+    select,
+    input[type="number"],
+    input[type="text"]{
+        text-align: center;
+        text-align-last: center;
+    }
+    button{
+        justify-content: center;
+    }
     .results-section .results-wrap{
         width: 100%;
         box-sizing: border-box;
@@ -2592,6 +2627,12 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
     .results-section .results-table thead th:first-child{
         z-index: 3;
+    }
+    .back-to-top{
+        bottom: 96px;
+        right: 12px;
+        width: 44px;
+        height: 44px;
     }
 }
 
