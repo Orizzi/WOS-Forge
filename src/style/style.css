@@ -1694,6 +1694,23 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-bottom: 2px solid var(--border);
 }
 
+.calculation-output #calculation-results{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.calculation-output #calculation-results .results-wrap{
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    margin: 0;
+}
+
+.calculation-output #calculation-results .results-table{
+    min-width: 640px;
+    width: max-content;
+}
+
 .result-totals { 
     display: flex; 
     flex-direction: column;
