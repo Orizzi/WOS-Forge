@@ -2596,8 +2596,8 @@ button, .dark-mode-toggle, select, input[type="number"] {
     .results-section #results-display{
         width: 100%;
         box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr;
         gap: 12px;
         overflow-x: hidden;
     }
@@ -2850,10 +2850,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
 }
 .result-totals { 
-    display: flex; 
-    flex-direction: column;
-    gap: 6px; 
-    align-items: center;
+    display: grid; 
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+    gap: 12px; 
+    align-items: stretch;
 }
 
 .result-totals .total-line{ 
@@ -2861,6 +2861,8 @@ button, .dark-mode-toggle, select, input[type="number"] {
     background: var(--card); 
     border-radius: 6px; 
     border: 1px solid var(--border); 
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
