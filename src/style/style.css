@@ -44,53 +44,6 @@ body {
 }
 
 .form-field,
-input[type="number"],
-input[type="text"],
-select{
-    font-family: inherit;
-    font-size: 1rem;
-    color: var(--text);
-    background: var(--field-bg);
-    border: 1px solid var(--field-border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    box-sizing: border-box;
-    min-height: 48px;
-    line-height: 1.25;
-    letter-spacing: 0;
-    font-weight: 500;
-    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
-    -webkit-appearance: none;
-}
-
-input[type="number"],
-select{
-    text-align: center;
-    text-align-last: center;
-    font-feature-settings: "tnum","lnum";
-    font-variant-numeric: tabular-nums lining-nums;
-}
-
-input[type="text"],
-input[type="search"],
-textarea{
-    text-align: left;
-}
-
-input[type="text"]::placeholder,
-input[type="search"]::placeholder,
-textarea::placeholder{
-    text-align: left;
-}
-
-input[type="number"]:focus,
-input[type="text"]:focus,
-select:focus{
-    outline: 2px solid transparent;
-    box-shadow: 0 0 0 2px var(--field-focus);
-    background: color-mix(in srgb, var(--field-bg) 80%, var(--accent) 8%);
-}
-
 /* ===== Results tables (shared: Charms, Fire Crystals) ===== */
 .results-wrap{ 
     margin: 16px; 
@@ -448,7 +401,7 @@ html, body{
 }
 
 .inventory-item label{ font-size: 0.95rem; color: var(--text); opacity: 0.9; }
-.inventory-item input[type="number"]{ width: 100%; box-sizing: border-box; text-align: right; }
+.inventory-item input[type="number"]{ width: 100%; box-sizing: border-box; text-align: center; }
 .label-with-icon{ display: inline-flex; gap: 6px; align-items: center; }
 .res-icon{ width: 18px; height: 18px; object-fit: contain; }
 
@@ -902,24 +855,6 @@ body, .main-nav, .introduction, .main-nav a, p, .title, select, input {
 }
 
 /* Enhanced select styling for consistency across browsers and Windows */
-select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9eef8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
-    padding-right: 48px;
-    border-radius: 12px;
-}
-
-/* Light theme selects */
-html.light-theme select, body.light-theme select {
-    background-color: var(--field-bg);
-    color: var(--text);
-    border: 1px solid var(--field-border);
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a1628' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-}
-
 /* Enhanced button and interactive control styling */
 button, input[type="button"] {
     padding: 12px 20px;
@@ -944,6 +879,75 @@ button, input[type="button"] {
     position: relative;
     overflow: hidden;
 }
+
+/* Unified form controls ---------------------------------------------------- */
+:root{
+    --field-radius: 12px;
+    --field-padding: 10px 14px;
+    --field-height: 48px;
+    --field-font: 1rem;
+}
+
+:where(.form-field,
+       input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+       select,
+       textarea){
+    font-family: inherit;
+    font-size: var(--field-font);
+    color: var(--text);
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: var(--field-radius);
+    padding: var(--field-padding);
+    min-height: var(--field-height);
+    line-height: 1.25;
+    letter-spacing: 0;
+    font-weight: 500;
+    box-sizing: border-box;
+    transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+:where(select){
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9eef8' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 48px;
+}
+
+:where(html.light-theme select, body.light-theme select){
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a1628' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+:where(input[type="number"], select){
+    text-align: center;
+    text-align-last: center;
+    font-feature-settings: "tnum","lnum";
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+:where(input[type="text"], input[type="search"], textarea){
+    text-align: left;
+}
+
+:where(input[type="text"]::placeholder,
+       input[type="search"]::placeholder,
+       textarea::placeholder){
+    text-align: left;
+}
+
+:where(.form-field,
+       input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+       select,
+       textarea):focus{
+    outline: none;
+    box-shadow: 0 0 0 2px var(--field-focus);
+    background: color-mix(in srgb, var(--field-bg) 82%, var(--accent) 10%);
+}
+
 /* Profile / reset buttons: refined look */
 .profiles-row button,
 .inventory-section .inventory-row button.secondary{
@@ -1079,17 +1083,6 @@ body.light-theme #profile-delete {
     color: #fff;
 }
 
-/* Focus state for accessibility */
-select:focus {
-    outline: 3px solid rgb(124 108 255 / 30%);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 1px rgb(124 108 255 / 10%);
-}
-
-html.light-theme select:focus {
-    outline: 3px solid rgb(107 107 240 / 30%);
-}
-
 /* Disabled options styling */
 select option:disabled {
     color: #666;
@@ -1101,15 +1094,6 @@ html.light-theme select option:disabled {
     color: #ccc;
     opacity: 0.7;
     background: rgba(200, 0, 0, 0.08);
-}
-
-input:focus {
-    outline: 3px solid rgb(124 108 255 / 30%);
-    outline-offset: 2px;
-}
-
-html.light-theme input:focus {
-    outline: 3px solid rgb(107 107 240 / 30%);
 }
 
 .calculation-input, .calculation-output {
@@ -2689,9 +2673,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
         text-align-last: center;
     }
     /* ---- MOBILE FORM CONTROL FIX ---- */
-    select,
-    input[type="number"],
-    input[type="text"] {
+    :where(.form-field,
+           input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+           select,
+           textarea){
         line-height: 1.4 !important;
         padding: 12px 16px !important;
         min-height: 52px !important;
@@ -2701,8 +2686,8 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
 
     /* Fix Safari/iOS baseline issue */
-    select,
-    input {
+    :where(select,
+           input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) {
         -webkit-appearance: none !important;
     }
 
