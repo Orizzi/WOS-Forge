@@ -1374,7 +1374,9 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colspan="3">${t('totals', lang)}</td>
+                                        <td>${t('totals', lang)}</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
                                         <td>${formatCompact(Number(totals.totalNormalFC || 0))}</td>
                                         <td>${formatCompact(Number(totals.totalRefineFC || 0))}</td>
                                         <td>${formatCompact(Number(totals.totalMeat || 0))}</td>

@@ -422,7 +422,9 @@ const CalculatorModule = (function(){
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="3">${t('totals')}</td>
+              <td>${t('totals')}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
               <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(grand.guides)}</td>
               <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(grand.designs)}</td>
               <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(grand.secrets)}</td>

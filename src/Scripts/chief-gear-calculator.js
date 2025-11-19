@@ -363,7 +363,9 @@ const ChiefGearCalculatorModule = (function(){
     tableHtml += `</tbody>
           <tfoot>
             <tr class="totals-row">
-              <td colspan="3">${t('totals') || 'Totals'}</td>
+              <td>${t('totals') || 'Totals'}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
               <td><img class="res-icon" src="assets/resources/chief-gear/hardened-alloy.png" alt=""> ${formatNumber(grand.hardenedAlloy)}</td>
               <td><img class="res-icon" src="assets/resources/chief-gear/polishing-solution.png" alt=""> ${formatNumber(grand.polishingSolution)}</td>
               <td><img class="res-icon" src="assets/resources/chief-gear/design-plans.png" alt=""> ${formatNumber(grand.designPlans)}</td>
