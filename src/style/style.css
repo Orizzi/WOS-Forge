@@ -1694,6 +1694,14 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-bottom: 2px solid var(--border);
 }
 
+.results-section #calculation-results{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .calculation-output #calculation-results{
     width: 100%;
     box-sizing: border-box;
