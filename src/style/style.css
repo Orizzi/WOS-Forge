@@ -1723,6 +1723,7 @@ html:not(.light-theme) .profiles input[type="text"]{
     display: flex; 
     flex-direction: column;
     gap: 6px; 
+    align-items: center;
 }
 
 .result-totals .total-line{ 
