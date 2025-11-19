@@ -41,7 +41,19 @@ const ProfilesModule = (function(){
    * Returns true if consent exists or is newly granted.
    */
   async function requestStorageConsent(){
-    const t = (window.I18n && window.I18n.t) ? window.I18n.t : (k => k);
+    const lang = (() => {
+      if(window.I18n && typeof window.I18n.getCurrentLanguage === 'function'){
+        return window.I18n.getCurrentLanguage();
+      }
+      const browser = (navigator.language || navigator.userLanguage || 'en').toLowerCase().slice(0,2);
+      return browser;
+    })();
+    const localT = (key) => {
+      if(window.I18n && typeof window.I18n.t === 'function'){
+        return window.I18n.t(key, lang);
+      }
+      return key;
+    };
     if(!canUseLocalStorage()){
       console.warn('[Profiles] localStorage unavailable; profiles will not persist.');
       return false;
@@ -57,10 +69,10 @@ const ProfilesModule = (function(){
     }catch(e){}
 
     const ok = await showConfirmDialog({
-      title: t('storage-consent-title'),
-      message: t('storage-consent-body'),
-      confirmText: t('storage-consent-allow'),
-      cancelText: t('storage-consent-deny')
+      title: localT('storage-consent-title'),
+      message: localT('storage-consent-body'),
+      confirmText: localT('storage-consent-allow'),
+      cancelText: localT('storage-consent-deny')
     });
 
     if(ok){
