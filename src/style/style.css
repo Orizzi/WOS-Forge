@@ -2637,14 +2637,12 @@ button, .dark-mode-toggle, select, input[type="number"] {
     .results-section #results-display .result-totals{
         flex-direction: column !important;
         flex-wrap: nowrap;
-        align-items: stretch;
         gap: 10px;
     }
     .results-section .result-totals{
         display: flex;
         flex-direction: column !important;
         flex-wrap: nowrap;
-        align-items: stretch;
         gap: 10px;
     }
     .results-section .result-totals .total-line{
