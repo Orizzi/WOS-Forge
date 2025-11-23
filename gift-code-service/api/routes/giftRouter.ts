@@ -337,14 +337,21 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
         const giftResponse = await sendGiftCode(row.player_id, giftCode, captchaFromQuery)
         const mapped = msg[giftResponse.err_code as msgKey];
         const errCode = giftResponse.err_code;
+        const rawMsg =
+          (typeof giftResponse.msg === 'string' && giftResponse.msg) || '';
         const descr =
           mapped?.descr ||
-          giftResponse?.msg ||
+          rawMsg ||
           giftResponse?.message ||
           'Unknown response from gift code API';
 
-        // Captcha required/invalid -> fetch captcha image and return for manual solving
-        if (errCode === 40101 || errCode === 40103) {
+        // Captcha required/invalid (new upstream behaviour sometimes returns err_code 0 + "params error")
+        const looksLikeCaptchaRequired =
+          errCode === 40101 ||
+          errCode === 40103 ||
+          (errCode === 0 && /param/i.test(rawMsg));
+
+        if (looksLikeCaptchaRequired) {
           let captchaImg: string | undefined;
           try {
             const captcha = await getCaptcha(row.player_id);
