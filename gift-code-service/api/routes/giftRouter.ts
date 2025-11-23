@@ -221,6 +221,49 @@ router.get('/players', async (req: Request, res: Response) => {
   res.end()
 });
 
+/**
+ * Return live player details (nickname, kid/state, furnace level) for all players in DB.
+ * This calls the official /player endpoint for each entry; avoid abusing rate limits.
+ */
+router.get('/players/details', async (req: Request, res: Response) => {
+  const { rows } = await sql`SELECT * FROM Players ORDER BY player_id;`;
+  const results: Array<{
+    playerId: number;
+    nickname?: string;
+    kid?: number;
+    stove?: number;
+    stoveContent?: number;
+    err?: string;
+  }> = [];
+
+  for (const row of rows) {
+    const playerId = Number(row.player_id);
+    try {
+      const info = await signIn(playerId);
+      results.push({
+        playerId,
+        nickname: info.data?.nickname as string | undefined,
+        kid: info.data?.kid as number | undefined,
+        stove: info.data?.stove_lv as number | undefined,
+        stoveContent: info.data?.stove_lv_content as number | undefined,
+      });
+    } catch (e) {
+      const err = e as AxiosError;
+      const msgText =
+        err?.response?.data?.message ||
+        err?.response?.data?.msg ||
+        err?.message ||
+        'Unknown error';
+      results.push({
+        playerId,
+        err: msgText,
+      });
+    }
+  }
+
+  res.json(results);
+});
+
 router.get('/remove/:playerId', async (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   await sql`DELETE FROM players WHERE player_id = ${playerId}`;
