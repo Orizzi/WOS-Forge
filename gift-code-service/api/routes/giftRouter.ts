@@ -227,17 +227,36 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
           await sql`UPDATE players SET player_name = ${signInResponse.data.nickname } WHERE WHERE player_id = ${row.player_id.toString()};`
         }
         const giftResponse = await sendGiftCode(row.player_id, giftCode)
-        if (msg[giftResponse.err_code as msgKey].err_code === 40014) //Gift code does not exist
-        {
+        const mapped = msg[giftResponse.err_code as msgKey];
+        const errCode = giftResponse.err_code;
+        const descr =
+          mapped?.descr ||
+          giftResponse?.msg ||
+          giftResponse?.message ||
+          'Unknown response from gift code API';
+
+        // If code doesn't exist or expired, stop and return immediately
+        if (errCode === 40014 || errCode === 40007) {
           cdkNotFound = true;
-          res.send({
+          res.status(400).send({
+            playerId: row.player_id,
+            playerName: row.player_name,
             code: giftCode,
-            message: msg[giftResponse.err_code as msgKey].descr
+            errCode,
+            message: descr,
           })
           break;
         }
-        response.push({ playerId: row.player_id, playerName: row.player_name, message: msg[giftResponse.err_code as msgKey].descr, code: giftCode })
-        await sql`UPDATE Players SET last_message = ${`${giftCode}: ${msg[giftResponse.err_code as msgKey].descr}`} WHERE player_id = ${row.player_id}`;
+
+        response.push({
+          playerId: row.player_id,
+          playerName: row.player_name,
+          message: descr,
+          code: giftCode,
+          errCode,
+        })
+
+        await sql`UPDATE Players SET last_message = ${`${giftCode}: ${descr}`} WHERE player_id = ${row.player_id}`;
       } catch (e) {
         const error = e as AxiosError;
         switch (error.response?.status) {
@@ -269,6 +288,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
               playerName: row.player_name,
               message: status ? `[${status}] ${msgText}` : msgText,
               code: giftCode,
+              errCode: status ?? errData?.err_code,
             });
             break;
         }
