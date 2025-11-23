@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const axios = require('axios');
 
 const HASH = 'tB87#kPtkxqOS2';
 const BASE_URL = 'https://wos-giftcode-api.centurygame.com/api';
@@ -43,90 +44,59 @@ const addCors = (res) => {
 
 const md5 = (text) => crypto.createHash('md5').update(text).digest('hex');
 
-const toFormBody = (payload) => {
+const buildForm = (payload) => {
   const params = new URLSearchParams();
   Object.entries(payload).forEach(([key, value]) => {
     params.append(key, value);
   });
-  return params.toString();
-};
-
-const fetchJson = async (url, body) => {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body,
-  });
-
-  const data = await response.json();
-  return {
-    status: response.status,
-    headers: response.headers,
-    data,
-  };
+  return params;
 };
 
 const signIn = async (playerId) => {
   const time = Date.now();
-  const payload = {
+  const payload = buildForm({
     sign: md5(`fid=${playerId}&time=${time}${HASH}`),
     fid: String(playerId),
     time: String(time),
-  };
+  });
 
-  const response = await fetchJson(`${BASE_URL}/player`, toFormBody(payload));
-  if (response.status !== 200) {
-    const error = new Error('Player lookup failed');
-    error.status = response.status;
-    error.payload = response.data;
-    throw error;
-  }
+  const response = await axios.post(`${BASE_URL}/player`, payload, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
+
   return {
     info: response.data?.data ?? null,
-    rateRemaining: Number(response.headers.get('x-ratelimit-remaining') || 0),
-    rateReset: response.headers.get('x-ratelimit-reset'),
+    rateRemaining: Number(response.headers['x-ratelimit-remaining'] || 0),
+    rateReset: response.headers['x-ratelimit-reset'],
   };
 };
 
 const sendGiftCode = async (playerId, giftCode) => {
   const time = Date.now();
-  const payload = {
+  const payload = buildForm({
     sign: md5(`cdk=${giftCode}&fid=${playerId}&time=${time}${HASH}`),
     fid: String(playerId),
     time: String(time),
     cdk: giftCode,
-  };
+  });
 
-  const response = await fetchJson(
-    `${BASE_URL}/gift_code`,
-    toFormBody(payload)
-  );
-
-  if (!response.data) {
-    const error = new Error('Invalid response from gift-code API');
-    error.status = response.status;
-    throw error;
-  }
-
-  if (response.status === 429) {
-    const rateError = new Error('Rate limit hit');
-    rateError.status = 429;
-    rateError.headers = response.headers;
-    throw rateError;
-  }
-
-  return response.data;
+  const response = await axios.post(`${BASE_URL}/gift_code`, payload, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
+  return response;
 };
 
-const parseWaitSeconds = (headers) => {
-  if (!headers) return undefined;
-  const retryAfter = headers.get('retry-after');
+const parseWaitSeconds = (headers = {}) => {
+  const getHeader =
+    typeof headers.get === 'function'
+      ? (key) => headers.get(key)
+      : (key) => headers[key?.toLowerCase()];
+
+  const retryAfter = getHeader('retry-after');
   if (retryAfter && !Number.isNaN(Number(retryAfter))) {
     return Number(retryAfter);
   }
-  const reset = headers.get('x-ratelimit-reset');
+  const reset = getHeader('x-ratelimit-reset');
   if (reset && !Number.isNaN(Number(reset))) {
     const resetDate = Number(reset) * 1000;
     const diff = Math.ceil((resetDate - Date.now()) / 1000);
@@ -140,7 +110,7 @@ const readBody = async (req) => {
     if (typeof req.body === 'string') {
       try {
         return JSON.parse(req.body);
-      } catch (err) {
+      } catch (error) {
         return {};
       }
     }
@@ -187,14 +157,13 @@ module.exports = async function handler(req, res) {
     res.status(400).json({ message: 'Unable to read request body' });
     return;
   }
+
   const playerIdRaw = body.playerId ?? body.fid;
   const giftCodeRaw = body.giftCode ?? body.cdk;
   const note = body.note || '';
 
   if (!playerIdRaw || !giftCodeRaw) {
-    res.status(400).json({
-      message: 'playerId and giftCode are required',
-    });
+    res.status(400).json({ message: 'playerId and giftCode are required' });
     return;
   }
 
@@ -218,36 +187,52 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const result = await sendGiftCode(playerId, giftCode);
-    const mapping = RESULT_MAP[result.err_code] || {
-      descr: result?.msg || 'Unknown response',
-      code: result?.code ?? 1,
-      err_code: result?.err_code ?? -1,
-    };
-    const success = mapping.err_code === 20000;
+    try {
+      const giftResponse = await sendGiftCode(playerId, giftCode);
+      const data = giftResponse.data;
+      const mapping = RESULT_MAP[data.err_code] || {
+        descr: data?.msg || 'Unknown response',
+        code: data?.code ?? 1,
+        err_code: data?.err_code ?? -1,
+      };
+      const success = mapping.err_code === 20000;
 
-    res.status(200).json({
-      success,
-      playerId,
-      nickname: player.info.nickname,
-      message: mapping.descr,
-      note: note || undefined,
-    });
-  } catch (error) {
-    if (error.status === 429) {
-      res.status(429).json({
-        message: 'Rate limit reached. Please wait before retrying.',
-        wait: parseWaitSeconds(error.headers),
+      res.status(200).json({
+        success,
+        playerId,
+        nickname: player.info.nickname,
+        message: mapping.descr,
+        note: note || undefined,
       });
       return;
+    } catch (error) {
+      if (error?.response?.status === 429) {
+        res.status(429).json({
+          message: 'Rate limit reached. Please wait before retrying.',
+          wait: parseWaitSeconds(error.response.headers),
+        });
+        return;
+      }
+      if (error?.response?.data) {
+        res.status(200).json({
+          success: false,
+          playerId,
+          nickname: player.info.nickname,
+          message:
+            error.response.data?.msg ||
+            error.response.data?.message ||
+            'Gift-code service error',
+        });
+        return;
+      }
+      throw error;
     }
-
-    res.status(500).json({
-      message: 'Gift-code service error',
-      detail:
+  } catch (error) {
+    res.status(error.status || 500).json({
+      message:
         typeof error?.message === 'string'
           ? error.message
-          : 'Unknown error occurred',
+          : 'Gift-code service error',
     });
   }
 };
