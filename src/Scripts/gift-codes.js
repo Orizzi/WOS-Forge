@@ -109,6 +109,17 @@
     fallback ||
     'Unknown response';
 
+  const fetchCaptchaImage = async (playerId) => {
+    try {
+      const res = await fetch(`${BACKEND_BASE}/captcha/${playerId}`);
+      if (!res.ok) return undefined;
+      const data = await res.json();
+      return data?.captchaImg;
+    } catch (e) {
+      return undefined;
+    }
+  };
+
   const redeemForPlayer = async ({ playerId, giftCode, note, captcha }) => {
     try {
       // Step 1: ensure player is in DB
@@ -270,6 +281,38 @@
             'warn'
           );
           break;
+        }
+
+        const needsCaptcha =
+          result.errCode === 40101 ||
+          result.errCode === 40103 ||
+          result.errCode === 0 ||
+          /captcha/i.test(result.message || '');
+        if (needsCaptcha) {
+          const fetchedImg = await fetchCaptchaImage(playerId);
+          if (fetchedImg) {
+            state.lastCaptchaImg = fetchedImg;
+            if (captchaImg) {
+              captchaImg.src = `data:image/png;base64,${fetchedImg}`;
+            }
+            if (captchaBlock) captchaBlock.hidden = false;
+            if (captchaInput) {
+              captchaInput.value = '';
+              captchaInput.focus();
+            }
+            pushLogEntry(
+              logList,
+              `[CAPTCHA] ${playerId}: captcha required. Solve and resend.`,
+              'warn'
+            );
+            setStatusText(
+              statusText,
+              'Captcha required. Solve the image and resend.',
+              'warn'
+            );
+            aborted = true;
+            break;
+          }
         }
 
         const waitInfo =
