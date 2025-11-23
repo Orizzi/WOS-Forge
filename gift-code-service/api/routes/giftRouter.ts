@@ -210,6 +210,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
     playerName: String;
     message: String;
     code: String;
+    errCode?: Number | String;
   }
   let response: APIResponse[] = [];
   let resetAt: Date = new Date();
