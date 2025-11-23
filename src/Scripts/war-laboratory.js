@@ -27,7 +27,7 @@
     const { nodes } = window.WOSData.helios;
 
     const CELL = 140;
-    const PADDING = 60;
+    const PADDING = 40;
     const minX = Math.min(...nodes.map((n) => n.position.x));
     const maxX = Math.max(...nodes.map((n) => n.position.x));
     const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -41,7 +41,7 @@
     tree.style.display = 'flex';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = 'center';
-    tree.style.minHeight = '560px';
+    tree.style.minHeight = '620px';
 
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
@@ -124,9 +124,9 @@
     // scale down if overflowing
     requestAnimationFrame(() => {
       const available = tree.clientWidth - 48;
-      const target = available * 0.7;
+      const target = available * 0.8;
       const rawScale = target > 0 ? target / width : 1;
-      const scale = Math.min(1.05, Math.max(0.8, rawScale));
+      const scale = Math.min(1.1, Math.max(0.85, rawScale));
       wrapper.style.transform = `scale(${scale})`;
     });
   }

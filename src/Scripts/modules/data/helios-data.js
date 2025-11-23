@@ -58,7 +58,7 @@
       branch: 'marksman',
       maxLevel: 1,
       icon: 'research-icons/Helios_Marksman.png',
-      position: { x: 3, y: 2 },
+      position: { x: 3, y: 1 },
       parents: [],
       type: 'unlock',
       variant: 'unlock',
@@ -70,7 +70,7 @@
       branch: 'marksman',
       maxLevel: 10,
       icon: 'research-icons/Helios_Marksman_Training.png',
-      position: { x: 3, y: 1 },
+      position: { x: 3, y: 0 },
       parents: ['helios-marksman'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Training Capacity')
@@ -81,7 +81,7 @@
       branch: 'marksman',
       maxLevel: 10,
       icon: 'research-icons/Helios_Marksman_Healing.png',
-      position: { x: 2, y: 1 },
+      position: { x: 2, y: 0 },
       parents: ['helios-marksman'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Healing Speed %')
@@ -92,7 +92,7 @@
       branch: 'marksman',
       maxLevel: 10,
       icon: 'research-icons/Helios_Marksman_First_Aid.png',
-      position: { x: 4, y: 1 },
+      position: { x: 4, y: 0 },
       parents: ['helios-marksman'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'First Aid Capacity')
@@ -103,7 +103,7 @@
       branch: 'marksman',
       maxLevel: 12,
       icon: 'research-icons/Flame_Legion.png',
-      position: { x: 3, y: 3 },
+      position: { x: 3, y: 2 },
       parents: ['helios-marksman'],
       type: 'flame-legion',
       variant: 'flame',
@@ -115,7 +115,7 @@
       branch: 'marksman',
       maxLevel: 6,
       icon: 'research-icons/Marksman_Armor_I.png',
-      position: { x: 2, y: 3 },
+      position: { x: 2, y: 2 },
       parents: ['flame-legion-marksman'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Marksman HP %')
@@ -126,7 +126,7 @@
       branch: 'marksman',
       maxLevel: 6,
       icon: 'research-icons/Regimental_Expansion_I.png',
-      position: { x: 4, y: 3 },
+      position: { x: 4, y: 2 },
       parents: ['flame-legion-marksman'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Marksman ATK %')
@@ -139,7 +139,7 @@
       branch: 'infantry',
       maxLevel: 1,
       icon: 'research-icons/Helios_Infantry.png',
-      position: { x: 7, y: 2 },
+      position: { x: 7, y: 1 },
       parents: [],
       type: 'unlock',
       variant: 'unlock',
@@ -151,7 +151,7 @@
       branch: 'infantry',
       maxLevel: 10,
       icon: 'research-icons/Helios_Infantry_Training.png',
-      position: { x: 8, y: 1 },
+      position: { x: 8, y: 0 },
       parents: ['helios-infantry'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Training Capacity')
@@ -162,7 +162,7 @@
       branch: 'infantry',
       maxLevel: 10,
       icon: 'research-icons/Helios_Infantry_Healing.png',
-      position: { x: 6, y: 1 },
+      position: { x: 6, y: 0 },
       parents: ['helios-infantry'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Healing Speed %')
@@ -173,7 +173,7 @@
       branch: 'infantry',
       maxLevel: 10,
       icon: 'research-icons/Helios_Infantry_First_Aid.png',
-      position: { x: 7, y: 1 },
+      position: { x: 7, y: 0 },
       parents: ['helios-infantry'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'First Aid Capacity')
@@ -184,7 +184,7 @@
       branch: 'infantry',
       maxLevel: 12,
       icon: 'research-icons/Flame_Legion.png',
-      position: { x: 7, y: 3 },
+      position: { x: 7, y: 2 },
       parents: ['helios-infantry'],
       type: 'flame-legion',
       variant: 'flame',
@@ -196,7 +196,7 @@
       branch: 'infantry',
       maxLevel: 6,
       icon: 'research-icons/Defensive_Formation_I.png',
-      position: { x: 6, y: 3 },
+      position: { x: 6, y: 2 },
       parents: ['flame-legion-infantry'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Infantry DEF %')
@@ -207,10 +207,24 @@
       branch: 'infantry',
       maxLevel: 6,
       icon: 'research-icons/Bulwark_Formations_I.png',
-      position: { x: 8, y: 3 },
+      position: { x: 8, y: 2 },
       parents: ['flame-legion-infantry'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Infantry HP %')
+    },
+
+    // Central connector
+    {
+      id: 'flame-legion-core',
+      name: 'Flame Legion',
+      branch: 'infantry', // neutral; color will be overridden by connections; keep green-ish to sit central
+      maxLevel: 1,
+      icon: 'research-icons/Flame_Legion.png',
+      position: { x: 5, y: 3 },
+      parents: ['flame-legion-marksman', 'flame-legion-infantry'],
+      type: 'flame-legion',
+      variant: 'flame',
+      levels: buildLevels(1, 0, 0, 0)
     },
 
     // Lancer branch
@@ -220,8 +234,8 @@
       branch: 'lancer',
       maxLevel: 1,
       icon: 'research-icons/Helios_Lancer.png',
-      position: { x: 5, y: 7 },
-      parents: [],
+      position: { x: 5, y: 5 },
+      parents: ['flame-legion-core'],
       type: 'unlock',
       variant: 'unlock',
       levels: buildLevels(1, 40, 5000, 7200, 'Lancer ATK %')
@@ -232,7 +246,7 @@
       branch: 'lancer',
       maxLevel: 10,
       icon: 'research-icons/Helios_Lancer_Training.png',
-      position: { x: 5, y: 8 },
+      position: { x: 5, y: 6 },
       parents: ['helios-lancer'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Training Capacity')
@@ -243,7 +257,7 @@
       branch: 'lancer',
       maxLevel: 10,
       icon: 'research-icons/Helios_Lancer_Healing.png',
-      position: { x: 4, y: 8 },
+      position: { x: 4, y: 6 },
       parents: ['helios-lancer'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'Healing Speed %')
@@ -254,7 +268,7 @@
       branch: 'lancer',
       maxLevel: 10,
       icon: 'research-icons/Helios_Lancer_First_Aid.png',
-      position: { x: 6, y: 8 },
+      position: { x: 6, y: 6 },
       parents: ['helios-lancer'],
       type: 'support',
       levels: buildLevels(10, 5, 800, 1200, 'First Aid Capacity')
@@ -265,8 +279,8 @@
       branch: 'lancer',
       maxLevel: 12,
       icon: 'research-icons/Flame_Legion.png',
-      position: { x: 5, y: 6 },
-      parents: ['helios-lancer'],
+      position: { x: 5, y: 4 },
+      parents: ['flame-legion-core'],
       type: 'flame-legion',
       variant: 'flame',
       levels: buildLevels(12, 8, 1200, 1500, 'Lancer ATK %')
@@ -277,7 +291,7 @@
       branch: 'lancer',
       maxLevel: 6,
       icon: 'research-icons/Close_Combat_I.png',
-      position: { x: 4, y: 6 },
+      position: { x: 4, y: 4 },
       parents: ['flame-legion-lancer'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Lancer ATK %')
@@ -288,7 +302,7 @@
       branch: 'lancer',
       maxLevel: 6,
       icon: 'research-icons/Precision_Targeting_I.png',
-      position: { x: 6, y: 6 },
+      position: { x: 6, y: 4 },
       parents: ['flame-legion-lancer'],
       type: 'stat',
       levels: buildLevels(6, 6, 1000, 1300, 'Lancer HP %')
