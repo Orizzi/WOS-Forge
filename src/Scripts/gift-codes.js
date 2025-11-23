@@ -13,6 +13,30 @@
     submitting: false,
     cooldownTimer: null,
     lastCaptchaImg: null,
+    storedIds: new Set(),
+    storedCodes: new Set(),
+  };
+
+  const STORAGE_KEYS = {
+    ids: 'giftcode_ids',
+    codes: 'giftcode_codes',
+  };
+
+  const loadStored = () => {
+    try {
+      const ids = JSON.parse(localStorage.getItem(STORAGE_KEYS.ids) || '[]');
+      const codes = JSON.parse(localStorage.getItem(STORAGE_KEYS.codes) || '[]');
+      state.storedIds = new Set(ids);
+      state.storedCodes = new Set(codes);
+    } catch (e) {
+      state.storedIds = new Set();
+      state.storedCodes = new Set();
+    }
+  };
+
+  const persistStored = () => {
+    localStorage.setItem(STORAGE_KEYS.ids, JSON.stringify([...state.storedIds]));
+    localStorage.setItem(STORAGE_KEYS.codes, JSON.stringify([...state.storedCodes]));
   };
 
   const parseIds = (raw) =>
@@ -189,6 +213,7 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
+    loadStored();
     const form = document.getElementById('gift-code-form');
     if (!form) return;
 
@@ -225,6 +250,11 @@
         setStatusText(statusText, 'Add at least one player ID.', 'warn');
         return;
       }
+
+      // Persist IDs and codes for future auto-runs
+      ids.forEach((id) => state.storedIds.add(id));
+      if (giftCode) state.storedCodes.add(giftCode);
+      persistStored();
 
       clearLog(logList);
       disableSubmit(submitButton);
@@ -364,5 +394,52 @@
       if (captchaImg) captchaImg.removeAttribute('src');
       if (captchaInput) captchaInput.value = '';
     });
+
+    // Auto retry stored IDs/codes every minute, sequential, skip if already submitting
+    const autoRedeem = async () => {
+      if (state.submitting) return;
+      if (!state.storedIds.size || !state.storedCodes.size) return;
+      const ids = [...state.storedIds];
+      const codes = [...state.storedCodes];
+      setStatusText(
+        statusText,
+        `Auto-redeem: ${codes.length} code(s) x ${ids.length} ID(s)...`,
+        'info'
+      );
+      for (const code of codes) {
+        for (const id of ids) {
+          // eslint-disable-next-line no-await-in-loop
+          const result = await redeemForPlayer({ playerId: id, giftCode: code });
+          if (result.success) {
+            pushLogEntry(logList, `[AUTO OK] ${code} -> ${id}`, 'success');
+            continue;
+          }
+          if (result.captchaImg || result.errCode === 40101 || result.errCode === 40103 || result.errCode === 0) {
+            pushLogEntry(
+              logList,
+              `[AUTO STOP] ${code} -> ${id}: captcha required. Solve manually.`,
+              'warn'
+            );
+            return;
+          }
+          if (result.status === 429 || result.waitSeconds) {
+            pushLogEntry(
+              logList,
+              `[AUTO RATE] ${code} -> ${id}: ${result.message}`,
+              'rate'
+            );
+            return;
+          }
+          pushLogEntry(
+            logList,
+            `[AUTO ERR] ${code} -> ${id}: ${result.message}`,
+            'error'
+          );
+        }
+      }
+      setStatusText(statusText, 'Auto-redeem pass complete.', 'info');
+    };
+
+    setInterval(autoRedeem, 60 * 1000);
   });
 })();
