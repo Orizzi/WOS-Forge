@@ -252,11 +252,17 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
             console.log(e);
             const errData = error.response?.data as any;
             const status = error.response?.status;
+            const serialized =
+              typeof errData === 'string'
+                ? errData
+                : errData
+                ? JSON.stringify(errData)
+                : undefined;
             const msgText =
               errData?.msg ||
               errData?.message ||
               errData?.error ||
-              (typeof errData === 'string' ? errData : undefined) ||
+              serialized ||
               'Unknown error while sending gift code';
             response.push({
               playerId: row.player_id,
