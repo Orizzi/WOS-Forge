@@ -47,6 +47,61 @@ const CalculatorModule = (function(){
     15: { guides: 650, designs: 550, secrets: 100, power: 2400000, svsPoints: 21000 }
   };
 
+  const LOCKED_LEVEL = -1;
+  const MAX_CHARM_LEVEL = 16;
+  const CHARM_LEVEL_VALUES = [];
+  for (let lvl = LOCKED_LEVEL; lvl <= MAX_CHARM_LEVEL; lvl++) {
+    CHARM_LEVEL_VALUES.push(lvl);
+  }
+  const LOCKED_VALUE = LOCKED_LEVEL.toString();
+
+  function isLockedValue(value) {
+    return Number(value) === LOCKED_LEVEL;
+  }
+
+  function formatLevelLabel(value) {
+    return isLockedValue(value) ? (window.I18n?.t('locked') || 'Locked') : value;
+  }
+
+  function escapeRegex(value){
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function setRegexConstraint(element, allowedValues){
+    if(!element) return;
+    const allowed = allowedValues.map(v => escapeRegex(String(v)));
+    if(allowed.length === 0){
+      element.removeAttribute('data-level-regex');
+      element.setCustomValidity('');
+      return;
+    }
+    const pattern = `^(${allowed.join('|')})$`;
+    element.setAttribute('data-level-regex', pattern);
+    const regex = new RegExp(pattern);
+    if(element.value && !regex.test(element.value)){
+      element.setCustomValidity('Invalid level selection');
+    } else {
+      element.setCustomValidity('');
+    }
+  }
+
+  function applyRegexForPair(startSelect, finishSelect){
+    if(startSelect){
+      const finishVal = parseInt(finishSelect?.value, 10);
+      const allowedStart = Number.isNaN(finishVal)
+        ? CHARM_LEVEL_VALUES
+        : CHARM_LEVEL_VALUES.filter(v => v <= finishVal);
+      setRegexConstraint(startSelect, allowedStart);
+    }
+    if(finishSelect){
+      const startVal = parseInt(startSelect?.value, 10);
+      const allowedFinish = Number.isNaN(startVal)
+        ? CHARM_LEVEL_VALUES
+        : CHARM_LEVEL_VALUES.filter(v => v >= startVal);
+      setRegexConstraint(finishSelect, allowedFinish);
+    }
+  }
+
   /**
    * Load charm costs from CSV and override defaults (optional)
    */
@@ -222,7 +277,10 @@ const CalculatorModule = (function(){
           const finishSel = document.getElementById(finishId);
           return finishSel && finishSel.value === firstTo;
         });
-        if(allSameFrom && allSameTo && (firstFrom !== '0' || firstTo !== '0')){
+        const firstFromValue = Number(firstFrom);
+        const firstToValue = Number(firstTo);
+        const bothLocked = isLockedValue(firstFromValue) && isLockedValue(firstToValue);
+        if(allSameFrom && allSameTo && !bothLocked){
           batchModeByType[type] = true;
         }
       }
@@ -366,6 +424,8 @@ const CalculatorModule = (function(){
           guides: 0,
           designs: 0,
           secrets: 0,
+          power: 0,
+          svsPoints: 0,
           from: g.charms[0].from,
           to: g.charms[0].to
         };
@@ -373,16 +433,20 @@ const CalculatorModule = (function(){
           totals.guides += c.sum.guides;
           totals.designs += c.sum.designs;
           totals.secrets += c.sum.secrets;
+          totals.power += Number(c.sum.power || 0);
+          totals.svsPoints += Number(c.sum.svsPoints || 0);
         });
         const typeName = t(`${g.type}-charms`) || (g.type.charAt(0).toUpperCase() + g.type.slice(1) + ' Charms');
         rows.push(`
           <tr>
             <td>${typeName}</td>
-            <td>${totals.from}</td>
-            <td>${totals.to}</td>
+            <td>${formatLevelLabel(totals.from)}</td>
+            <td>${formatLevelLabel(totals.to)}</td>
             <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(totals.guides)}</td>
             <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(totals.designs)}</td>
             <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(totals.secrets)}</td>
+            <td>${formatNumber(totals.power)}</td>
+            <td>${formatNumber(totals.svsPoints)}</td>
           </tr>`);
       } else {
         // This type is NOT in batch mode - show individual charm lines
@@ -390,11 +454,13 @@ const CalculatorModule = (function(){
           rows.push(`
             <tr>
               <td>${prettySlotName(d.id)}</td>
-              <td>${d.from}</td>
-              <td>${d.to}</td>
+              <td>${formatLevelLabel(d.from)}</td>
+              <td>${formatLevelLabel(d.to)}</td>
               <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(d.sum.guides)}</td>
               <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(d.sum.designs)}</td>
               <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(d.sum.secrets)}</td>
+              <td>${formatNumber(d.sum.power || 0)}</td>
+              <td>${formatNumber(d.sum.svsPoints || 0)}</td>
             </tr>`);
         });
       }
@@ -405,7 +471,7 @@ const CalculatorModule = (function(){
     // Create the full table HTML
     // Includes colored dots for each resource type
     const tableHtml = `
-      <div class="results-wrap">
+      <div class="results-wrap table-responsive">
         <table class="results-table" aria-live="polite">
           <thead>
             <tr>
@@ -415,6 +481,8 @@ const CalculatorModule = (function(){
               <th data-key="guides">${labelWithIcon('guides')}</th>
               <th data-key="designs">${labelWithIcon('designs')}</th>
               <th data-key="secrets">${labelWithIcon('secrets')}</th>
+              <th data-key="power">${t('power') || 'Power'}</th>
+              <th data-key="svsPoints">${t('svs-points') || 'SvS Points'}</th>
             </tr>
           </thead>
           <tbody>
@@ -428,6 +496,8 @@ const CalculatorModule = (function(){
               <td><img class="res-icon" src="assets/resources/charms/guides.png" alt="Guides"> ${formatNumber(grand.guides)}</td>
               <td><img class="res-icon" src="assets/resources/charms/designs.png" alt="Designs"> ${formatNumber(grand.designs)}</td>
               <td><img class="res-icon" src="assets/resources/charms/secrets.png" alt="Secrets"> ${formatNumber(grand.secrets)}</td>
+              <td>${formatNumber(grand.power)}</td>
+              <td>${formatNumber(grand.svsPoints)}</td>
             </tr>
           </tfoot>
         </table>
@@ -518,11 +588,11 @@ const CalculatorModule = (function(){
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
     
     // Reset all to 0
-    charmSelects.forEach(s => { s.value = '0'; });
+    charmSelects.forEach(s => { s.value = LOCKED_VALUE; });
     
     // Also reset the batch control selects for visual consistency
     const batchControls = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
-    batchControls.forEach(b => { b.value = '0'; });
+    batchControls.forEach(b => { b.value = LOCKED_VALUE; });
     
     // Re-validate all TO selects to reset disabled states
     const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
@@ -556,13 +626,14 @@ const CalculatorModule = (function(){
    * Also disables options in finish select that are less than start value
    */
   function validateLevels(startSelect, finishSelect){
-    const start = parseInt(startSelect.value);
-    const finish = parseInt(finishSelect.value);
+    if(!startSelect || !finishSelect) return;
+    const start = parseInt(startSelect.value, 10);
+    const finish = parseInt(finishSelect.value, 10);
     
     // Disable options in finish select that are less than start
     if(!isNaN(start)){
       Array.from(finishSelect.options).forEach(option => {
-        const optValue = parseInt(option.value);
+        const optValue = parseInt(option.value, 10);
         if(!isNaN(optValue) && optValue < start){
           option.disabled = true;
         } else {
@@ -575,6 +646,7 @@ const CalculatorModule = (function(){
       // If start > finish, set finish = start
       finishSelect.value = start.toString();
     }
+    applyRegexForPair(startSelect, finishSelect);
   }
 
   /**
