@@ -2886,3 +2886,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
     border-radius: 6px; 
     border: 1px solid transparent; 
 }
+
+ / *   W a r   L a b o r a t o r y   * / 
+ . t r e e - s u r f a c e { m i n - h e i g h t : 4 8 0 p x } 
+ . g r i d - 2 - c o l { d i s p l a y : g r i d ; g r i d - t e m p l a t e - c o l u m n s : r e p e a t ( a u t o - f i t , m i n m a x ( 3 2 0 p x , 1 f r ) ) } 
+ . t r e e - n o d e : f o c u s { o u t l i n e : 3 p x   s o l i d   c o l o r - m i x ( i n   s r g b , v a r ( - - a c c e n t )   6 0 % ,   t r a n s p a r e n t ) } 
+  
+ 
