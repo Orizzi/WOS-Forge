@@ -26,8 +26,8 @@
     if (!tree || !window.WOSData?.helios) return;
     const { nodes } = window.WOSData.helios;
 
-    const CELL = 120;
-    const PADDING = 80;
+    const CELL = 140;
+    const PADDING = 60;
     const minX = Math.min(...nodes.map((n) => n.position.x));
     const maxX = Math.max(...nodes.map((n) => n.position.x));
     const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -41,7 +41,7 @@
     tree.style.display = 'flex';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = 'center';
-    tree.style.minHeight = '520px';
+    tree.style.minHeight = '560px';
 
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
@@ -80,9 +80,9 @@
       });
     });
 
-    const baseSize = 88;
+    const baseSize = 104;
     nodes.forEach((node) => {
-      const size = node.variant === 'unlock' ? baseSize + 12 : baseSize;
+      const size = node.variant === 'unlock' ? baseSize + 16 : baseSize;
       const btn = document.createElement('button');
       btn.className = 'tree-node';
       btn.style.position = 'absolute';
@@ -105,9 +105,9 @@
       const range = selections[node.id];
       const levelText = range ? `${range.start}→${range.end}` : `0→${node.maxLevel}`;
       btn.innerHTML = `
-        <img src="${node.icon}" alt="${node.name}" style="max-width:64px;max-height:64px;object-fit:contain;">
-        <span style="font-size:11px;color:var(--text,#e8f4f8);display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;">${node.name}</span>
-        <span style="font-size:10px;color:var(--muted-text,#a8c5d4);">${levelText}</span>
+        <img src="${node.icon}" alt="${node.name}" style="max-width:72px;max-height:72px;object-fit:contain;">
+        <span style="font-size:12px;color:var(--text,#e8f4f8);display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;">${node.name}</span>
+        <span style="font-size:11px;color:var(--muted-text,#a8c5d4);">${levelText}</span>
       `;
       btn.addEventListener('click', () => selectNode(node.id));
       btn.addEventListener('mouseenter', () => {
@@ -123,8 +123,10 @@
 
     // scale down if overflowing
     requestAnimationFrame(() => {
-      const available = tree.clientWidth - 24;
-      const scale = available > 0 ? Math.min(1, available / width) : 1;
+      const available = tree.clientWidth - 48;
+      const target = available * 0.7;
+      const rawScale = target > 0 ? target / width : 1;
+      const scale = Math.min(1.05, Math.max(0.8, rawScale));
       wrapper.style.transform = `scale(${scale})`;
     });
   }
