@@ -6,6 +6,14 @@ const router = express.Router();
 const hash = "tB87#kPtkxqOS2";
 const allowedStateMin = Number(process.env.ALLOWED_STATE_MIN ?? '1');
 const allowedStateMax = Number(process.env.ALLOWED_STATE_MAX ?? '4000');
+const defaultHeaders = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+  Accept: "application/json, text/plain, */*",
+  Origin: "https://wos-giftcode.centurygame.com",
+  Referer: "https://wos-giftcode.centurygame.com/",
+  "Content-Type": "application/x-www-form-urlencoded",
+};
 
 type WosResponseData = {
 
@@ -116,9 +124,7 @@ const signIn = async (fid: number): Promise<signInResponse> => {
     "https://wos-giftcode-api.centurygame.com/api/player",
     params,
     {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: defaultHeaders,
     }
   );
   return {
@@ -145,9 +151,7 @@ const getCaptcha = async (fid: number): Promise<CaptchaResponse> => {
     "https://wos-giftcode-api.centurygame.com/api/captcha",
     params,
     {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: defaultHeaders,
     }
   );
   return response.data as CaptchaResponse;
@@ -179,9 +183,7 @@ const sendGiftCode = async (fid: Number, giftCode: String, captchaCode?: string)
     "https://wos-giftcode-api.centurygame.com/api/gift_code",
     params,
     {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: defaultHeaders,
     }
   );
   return response.data;
