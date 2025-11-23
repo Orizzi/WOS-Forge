@@ -1,0 +1,1903 @@
+﻿[
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "charm/stone/widget/troops",
+        "end":  "2025-04-08",
+        "start":  "2025-04-06",
+        "title":  "Officer Proj"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  null,
+        "end":  "2025-04-06",
+        "start":  "2025-04-04",
+        "title":  "Armament"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  null,
+        "end":  "2025-04-06",
+        "start":  "2025-04-04",
+        "title":  "Mia"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  null,
+        "end":  "2025-04-09",
+        "start":  "2025-04-07",
+        "title":  "F\u0026F"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  null,
+        "end":  "2025-04-09",
+        "start":  "2025-04-08",
+        "title":  "Frostfire"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  null,
+        "end":  "2025-04-14",
+        "start":  "2025-04-07",
+        "title":  "Championship"
+    },
+    {
+        "allDay":  true,
+        "category":  "war",
+        "description":  null,
+        "end":  "2025-04-11",
+        "start":  "2025-04-08",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-05-04",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-05-02",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-06-01",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-05-30",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-06-29",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-06-27",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-07-27",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-07-25",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-08-24",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-08-22",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-09-21",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-09-19",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-10-19",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-10-17",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-11-16",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-11-14",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "mia",
+        "description":  "May Lady Luck grant the treasures you seek...",
+        "end":  "2025-12-14",
+        "icon":  "/static/icons/mia_fortune.png",
+        "start":  "2025-12-12",
+        "title":  "Mia\u0027s Fortune"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-05-02",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-04-30",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-05-16",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-05-14",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-05-30",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-05-28",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-06-13",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-06-11",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-06-27",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-06-25",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-07-11",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-07-09",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-07-25",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-07-23",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-08-08",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-08-06",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-08-22",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-08-20",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-09-05",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-09-03",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-09-19",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-09-17",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-10-03",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-10-01",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-10-17",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-10-15",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-10-31",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-10-29",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-11-14",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-11-12",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-11-28",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-11-26",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-12-12",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-12-10",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "officer_project",
+        "description":  "",
+        "end":  "2025-12-26",
+        "icon":  "/static/icons/officer_project.png",
+        "start":  "2025-12-24",
+        "title":  "Officer Project"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-05-07",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-05-06",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-05-21",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-05-20",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-06-04",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-06-03",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-06-18",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-06-17",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-07-02",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-07-01",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-07-16",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-07-15",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-07-30",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-07-29",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-08-13",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-08-12",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-08-27",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-08-26",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-09-10",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-09-09",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-09-24",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-09-23",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-10-08",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-10-07",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-10-22",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-10-21",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-11-05",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-11-04",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-11-19",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-11-18",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-12-03",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-12-02",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-12-17",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-12-16",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "frostfire",
+        "description":  "",
+        "end":  "2025-12-31",
+        "icon":  "/static/icons/frostfire.png",
+        "start":  "2025-12-30",
+        "title":  "Frostfire Mine"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-05-05",
+        "start":  "2025-04-28",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-06-02",
+        "start":  "2025-05-26",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-06-30",
+        "start":  "2025-06-23",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-07-28",
+        "start":  "2025-07-21",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-08-25",
+        "start":  "2025-08-18",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-09-22",
+        "start":  "2025-09-15",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-10-20",
+        "start":  "2025-10-13",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-11-17",
+        "start":  "2025-11-10",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "showdown",
+        "description":  "Every alliance member plays a crucial role in securing victory!",
+        "end":  "2025-12-15",
+        "start":  "2025-12-08",
+        "title":  "Alliance Showdown"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-05-07",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-05-05",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-05-21",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-05-19",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-06-04",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-06-02",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-06-18",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-06-16",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-07-02",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-06-30",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-07-16",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-07-14",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-07-30",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-07-28",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-08-13",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-08-11",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-08-27",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-08-25",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-09-10",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-09-08",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-09-24",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-09-22",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-10-08",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-10-06",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-10-22",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-10-20",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-11-05",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-11-03",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-11-19",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-11-17",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-12-03",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-12-01",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-12-17",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-12-15",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "Fang and Flames",
+        "description":  "The wild beasts of the tundra have noticed the strange geological activities of the Fire Crystal Mines, and begun posing a constant menace.  Keep watch and mind your Lighthouses!",
+        "end":  "2025-12-31",
+        "icon":  "/static/icons/fang_and_flames.png?v=2",
+        "start":  "2025-12-29",
+        "title":  "Fang and Flames"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-05-04",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-05-02",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-05-18",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-05-16",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-06-01",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-05-30",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-06-15",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-06-13",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-06-29",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-06-27",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-07-13",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-07-11",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-07-27",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-07-25",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-08-10",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-08-08",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-08-24",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-08-22",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-09-07",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-09-05",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-09-21",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-09-19",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-10-05",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-10-03",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-10-19",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-10-17",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-11-02",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-10-31",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-11-16",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-11-14",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-11-30",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-11-28",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-12-14",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-12-12",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "armament",
+        "description":  "We don\u0027t go on a battle unprepared!",
+        "end":  "2025-12-28",
+        "icon":  "/static/icons/armament.png",
+        "start":  "2025-12-26",
+        "title":  "Armament Competition"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-05-09",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-05-06",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-05-23",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-05-20",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-06-06",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-06-03",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-06-20",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-06-17",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-07-04",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-07-01",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-07-18",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-07-15",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-08-01",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-07-29",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-08-15",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-08-12",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-08-29",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-08-26",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-09-12",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-09-09",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-09-26",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-09-23",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-10-10",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-10-07",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-10-24",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-10-21",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-11-07",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-11-04",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-11-21",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-11-18",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-12-05",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-12-02",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2025-12-19",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-12-16",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "lucky_wheel",
+        "description":  "Lucky Spins are Chiefs\u0027 method of choice for obtaining heroes and enhancing gear.",
+        "end":  "2026-01-02",
+        "icon":  "/static/icons/lucky_wheel.png",
+        "start":  "2025-12-30",
+        "title":  "Lucky Wheel"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-05-11",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-05-09",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-06-08",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-06-06",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-07-06",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-07-04",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-08-03",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-08-01",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-08-31",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-08-29",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-09-28",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-09-26",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-10-26",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-10-24",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-11-23",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-11-21",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "bia",
+        "description":  "Fight for resources to survive!",
+        "end":  "2025-12-21",
+        "icon":  "/static/icons/bia.png",
+        "start":  "2025-12-19",
+        "title":  "Brothers in Arms"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-05-09",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-05-06",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-05-23",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-05-20",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-06-06",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-06-03",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-06-20",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-06-17",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-07-04",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-07-01",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-07-18",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-07-15",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-08-01",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-07-29",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-08-15",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-08-12",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-08-29",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-08-26",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-09-12",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-09-09",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-09-26",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-09-23",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-10-10",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-10-07",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-10-24",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-10-21",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-11-07",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-11-04",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-11-21",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-11-18",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-12-05",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-12-02",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2025-12-19",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-12-16",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "crazy_joe",
+        "description":  "Resist Joe\u0027s onslaught and protect your City!",
+        "end":  "2026-01-02",
+        "icon":  "/static/icons/crazy_joe.png",
+        "start":  "2025-12-30",
+        "title":  "Crazy Joe"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-05-11",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-05-10",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-05-25",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-05-24",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-06-08",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-06-07",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-06-22",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-06-21",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-07-06",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-07-05",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-07-20",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-07-19",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-08-03",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-08-02",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-08-17",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-08-16",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-08-31",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-08-30",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-09-14",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-09-13",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-09-28",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-09-27",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-10-12",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-10-11",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-10-26",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-10-25",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-11-09",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-11-08",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-11-23",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-11-22",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-12-07",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-12-06",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "castle",
+        "description":  "Castle Battle",
+        "end":  "2025-12-21",
+        "icon":  "/static/icons/castle.png",
+        "start":  "2025-12-20",
+        "title":  "Castle Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-05-13",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-05-10",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-06-03",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-05-31",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-06-24",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-06-21",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-07-15",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-07-12",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-08-05",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-08-02",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-08-26",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-08-23",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-09-16",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-09-13",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-10-07",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-10-04",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-10-28",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-10-25",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-11-18",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-11-15",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-12-09",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-12-06",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "mercenary_prestige",
+        "description":  "The prestige of a mercenary company comes from an abundance of courage--enough for any challenge... if the price is right.",
+        "end":  "2025-12-30",
+        "icon":  "/static/icons/mercenary_prestige.png",
+        "start":  "2025-12-27",
+        "title":  "Mercenary Prestige"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-05-14",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-05-12",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-06-11",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-06-09",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-07-09",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-07-07",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-08-06",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-08-04",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-09-03",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-09-01",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-10-01",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-09-29",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-10-29",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-10-27",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-11-26",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-11-24",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "tundra_trading",
+        "description":  "Items you don\u0027t need can be exchanged for valuable treasure.",
+        "end":  "2025-12-24",
+        "icon":  "/static/icons/tundra_trading.png",
+        "start":  "2025-12-22",
+        "title":  "Tundra Trading Station"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-05-18",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-05-12",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-06-15",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-06-09",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-07-13",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-07-07",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-08-10",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-08-04",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-09-07",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-09-01",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-10-05",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-09-29",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-11-02",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-10-27",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-11-30",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-11-24",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "mobilization",
+        "description":  "Raise your Alliance Ranking to obtain more bountiful rewards.",
+        "end":  "2025-12-28",
+        "icon":  "/static/icons/mobilization.png",
+        "start":  "2025-12-22",
+        "title":  "Alliance Mobilization"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-05-18",
+        "start":  "2025-05-17",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-06-15",
+        "start":  "2025-06-14",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-07-13",
+        "start":  "2025-07-12",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-08-10",
+        "start":  "2025-08-09",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-09-07",
+        "start":  "2025-09-06",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-10-05",
+        "start":  "2025-10-04",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-11-02",
+        "start":  "2025-11-01",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-11-30",
+        "start":  "2025-11-29",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-12-28",
+        "start":  "2025-12-27",
+        "title":  "Canyon Clash"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-05-19",
+        "start":  "2025-05-18",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-06-02",
+        "start":  "2025-06-01",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-06-16",
+        "start":  "2025-06-15",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-06-30",
+        "start":  "2025-06-29",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-07-14",
+        "start":  "2025-07-13",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-07-28",
+        "start":  "2025-07-27",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-08-11",
+        "start":  "2025-08-10",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-08-25",
+        "start":  "2025-08-24",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-09-08",
+        "start":  "2025-09-07",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-09-22",
+        "start":  "2025-09-21",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-10-06",
+        "start":  "2025-10-05",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-10-20",
+        "start":  "2025-10-19",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-11-03",
+        "start":  "2025-11-02",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-11-17",
+        "start":  "2025-11-16",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-12-01",
+        "start":  "2025-11-30",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-12-15",
+        "start":  "2025-12-14",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-12-29",
+        "start":  "2025-12-28",
+        "title":  "Foundry Battle"
+    },
+    {
+        "allDay":  true,
+        "category":  "general",
+        "description":  "",
+        "end":  "2025-09-19",
+        "start":  "2025-09-16",
+        "title":  "Snowbusters"
+    }
+]
