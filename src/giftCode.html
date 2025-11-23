@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WOSC-Gift Codes</title>
+  <link rel="icon" href="../src/assets/app-icon.png">
+  <link rel="stylesheet" href="../src/style/style.css" />
+  <script src="Scripts/theme.js" defer></script>
+  <script src="Scripts/translations.js" defer></script>
+  <script src="../src/Scripts/nav.js" defer></script>
+  <script src="Scripts/sw-register.js" defer></script>
+</head>
+<body>
+  <div id="top"></div>
+  <header class="header-with-nav" role="banner">
+    <a href="../index.html" class="logo-link">
+      <img src="../src/assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">&#9776;</button>
+    <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-links">
+        <a href="../index.html" data-i18n="nav-home">Home</a>
+        <a href="charms.html" data-i18n="nav-charms">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
+        <a href="giftCode.html" data-i18n="nav-gift-code" aria-current="page">Gift Codes</a>
+        <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a>
+        <a href="pets.html" data-i18n="nav-pets">Pets</a>
+        <a href="experts.html" data-i18n="nav-experts">Experts</a>
+      </div>
+      <div class="nav-actions">
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="ko">한국어</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <div class="app-shell">
+    <main role="main">
+      <section class="card gift-code-panel" aria-labelledby="gift-code-heading">
+        <h1 id="gift-code-heading">Gift Code Redeemer</h1>
+        <p>
+          Enter one or more Whiteout Survival player IDs and a gift code, then hand the request to
+          your hosted redemption API on Vercel. All signing secrets stay on the backend—the UI simply
+          keeps the workflow clean, transparent, and mobile-friendly.
+        </p>
+        <ul class="gift-code-help">
+          <li>Paste IDs as a single entry or in bulk (spaces, commas, or line breaks all work).</li>
+          <li>Requests run sequentially to respect the 30 calls/minute limit announced by Century Games.</li>
+          <li>The log below the form tracks every response, including success confirmations and cooldown notices.</li>
+        </ul>
+      </section>
+
+      <section class="card gift-code-panel" aria-labelledby="gift-code-form-heading">
+        <h2 id="gift-code-form-heading">Redeem a Gift Code</h2>
+        <form id="gift-code-form" class="gift-code-form" autocomplete="off">
+          <label for="gift-player-id">
+            Player ID (single)
+            <input id="gift-player-id" name="playerId" type="text" inputmode="numeric" pattern="[0-9]{1,}" placeholder="123456789" />
+          </label>
+
+          <label for="gift-player-ids">
+            Player IDs (bulk, optional)
+            <textarea id="gift-player-ids" name="playerIds" rows="6" placeholder="123456789&#10;987654321&#10;1122334455"></textarea>
+          </label>
+
+          <label for="gift-code-input">
+            Gift Code
+            <input id="gift-code-input" name="giftCode" type="text" placeholder="OFFICIALSTORE" required />
+          </label>
+
+          <label for="gift-note">
+            Notes (optional)
+            <input id="gift-note" name="note" type="text" placeholder="Remind future you why this was sent" />
+          </label>
+
+          <div class="gift-code-actions">
+            <button type="submit" class="primary" id="gift-code-submit">Redeem</button>
+            <button type="reset" class="secondary">Clear</button>
+          </div>
+        </form>
+
+        <div id="gift-code-result" class="gift-code-result" role="status" aria-live="polite">
+          <p class="gift-code-status-text" data-status="info">
+            Provide at least one player ID and a gift code to redeem.
+          </p>
+          <ul id="gift-code-log" class="gift-code-log"></ul>
+        </div>
+      </section>
+
+      <section class="card gift-code-panel" aria-labelledby="gift-code-next-steps">
+        <h2 id="gift-code-next-steps">Next Steps</h2>
+        <p>
+          The form above calls your deployed gift-code endpoint for every ID provided. Keep an eye on
+          the Vercel dashboard and logs to ensure rate limits are respected and to restart the service if needed.
+        </p>
+        <p>
+          The API key/hash remains on the server. This page simply formats IDs, sends them to your public endpoint,
+          and surfaces responses—never expose sensitive values on the client.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <ul class="bottom-nav__list">
+      <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
+      <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
+      <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
+      <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
+      <li class="bottom-nav__item"><a href="giftCode.html" aria-current="page" class="is-active">Gift Codes</a></li>
+      <li class="bottom-nav__item"><a href="warAcademy.html">War Academy</a></li>
+      <li class="bottom-nav__item"><a href="pets.html">Pets</a></li>
+      <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
+    </ul>
+  </nav>
+  <a href="#top" class="back-to-top" aria-label="Back to top">&uarr;</a>
+
+  <script src="Scripts/min/gift-codes.min.js" defer></script>
+</body>
+</html>

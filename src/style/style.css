@@ -360,6 +360,115 @@ html, body{
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Gift code page */
+.gift-code-panel{
+    margin: 12px 16px 24px;
+}
+.gift-code-panel p{
+    line-height: 1.6;
+}
+.gift-code-help{
+    margin: 0;
+    padding-left: 20px;
+    color: var(--muted-text);
+    line-height: 1.5;
+}
+.gift-code-help li{
+    margin-bottom: 6px;
+}
+.gift-code-form{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.gift-code-form label{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 600;
+}
+.gift-code-form input,
+.gift-code-form textarea{
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--text);
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.gift-code-form input:focus,
+.gift-code-form textarea:focus{
+    border-color: var(--field-focus);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--field-focus) 35%, transparent);
+    outline: none;
+}
+.gift-code-actions{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.gift-code-result{
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 80%, transparent);
+    min-height: 110px;
+}
+.gift-code-status-text{
+    margin: 0 0 12px;
+    font-weight: 600;
+}
+.gift-code-status-text[data-status="success"]{
+    color: var(--success);
+}
+.gift-code-status-text[data-status="warn"]{
+    color: #ffd782;
+}
+.gift-code-status-text[data-status="error"],
+.gift-code-status-text[data-status="rate"]{
+    color: var(--danger);
+}
+.gift-code-log{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.gift-code-log__item{
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--card) 70%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 120%, transparent);
+    font-size: 0.95rem;
+}
+.gift-code-log__item.success{
+    border-color: color-mix(in srgb, var(--success) 55%, transparent);
+    color: var(--success);
+}
+.gift-code-log__item.error{
+    border-color: color-mix(in srgb, var(--danger) 60%, transparent);
+    color: var(--danger);
+}
+.gift-code-log__item.rate{
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    color: var(--accent);
+}
+@media (max-width: 600px){
+    .gift-code-actions{
+        flex-direction: column;
+    }
+    .gift-code-actions button{
+        width: 100%;
+    }
+}
 .inventory-profiles-row{
     align-items: stretch;
     width: 100%;
