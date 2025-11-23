@@ -5,7 +5,8 @@
  */
 (function initGiftCodeModule() {
   // Backend gift-code service (Vercel) that proxies official API calls
-  const BACKEND_BASE = 'https://wos-forge-q09lahjnz-orizzis-projects.vercel.app';
+  // Use the stable alias instead of a per-deploy hash URL
+  const BACKEND_BASE = 'https://wos-forge.vercel.app';
   const SUBMIT_COOLDOWN_MS = 4000;
 
   const state = {
