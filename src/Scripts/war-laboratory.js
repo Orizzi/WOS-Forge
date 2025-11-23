@@ -26,79 +26,106 @@
     if (!tree || !window.WOSData?.helios) return;
     const { nodes } = window.WOSData.helios;
 
-    // compute size
-    const cell = 96;
-    const padding = 32;
-    const maxX = Math.max(...nodes.map((n) => n.position.x)) + 1;
-    const maxY = Math.max(...nodes.map((n) => n.position.y)) + 1;
-    tree.style.position = 'relative';
-    tree.style.minHeight = `${maxY * cell + padding * 2}px`;
-    tree.style.minWidth = `${maxX * cell + padding * 2}px`;
-    tree.style.border = '1px solid var(--border, #28405d)';
-    tree.style.borderRadius = '12px';
-    tree.style.background = 'linear-gradient(180deg, rgba(15,31,53,0.7), rgba(10,22,40,0.9))';
-    tree.style.overflow = 'auto';
+    const CELL = 120;
+    const PADDING = 80;
+    const minX = Math.min(...nodes.map((n) => n.position.x));
+    const maxX = Math.max(...nodes.map((n) => n.position.x));
+    const minY = Math.min(...nodes.map((n) => n.position.y));
+    const maxY = Math.max(...nodes.map((n) => n.position.y));
+    const width = (maxX - minX + 1) * CELL + PADDING * 2;
+    const height = (maxY - minY + 1) * CELL + PADDING * 2;
 
-    // connectors
+    tree.innerHTML = '';
+    tree.style.position = 'relative';
+    tree.style.overflow = 'auto';
+    tree.style.display = 'flex';
+    tree.style.justifyContent = 'center';
+    tree.style.alignItems = 'center';
+    tree.style.minHeight = '520px';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.width = `${width}px`;
+    wrapper.style.height = `${height}px`;
+    wrapper.style.margin = '0 auto';
+    wrapper.style.transformOrigin = 'top left';
+    tree.appendChild(wrapper);
+
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', `${maxX * cell + padding * 2}`);
-    svg.setAttribute('height', `${maxY * cell + padding * 2}`);
+    svg.setAttribute('width', `${width}`);
+    svg.setAttribute('height', `${height}`);
     svg.style.position = 'absolute';
     svg.style.top = '0';
     svg.style.left = '0';
-    tree.appendChild(svg);
+    wrapper.appendChild(svg);
 
-    // draw lines
+    // connections
     nodes.forEach((node) => {
       node.parents.forEach((pid) => {
         const parent = nodes.find((n) => n.id === pid);
         if (!parent) return;
-        const x1 = padding + parent.position.x * cell + cell / 2;
-        const y1 = padding + parent.position.y * cell + cell / 2;
-        const x2 = padding + node.position.x * cell + cell / 2;
-        const y2 = padding + node.position.y * cell + cell / 2;
+        const x1 = PADDING + (parent.position.x - minX) * CELL + CELL / 2;
+        const y1 = PADDING + (parent.position.y - minY) * CELL + CELL / 2;
+        const x2 = PADDING + (node.position.x - minX) * CELL + CELL / 2;
+        const y2 = PADDING + (node.position.y - minY) * CELL + CELL / 2;
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', x1);
         line.setAttribute('y1', y1);
         line.setAttribute('x2', x2);
         line.setAttribute('y2', y2);
         line.setAttribute('stroke', BRANCH_COLORS[node.branch] || '#888');
-        line.setAttribute('stroke-width', '3');
+        line.setAttribute('stroke-width', '4');
         line.setAttribute('stroke-linecap', 'round');
         svg.appendChild(line);
       });
     });
 
+    const baseSize = 88;
     nodes.forEach((node) => {
+      const size = node.variant === 'unlock' ? baseSize + 12 : baseSize;
       const btn = document.createElement('button');
       btn.className = 'tree-node';
       btn.style.position = 'absolute';
-      btn.style.left = `${padding + node.position.x * cell}px`;
-      btn.style.top = `${padding + node.position.y * cell}px`;
-      btn.style.width = `${cell - 12}px`;
-      btn.style.height = `${cell - 12}px`;
-      btn.style.border = `2px solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
-      btn.style.borderRadius = '12px';
-      btn.style.background = 'rgba(255,255,255,0.05)';
+      btn.style.left = `${PADDING + (node.position.x - minX) * CELL - size / 2 + CELL / 2}px`;
+      btn.style.top = `${PADDING + (node.position.y - minY) * CELL - size / 2 + CELL / 2}px`;
+      btn.style.width = `${size}px`;
+      btn.style.height = `${size}px`;
+      btn.style.border = `3px solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
+      btn.style.borderRadius = '14px';
+      btn.style.background = 'rgba(255,255,255,0.06)';
       btn.style.backdropFilter = 'blur(4px)';
       btn.style.cursor = 'pointer';
       btn.style.display = 'flex';
+      btn.style.flexDirection = 'column';
       btn.style.alignItems = 'center';
       btn.style.justifyContent = 'center';
-      btn.style.padding = '6px';
+      btn.style.padding = '8px 6px';
       btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease';
       btn.setAttribute('data-id', node.id);
-      btn.innerHTML = `<img src="${node.icon}" alt="${node.name}" style="max-width:100%;max-height:100%;object-fit:contain;">`;
+      const range = selections[node.id];
+      const levelText = range ? `${range.start}→${range.end}` : `0→${node.maxLevel}`;
+      btn.innerHTML = `
+        <img src="${node.icon}" alt="${node.name}" style="max-width:64px;max-height:64px;object-fit:contain;">
+        <span style="font-size:11px;color:var(--text,#e8f4f8);display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;">${node.name}</span>
+        <span style="font-size:10px;color:var(--muted-text,#a8c5d4);">${levelText}</span>
+      `;
       btn.addEventListener('click', () => selectNode(node.id));
       btn.addEventListener('mouseenter', () => {
-        btn.style.transform = 'scale(1.03)';
-        btn.style.boxShadow = `0 6px 14px rgba(0,0,0,0.3)`;
+        btn.style.transform = 'scale(1.04)';
+        btn.style.boxShadow = `0 8px 18px rgba(0,0,0,0.35)`;
       });
       btn.addEventListener('mouseleave', () => {
         btn.style.transform = 'scale(1)';
         btn.style.boxShadow = 'none';
       });
-      tree.appendChild(btn);
+      wrapper.appendChild(btn);
+    });
+
+    // scale down if overflowing
+    requestAnimationFrame(() => {
+      const available = tree.clientWidth - 24;
+      const scale = available > 0 ? Math.min(1, available / width) : 1;
+      wrapper.style.transform = `scale(${scale})`;
     });
   }
 
