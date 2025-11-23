@@ -23,6 +23,12 @@ type signInResponse = {
   'x-ratelimit-remaining': Number
 }
 
+type CaptchaResponse = {
+  data?: {
+    captcha?: string;
+  };
+};
+
 type WosResponse = {
   code: Number,
   data: [] | WosResponseData,
@@ -55,6 +61,18 @@ const msg = {
     msg: "SUCCESS",
     err_code: 20000,
     descr: "Gift code send.",
+  },
+  40101: {
+    code: 1,
+    msg: "CAPTCHA REQUIRED",
+    err_code: 40101,
+    descr: "Captcha required, solve and retry.",
+  },
+  40103: {
+    code: 1,
+    msg: "CAPTCHA INVALID",
+    err_code: 40103,
+    descr: "Captcha invalid, try again.",
   },
 };
 
@@ -98,12 +116,38 @@ const signIn = async (fid: number): Promise<signInResponse> => {
 };
 
 /**
+ * Fetch captcha image (base64) for a player.
+ */
+const getCaptcha = async (fid: number): Promise<CaptchaResponse> => {
+  const time = new Date().getTime();
+  const params = new URLSearchParams();
+  params.append(
+    "sign",
+    md5(`fid=${fid.toString()}&init=0&time=${time.toString()}${hash}`)
+  );
+  params.append("fid", fid.toString());
+  params.append("time", time.toString());
+  params.append("init", "0");
+
+  const response = await axios.post(
+    "https://wos-giftcode-api.centurygame.com/api/captcha",
+    params,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+  return response.data as CaptchaResponse;
+};
+
+/**
  * 
  * @param fid Player ID
  * @param giftCode Gift code
  * @returns 
  */
-const sendGiftCode = async (fid: Number, giftCode: String) => {
+const sendGiftCode = async (fid: Number, giftCode: String, captchaCode?: string) => {
   const time = new Date().getTime();
   const params = new URLSearchParams();
   params.append(
@@ -115,6 +159,9 @@ const sendGiftCode = async (fid: Number, giftCode: String) => {
   params.append("fid", fid.toString());
   params.append("time", time.toString());
   params.append("cdk", giftCode.toString());
+  if (captchaCode) {
+    params.append("captcha_code", captchaCode.toString());
+  }
 
   const response = await axios.post(
     "https://wos-giftcode-api.centurygame.com/api/gift_code",
@@ -205,12 +252,14 @@ router.get('/add/:playerId', async (req: Request, res: Response) => {
 
 router.get('/send/:giftCode', async (req: Request, res: Response) => {
   const giftCode = req.params.giftCode;
+  const captchaFromQuery = req.query.captcha?.toString();
   type APIResponse = {
     playerId: Number;
     playerName: String;
     message: String;
     code: String;
     errCode?: Number | String;
+    captchaImg?: string;
   }
   let response: APIResponse[] = [];
   let resetAt: Date = new Date();
@@ -227,7 +276,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
         if (signInResponse.data.nickname !== row.player_name) {
           await sql`UPDATE players SET player_name = ${signInResponse.data.nickname } WHERE WHERE player_id = ${row.player_id.toString()};`
         }
-        const giftResponse = await sendGiftCode(row.player_id, giftCode)
+        const giftResponse = await sendGiftCode(row.player_id, giftCode, captchaFromQuery)
         const mapped = msg[giftResponse.err_code as msgKey];
         const errCode = giftResponse.err_code;
         const descr =
@@ -235,6 +284,33 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
           giftResponse?.msg ||
           giftResponse?.message ||
           'Unknown response from gift code API';
+
+        // Captcha required/invalid -> fetch captcha image and return for manual solving
+        if (errCode === 40101 || errCode === 40103) {
+          let captchaImg: string | undefined;
+          try {
+            const captcha = await getCaptcha(row.player_id);
+            captchaImg = captcha?.data?.captcha;
+          } catch (captchaErr) {
+            console.error('Captcha fetch failed', captchaErr);
+          }
+
+          const message = captchaImg
+            ? `${descr} (captcha provided in response as base64)`
+            : `${descr} (captcha image unavailable)`;
+
+          response.push({
+            playerId: row.player_id,
+            playerName: row.player_name,
+            message,
+            code: giftCode,
+            errCode,
+            captchaImg,
+          });
+
+          await sql`UPDATE Players SET last_message = ${`${giftCode}: ${message}`} WHERE player_id = ${row.player_id}`;
+          continue;
+        }
 
         // If code doesn't exist or expired, stop and return immediately
         if (errCode === 40014 || errCode === 40007) {
