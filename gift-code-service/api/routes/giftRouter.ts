@@ -225,6 +225,26 @@ router.get('/players', async (req: Request, res: Response) => {
 });
 
 /**
+ * Fetch a captcha image for a given player ID (base64).
+ * Useful when the API responds with PARAMERROR/captcha required and the auto-fetch failed.
+ */
+router.get('/captcha/:playerId', async (req: Request, res: Response) => {
+  const playerIdRaw = req.params.playerId;
+  const playerId = Number(playerIdRaw);
+  try {
+    const captcha = await getCaptcha(playerId);
+    if (captcha?.data?.captcha) {
+      res.json({ playerId, captchaImg: captcha.data.captcha });
+    } else {
+      res.status(502).json({ playerId, error: 'Captcha unavailable from upstream' });
+    }
+  } catch (error) {
+    console.error('Error fetching captcha', error);
+    res.status(500).json({ playerId, error: 'Failed to fetch captcha' });
+  }
+});
+
+/**
  * Return live player details (nickname, kid/state, furnace level) for all players in DB.
  * This calls the official /player endpoint for each entry; avoid abusing rate limits.
  */
