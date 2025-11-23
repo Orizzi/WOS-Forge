@@ -323,8 +323,16 @@ router.get('/add/:playerId', async (req: Request, res: Response) => {
       .status(403)
       .send(`Player state ${kid} not allowed. Only states ${allowedStateMin}-${allowedStateMax} are allowed.`);
   } catch (error) {
-    console.error('Error in /add/:playerId', error);
-    res.status(500).send('Internal server error.');
+    const err = error as AxiosError;
+    const errData = (err?.response?.data ?? {}) as Record<string, unknown>;
+    const msgText =
+      (typeof errData.message === 'string' && errData.message) ||
+      (typeof errData.msg === 'string' && errData.msg) ||
+      err?.message ||
+      'Internal server error.';
+    const status = err?.response?.status ?? 500;
+    console.error('Error in /add/:playerId', status, msgText, errData);
+    res.status(status).send(msgText);
   }
 });
 
@@ -382,7 +390,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
 
           const message = captchaImg
             ? `${descr} (captcha provided in response as base64)`
-            : `${descr} (captcha image unavailable)`;
+            : `${descr} (captcha image unavailable, try GET /captcha/${row.player_id})`;
 
           response.push({
             playerId: row.player_id,
