@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import crypto, { BinaryLike } from "crypto";
+import crypto, { BinaryLike, randomUUID } from "crypto";
 import axios, { AxiosError } from "axios";
 import { sql } from '@vercel/postgres';
 const router = express.Router();
@@ -215,6 +215,33 @@ const logRedeemSuccess = async (playerId: Number, playerName: String, giftCode: 
   }
 };
 
+/**
+ * Log any redemption attempt (success, error, captcha, rate, etc.)
+ */
+const logRedeemAttempt = async (requestId: string, playerId: Number, playerName: String, giftCode: String, status: String, message: String, errCode?: Number | String) => {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS redeem_logs (
+        id SERIAL PRIMARY KEY,
+        request_id varchar(64),
+        player_id varchar(255),
+        player_name varchar(255),
+        code varchar(255),
+        status varchar(32),
+        err_code varchar(32),
+        message text,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    await sql`
+      INSERT INTO redeem_logs (request_id, player_id, player_name, code, status, err_code, message)
+      VALUES (${requestId}, ${playerId.toString()}, ${playerName.toString()}, ${giftCode.toString()}, ${status.toString()}, ${errCode ? errCode.toString() : null}, ${message.toString()});
+    `;
+  } catch (err) {
+    console.error('Failed to log redeem attempt', err);
+  }
+};
+
 router.get('/', async (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.write(`<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>State 245: Rewards</title> </head> <body>`)
@@ -364,6 +391,7 @@ router.get('/add/:playerId', async (req: Request, res: Response) => {
 router.get('/send/:giftCode', async (req: Request, res: Response) => {
   const giftCode = req.params.giftCode;
   const captchaFromQuery = req.query.captcha?.toString();
+  const requestId = randomUUID ? randomUUID() : crypto.randomBytes(16).toString('hex');
   type APIResponse = {
     playerId: Number;
     playerName: String;
@@ -426,6 +454,8 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
             captchaImg,
           });
 
+          await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'captcha', message, errCode);
+
           await sql`UPDATE Players SET last_message = ${`${giftCode}: ${message}`} WHERE player_id = ${row.player_id}`;
           continue;
         }
@@ -440,6 +470,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
             errCode,
             message: descr,
           })
+          await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'error', descr, errCode);
           break;
         }
 
@@ -456,6 +487,9 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
         // Log successful redemption for traceability
         if (errCode === 20000 || mapped?.code === 0) {
           await logRedeemSuccess(row.player_id, row.player_name, giftCode, descr);
+          await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'success', descr, errCode);
+        } else {
+          await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'info', descr, errCode);
         }
       } catch (e) {
         const error = e as AxiosError;
@@ -466,6 +500,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
             console.log(`Reseted at ${resetAt}`);
             resetAt = new Date(ratelimitReset * 1000);
             tooManyAttempts = true;
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'rate', 'Too many attempts', 429);
             break;
           default:
             console.log(e);
@@ -490,6 +525,7 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
               code: giftCode,
               errCode: status ?? errData?.err_code,
             });
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'error', msgText, status ?? errData?.err_code);
             break;
         }
         const resetIn = Math.floor(( resetAt.getTime() - new Date().getTime()) / 1000); //time in seconds
@@ -499,11 +535,126 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
     else{
       const resetIn = Math.floor(( resetAt.getTime() - new Date().getTime()) / 1000); //time in seconds
       await sql`UPDATE Players SET last_message = ${`Too many attempts: Retry in ${resetIn} seconds(${resetAt.toLocaleTimeString()})`} WHERE player_id = ${row.player_id}`;
+      await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'rate', `Too many attempts: Retry in ${resetIn} seconds`, 429);
     }
   }
   if (cdkNotFound === false) {
     res.send(response);
   }
+});
+
+/**
+ * Fire-and-forget redemption: responds immediately and continues processing in background.
+ * Results are logged to the redeem_logs table.
+ */
+router.get('/send_async/:giftCode', async (req: Request, res: Response) => {
+  const giftCode = req.params.giftCode;
+  const captchaFromQuery = req.query.captcha?.toString();
+  const requestId = randomUUID ? randomUUID() : crypto.randomBytes(16).toString('hex');
+
+  res.status(202).json({ requestId, status: 'accepted', message: 'Redemption started in background' });
+
+  setImmediate(async () => {
+    let resetAt: Date = new Date();
+    const { rows } = await sql`SELECT * FROM players where last_message not like ${`%${giftCode}%`} or last_message is null ORDER BY player_id`;
+
+    let cdkNotFound = false;
+    let tooManyAttempts = false;
+
+    for (let index = 0; index < rows.length; index++) {
+      const row = rows[index];
+      if (!tooManyAttempts) {
+        try {
+          const signInResponse = await signIn(row.player_id)
+          if (signInResponse.data.nickname !== row.player_name) {
+            await sql`UPDATE players SET player_name = ${signInResponse.data.nickname } WHERE WHERE player_id = ${row.player_id.toString()};`
+          }
+          const giftResponse = await sendGiftCode(row.player_id, giftCode, captchaFromQuery)
+          const mapped = msg[giftResponse.err_code as msgKey];
+          const errCode = giftResponse.err_code;
+          const rawMsg =
+            (typeof giftResponse.msg === 'string' && giftResponse.msg) || '';
+          const descr =
+            mapped?.descr ||
+            rawMsg ||
+            giftResponse?.message ||
+            'Unknown response from gift code API';
+
+          const looksLikeCaptchaRequired =
+            errCode === 40101 ||
+            errCode === 40103 ||
+            (errCode === 0 && /param/i.test(rawMsg));
+
+          if (looksLikeCaptchaRequired) {
+            let captchaImg: string | undefined;
+            try {
+              const captcha = await getCaptcha(row.player_id);
+              captchaImg = captcha?.data?.captcha;
+            } catch (captchaErr) {
+              console.error('Captcha fetch failed', captchaErr);
+            }
+
+            const message = captchaImg
+              ? `${descr} (captcha provided in response as base64)`
+              : `${descr} (captcha image unavailable, try GET /captcha/${row.player_id})`;
+
+            await sql`UPDATE Players SET last_message = ${`${giftCode}: ${message}`} WHERE player_id = ${row.player_id}`;
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'captcha', message, errCode);
+            continue;
+          }
+
+          if (errCode === 40014 || errCode === 40007) {
+            cdkNotFound = true;
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'error', descr, errCode);
+            break;
+          }
+
+          await sql`UPDATE Players SET last_message = ${`${giftCode}: ${descr}`} WHERE player_id = ${row.player_id}`;
+
+          if (errCode === 20000 || mapped?.code === 0) {
+            await logRedeemSuccess(row.player_id, row.player_name, giftCode, descr);
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'success', descr, errCode);
+          } else {
+            await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'info', descr, errCode);
+          }
+        } catch (e) {
+          const error = e as AxiosError;
+          switch (error.response?.status) {
+            case 429:
+              const ratelimitReset = error?.response?.headers['x-ratelimit-reset'];
+              resetAt = new Date(ratelimitReset * 1000);
+              tooManyAttempts = true;
+              await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'rate', 'Too many attempts', 429);
+              break;
+            default:
+              const errData = error.response?.data as any;
+              const status = error.response?.status;
+              const serialized =
+                typeof errData === 'string'
+                  ? errData
+                  : errData
+                  ? JSON.stringify(errData)
+                  : undefined;
+              const msgText =
+                errData?.msg ||
+                errData?.message ||
+                errData?.error ||
+                serialized ||
+                'Unknown error while sending gift code';
+              await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'error', msgText, status ?? errData?.err_code);
+              break;
+          }
+          const resetIn = Math.floor(( resetAt.getTime() - new Date().getTime()) / 1000);
+          await sql`UPDATE Players SET last_message = ${`Too many attempts: Retry in ${resetIn} seconds(${resetAt.toLocaleTimeString()})`} WHERE player_id = ${row.player_id}`;
+        }
+      }
+      else{
+        const resetIn = Math.floor(( resetAt.getTime() - new Date().getTime()) / 1000); //time in seconds
+        await sql`UPDATE Players SET last_message = ${`Too many attempts: Retry in ${resetIn} seconds(${resetAt.toLocaleTimeString()})`} WHERE player_id = ${row.player_id}`;
+        await logRedeemAttempt(requestId, row.player_id, row.player_name, giftCode, 'rate', `Too many attempts: Retry in ${resetIn} seconds`, 429);
+      }
+    }
+  });
 });
 
 export default router;
