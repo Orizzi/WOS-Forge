@@ -544,6 +544,40 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
 });
 
 /**
+ * Fetch recent redeem logs for inspection.
+ * Optional query param ?limit=50 to adjust count.
+ */
+router.get('/logs/redeem', async (req: Request, res: Response) => {
+  const limitRaw = req.query.limit?.toString();
+  const limit = Math.min(Math.max(parseInt(limitRaw || '50', 10) || 50, 1), 500);
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS redeem_logs (
+        id SERIAL PRIMARY KEY,
+        request_id varchar(64),
+        player_id varchar(255),
+        player_name varchar(255),
+        code varchar(255),
+        status varchar(32),
+        err_code varchar(32),
+        message text,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    const { rows } = await sql`
+      SELECT request_id, player_id, player_name, code, status, err_code, message, created_at
+      FROM redeem_logs
+      ORDER BY created_at DESC
+      LIMIT ${limit};
+    `;
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching redeem logs', error);
+    res.status(500).send('Failed to fetch logs');
+  }
+});
+
+/**
  * Fire-and-forget redemption: responds immediately and continues processing in background.
  * Results are logged to the redeem_logs table.
  */
