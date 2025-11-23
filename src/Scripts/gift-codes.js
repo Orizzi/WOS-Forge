@@ -4,13 +4,14 @@
  * calls the public API, and gives the user clear feedback.
  */
 (function initGiftCodeModule() {
-  const GIFT_CODE_API_BASE = 'https://wos-forge.vercel.app';
-  const GIFT_CODE_ENDPOINT = `${GIFT_CODE_API_BASE}/api/redeem`;
+  // Backend gift-code service (Vercel) that proxies official API calls
+  const BACKEND_BASE = 'https://wos-forge-q09lahjnz-orizzis-projects.vercel.app';
   const SUBMIT_COOLDOWN_MS = 4000;
 
   const state = {
     submitting: false,
     cooldownTimer: null,
+    lastCaptchaImg: null,
   };
 
   const parseIds = (raw) =>
@@ -107,48 +108,64 @@
     fallback ||
     'Unknown response';
 
-  const redeemForPlayer = async ({ playerId, giftCode, note }) => {
+  const redeemForPlayer = async ({ playerId, giftCode, note, captcha }) => {
     try {
-      const response = await fetch(GIFT_CODE_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          playerId,
-          giftCode,
-          note: note || undefined,
-        }),
-      });
+      // Step 1: ensure player is in DB
+      const addRes = await fetch(`${BACKEND_BASE}/add/${playerId}`);
+      if (!addRes.ok) {
+        const txt = await addRes.text();
+        return {
+          success: false,
+          message: readMessage({ message: txt }, `Add failed (${addRes.status})`),
+          status: addRes.status,
+        };
+      }
 
-      const contentType = response.headers.get('content-type') || '';
+      // Step 2: send gift
+      const url = new URL(`${BACKEND_BASE}/send/${giftCode}`);
+      if (captcha) {
+        url.searchParams.set('captcha', captcha);
+      }
+      const sendRes = await fetch(url.toString());
+      const contentType = sendRes.headers.get('content-type') || '';
       let payload;
       if (contentType.includes('application/json')) {
-        payload = await response.json();
+        payload = await sendRes.json();
       } else {
-        const text = await response.text();
+        const text = await sendRes.text();
         payload = text ? { message: text } : {};
       }
 
+      // payload is often an array of results; pick the first matching playerId if present
+      let entry = Array.isArray(payload)
+        ? payload.find((item) => `${item.playerId}` === `${playerId}`) || payload[0]
+        : payload;
+
       const message = readMessage(
-        payload,
-        response.ok
+        entry,
+        sendRes.ok
           ? `Gift code sent to player ${playerId}`
-          : `Request failed with status ${response.status}`
+          : `Request failed with status ${sendRes.status}`
       );
 
-      const waitSeconds = parseWaitSeconds(payload, response);
+      const waitSeconds = parseWaitSeconds(entry, sendRes);
+      const errCode = entry?.errCode ?? entry?.err_code;
+      const captchaImg = entry?.captchaImg;
+
       const success =
-        response.ok &&
-        (payload?.success === undefined ||
-          payload.success === true ||
-          payload?.status === 'ok');
+        sendRes.ok &&
+        (errCode === undefined ||
+          errCode === null ||
+          errCode === 20000 ||
+          entry?.success === true);
 
       return {
         success,
         message,
         waitSeconds,
-        status: response.status,
+        status: sendRes.status,
+        errCode,
+        captchaImg,
       };
     } catch (error) {
       return {
@@ -167,6 +184,9 @@
     const multiField = document.getElementById('gift-player-ids');
     const codeField = document.getElementById('gift-code-input');
     const noteField = document.getElementById('gift-note');
+    const captchaBlock = document.getElementById('gift-captcha-block');
+    const captchaImg = document.getElementById('gift-captcha-img');
+    const captchaInput = document.getElementById('gift-captcha-input');
     const statusText = document.querySelector('.gift-code-status-text');
     const logList = document.getElementById('gift-code-log');
     const submitButton = document.getElementById('gift-code-submit');
@@ -182,6 +202,7 @@
       const ids = readIdsFromForm(singleField, multiField);
       const giftCode = codeField.value.trim().toUpperCase();
       const note = noteField?.value.trim() || '';
+      const captchaCode = captchaInput?.value.trim() || '';
 
       if (!giftCode) {
         setStatusText(statusText, 'Enter the gift code you want to redeem.', 'warn');
@@ -195,6 +216,8 @@
 
       clearLog(logList);
       disableSubmit(submitButton);
+      // Keep captcha visible if the user provided one, otherwise hide until the API asks for it
+      if (captchaBlock && !captchaCode) captchaBlock.hidden = true;
       setStatusText(
         statusText,
         `Redeeming ${giftCode} for ${ids.length} player(s)...`,
@@ -213,7 +236,12 @@
           'info'
         );
         // eslint-disable-next-line no-await-in-loop
-        const result = await redeemForPlayer({ playerId, giftCode, note });
+        const result = await redeemForPlayer({
+          playerId,
+          giftCode,
+          note,
+          captcha: captchaCode || undefined,
+        });
         if (result.success) {
           successCount += 1;
           pushLogEntry(logList, `[OK] Gift code sent to ${playerId}`, 'success');
@@ -221,6 +249,28 @@
         }
 
         errorCount += 1;
+        if (result.captchaImg) {
+          state.lastCaptchaImg = result.captchaImg;
+          if (captchaImg) {
+            captchaImg.src = `data:image/png;base64,${result.captchaImg}`;
+          }
+          if (captchaBlock) captchaBlock.hidden = false;
+          if (captchaInput) {
+            captchaInput.focus();
+          }
+          pushLogEntry(
+            logList,
+            `[CAPTCHA] ${playerId}: captcha required/invalid. Solve and resend.`,
+            'warn'
+          );
+          setStatusText(
+            statusText,
+            'Captcha required. Solve the image and resend.',
+            'warn'
+          );
+          break;
+        }
+
         const waitInfo =
           typeof result.waitSeconds === 'number'
             ? ` Please wait ${Math.ceil(result.waitSeconds)} seconds before retrying.`
@@ -266,6 +316,9 @@
         'Provide at least one player ID and a gift code to redeem.',
         'info'
       );
+      if (captchaBlock) captchaBlock.hidden = true;
+      if (captchaImg) captchaImg.removeAttribute('src');
+      if (captchaInput) captchaInput.value = '';
     });
   });
 })();

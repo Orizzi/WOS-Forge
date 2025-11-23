@@ -80,6 +80,15 @@
             <input id="gift-note" name="note" type="text" placeholder="Remind future you why this was sent" />
           </label>
 
+          <div class="gift-captcha" id="gift-captcha-block" hidden>
+            <p class="caption">Captcha required by the official API. Solve and resend.</p>
+            <img id="gift-captcha-img" alt="Captcha challenge" />
+            <label for="gift-captcha-input">
+              Captcha
+              <input id="gift-captcha-input" name="captcha" type="text" inputmode="text" autocomplete="off" placeholder="Type captcha text" />
+            </label>
+          </div>
+
           <div class="gift-code-actions">
             <button type="submit" class="primary" id="gift-code-submit">Redeem</button>
             <button type="reset" class="secondary">Clear</button>
@@ -122,6 +131,6 @@
   </nav>
   <a href="#top" class="back-to-top" aria-label="Back to top">&uarr;</a>
 
-  <script src="Scripts/min/gift-codes.min.js" defer></script>
+  <script src="Scripts/gift-codes.js" defer></script>
 </body>
 </html>
