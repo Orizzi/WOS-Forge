@@ -29,28 +29,28 @@ const CalculatorModule = (function(){
    * Will be loaded from charms_costs.csv if available, otherwise defaults below
    */
   const costs = {
-    0: { guides: 5, designs: 5, secrets: 0, power: 205700, svsPoints: 625 },
-    1: { guides: 40, designs: 15, secrets: 0, power: 288000, svsPoints: 1250 },
-    2: { guides: 60, designs: 40, secrets: 0, power: 370000, svsPoints: 3125 },
-    3: { guides: 80, designs: 100, secrets: 0, power: 452000, svsPoints: 8750 },
-    4: { guides: 100, designs: 200, secrets: 0, power: 576000, svsPoints: 11250 },
-    5: { guides: 120, designs: 300, secrets: 0, power: 700000, svsPoints: 12500 },
-    6: { guides: 140, designs: 400, secrets: 0, power: 824000, svsPoints: 12500 },
-    7: { guides: 200, designs: 400, secrets: 0, power: 948000, svsPoints: 13000 },
-    8: { guides: 300, designs: 400, secrets: 0, power: 1072000, svsPoints: 14000 },
-    9: { guides: 420, designs: 420, secrets: 0, power: 1196000, svsPoints: 15000 },
-    10: { guides: 560, designs: 420, secrets: 0, power: 1320000, svsPoints: 16000 },
-    11: { guides: 580, designs: 450, secrets: 15, power: 1536000, svsPoints: 17000 },
-    12: { guides: 580, designs: 450, secrets: 30, power: 1752000, svsPoints: 18000 },
-    13: { guides: 600, designs: 500, secrets: 45, power: 1968000, svsPoints: 19000 },
-    14: { guides: 600, designs: 500, secrets: 70, power: 2184000, svsPoints: 20000 },
-    15: { guides: 650, designs: 550, secrets: 100, power: 2400000, svsPoints: 21000 }
+    1: { guides: 5, designs: 5, secrets: 0, power: 205700, svsPoints: 43750 },
+    2: { guides: 40, designs: 15, secrets: 0, power: 288000, svsPoints: 87500 },
+    3: { guides: 60, designs: 40, secrets: 0, power: 370000, svsPoints: 218750 },
+    4: { guides: 80, designs: 100, secrets: 0, power: 452000, svsPoints: 612500 },
+    5: { guides: 100, designs: 200, secrets: 0, power: 576000, svsPoints: 787500 },
+    6: { guides: 120, designs: 300, secrets: 0, power: 700000, svsPoints: 875000 },
+    7: { guides: 140, designs: 400, secrets: 0, power: 824000, svsPoints: 875000 },
+    8: { guides: 200, designs: 400, secrets: 0, power: 948000, svsPoints: 910000 },
+    9: { guides: 300, designs: 400, secrets: 0, power: 1072000, svsPoints: 980000 },
+    10: { guides: 420, designs: 420, secrets: 0, power: 1196000, svsPoints: 1050000 },
+    11: { guides: 560, designs: 420, secrets: 0, power: 1320000, svsPoints: 1120000 },
+    12: { guides: 580, designs: 450, secrets: 15, power: 1536000, svsPoints: 1190000 },
+    13: { guides: 580, designs: 450, secrets: 30, power: 1752000, svsPoints: 1260000 },
+    14: { guides: 600, designs: 500, secrets: 45, power: 1968000, svsPoints: 1330000 },
+    15: { guides: 600, designs: 500, secrets: 70, power: 2184000, svsPoints: 1400000 },
+    16: { guides: 650, designs: 550, secrets: 100, power: 2400000, svsPoints: 1470000 }
   };
 
   const LOCKED_LEVEL = -1;
   const MAX_CHARM_LEVEL = 16;
-  const CHARM_LEVEL_VALUES = [];
-  for (let lvl = LOCKED_LEVEL; lvl <= MAX_CHARM_LEVEL; lvl++) {
+  const CHARM_LEVEL_VALUES = [LOCKED_LEVEL];
+  for (let lvl = 1; lvl <= MAX_CHARM_LEVEL; lvl++) {
     CHARM_LEVEL_VALUES.push(lvl);
   }
   const LOCKED_VALUE = LOCKED_LEVEL.toString();
