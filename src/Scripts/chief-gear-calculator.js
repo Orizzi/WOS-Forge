@@ -22,6 +22,7 @@ const ChiefGearCalculatorModule = (function(){
   
   // Gear levels in order (46 levels total)
   const GEAR_LEVELS = [
+    "Locked",
     "Green", "Green 1",
     "Blue", "Blue 1", "Blue 2", "Blue 3",
     "Purple", "Purple 1", "Purple 2", "Purple 3",
@@ -36,6 +37,63 @@ const ChiefGearCalculatorModule = (function(){
     "Red T4", "Red T4 1", "Red T4 2", "Red T4 3"
   ];
 
+  // Map CSV gear level names to calculator option values
+  const CSV_LEVEL_TO_UI = {
+    "Locked": "Locked",
+    "Uncommon": "Green",
+    "Uncommon (1-Star)": "Green 1",
+    "Rare": "Blue",
+    "Rare (1-Star)": "Blue 1",
+    "Rare (2-Star)": "Blue 2",
+    "Rare (3-Star)": "Blue 3",
+    "Epic": "Purple",
+    "Epic (1-Star)": "Purple 1",
+    "Epic (2-Star)": "Purple 2",
+    "Epic (3-Star)": "Purple 3",
+    "Epic T1": "Purple T1",
+    "Epic T1 (1-Star)": "Purple T1 1",
+    "Epic T1 (2-Star)": "Purple T1 2",
+    "Epic T1 (3-Star)": "Purple T1 3",
+    "Mythic": "Gold",
+    "Mythic (1-Star)": "Gold 1",
+    "Mythic (2-Star)": "Gold 2",
+    "Mythic (3-Star)": "Gold 3",
+    "Mythic T1": "Gold T1",
+    "Mythic T1 (1-Star)": "Gold T1 1",
+    "Mythic T1 (2-Star)": "Gold T1 2",
+    "Mythic T1 (3-Star)": "Gold T1 3",
+    "Mythic T2": "Gold T2",
+    "Mythic T2 (1-Star)": "Gold T2 1",
+    "Mythic T2 (2-Star)": "Gold T2 2",
+    "Mythic T2 (3-Star)": "Gold T2 3",
+    "Legendary": "Red",
+    "Legendary (1-Star)": "Red 1",
+    "Legendary (2-Star)": "Red 2",
+    "Legendary (3-Star)": "Red 3",
+    "Legendary T1": "Red T1",
+    "Legendary T1 (1-Star)": "Red T1 1",
+    "Legendary T1 (2-Star)": "Red T1 2",
+    "Legendary T1 (3-Star)": "Red T1 3",
+    "Legendary T2": "Red T2",
+    "Legendary T2 (1-Star)": "Red T2 1",
+    "Legendary T2 (2-Star)": "Red T2 2",
+    "Legendary T2 (3-Star)": "Red T2 3",
+    "Legendary T3": "Red T3",
+    "Legendary T3 (1-Star)": "Red T3 1",
+    "Legendary T3 (2-Star)": "Red T3 2",
+    "Legendary T3 (3-Star)": "Red T3 3",
+    "Legendary T4": "Red T4",
+    "Legendary T4 (1-Star)": "Red T4 1",
+    "Legendary T4 (2-Star)": "Red T4 2",
+    "Legendary T4 (3-Star)": "Red T4 3"
+  };
+
+  const UI_LEVEL_DISPLAY = {};
+  Object.entries(CSV_LEVEL_TO_UI).forEach(([csvName, uiName]) => {
+    if (!UI_LEVEL_DISPLAY[uiName]) UI_LEVEL_DISPLAY[uiName] = csvName;
+  });
+  UI_LEVEL_DISPLAY.Locked = 'Locked';
+
   // Gear types
   const GEAR_TYPES = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
 
@@ -46,16 +104,77 @@ const ChiefGearCalculatorModule = (function(){
    */
   const costs = {};
   
+  function toInternalLevel(levelName) {
+    if (!levelName) return levelName;
+    const trimmed = levelName.trim();
+    if (GEAR_LEVELS.includes(trimmed)) return trimmed;
+    return CSV_LEVEL_TO_UI[trimmed] || trimmed;
+  }
+
+  function displayLevel(levelName) {
+    const normalized = toInternalLevel(levelName);
+    return UI_LEVEL_DISPLAY[normalized] || normalized;
+  }
+
+  function escapeRegex(value){
+    return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function setRegexConstraint(element, allowedLevels){
+    if(!element) return;
+    const levels = Array.isArray(allowedLevels) && allowedLevels.length > 0 ? allowedLevels : [];
+    if(levels.length === 0){
+      element.removeAttribute('data-level-regex');
+      element.setCustomValidity('');
+      return;
+    }
+    const pattern = `^(${levels.map(escapeRegex).join('|')})$`;
+    element.setAttribute('data-level-regex', pattern);
+    const regex = new RegExp(pattern);
+    const value = toInternalLevel(element.value);
+    if(value && !regex.test(value)){
+      element.setCustomValidity('Invalid range selected');
+    } else {
+      element.setCustomValidity('');
+    }
+  }
+
+  function applyRegexForPair(startSelect, finishSelect){
+    if(startSelect){
+      const finishIdx = finishSelect ? GEAR_LEVELS.indexOf(toInternalLevel(finishSelect.value)) : -1;
+      const allowedStart = finishIdx === -1 ? GEAR_LEVELS.slice() : GEAR_LEVELS.slice(0, finishIdx + 1);
+      setRegexConstraint(startSelect, allowedStart);
+    }
+    if(finishSelect){
+      const startIdx = startSelect ? GEAR_LEVELS.indexOf(toInternalLevel(startSelect.value)) : -1;
+      const allowedFinish = startIdx === -1 ? GEAR_LEVELS.slice() : GEAR_LEVELS.slice(startIdx);
+      setRegexConstraint(finishSelect, allowedFinish);
+    }
+  }
+
   // Initialize costs with default values
   GEAR_LEVELS.forEach((level, index) => {
-    const base = (index + 1) * 10;
+    if (level === 'Locked') {
+      costs[level] = {
+        hardenedAlloy: 0,
+        polishingSolution: 0,
+        designPlans: 0,
+        lunarAmber: 0,
+        power: 0,
+        svsPoints: 0
+      };
+      return;
+    }
+
+    const adjIndex = Math.max(0, index - 1);
+    const base = (adjIndex + 1) * 10;
     costs[level] = {
       hardenedAlloy: base,
       polishingSolution: base,
-      designPlans: Math.floor(index / 2) + 1,
-      lunarAmber: Math.floor(index / 6),
+      designPlans: Math.floor(adjIndex / 2) + 1,
+      lunarAmber: Math.floor(adjIndex / 6),
       power: 0,
-      svsPoints: (index + 1) * 100
+      svsPoints: (adjIndex + 1) * 100
     };
   });
 
@@ -71,24 +190,34 @@ const ChiefGearCalculatorModule = (function(){
       if (lines.length === 0) return;
       
       const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+      const normalizedHeader = header.map(h => h.replace(/\s+/g, ''));
+      const findIdx = (...candidates) => {
+        for (const candidate of candidates) {
+          const normalized = candidate.replace(/\s+/g, '').toLowerCase();
+          const match = normalizedHeader.indexOf(normalized);
+          if (match !== -1) return match;
+        }
+        return -1;
+      };
       const idx = {
-        level: header.indexOf('gear level') >= 0 ? header.indexOf('gear level') : header.indexOf('level'),
-        alloy: header.indexOf('hardened alloy') >= 0 ? header.indexOf('hardened alloy') : header.indexOf('hardenedalloy'),
-        solution: header.indexOf('polishing solution') >= 0 ? header.indexOf('polishing solution') : header.indexOf('polishingsolution'),
-        plans: header.indexOf('design plans') >= 0 ? header.indexOf('design plans') : header.indexOf('designplans'),
-        amber: header.indexOf('lunar amber') >= 0 ? header.indexOf('lunar amber') : header.indexOf('lunaramber'),
-        power: header.indexOf('power'),
-        svsPoints: header.indexOf('svspoints') >= 0 ? header.indexOf('svspoints') : header.indexOf('svs points')
+        level: findIdx('gear level', 'level', 'gearlevel'),
+        alloy: findIdx('hardened alloy', 'hardenedalloy', 'alloy'),
+        solution: findIdx('polishing solution', 'polishingsolution', 'polish'),
+        plans: findIdx('design plans', 'designplans', 'plans'),
+        amber: findIdx('lunar amber', 'lunaramber', 'amber'),
+        power: findIdx('power'),
+        svsPoints: findIdx('svspoints', 'svs points', 'svspoints')
       };
 
       let applied = 0;
       for (let i = 1; i < lines.length; i++) {
         const parts = lines[i].split(',');
         if (parts.length < 6) continue;
-        
-        const levelName = parts[idx.level]?.trim();
+
+        const rawLevel = parts[idx.level]?.trim();
+        const levelName = toInternalLevel(rawLevel);
         if (!levelName || !GEAR_LEVELS.includes(levelName)) continue;
-        
+
         costs[levelName] = {
           hardenedAlloy: parseFloat(parts[idx.alloy]) || 0,
           polishingSolution: parseFloat(parts[idx.solution]) || 0,
@@ -152,8 +281,10 @@ const ChiefGearCalculatorModule = (function(){
    * @returns {object} Total costs or null if invalid
    */
   function sumCosts(fromLevel, toLevel){
-    const fromIndex = GEAR_LEVELS.indexOf(fromLevel);
-    const toIndex = GEAR_LEVELS.indexOf(toLevel);
+    const normFrom = toInternalLevel(fromLevel);
+    const normTo = toInternalLevel(toLevel);
+    const fromIndex = GEAR_LEVELS.indexOf(normFrom);
+    const toIndex = GEAR_LEVELS.indexOf(normTo);
     
     if(fromIndex === -1 || toIndex === -1 || fromIndex >= toIndex){
       return null;
@@ -167,6 +298,7 @@ const ChiefGearCalculatorModule = (function(){
       power: 0,
       svsPoints: 0
     };
+    let finalLevelCost = null;
     
     for(let i = fromIndex + 1; i <= toIndex; i++){
       const level = GEAR_LEVELS[i];
@@ -176,10 +308,12 @@ const ChiefGearCalculatorModule = (function(){
         totals.polishingSolution += cost.polishingSolution;
         totals.designPlans += cost.designPlans;
         totals.lunarAmber += cost.lunarAmber;
-        totals.power += cost.power;
         totals.svsPoints += cost.svsPoints;
+        finalLevelCost = cost;
       }
     }
+    
+    totals.power = finalLevelCost ? (finalLevelCost.power || 0) : 0;
     
     return totals;
   }
@@ -194,16 +328,22 @@ const ChiefGearCalculatorModule = (function(){
     const startVal = startSelect.value;
     const finishVal = finishSelect.value;
     
-    // If TO is set but FROM is empty, auto-fill FROM with first level (Green)
+    // If TO is set but FROM is empty, auto-fill FROM with first level (Locked)
     if(!startVal && finishVal){
-      startSelect.value = GEAR_LEVELS[0]; // Set to "Green"
+      startSelect.value = GEAR_LEVELS[0]; // Set to "Locked"
+      applyRegexForPair(startSelect, finishSelect);
       return; // Re-run validation will happen via event
     }
     
-    if(!startVal || !finishVal) return;
+    if(!startVal || !finishVal){
+      applyRegexForPair(startSelect, finishSelect);
+      return;
+    }
     
-    const startIdx = GEAR_LEVELS.indexOf(startVal);
-    const finishIdx = GEAR_LEVELS.indexOf(finishVal);
+    const normalizedStart = toInternalLevel(startVal);
+    const normalizedFinish = toInternalLevel(finishVal);
+    const startIdx = GEAR_LEVELS.indexOf(normalizedStart);
+    const finishIdx = GEAR_LEVELS.indexOf(normalizedFinish);
     
     // If FROM > TO, adjust TO to match FROM (maintains FROM ≤ TO invariant)
     if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
@@ -213,9 +353,10 @@ const ChiefGearCalculatorModule = (function(){
     // Disable TO options that are less than FROM (allow equality)
     Array.from(finishSelect.options).forEach(opt => {
       if(!opt.value) return;
-      const optIdx = GEAR_LEVELS.indexOf(opt.value);
+      const optIdx = GEAR_LEVELS.indexOf(toInternalLevel(opt.value));
       opt.disabled = (optIdx !== -1 && startIdx !== -1 && optIdx < startIdx);
     });
+    applyRegexForPair(startSelect, finishSelect);
   }
 
   /**
@@ -274,7 +415,9 @@ const ChiefGearCalculatorModule = (function(){
       gearResults.push({
         name: gear,
         from,
+        fromDisplay: displayLevel(from),
         to,
+        toDisplay: displayLevel(to),
         costs
       });
       
@@ -332,7 +475,7 @@ const ChiefGearCalculatorModule = (function(){
     }
 
     // Build table HTML
-    let tableHtml = `<div class="results-wrap">
+    let tableHtml = `<div class="results-wrap table-responsive">
         <table class="results-table">
           <thead>
             <tr>
@@ -343,6 +486,8 @@ const ChiefGearCalculatorModule = (function(){
               <th>${labelWithIcon('polishing-solution')}</th>
               <th>${labelWithIcon('design-plans')}</th>
               <th>${labelWithIcon('lunar-amber')}</th>
+              <th>${t('power') || 'Power'}</th>
+              <th>${t('svs-points') || 'SvS Points'}</th>
             </tr>
           </thead>
           <tbody>`;
@@ -351,12 +496,14 @@ const ChiefGearCalculatorModule = (function(){
       const gearName = t(g.name.charAt(0).toUpperCase() + g.name.slice(1)) || g.name;
       tableHtml += `<tr>
           <td>${gearName}</td>
-          <td>${g.from}</td>
-          <td>${g.to}</td>
+          <td>${g.fromDisplay}</td>
+          <td>${g.toDisplay}</td>
           <td><img class="res-icon" src="assets/resources/chief-gear/hardened-alloy.png" alt=""> ${formatNumber(g.costs.hardenedAlloy)}</td>
           <td><img class="res-icon" src="assets/resources/chief-gear/polishing-solution.png" alt=""> ${formatNumber(g.costs.polishingSolution)}</td>
           <td><img class="res-icon" src="assets/resources/chief-gear/design-plans.png" alt=""> ${formatNumber(g.costs.designPlans)}</td>
           <td><img class="res-icon" src="assets/resources/chief-gear/lunar-amber.png" alt=""> ${formatNumber(g.costs.lunarAmber)}</td>
+          <td>${formatNumber(g.costs.power)}</td>
+          <td>${formatNumber(g.costs.svsPoints)}</td>
         </tr>`;
     });
 
@@ -370,6 +517,8 @@ const ChiefGearCalculatorModule = (function(){
               <td><img class="res-icon" src="assets/resources/chief-gear/polishing-solution.png" alt=""> ${formatNumber(grand.polishingSolution)}</td>
               <td><img class="res-icon" src="assets/resources/chief-gear/design-plans.png" alt=""> ${formatNumber(grand.designPlans)}</td>
               <td><img class="res-icon" src="assets/resources/chief-gear/lunar-amber.png" alt=""> ${formatNumber(grand.lunarAmber)}</td>
+              <td>${formatNumber(grand.power)}</td>
+              <td>${formatNumber(grand.svsPoints)}</td>
             </tr>
           </tfoot>
         </table>
@@ -439,10 +588,10 @@ const ChiefGearCalculatorModule = (function(){
     const gearSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
     
-    gearSelects.forEach(s => { s.value = ''; });
+    gearSelects.forEach(s => { s.value = GEAR_LEVELS[0]; });
     
     const batchControls = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
-    batchControls.forEach(b => { b.value = ''; });
+    batchControls.forEach(b => { b.value = GEAR_LEVELS[0]; });
     
     const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
       .filter(s => !s.id.endsWith('-from'));
@@ -490,8 +639,8 @@ const ChiefGearCalculatorModule = (function(){
         // Setting FROM
         startSel.value = String(value);
         // If FROM > TO, adjust TO to match FROM
-        const startIdx = GEAR_LEVELS.indexOf(String(value));
-        const finishIdx = GEAR_LEVELS.indexOf(finishSel.value);
+        const startIdx = GEAR_LEVELS.indexOf(toInternalLevel(String(value)));
+        const finishIdx = GEAR_LEVELS.indexOf(toInternalLevel(finishSel.value));
         if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
           finishSel.value = String(value);
         }
@@ -502,11 +651,11 @@ const ChiefGearCalculatorModule = (function(){
         finishSel.value = String(value);
         // If FROM is empty when setting TO, auto-fill FROM with first level
         if(!startSel.value){
-          startSel.value = GEAR_LEVELS[0]; // "Green"
+          startSel.value = GEAR_LEVELS[0]; // "Locked"
         }
         // If FROM > TO, adjust FROM to match TO
-        const startIdx = GEAR_LEVELS.indexOf(startSel.value);
-        const finishIdx = GEAR_LEVELS.indexOf(String(value));
+        const startIdx = GEAR_LEVELS.indexOf(toInternalLevel(startSel.value));
+        const finishIdx = GEAR_LEVELS.indexOf(toInternalLevel(String(value)));
         if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
           startSel.value = String(value);
         }
@@ -515,6 +664,20 @@ const ChiefGearCalculatorModule = (function(){
       }
     });
     calculateAll();
+  }
+
+  function attachResultAutoUpdateListeners(){
+    const fields = document.querySelectorAll('input, select, textarea');
+    fields.forEach(field => {
+      const tag = field.tagName.toLowerCase();
+      const type = (field.type || '').toLowerCase();
+      if(tag === 'button' || type === 'button' || type === 'submit' || type === 'reset') return;
+      if(field.dataset.cgAutoUpdate === '1') return;
+      const handler = () => calculateAll();
+      field.addEventListener('input', handler);
+      field.addEventListener('change', handler);
+      field.dataset.cgAutoUpdate = '1';
+    });
   }
 
   /**
@@ -568,11 +731,9 @@ const ChiefGearCalculatorModule = (function(){
         
         startSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
-          calculateAll();
         });
         finishSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
-          calculateAll();
         });
       }
     });
@@ -585,24 +746,18 @@ const ChiefGearCalculatorModule = (function(){
 
     if(invAlloy){
       enforceDigitsLimit(invAlloy, 7);
-      invAlloy.addEventListener('input', calculateAll);
-      invAlloy.addEventListener('change', calculateAll);
     }
     if(invSolution){
       enforceDigitsLimit(invSolution, 7);
-      invSolution.addEventListener('input', calculateAll);
-      invSolution.addEventListener('change', calculateAll);
     }
     if(invPlans){
       enforceDigitsLimit(invPlans, 6);
-      invPlans.addEventListener('input', calculateAll);
-      invPlans.addEventListener('change', calculateAll);
     }
     if(invAmber){
       enforceDigitsLimit(invAmber, 5);
-      invAmber.addEventListener('input', calculateAll);
-      invAmber.addEventListener('change', calculateAll);
     }
+
+    attachResultAutoUpdateListeners();
 
     // Initial calculation
     calculateAll();
