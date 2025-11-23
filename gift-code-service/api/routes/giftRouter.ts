@@ -250,6 +250,15 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
             break;
           default:
             console.log(e);
+            response.push({
+              playerId: row.player_id,
+              playerName: row.player_name,
+              message:
+                (error.response?.data as any)?.msg ||
+                (error.response?.data as any)?.message ||
+                'Unknown error while sending gift code',
+              code: giftCode,
+            });
             break;
         }
         const resetIn = Math.floor(( resetAt.getTime() - new Date().getTime()) / 1000); //time in seconds
