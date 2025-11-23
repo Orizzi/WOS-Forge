@@ -166,18 +166,19 @@ const getCaptcha = async (fid: number): Promise<CaptchaResponse> => {
 const sendGiftCode = async (fid: Number, giftCode: String, captchaCode?: string) => {
   const time = new Date().getTime();
   const params = new URLSearchParams();
-  params.append(
-    "sign",
-    md5(
-      `cdk=${giftCode.toString()}&fid=${fid.toString()}&time=${time.toString()}${hash}`
-    )
-  );
   params.append("fid", fid.toString());
   params.append("time", time.toString());
   params.append("cdk", giftCode.toString());
   if (captchaCode) {
     params.append("captcha_code", captchaCode.toString());
   }
+
+  // The upstream API has recently started returning PARAMERROR unless a captcha is present.
+  // The safest option seen in other tools is to include captcha_code in the signature when provided.
+  const signPayload = captchaCode
+    ? `cdk=${giftCode.toString()}&fid=${fid.toString()}&captcha_code=${captchaCode.toString()}&time=${time.toString()}${hash}`
+    : `cdk=${giftCode.toString()}&fid=${fid.toString()}&time=${time.toString()}${hash}`;
+  params.append("sign", md5(signPayload));
 
   const response = await axios.post(
     "https://wos-giftcode-api.centurygame.com/api/gift_code",
