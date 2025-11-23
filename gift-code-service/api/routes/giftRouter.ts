@@ -190,6 +190,31 @@ const sendGiftCode = async (fid: Number, giftCode: String, captchaCode?: string)
   return response.data;
 };
 
+/**
+ * Persist a successful redemption for audit/debug.
+ * Creates the table on first use if missing.
+ */
+const logRedeemSuccess = async (playerId: Number, playerName: String, giftCode: String, message: String) => {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS redeems (
+        id SERIAL PRIMARY KEY,
+        player_id varchar(255),
+        player_name varchar(255),
+        code varchar(255),
+        message text,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    await sql`
+      INSERT INTO redeems (player_id, player_name, code, message)
+      VALUES (${playerId.toString()}, ${playerName.toString()}, ${giftCode.toString()}, ${message.toString()});
+    `;
+  } catch (err) {
+    console.error('Failed to log redeem', err);
+  }
+};
+
 router.get('/', async (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.write(`<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>State 245: Rewards</title> </head> <body>`)
@@ -427,6 +452,11 @@ router.get('/send/:giftCode', async (req: Request, res: Response) => {
         })
 
         await sql`UPDATE Players SET last_message = ${`${giftCode}: ${descr}`} WHERE player_id = ${row.player_id}`;
+
+        // Log successful redemption for traceability
+        if (errCode === 20000 || mapped?.code === 0) {
+          await logRedeemSuccess(row.player_id, row.player_name, giftCode, descr);
+        }
       } catch (e) {
         const error = e as AxiosError;
         switch (error.response?.status) {
