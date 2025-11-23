@@ -135,16 +135,36 @@ const parseWaitSeconds = (headers) => {
   return undefined;
 };
 
-const getBody = (req) => {
-  if (!req.body) return {};
-  if (typeof req.body === 'string') {
-    try {
-      return JSON.parse(req.body);
-    } catch (err) {
-      return {};
+const readBody = async (req) => {
+  if (req.body) {
+    if (typeof req.body === 'string') {
+      try {
+        return JSON.parse(req.body);
+      } catch (err) {
+        return {};
+      }
     }
+    return req.body;
   }
-  return req.body;
+
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', (chunk) => {
+      data += chunk;
+    });
+    req.on('end', () => {
+      if (!data) {
+        resolve({});
+        return;
+      }
+      try {
+        resolve(JSON.parse(data));
+      } catch (error) {
+        resolve({});
+      }
+    });
+    req.on('error', reject);
+  });
 };
 
 module.exports = async function handler(req, res) {
@@ -160,7 +180,13 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const body = getBody(req);
+  let body;
+  try {
+    body = await readBody(req);
+  } catch (error) {
+    res.status(400).json({ message: 'Unable to read request body' });
+    return;
+  }
   const playerIdRaw = body.playerId ?? body.fid;
   const giftCodeRaw = body.giftCode ?? body.cdk;
   const note = body.note || '';
