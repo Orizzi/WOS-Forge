@@ -44,6 +44,18 @@ const msg = {
     err_code: 40007,
     descr: "Gift code expired.",
   },
+  40004: {
+    code: 1,
+    msg: "RETRY LATER",
+    err_code: 40004,
+    descr: "System busy, retry shortly.",
+  },
+  40005: {
+    code: 1,
+    msg: "INVALID CAPTCHA",
+    err_code: 40005,
+    descr: "Captcha invalid, retry with a new captcha.",
+  },
   40014: {
     code: 1,
     msg: "CDK NOT FOUND.",
