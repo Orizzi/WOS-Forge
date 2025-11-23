@@ -249,11 +249,11 @@ router.get('/players/details', async (req: Request, res: Response) => {
       });
     } catch (e) {
       const err = e as AxiosError;
+      const errData = (err?.response?.data ?? {}) as Record<string, unknown>;
       const msgText =
-        err?.response?.data?.message ||
-        err?.response?.data?.msg ||
-        err?.message ||
-        'Unknown error';
+        (typeof errData.message === 'string' && errData.message) ||
+        (typeof errData.msg === 'string' && errData.msg) ||
+        (err?.message ?? 'Unknown error');
       results.push({
         playerId,
         err: msgText,
