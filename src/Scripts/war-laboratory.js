@@ -369,7 +369,7 @@
       const baseSize = 56;
       const btnMap = {};
       nodes.forEach((node) => {
-        const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
+        const size = node.variant === 'unlock' ? baseSize + 10 : baseSize;
         const iconSrc = node.icon || 'assets/app-icon.png';
         const btn = document.createElement('button');
         btn.className = 'tree-node';
@@ -392,10 +392,11 @@
         btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
         btn.setAttribute('data-id', node.id);
         const range = selections[node.id];
-        const levelText = range ? `${range.start} -> ${range.end}` : `0 -> ${node.maxLevel}`;
+        const defaultText = '0 -> 0';
+        const levelText = range ? `${range.start} -> ${range.end}` : defaultText;
         btn.innerHTML = `
           <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
-            <div style="width:96%;height:96%;display:flex;align-items:center;justify-content:center;">
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
               <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
             </div>
             <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">

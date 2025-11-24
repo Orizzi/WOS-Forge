@@ -1825,14 +1825,18 @@ html:not(.light-theme) .profiles input[type="text"]{
     }
 }
 .results-wrap{ 
-    /* Allow horizontal scroll if table gets wide, but no vertical clipping */
-    overflow-x: auto; 
-    overflow-y: visible;
+    /* Allow scroll if table gets wide, hide overflow otherwise */
+    overflow: hidden;
     border-radius: 8px; 
     background: var(--card); 
     padding: 10px; 
     border: 1px solid var(--border); 
     max-height: none;
+}
+
+.results-table-wrapper{
+    overflow: auto;
+    max-height: 260px;
 }
 .results-table{ width: 100%; border-collapse: collapse; }
 .results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
