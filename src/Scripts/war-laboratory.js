@@ -497,12 +497,12 @@
       { label: 'Steel', key: 'steel' }
     ];
     const iconMap = {
-      fc: 'assets/resources/base/fire-crystals.png',
+      fc: 'assets/resources/base/fire-crystal-shards.png',
       meat: 'assets/resources/base/meat.png',
       wood: 'assets/resources/base/wood.png',
       coal: 'assets/resources/base/coal.png',
       iron: 'assets/resources/base/iron.png',
-      steel: 'assets/resources/base/refine-crystals.png'
+      steel: 'assets/resources/base/steel.png'
     };
     costsList.innerHTML = rows
       .map((r) => {
