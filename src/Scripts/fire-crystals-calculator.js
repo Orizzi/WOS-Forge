@@ -973,19 +973,68 @@
      */
     async function computeFireCrystalsUpgrade(buildingId, fromId, toId) {
         const stepsData = await loadFireCrystalSteps();
-        if (!stepsData) return null;
+        const levelsArray = getLevelsForBuilding(buildingId);
+
+        const fallbackSteps = () => {
+            const totals = {
+                totalFc: 0,
+                totalRfc: 0,
+                totalTimeSeconds: 0,
+                totalMeat: 0,
+                totalWood: 0,
+                totalCoal: 0,
+                totalIron: 0
+            };
+            const fromIdx = levelsArray.indexOf(fromId);
+            const toIdx = levelsArray.indexOf(toId);
+            if (fromIdx === -1 || toIdx === -1 || toIdx <= fromIdx) return totals;
+
+            const baseKey = (lvl) => {
+                if (!lvl) return lvl;
+                const [first] = lvl.split('-');
+                if (first === '30') return 'F30';
+                if (/^\d+$/.test(first)) return `F${first}`;
+                return first;
+            };
+
+            const addStep = (prev, target) => {
+                const prevBase = baseKey(prev);
+                const targetBase = baseKey(target);
+                const entry = (fireCrystalCosts[buildingId] || {})[prevBase] || {};
+                const key = target.includes('-') ? target.split('-')[1] : (prevBase !== targetBase ? `to${targetBase}` : targetBase);
+                const normalFromNested = typeof entry.normal === 'object' && entry.normal[key] != null ? entry.normal[key] : undefined;
+                const refineFromNested = typeof entry.refine === 'object' && entry.refine[key] != null ? entry.refine[key] : undefined;
+                const fc = normalFromNested != null ? Number(normalFromNested) : Number(entry[key] || 0);
+                const rfc = refineFromNested != null ? Number(refineFromNested) : 0;
+                const resEntry = (buildingResourceCosts[buildingId] || {})[target] || {};
+                totals.totalFc += fc;
+                totals.totalRfc += rfc;
+                totals.totalTimeSeconds += Number(entry.time || 0);
+                totals.totalMeat += Number(resEntry.meat || 0);
+                totals.totalWood += Number(resEntry.wood || 0);
+                totals.totalCoal += Number(resEntry.coal || 0);
+                totals.totalIron += Number(resEntry.iron || 0);
+            };
+
+            for (let i = fromIdx + 1; i <= toIdx; i++) {
+                addStep(levelsArray[i - 1], levelsArray[i]);
+            }
+            return totals;
+        };
+
+        if (!stepsData) return fallbackSteps();
         const byBuilding = getStepsByBuilding(stepsData);
         const steps = byBuilding[buildingId];
         if (!steps || steps.length === 0) {
-            console.warn('[FireCrystals] No step data for building', buildingId);
-            return null;
+            if (FC_DEBUG) console.warn('[FireCrystals] No step data for building, using fallback', buildingId);
+            return fallbackSteps();
         }
 
         const fromIndex = steps.findIndex((s) => s.levelId === fromId);
         const toIndex = steps.findIndex((s) => s.levelId === toId);
         if (fromIndex === -1 || toIndex === -1) {
-            console.warn('[FireCrystals] Level not found in step data', { buildingId, fromId, toId });
-            return null;
+            if (FC_DEBUG) console.warn('[FireCrystals] Level not found in step data, using fallback', { buildingId, fromId, toId });
+            return fallbackSteps();
         }
         if (toIndex <= fromIndex) {
             return {
