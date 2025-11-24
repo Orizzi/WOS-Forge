@@ -308,8 +308,8 @@
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
       if (!nodes.length) return;
 
-      const CELL = 44;
-      const PADDING = 12;
+      const CELL = 56;
+      const PADDING = 16;
       const minX = Math.min(...nodes.map((n) => n.position.x));
       const maxX = Math.max(...nodes.map((n) => n.position.x));
       const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -366,7 +366,7 @@
         });
       });
 
-      const baseSize = 44;
+      const baseSize = 56;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
@@ -428,7 +428,7 @@
         const available = (tree.clientWidth / (isDesktop ? 3 : 1)) - 24;
         const target = available * 0.9;
         const rawScale = target > 0 ? target / width : 1;
-        const scale = Math.min(1.05, Math.max(0.55, rawScale));
+        const scale = Math.min(1.05, Math.max(0.8, rawScale));
         wrapper.style.transform = `scale(${scale})`;
         if (lastSelected && btnMap[lastSelected]) {
           showNodeEditor(btnMap[lastSelected].btn, btnMap[lastSelected].node);
