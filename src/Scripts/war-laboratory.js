@@ -496,13 +496,21 @@
       { label: 'Iron', key: 'iron' },
       { label: 'Steel', key: 'steel' }
     ];
+    const iconMap = {
+      fc: 'assets/resources/base/fire-crystals.png',
+      meat: 'assets/resources/base/meat.png',
+      wood: 'assets/resources/base/wood.png',
+      coal: 'assets/resources/base/coal.png',
+      iron: 'assets/resources/base/iron.png',
+      steel: 'assets/resources/base/refine-crystals.png'
+    };
     costsList.innerHTML = rows
       .map((r) => {
         const req = totals[r.key] || 0;
         const have = owned[r.key] || 0;
         const missing = req - have;
         const status = missing > 0 ? `Missing: ${missing.toLocaleString()}` : `Surplus: ${(have - req).toLocaleString()}`;
-        return `<li class="gift-code-log__item">${r.label}: Required ${req.toLocaleString()} | Owned ${have.toLocaleString()} | ${status}</li>`;
+        return `<li class="gift-code-log__item label-with-icon"><img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}"> ${r.label}: Required ${req.toLocaleString()} | Owned ${have.toLocaleString()} | ${status}</li>`;
       })
       .concat([`<li class="gift-code-log__item">Time: ${formatTime(totals.timeSeconds)}</li>`])
       .join('');

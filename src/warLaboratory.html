@@ -55,28 +55,48 @@
           Explore the Helios (Fire Crystal) research tree, pick start/end levels, and tally Fire Crystal, resources, time,
           power, SVS points, and stat gains. Icons mirror the in-game War Academy layout.
         </p>
-        <div class="card" style="margin-bottom:16px;">
-          <h2 class="section-title">Inventory</h2>
+        <section class="inventory-section card" aria-label="Helios Inventory">
           <div class="inventory-row">
-            <label>Fire Crystal shards<input type="number" id="inv-fc" min="0" value="0" inputmode="numeric"></label>
-            <label>Meat<input type="number" id="inv-meat" min="0" value="0" inputmode="numeric"></label>
-            <label>Wood<input type="number" id="inv-wood" min="0" value="0" inputmode="numeric"></label>
-            <label>Coal<input type="number" id="inv-coal" min="0" value="0" inputmode="numeric"></label>
-            <label>Iron<input type="number" id="inv-iron" min="0" value="0" inputmode="numeric"></label>
-            <label>Steel<input type="number" id="inv-steel" min="0" value="0" inputmode="numeric"></label>
+            <h3>Your Inventory</h3>
+            <div class="inventory-inputs">
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystals.png" alt="Fire Crystal shards">Fire Crystal shards</span></label>
+                <input type="number" id="inv-fc" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat">Meat</span></label>
+                <input type="number" id="inv-meat" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood">Wood</span></label>
+                <input type="number" id="inv-wood" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal">Coal</span></label>
+                <input type="number" id="inv-coal" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron">Iron</span></label>
+                <input type="number" id="inv-iron" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/refine-crystals.png" alt="Steel">Steel</span></label>
+                <input type="number" id="inv-steel" min="0" value="0" inputmode="numeric">
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="grid-2-col" style="gap:16px;align-items:start;grid-template-columns:minmax(0,2fr) minmax(320px,1fr);">
-          <div>
-            <h2 class="section-title" style="margin:0;">Tree</h2>
-            <div id="branch-tabs" class="tab-row mobile-branch-nav" role="tablist" aria-label="Helios branches">
+        </section>
+
+        <div class="layout-two-col" style="gap:16px;">
+          <div class="trees-column">
+            <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
               <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
               <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
               <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
             </div>
             <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
           </div>
-          <div class="card" style="margin:0;position:sticky;top:12px;">
+          <div class="card results-card">
             <h2 class="section-title">Results</h2>
             <div id="summary-content" class="gift-code-result">
               <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
