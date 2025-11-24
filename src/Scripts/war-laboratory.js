@@ -130,7 +130,7 @@
     editorEl.appendChild(labelFrom);
     editorEl.appendChild(labelTo);
 
-    document.body.appendChild(editorEl);
+    (document.body || document.documentElement).appendChild(editorEl);
     const rect = btn.getBoundingClientRect();
     const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
