@@ -57,47 +57,8 @@ body {
     max-height: 260px;
 }
 
-.results-table{ 
-    width: 100%; 
-    border-collapse: collapse; 
-    background: var(--panel);
-}
-
-.results-table thead th{ 
-    position: sticky; 
-    top: 0; 
-    background: color-mix(in srgb, var(--panel) 92%, transparent); 
-    text-align: left; 
-    padding: 10px 12px; 
-    border-bottom: 1px solid var(--border); 
-    font-weight: 700; 
-}
-
-.results-table tbody td{ 
-    padding: 10px 12px; 
-    border-bottom: 1px solid var(--border);
-}
-
-.results-table tbody tr:nth-child(even){ 
-    background: color-mix(in srgb, var(--card) 70%, transparent); 
-}
-
-.results-table tfoot td{ 
-    padding: 12px; 
-    border-top: 2px solid var(--border); 
-    font-weight: 700; 
-}
-
 /* Align numeric columns right, leave first three left-aligned */
-.results-table td:nth-child(n+4),
-.results-table th:nth-child(n+4){ text-align: right; }
-.results-table td:nth-child(-n+3),
-.results-table th:nth-child(-n+3){ text-align: left; }
-
 /* Sort indicators */
-.results-table thead th.sorted-asc::after{ content: ' \25B2'; opacity: 0.8; }
-.results-table thead th.sorted-desc::after{ content: ' \25BC'; opacity: 0.8; }
-
 /* CSV/data status pill for FC page */
 .csv-status{
     display: inline-flex;
@@ -1832,15 +1793,6 @@ html:not(.light-theme) .profiles input[type="text"]{
 }
 .war-lab-slot-table .col-name{ min-width: 160px; }
 .war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
-.results-table{ width: 100%; border-collapse: collapse; }
-.results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
-.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
-.results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
-.results-table th:first-child,
-.results-table td:first-child{ min-width: 120px; }
-.results-table th,
-.results-table td{ min-width: 80px; }
-
 /* Responsive breakpoints */
 @media (max-width: 1200px) {
     .main-layout-wrapper {
@@ -1883,10 +1835,6 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 @media (width <=720px){
     .batch-inline .batch-select{ width:64px; }
-    .results-table{ min-width:480px; }
-    .result-totals{ justify-content:center; }
-}
-
 /* Chief Gear specific styling ------------------------------------------------------- */
 .gear-input-section {
     margin: 20px;
@@ -2015,16 +1963,6 @@ html:not(.light-theme) .profiles input[type="text"]{
     max-width: 45%;
     text-align: right;
 }
-    .results-table{ 
-        width: 100%; 
-        border-collapse: collapse; 
-        background: var(--panel);
-        table-layout: fixed; /* stretch columns to fill available width */
-    }
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
 .inventory-row h3 {
     margin: 0;
     font-size: 1.1em;
@@ -2138,8 +2076,6 @@ html:not(.light-theme) .profiles input[type="text"]{
 .results-section #results-display{ width: 100%; }
 .results-section .results-wrap{ margin-left: 0; margin-right: 0; width: 100%; }
 .results-section #results-display .results-wrap{ grid-column: 1 / -1; }
-.results-table th, .results-table td{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
 /* FC breakdown specific column sizing (10 columns) */
 .results-section .results-table th:nth-child(1),
 .results-section .results-table td:nth-child(1){ width: 18%; }
@@ -3043,3 +2979,21 @@ button, .dark-mode-toggle, select, input[type="number"] {
         margin-top: 12px;
     }
 }
+.results-wrap{
+    overflow: auto;
+    border-radius: 8px;
+    background: var(--card);
+    padding: 10px;
+    max-height: 260px;
+}
+
+.results-table{ width: 100%; border-collapse: collapse; }
+.results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
+.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
+.results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
+
+.war-lab-slot-table{ table-layout: auto; min-width: 1100px; }
+.war-lab-slot-table th, .war-lab-slot-table td{ min-width: 80px; white-space: nowrap; overflow: visible; text-overflow: clip; }
+.war-lab-slot-table .col-name{ min-width: 160px; }
+.war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
+
