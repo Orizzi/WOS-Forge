@@ -113,7 +113,7 @@
     "name": "Helios Marksman Healing",
     "branch": "marksman",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Marksman_Healing.png",
+    "icon": "../research-icons/Helios_Marksman_Healing.png",
     "position": {
       "x": -1,
       "y": 0
@@ -302,7 +302,7 @@
     "name": "Helios Infantry Healing",
     "branch": "infantry",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Infantry_Healing.png",
+    "icon": "../research-icons/Helios_Infantry_Healing.png",
     "position": {
       "x": -1,
       "y": 0
@@ -491,7 +491,7 @@
     "name": "Helios Lancer Healing",
     "branch": "lancer",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Lancer_Healing.png",
+    "icon": "../research-icons/Helios_Lancer_Healing.png",
     "position": {
       "x": -1,
       "y": 0
@@ -680,7 +680,7 @@
     "name": "Helios Marksman Training",
     "branch": "marksman",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Marksman_Training.png",
+    "icon": "../research-icons/Helios_Marksman_Training.png",
     "position": {
       "x": 0,
       "y": 0
@@ -869,7 +869,7 @@
     "name": "Helios Infantry Training",
     "branch": "infantry",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Infantry_Training.png",
+    "icon": "../research-icons/Helios_Infantry_Training.png",
     "position": {
       "x": 0,
       "y": 0
@@ -1058,7 +1058,7 @@
     "name": "Helios Lancer Training",
     "branch": "lancer",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Lancer_Training.png",
+    "icon": "../research-icons/Helios_Lancer_Training.png",
     "position": {
       "x": 0,
       "y": 0
@@ -1247,7 +1247,7 @@
     "name": "Helios Marksman First Aid",
     "branch": "marksman",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Marksman_First_Aid.png",
+    "icon": "../research-icons/Helios_Marksman_First_Aid.png",
     "position": {
       "x": 1,
       "y": 0
@@ -1436,7 +1436,7 @@
     "name": "Helios Infantry First Aid",
     "branch": "infantry",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Infantry_First_Aid.png",
+    "icon": "../research-icons/Helios_Infantry_First_Aid.png",
     "position": {
       "x": 1,
       "y": 0
@@ -1625,7 +1625,7 @@
     "name": "Helios Lancer First Aid",
     "branch": "lancer",
     "maxLevel": 10,
-    "icon": "research-icons/Helios_Lancer_First_Aid.png",
+    "icon": "../research-icons/Helios_Lancer_First_Aid.png",
     "position": {
       "x": 1,
       "y": 0
@@ -1814,7 +1814,7 @@
     "name": "Helios Marksman",
     "branch": "marksman",
     "maxLevel": 1,
-    "icon": "research-icons/Helios_Marksman.png",
+    "icon": "../research-icons/Helios_Marksman.png",
     "position": {
       "x": 0,
       "y": 1
@@ -1850,7 +1850,7 @@
     "name": "Helios Infantry",
     "branch": "infantry",
     "maxLevel": 1,
-    "icon": "research-icons/Helios_Infantry.png",
+    "icon": "../research-icons/Helios_Infantry.png",
     "position": {
       "x": 0,
       "y": 1
@@ -1886,7 +1886,7 @@
     "name": "Helios Lancer",
     "branch": "lancer",
     "maxLevel": 1,
-    "icon": "research-icons/Helios_Lancer.png",
+    "icon": "../research-icons/Helios_Lancer.png",
     "position": {
       "x": 0,
       "y": 1
@@ -1922,7 +1922,7 @@
     "name": "Flame Legion",
     "branch": "marksman",
     "maxLevel": 12,
-    "icon": "research-icons/Flame_Legion.png",
+    "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
       "y": 3.5
@@ -2146,7 +2146,7 @@
     "name": "Flame Legion",
     "branch": "infantry",
     "maxLevel": 12,
-    "icon": "research-icons/Flame_Legion.png",
+    "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
       "y": 3.5
@@ -2370,7 +2370,7 @@
     "name": "Flame Legion",
     "branch": "lancer",
     "maxLevel": 12,
-    "icon": "research-icons/Flame_Legion.png",
+    "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
       "y": 3.5
@@ -2594,7 +2594,7 @@
     "name": "Flame Protection",
     "branch": "marksman",
     "maxLevel": 12,
-    "icon": "research-icons/Flame_Protection.png",
+    "icon": "../research-icons/Flame_Protection.png",
     "position": {
       "x": -1,
       "y": 3
@@ -2817,7 +2817,7 @@
     "name": "Blazing Guardian",
     "branch": "infantry",
     "maxLevel": 12,
-    "icon": "research-icons/Blazing_Guardian.png",
+    "icon": "../research-icons/Blazing_Guardian.png",
     "position": {
       "x": -1,
       "y": 3
@@ -3040,7 +3040,7 @@
     "name": "Crystal Protection",
     "branch": "lancer",
     "maxLevel": 12,
-    "icon": "research-icons/Crystal_Protection.png",
+    "icon": "../research-icons/Crystal_Protection.png",
     "position": {
       "x": -1,
       "y": 3
@@ -3263,7 +3263,7 @@
     "name": "Flame Tomahawk",
     "branch": "marksman",
     "maxLevel": 12,
-    "icon": "research-icons/Flame_Tomahawk.png",
+    "icon": "../research-icons/Flame_Tomahawk.png",
     "position": {
       "x": 1,
       "y": 3
@@ -3486,7 +3486,7 @@
     "name": "Blazing Lance",
     "branch": "infantry",
     "maxLevel": 12,
-    "icon": "research-icons/Blazing_Lance.png",
+    "icon": "../research-icons/Blazing_Lance.png",
     "position": {
       "x": 1,
       "y": 3
@@ -3709,7 +3709,7 @@
     "name": "Crystal Arrow",
     "branch": "lancer",
     "maxLevel": 12,
-    "icon": "research-icons/Crystal_Arrow.png",
+    "icon": "../research-icons/Crystal_Arrow.png",
     "position": {
       "x": 1,
       "y": 3
@@ -3932,7 +3932,7 @@
     "name": "Flame Shield",
     "branch": "marksman",
     "maxLevel": 8,
-    "icon": "research-icons/Flame_Shield.png",
+    "icon": "../research-icons/Flame_Shield.png",
     "position": {
       "x": -1,
       "y": 4
@@ -4087,7 +4087,7 @@
     "name": "Blazing Armor",
     "branch": "infantry",
     "maxLevel": 8,
-    "icon": "research-icons/Blazing_Armor.png",
+    "icon": "../research-icons/Blazing_Armor.png",
     "position": {
       "x": -1,
       "y": 4
@@ -4242,7 +4242,7 @@
     "name": "Crystal Armor",
     "branch": "lancer",
     "maxLevel": 8,
-    "icon": "research-icons/Crystal_Armor.png",
+    "icon": "../research-icons/Crystal_Armor.png",
     "position": {
       "x": -1,
       "y": 4
@@ -4397,7 +4397,7 @@
     "name": "Flame Strike",
     "branch": "marksman",
     "maxLevel": 8,
-    "icon": "research-icons/Flame_Strike.png",
+    "icon": "../research-icons/Flame_Strike.png",
     "position": {
       "x": 1,
       "y": 4
@@ -4552,7 +4552,7 @@
     "name": "Blazing Charge",
     "branch": "infantry",
     "maxLevel": 8,
-    "icon": "research-icons/Blazing_Charge.png",
+    "icon": "../research-icons/Blazing_Charge.png",
     "position": {
       "x": 1,
       "y": 4
@@ -4707,7 +4707,7 @@
     "name": "Crystal Vision",
     "branch": "lancer",
     "maxLevel": 8,
-    "icon": "research-icons/Crystal_Vision.png",
+    "icon": "../research-icons/Crystal_Vision.png",
     "position": {
       "x": 1,
       "y": 4
@@ -4862,7 +4862,7 @@
     "name": "Flame Squad",
     "branch": "marksman",
     "maxLevel": 5,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 5
@@ -4966,7 +4966,7 @@
     "name": "Flame Squad",
     "branch": "infantry",
     "maxLevel": 5,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 5
@@ -5070,7 +5070,7 @@
     "name": "Flame Squad",
     "branch": "lancer",
     "maxLevel": 5,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 5
@@ -5174,7 +5174,7 @@
     "name": "Fire Crystal Wagon",
     "branch": "marksman",
     "maxLevel": 0,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 6
@@ -5206,7 +5206,7 @@
     "name": "Fire Crystal Wagon",
     "branch": "infantry",
     "maxLevel": 0,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 6
@@ -5238,7 +5238,7 @@
     "name": "Fire Crystal Wagon",
     "branch": "lancer",
     "maxLevel": 0,
-    "icon": "research-icons/Flame_Squad.png",
+    "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
       "y": 6

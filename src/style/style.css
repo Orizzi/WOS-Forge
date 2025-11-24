@@ -2925,5 +2925,5 @@ button, .dark-mode-toggle, select, input[type="number"] {
 
 /* War Laboratory tree surface override */
 .tree-surface{
-    min-height: 380px !important;
+    min-height: 340px !important;
 }
