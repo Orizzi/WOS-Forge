@@ -588,15 +588,19 @@
     if (!grid) return;
     grid.innerHTML = '';
     const branches = ['marksman', 'infantry', 'lancer'];
+    const formatStat = (label, value) => {
+      const hasPercent = label.includes('%');
+      const cleanLabel = label.replace('%', '').trim();
+      const displayVal = hasPercent ? `${value.toFixed(2)}%` : value.toFixed(2);
+      return `<strong>${cleanLabel}</strong>: +${displayVal}`;
+    };
     branches.forEach((branch) => {
       const stats = branchStats?.[branch] || {};
       const entries = Object.entries(stats).filter(([, v]) => v);
       const list =
         entries.length === 0
           ? '<li class="muted">No stats selected.</li>'
-          : entries
-              .map(([k, v]) => `<li><strong>${k}</strong>: ${v.toFixed(2)}</li>`)
-              .join('');
+          : entries.map(([k, v]) => `<li>${formatStat(k, v)}</li>`).join('');
       const col = document.createElement('div');
       col.className = 'stat-col';
       col.innerHTML = `
