@@ -18,6 +18,7 @@
   const inventory = { fc: 0, meat: 0, wood: 0, coal: 0, iron: 0, steel: 0 };
   let lastSelected = null;
   let editorEl = null;
+  let editorNodeId = null;
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -60,45 +61,94 @@
     if (editorEl && editorEl.parentNode) {
       editorEl.parentNode.removeChild(editorEl);
     }
+    editorNodeId = node.id;
     editorEl = document.createElement('div');
+    editorEl.className = 'helios-editor-pop';
     editorEl.style.position = 'absolute';
-    editorEl.style.top = '100%';
-    editorEl.style.left = '50%';
-    editorEl.style.transform = 'translateX(-50%)';
-    editorEl.style.marginTop = '4px';
-    editorEl.style.padding = '6px';
-    editorEl.style.background = 'rgba(15,31,53,0.9)';
+    editorEl.style.zIndex = '3000';
+    editorEl.style.background = 'rgba(15,31,53,0.95)';
     editorEl.style.border = '1px solid var(--border, #0af)';
     editorEl.style.borderRadius = '8px';
-    editorEl.style.boxShadow = '0 6px 16px rgba(0,0,0,0.45)';
-    editorEl.style.zIndex = '10';
+    editorEl.style.boxShadow = '0 8px 24px rgba(0,0,0,0.55)';
+    editorEl.style.padding = '8px';
     editorEl.style.display = 'flex';
-    editorEl.style.gap = '6px';
+    editorEl.style.gap = '8px';
     editorEl.style.alignItems = 'center';
+    editorEl.style.pointerEvents = 'auto';
+
     const current = selections[node.id] || { start: 0, end: node.maxLevel };
-    editorEl.innerHTML = `
-      <label style="font-size:10px;color:var(--text,#e8f4f8);display:flex;flex-direction:column;gap:2px;">
-        From
-        <input type="number" style="width:54px;" min="0" max="${node.maxLevel - 1}" value="${current.start}">
-      </label>
-      <label style="font-size:10px;color:var(--text,#e8f4f8);display:flex;flex-direction:column;gap:2px;">
-        To
-        <input type="number" style="width:54px;" min="1" max="${node.maxLevel}" value="${current.end}">
-      </label>
-    `;
-    const [fromInput, toInput] = editorEl.querySelectorAll('input');
+    const fromSelect = document.createElement('select');
+    const toSelect = document.createElement('select');
+    for (let i = 0; i <= node.maxLevel; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      if (i === current.start) opt.selected = true;
+      fromSelect.appendChild(opt);
+    }
+    for (let i = current.start + 1; i <= node.maxLevel; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      if (i === current.end) opt.selected = true;
+      toSelect.appendChild(opt);
+    }
     const apply = () => {
-      const start = Math.max(0, Math.min(node.maxLevel - 1, parseInt(fromInput.value || '0', 10)));
-      const end = Math.max(start + 1, Math.min(node.maxLevel, parseInt(toInput.value || `${node.maxLevel}`, 10)));
+      const start = parseInt(fromSelect.value, 10);
+      const end = parseInt(toSelect.value, 10);
       selections[node.id] = { start, end };
       renderSelectionList();
       updateSummary();
       renderTree();
+      hideEditor();
     };
-    fromInput.addEventListener('change', apply);
-    toInput.addEventListener('change', apply);
-    editorEl.addEventListener('click', (e) => e.stopPropagation());
-    btn.appendChild(editorEl);
+    fromSelect.addEventListener('change', () => {
+      const start = parseInt(fromSelect.value, 10);
+      toSelect.innerHTML = '';
+      for (let i = start + 1; i <= node.maxLevel; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = String(i);
+        toSelect.appendChild(opt);
+      }
+    });
+    toSelect.addEventListener('change', apply);
+
+    const labelFrom = document.createElement('label');
+    labelFrom.style.fontSize = '11px';
+    labelFrom.style.color = 'var(--text,#e8f4f8)';
+    labelFrom.textContent = 'From';
+    labelFrom.appendChild(fromSelect);
+
+    const labelTo = document.createElement('label');
+    labelTo.style.fontSize = '11px';
+    labelTo.style.color = 'var(--text,#e8f4f8)';
+    labelTo.textContent = 'To';
+    labelTo.appendChild(toSelect);
+
+    editorEl.appendChild(labelFrom);
+    editorEl.appendChild(labelTo);
+
+    document.body.appendChild(editorEl);
+    const rect = btn.getBoundingClientRect();
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    editorEl.style.left = `${rect.left + scrollX}px`;
+    editorEl.style.top = `${rect.bottom + scrollY + 6}px`;
+
+    const outsideClick = (e) => {
+      if (editorEl && !editorEl.contains(e.target)) {
+        hideEditor();
+        document.removeEventListener('click', outsideClick, true);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', outsideClick, true), 0);
+  }
+
+  function hideEditor() {
+    if (editorEl && editorEl.parentNode) editorEl.parentNode.remove();
+    editorEl = null;
+    editorNodeId = null;
   }
 
   function renderBranchTabs() {

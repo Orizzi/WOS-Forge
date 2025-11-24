@@ -57,7 +57,7 @@
         </p>
         <div class="card" style="margin-bottom:16px;">
           <h2 class="section-title">Inventory</h2>
-          <div class="grid-2-col" style="gap:8px;">
+          <div class="inventory-row">
             <label>Fire Crystal shards<input type="number" id="inv-fc" min="0" value="0" inputmode="numeric"></label>
             <label>Meat<input type="number" id="inv-meat" min="0" value="0" inputmode="numeric"></label>
             <label>Wood<input type="number" id="inv-wood" min="0" value="0" inputmode="numeric"></label>
@@ -75,11 +75,6 @@
               <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
             </div>
             <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
-            <div class="card" style="margin-top:12px;">
-              <h2 class="section-title">Active selections</h2>
-              <ul id="selection-list" class="gift-code-log"></ul>
-              <button id="reset-selections" class="secondary">Reset</button>
-            </div>
           </div>
           <div class="card" style="margin:0;position:sticky;top:12px;">
             <h2 class="section-title">Results</h2>
@@ -97,6 +92,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="card" style="margin-top:16px;">
+          <h2 class="section-title">Slot recap</h2>
+          <ul id="recap-list" class="gift-code-log"></ul>
         </div>
       </section>
     </main>
