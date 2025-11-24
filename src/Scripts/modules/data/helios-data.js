@@ -32,7 +32,7 @@
   },
   {
     "id": "helios_unlock",
-    "row": 1,
+    "row": 1.5,
     "col": 0,
     "parents": [
       "flame_legion",

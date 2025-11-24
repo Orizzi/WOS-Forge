@@ -163,11 +163,13 @@
       const range = selections[node.id];
       const levelText = range ? `${range.start} → ${range.end} / ${node.maxLevel}` : `0 → ${node.maxLevel}`;
       btn.innerHTML = `
-        <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-          <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:82%;height:82%;object-fit:contain;display:block;margin:0 auto;">
-          <span style="position:absolute;bottom:6px;left:6px;right:6px;padding:2px 4px;font-size:9px;border-radius:6px;background:rgba(0,0,0,0.5);color:#fff;text-align:center;">${levelText}</span>
+        <div style="width:100%;height:100%;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:flex-start;overflow:hidden;">
+          <div style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;overflow:hidden;border-radius:12px;padding:4px;">
+            <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
+          </div>
+          <div style="width:100%;text-align:center;font-size:8px;color:var(--text,#e8f4f8);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${node.name}</div>
+          <div style="width:100%;text-align:center;font-size:8px;color:var(--muted-text,#a8c5d4);line-height:1.2;">${levelText}</div>
         </div>
-        <span style="font-size:8px;color:var(--text,#e8f4f8);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;">${node.name}</span>
       `;
       const isSelected = !!selections[node.id];
       if (isSelected) {
