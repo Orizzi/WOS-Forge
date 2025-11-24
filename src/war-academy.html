@@ -15,6 +15,7 @@
   <script src="Scripts/modules/helpers/number-format.js" defer></script>
   <script src="Scripts/modules/data/data-loader.js" defer></script>
   <script src="Scripts/modules/data/helios-data.js" defer></script>
+  <script src="Scripts/profiles.js" defer></script>
   <script src="Scripts/war-laboratory.js" defer></script>
 </head>
 <body>
@@ -90,17 +91,18 @@
             </div>
           </section>
 
-          <section class="card profiles war-lab-profiles" aria-label="Helios Profiles">
-            <h3>Profiles</h3>
-            <div class="profiles-column">
-              <div class="input-with-icon full-width">
-                <input id="helios-profile-name" type="text" placeholder="New profile name" aria-label="Profile name" maxlength="20">
-                <button id="helios-profile-save" type="button" class="icon-button" title="Save profile">
-                  <img src="assets/icons/save.svg" alt="Save">
-                </button>
+          <section class="profiles card" aria-label="War Academy profiles" role="region">
+            <h3 data-i18n="profiles-header">Profiles</h3>
+            <div class="profiles-row">
+              <div class="input-with-icon">
+                <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+                <button id="profile-save" type="button" title="Save profile" aria-label="Save profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
               </div>
-              <div class="profiles-list profiles-list-vertical" id="helios-profiles-list" aria-label="Saved profiles"></div>
-              <button id="helios-profile-delete" class="btn danger profiles-delete" type="button" disabled>Delete</button>
+              <div class="select-with-icon">
+                <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                <button id="profile-rename" type="button" title="Rename selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
+              </div>
+              <button id="profile-delete" type="button" title="Delete selected profile" class="danger"><span data-i18n="delete">Delete</span></button>
             </div>
           </section>
         </div>

@@ -2936,58 +2936,6 @@ button, .dark-mode-toggle, select, input[type="number"] {
     }
 }
 
-/* Profiles (vertical list) */
-.war-lab-profiles{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.war-lab-profiles .profiles-column{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.profiles-list-vertical{
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 260px;
-    overflow: auto;
-    width: 100%;
-}
-.war-lab-profiles .profile-row{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--card);
-    cursor: pointer;
-    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
-}
-.war-lab-profiles .profile-row:hover{
-    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
-    box-shadow: 0 4px 12px var(--shadow);
-}
-.war-lab-profiles .profile-row.is-active{
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
-    background: color-mix(in srgb, var(--card) 70%, transparent);
-}
-.war-lab-profiles .profile-name{
-    flex: 1;
-    text-align: center;
-    font-weight: 700;
-}
-.war-lab-profiles .profile-edit{
-    flex: 0 0 auto;
-}
-.war-lab-profiles .profiles-delete{
-    width: 100%;
-    margin-top: 6px;
-}
-
 /* Branch tabs */
 .war-lab-page .tab-row{
     display:flex;

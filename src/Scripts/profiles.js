@@ -16,9 +16,11 @@
 const ProfilesModule = (function(){
   const PROFILES_KEY = 'wos-unified-profiles';  // Key used for browser storage
   const LAST_PROFILE_KEY = 'wos-last-profile';  // Remember last loaded profile name
+  const SHARED_RES_KEY = 'wos-shared-base-resources'; // Shared base resources across pages
   let currentLoadedProfile = null;  // Track which profile is currently loaded
   const CONSENT_KEY = 'wos-storage-consent';     // Flag to remember user consent for storage
   const CONSENT_DECLINED_SESSION = 'wos-storage-consent-declined-session';
+  const SHARED_RESOURCE_IDS = ['inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'];
 
   /**
    * canUseLocalStorage()
@@ -33,6 +35,38 @@ const ProfilesModule = (function(){
     }catch(e){
       return false;
     }
+  }
+
+  function readSharedResources(){
+    try{
+      const raw = localStorage.getItem(SHARED_RES_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return {};
+  }
+
+  function persistSharedResources(){
+    const payload = {};
+    SHARED_RESOURCE_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if(el && el.value !== undefined) payload[id] = el.value;
+    });
+    try{ localStorage.setItem(SHARED_RES_KEY, JSON.stringify(payload)); }catch(e){}
+  }
+
+  function applySharedResources(){
+    const data = readSharedResources();
+    SHARED_RESOURCE_IDS.forEach(id => {
+      if(data[id] === undefined) return;
+      const el = document.getElementById(id);
+      if(el && el.value !== undefined){
+        el.value = String(data[id]);
+        // Trigger input so calculators recalc if present
+        try{
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }catch(e){}
+      }
+    });
   }
 
   /**
@@ -218,8 +252,10 @@ const ProfilesModule = (function(){
     const isFireCrystals = !!document.getElementById('furnace-start');
     const isChiefGear = !!document.getElementById('helmet-start');
     const isCharms = !!document.querySelector('select[id*="-charm-"]');
+    const isWarLab = !!document.querySelector('.war-lab-page') && !!window.WarLabProfile;
+    const isWarLab = !!document.querySelector('.war-lab-page') && !!window.WarLabProfile;
 
-    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {}, meta: {} };
+    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {}, warLab: {}, meta: {} };
 
     // Capture Charms data (only on Charms page; selects contain -charm- in id)
     if(isCharms){
@@ -270,6 +306,14 @@ const ProfilesModule = (function(){
       data.meta.zinmanLevel = parseInt(zinmanSel.value, 10) || 0;
     }
 
+    if (isWarLab && window.WarLabProfile && typeof window.WarLabProfile.captureState === 'function') {
+      try {
+        data.warLab = window.WarLabProfile.captureState();
+      } catch (e) {
+        console.warn('[Profiles] Failed to capture War Lab state', e);
+      }
+    }
+
     return data;
   }
 
@@ -286,6 +330,7 @@ const ProfilesModule = (function(){
     const isFireCrystals = !!document.getElementById('furnace-start');
     const isChiefGear = !!document.getElementById('helmet-start');
     const isCharms = !!document.querySelector('select[id*="-charm-"]');
+    const isWarLab = !!document.querySelector('.war-lab-page') && !!window.WarLabProfile;
 
     // Apply only for the current page
     if(isCharms && obj.charms){
@@ -364,10 +409,20 @@ const ProfilesModule = (function(){
         const el = document.getElementById(id);
         if(el && el.tagName === 'INPUT') el.value = String(obj.inventory[id]);
       });
+      // Persist shared base resources so they follow across pages
+      persistSharedResources();
     }
     if (obj.meta && obj.meta.zinmanLevel !== undefined) {
       const zinSel = document.getElementById('zinman-level');
       if (zinSel) zinSel.value = String(obj.meta.zinmanLevel || 0);
+    }
+
+    if (isWarLab && obj.warLab && window.WarLabProfile && typeof window.WarLabProfile.applyState === 'function') {
+      try {
+        window.WarLabProfile.applyState(obj.warLab);
+      } catch (e) {
+        console.warn('[Profiles] Failed to apply War Lab state', e);
+      }
     }
   }
 
@@ -434,6 +489,7 @@ const ProfilesModule = (function(){
     if(current.chiefGear && Object.keys(current.chiefGear).length){ merged.chiefGear = { ...(profiles[name].chiefGear||{}), ...current.chiefGear }; }
     if(current.fireCrystals && Object.keys(current.fireCrystals).length){ merged.fireCrystals = { ...(profiles[name].fireCrystals||{}), ...current.fireCrystals }; }
     if(current.inventory && Object.keys(current.inventory).length){ merged.inventory = { ...(profiles[name].inventory||{}), ...current.inventory }; }
+    if(current.warLab && Object.keys(current.warLab).length){ merged.warLab = { ...(profiles[name].warLab||{}), ...current.warLab }; }
     profiles[name] = merged;
     writeProfiles(profiles);
     renderProfilesList();
@@ -470,6 +526,7 @@ const ProfilesModule = (function(){
     if(current.chiefGear && Object.keys(current.chiefGear).length){ existing.chiefGear = { ...(existing.chiefGear||{}), ...current.chiefGear }; }
     if(current.fireCrystals && Object.keys(current.fireCrystals).length){ existing.fireCrystals = { ...(existing.fireCrystals||{}), ...current.fireCrystals }; }
     if(current.inventory && Object.keys(current.inventory).length){ existing.inventory = { ...(existing.inventory||{}), ...current.inventory }; }
+    if(current.warLab && Object.keys(current.warLab).length){ existing.warLab = { ...(existing.warLab||{}), ...current.warLab }; }
     if(current.meta && Object.keys(current.meta).length){ existing.meta = { ...(existing.meta||{}), ...current.meta }; }
     profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
@@ -486,7 +543,16 @@ const ProfilesModule = (function(){
 
     // Inventory and other numeric inputs
     const inputNodes = document.querySelectorAll('input[id^="inventory-"]');
-    inputNodes.forEach(input => input.addEventListener('input', autoSaveCurrentProfile));
+    inputNodes.forEach(input => {
+      if(SHARED_RESOURCE_IDS.includes(input.id)){
+        input.addEventListener('input', () => {
+          persistSharedResources();
+          autoSaveCurrentProfile();
+        });
+      } else {
+        input.addEventListener('input', autoSaveCurrentProfile);
+      }
+    });
     const zinSel = document.getElementById('zinman-level');
     if (zinSel) zinSel.addEventListener('change', () => {
       autoSaveCurrentProfile();
@@ -628,6 +694,9 @@ const ProfilesModule = (function(){
     document.addEventListener('visibilitychange', () => {
       if(document.visibilityState === 'hidden') autoSaveCurrentProfile();
     });
+
+    // Apply shared base resources (Meat/Wood/Coal/Iron) across pages
+    applySharedResources();
 
     // Render existing profiles on load
     renderProfilesList();

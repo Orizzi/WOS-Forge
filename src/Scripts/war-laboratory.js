@@ -20,10 +20,7 @@
   let editorEl = null;
   let editorNodeId = null;
   let editorOutsideHandler = null;
-  let profiles = {};
-  const PROFILE_KEY = 'helios-profiles';
-  let selectedProfile = '';
-  const PROFILE_LAST_KEY = 'helios-profiles-last';
+  const LOCAL_STATE_KEY = 'wos-war-lab-last-state';
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -33,34 +30,30 @@
     return `${k}: ${typeof v === 'number' ? v.toFixed(2) : v}`;
   }
 
-  function saveProfilesToStorage() {
+  function autoSaveProfileSelections() {
+    if (window.ProfilesModule && typeof window.ProfilesModule.autoSaveCurrentProfile === 'function') {
+      try { window.ProfilesModule.autoSaveCurrentProfile(); } catch (e) { /* silent */ }
+    }
+    persistLocalState();
+  }
+
+  function persistLocalState() {
     try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
+      const payload = captureProfileState();
+      localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(payload));
     } catch (e) {
-      console.warn('Failed to persist Helios profiles', e);
+      // ignore
     }
   }
 
-  function loadProfilesFromStorage() {
+  function restoreLocalState() {
     try {
-      const raw = localStorage.getItem(PROFILE_KEY);
-      profiles = raw ? JSON.parse(raw) : {};
+      const raw = localStorage.getItem(LOCAL_STATE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      applyProfileState(state);
     } catch (e) {
-      profiles = {};
-    }
-  }
-  function saveLastProfile(name) {
-    try {
-      localStorage.setItem(PROFILE_LAST_KEY, name || '');
-    } catch (e) {
-      /* ignore */
-    }
-  }
-  function loadLastProfile() {
-    try {
-      return localStorage.getItem(PROFILE_LAST_KEY) || '';
-    } catch (e) {
-      return '';
+      // ignore
     }
   }
 
@@ -94,114 +87,7 @@
     renderTree();
     renderSelectionList();
     updateSummary();
-  }
-
-  function renderProfilesList(selectedName) {
-    const current = selectedName || selectedProfile || '';
-    const list = document.getElementById('helios-profiles-list');
-    const deleteBtn = document.getElementById('helios-profile-delete');
-    if (!list) return;
-    list.innerHTML = '';
-    const names = Object.keys(profiles);
-    names.forEach((name) => {
-      const row = document.createElement('div');
-      row.className = 'profile-row';
-      if (name === current) row.classList.add('is-active');
-      row.dataset.name = name;
-
-      const label = document.createElement('div');
-      label.className = 'profile-name';
-      label.textContent = name;
-
-      const editBtn = document.createElement('button');
-      editBtn.className = 'icon-button profile-edit';
-      editBtn.type = 'button';
-      editBtn.title = `Rename ${name}`;
-      const icon = document.createElement('img');
-      icon.src = 'assets/icons/edit.svg';
-      icon.alt = 'Rename';
-      editBtn.appendChild(icon);
-
-      editBtn.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        const newName = prompt('Rename profile', name);
-        if (!newName) return;
-        const trimmed = newName.trim();
-        if (!trimmed) return;
-        if (trimmed !== name && profiles[trimmed]) {
-          alert('A profile with that name already exists.');
-          return;
-        }
-        profiles[trimmed] = profiles[name];
-        delete profiles[name];
-        saveProfilesToStorage();
-        saveLastProfile(trimmed);
-        renderProfilesList(trimmed);
-      });
-
-      row.addEventListener('click', () => {
-        selectedProfile = name;
-        saveLastProfile(name);
-        applyProfileState(profiles[name]);
-        renderProfilesList(name);
-        if (deleteBtn) deleteBtn.disabled = false;
-      });
-
-      row.appendChild(label);
-      row.appendChild(editBtn);
-      list.appendChild(row);
-    });
-    if (deleteBtn) deleteBtn.disabled = !current;
-    selectedProfile = current;
-  }
-
-  function initProfiles() {
-    loadProfilesFromStorage();
-    const saveBtn = document.getElementById('helios-profile-save');
-    const delBtn = document.getElementById('helios-profile-delete');
-    const nameInput = document.getElementById('helios-profile-name');
-
-    if (saveBtn) {
-      saveBtn.addEventListener('click', () => {
-        const name = (nameInput?.value || '').trim();
-        if (!name) return alert('Enter a profile name');
-        profiles[name] = captureProfileState();
-        saveProfilesToStorage();
-        selectedProfile = name;
-        saveLastProfile(name);
-        renderProfilesList(name);
-      });
-    }
-    if (nameInput) {
-      nameInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          saveBtn?.click();
-        }
-      });
-    }
-    if (delBtn) {
-      delBtn.addEventListener('click', () => {
-        const target = selectedProfile || loadLastProfile() || Object.keys(profiles)[0];
-        if (!target || !profiles[target]) return;
-        if (!confirm(`Delete profile "${target}"?`)) return;
-        delete profiles[target];
-        saveProfilesToStorage();
-        const next = Object.keys(profiles)[0] || '';
-        selectedProfile = next;
-        saveLastProfile(next);
-        renderProfilesList(next);
-      });
-    }
-
-    const last = loadLastProfile();
-    const initial = last && profiles[last] ? last : Object.keys(profiles)[0];
-    if (initial && profiles[initial]) {
-      applyProfileState(profiles[initial]);
-      saveLastProfile(initial);
-      selectedProfile = initial;
-    }
-    renderProfilesList(initial);
+    persistLocalState();
   }
 
   function formatTime(totalSeconds) {
@@ -230,6 +116,7 @@
     renderSelectionList();
     updateSummary();
     renderTree();
+    autoSaveProfileSelections();
   }
 
   function showNodeEditor(btn, node) {
@@ -281,6 +168,7 @@
       renderSelectionList();
       updateSummary();
       renderTree();
+      autoSaveProfileSelections();
     };
     fromSelect.addEventListener('change', () => {
       const start = parseInt(fromSelect.value, 10);
@@ -292,6 +180,7 @@
       renderSelectionList();
       updateSummary();
       renderTree();
+      autoSaveProfileSelections();
     });
     toSelect.addEventListener('change', apply);
 
@@ -832,6 +721,7 @@
       renderSelectionList();
       updateSummary();
       renderTree();
+      autoSaveProfileSelections();
     });
   }
 
@@ -857,6 +747,12 @@
     });
   }
 
+  // Expose hooks for unified Profiles module
+  window.WarLabProfile = {
+    captureState: captureProfileState,
+    applyState: applyProfileState
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     renderBranchTabs();
     renderTree();
@@ -865,7 +761,7 @@
     updateSummary();
     wireReset();
     wireInventory();
-    initProfiles();
+    restoreLocalState();
     window.addEventListener('resize', () => {
       renderTree();
     });
