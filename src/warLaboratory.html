@@ -48,114 +48,118 @@
   </header>
 
   <div class="app-shell">
-    <main role="main">
+    <main role="main" class="war-lab-page">
       <section class="card" aria-labelledby="war-lab-title">
         <h1 id="war-lab-title">War Academy – Helios Research</h1>
         
         <div class="inventory-profiles-row">
           <section class="inventory-section card" aria-label="Helios Inventory">
             <h3>Your Inventory</h3>
-            <div class="inventory-grid inventory-grid-2x4">
-              <div class="inventory-item">
+            <div class="war-lab-inventory-grid">
+              <div class="war-lab-inv-item">
                 <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat">Meat</span></label>
                 <input type="number" id="inventory-meat" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
+              <div class="war-lab-inv-item">
                 <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood">Wood</span></label>
                 <input type="number" id="inventory-wood" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
+              <div class="war-lab-inv-item">
                 <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal">Coal</span></label>
                 <input type="number" id="inventory-coal" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
+              <div class="war-lab-inv-item">
                 <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron">Iron</span></label>
                 <input type="number" id="inventory-iron" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystal-shards.png" alt="FCs">FCs</span></label>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystal-shards.png" alt="FCs">FCs</span></label>
                 <input type="number" id="inventory-fc" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
+              <div class="war-lab-inv-item">
                 <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel">Steel</span></label>
                 <input type="number" id="inventory-steel" min="0" value="0" inputmode="numeric">
               </div>
-              <div class="inventory-item">
-              <label>Speedups (days)</label>
+              <div class="war-lab-inv-item">
+                <label>Speedups (days)</label>
                 <input type="number" id="inventory-speedups" min="0" value="0" inputmode="numeric" placeholder="minutes">
               </div>
-              <div class="inventory-item">
+              <div class="war-lab-inv-item">
                 <label>Research % reduction</label>
                 <input type="number" id="inventory-reduction" min="0" max="100" value="0" inputmode="numeric" placeholder="%">
               </div>
             </div>
           </section>
 
-          <section class="card profiles" aria-label="Helios Profiles">
-            <div class="profiles-header">
-              <h3>Profiles</h3>
-            </div>
-            <div class="profiles-body">
-              <select id="helios-profiles-list" aria-label="Saved profiles"></select>
-              <input type="text" id="helios-profile-name" placeholder="Profile name" maxlength="20">
-              <div class="profiles-actions">
-                <button id="helios-profile-save" class="btn primary">Save</button>
-                <button id="helios-profile-load" class="btn secondary">Load</button>
-                <button id="helios-profile-delete" class="btn danger">Delete</button>
+          <section class="card profiles war-lab-profiles" aria-label="Helios Profiles">
+            <h3>Profiles</h3>
+            <div class="profiles-column">
+              <div class="input-with-icon full-width">
+                <input id="helios-profile-name" type="text" placeholder="New profile name" aria-label="Profile name" maxlength="20">
+                <button id="helios-profile-save" type="button" class="icon-button" title="Save profile">
+                  <img src="assets/icons/save.svg" alt="Save">
+                </button>
               </div>
+              <div class="profiles-list profiles-list-vertical" id="helios-profiles-list" aria-label="Saved profiles"></div>
+              <button id="helios-profile-delete" class="btn danger profiles-delete" type="button" disabled>Delete</button>
             </div>
           </section>
         </div>
 
-        <div class="war-lab-main-row">
-          <div class="war-lab-left-col">
-            <div class="layout-two-col" style="gap:16px;">
-              <div class="trees-column">
-                <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
-                  <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
-                  <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
-                  <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
-                </div>
-                <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
+        <div class="war-lab-main">
+          <section class="war-lab-left">
+            <div class="trees-column">
+              <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
+                <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
+                <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
+                <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
               </div>
+              <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
             </div>
             <section class="card stat-recap-card" aria-label="Stat recap">
               <h3 class="section-title">Stat recap</h3>
               <div class="stat-grid" id="stat-recap-grid"></div>
             </section>
-          </div>
+          </section>
 
-          <aside class="war-lab-results-col">
-            <div class="card results-card">
+          <aside class="war-lab-right">
+            <div class="card results-card war-lab-results">
               <h2 class="section-title">Results</h2>
               <div id="summary-content" class="calculation-output">
                 <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
-                <div id="costs-cards" class="result-grid"></div>
+              <div id="costs-cards" class="result-grid"></div>
                 <div class="result-totals" style="display:grid;grid-template-columns: repeat(auto-fit,minmax(220px,1fr));gap:12px;">
                   <div class="summary-pill" id="power-pill">Total Power: 0</div>
                   <div class="summary-pill" id="svs-pill">Total SvS Points: 0</div>
                 </div>
-                <div class="results-wrap results-table-wrapper">
-                  <table id="helios-slot-table" class="results-table war-lab-slot-table">
-                    <thead>
-                      <tr>
-                        <th class="col-icon">Icon</th>
-                        <th class="col-name">Name</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Meat</th>
-                        <th>Wood</th>
-                        <th>Coal</th>
-                        <th>Iron</th>
-                        <th>Steel</th>
-                        <th>FCs</th>
-                        <th>Power</th>
-                        <th>SvS</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot></tfoot>
-                  </table>
+                <div class="result-card slot-card">
+                  <div class="result-card-header">
+                    <h3>Slot recap</h3>
+                  </div>
+                  <div class="results-wrap">
+                    <div class="results-table-wrapper">
+                      <table id="helios-slot-table" class="results-table war-lab-slot-table">
+                        <thead>
+                          <tr>
+                            <th class="col-icon">Icon</th>
+                            <th class="col-name">Name</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Meat</th>
+                            <th>Wood</th>
+                            <th>Coal</th>
+                            <th>Iron</th>
+                            <th>Steel</th>
+                            <th>FCs</th>
+                            <th>Power</th>
+                            <th>SvS</th>
+                          </tr>
+                        </thead>
+                        <tbody id="war-lab-slot-body"></tbody>
+                        <tfoot id="war-lab-slot-foot"></tfoot>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

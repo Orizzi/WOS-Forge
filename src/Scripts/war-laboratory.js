@@ -22,6 +22,8 @@
   let editorOutsideHandler = null;
   let profiles = {};
   const PROFILE_KEY = 'helios-profiles';
+  let selectedProfile = '';
+  const PROFILE_LAST_KEY = 'helios-profiles-last';
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -45,6 +47,20 @@
       profiles = raw ? JSON.parse(raw) : {};
     } catch (e) {
       profiles = {};
+    }
+  }
+  function saveLastProfile(name) {
+    try {
+      localStorage.setItem(PROFILE_LAST_KEY, name || '');
+    } catch (e) {
+      /* ignore */
+    }
+  }
+  function loadLastProfile() {
+    try {
+      return localStorage.getItem(PROFILE_LAST_KEY) || '';
+    } catch (e) {
+      return '';
     }
   }
 
@@ -80,53 +96,112 @@
     updateSummary();
   }
 
-  function refreshProfilesList() {
-    const sel = document.getElementById('helios-profiles-list');
-    if (!sel) return;
-    sel.innerHTML = '';
-    Object.keys(profiles).forEach((name) => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      sel.appendChild(opt);
+  function renderProfilesList(selectedName) {
+    const current = selectedName || selectedProfile || '';
+    const list = document.getElementById('helios-profiles-list');
+    const deleteBtn = document.getElementById('helios-profile-delete');
+    if (!list) return;
+    list.innerHTML = '';
+    const names = Object.keys(profiles);
+    names.forEach((name) => {
+      const row = document.createElement('div');
+      row.className = 'profile-row';
+      if (name === current) row.classList.add('is-active');
+      row.dataset.name = name;
+
+      const label = document.createElement('div');
+      label.className = 'profile-name';
+      label.textContent = name;
+
+      const editBtn = document.createElement('button');
+      editBtn.className = 'icon-button profile-edit';
+      editBtn.type = 'button';
+      editBtn.title = `Rename ${name}`;
+      const icon = document.createElement('img');
+      icon.src = 'assets/icons/edit.svg';
+      icon.alt = 'Rename';
+      editBtn.appendChild(icon);
+
+      editBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const newName = prompt('Rename profile', name);
+        if (!newName) return;
+        const trimmed = newName.trim();
+        if (!trimmed) return;
+        if (trimmed !== name && profiles[trimmed]) {
+          alert('A profile with that name already exists.');
+          return;
+        }
+        profiles[trimmed] = profiles[name];
+        delete profiles[name];
+        saveProfilesToStorage();
+        saveLastProfile(trimmed);
+        renderProfilesList(trimmed);
+      });
+
+      row.addEventListener('click', () => {
+        selectedProfile = name;
+        saveLastProfile(name);
+        applyProfileState(profiles[name]);
+        renderProfilesList(name);
+        if (deleteBtn) deleteBtn.disabled = false;
+      });
+
+      row.appendChild(label);
+      row.appendChild(editBtn);
+      list.appendChild(row);
     });
+    if (deleteBtn) deleteBtn.disabled = !current;
+    selectedProfile = current;
   }
 
   function initProfiles() {
     loadProfilesFromStorage();
-    refreshProfilesList();
     const saveBtn = document.getElementById('helios-profile-save');
-    const loadBtn = document.getElementById('helios-profile-load');
     const delBtn = document.getElementById('helios-profile-delete');
-    const list = document.getElementById('helios-profiles-list');
     const nameInput = document.getElementById('helios-profile-name');
+
     if (saveBtn) {
       saveBtn.addEventListener('click', () => {
         const name = (nameInput?.value || '').trim();
         if (!name) return alert('Enter a profile name');
         profiles[name] = captureProfileState();
         saveProfilesToStorage();
-        refreshProfilesList();
-        if (list) list.value = name;
+        selectedProfile = name;
+        saveLastProfile(name);
+        renderProfilesList(name);
       });
     }
-    if (loadBtn) {
-      loadBtn.addEventListener('click', () => {
-        const name = list?.value;
-        if (!name || !profiles[name]) return;
-        applyProfileState(profiles[name]);
+    if (nameInput) {
+      nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          saveBtn?.click();
+        }
       });
     }
     if (delBtn) {
       delBtn.addEventListener('click', () => {
-        const name = list?.value;
-        if (!name || !profiles[name]) return;
-        if (!confirm(`Delete profile "${name}"?`)) return;
-        delete profiles[name];
+        const target = selectedProfile || loadLastProfile() || Object.keys(profiles)[0];
+        if (!target || !profiles[target]) return;
+        if (!confirm(`Delete profile "${target}"?`)) return;
+        delete profiles[target];
         saveProfilesToStorage();
-        refreshProfilesList();
+        const next = Object.keys(profiles)[0] || '';
+        selectedProfile = next;
+        saveLastProfile(next);
+        renderProfilesList(next);
       });
     }
+
+    const last = loadLastProfile();
+    const initial = last && profiles[last] ? last : Object.keys(profiles)[0];
+    if (initial && profiles[initial]) {
+      applyProfileState(profiles[initial]);
+      saveLastProfile(initial);
+      selectedProfile = initial;
+    }
+    renderProfilesList(initial);
   }
 
   function formatTime(totalSeconds) {
@@ -488,14 +563,34 @@
   }
 
   function renderRecap(totals) {
-    const tbody = document.querySelector('#recap-table tbody');
-    const tfoot = document.querySelector('#recap-table tfoot');
+    const table = document.getElementById('helios-slot-table');
+    const slotHead = table?.querySelector('thead');
+    const tbody = document.getElementById('war-lab-slot-body');
+    const tfoot = document.getElementById('war-lab-slot-foot');
+    if (slotHead) {
+      slotHead.innerHTML = `
+        <tr>
+          <th>Icon</th>
+          <th>Name</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Meat</th>
+          <th>Wood</th>
+          <th>Coal</th>
+          <th>Iron</th>
+          <th>Steel</th>
+          <th>FCs</th>
+          <th>Power</th>
+          <th>SvS</th>
+        </tr>
+      `;
+    }
     if (!tbody || !tfoot) return;
     tbody.innerHTML = '';
     tfoot.innerHTML = '';
     const entries = Object.entries(selections);
     if (!entries.length) {
-      tbody.innerHTML = '<tr><td colspan="10">No slots selected yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="12">No slots selected yet.</td></tr>';
       return;
     }
     const rows = entries
@@ -504,16 +599,15 @@
       .filter((e) => e.range.start < e.range.end)
       .sort((a, b) => a.node.branch.localeCompare(b.node.branch) || a.node.name.localeCompare(b.node.name));
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="10">No slots selected yet.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="12">No slots selected yet.</td></tr>';
       return;
     }
     const body = rows
       .map(({ id, range, node }) => {
         const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || {};
-        const statPreview = mainStatKey(summary.stats || {});
         return `
           <tr>
-            <td style="text-align:center;"><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
+            <td class="col-icon"><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
             <td class="col-name">${node.name}</td>
             <td>${range.start}</td>
             <td>${range.end}</td>
@@ -622,8 +716,8 @@
     summary.querySelector('.gift-code-status-text').textContent = 'Select a node and set a level range to see totals here.';
     const costs = document.getElementById('costs-cards');
     if (costs) costs.innerHTML = '';
-    const tbody = document.querySelector('#recap-table tbody');
-    const tfoot = document.querySelector('#recap-table tfoot');
+    const tbody = document.getElementById('war-lab-slot-body');
+    const tfoot = document.getElementById('war-lab-slot-foot');
     if (tbody) tbody.innerHTML = '';
     if (tfoot) tfoot.innerHTML = '';
     const powerPill = document.getElementById('power-pill');

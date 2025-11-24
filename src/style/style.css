@@ -50,15 +50,55 @@ body {
 .form-field,
 /* ===== Results tables (shared: Charms, Fire Crystals) ===== */
 .results-wrap{ 
-    overflow: auto;
-    border-radius: 8px; 
-    background: var(--card); 
-    padding: 10px; 
-    max-height: 260px;
+    margin: 16px; 
+    padding: 12px; 
+    background: color-mix(in srgb, var(--panel) 80%, transparent); 
+    border: 1px solid var(--border); 
+    border-radius: 10px; 
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.results-table{ 
+    width: 100%; 
+    border-collapse: collapse; 
+    background: var(--panel);
+}
+
+.results-table thead th{ 
+    position: sticky; 
+    top: 0; 
+    background: color-mix(in srgb, var(--panel) 92%, transparent); 
+    text-align: left; 
+    padding: 10px 12px; 
+    border-bottom: 1px solid var(--border); 
+    font-weight: 700; 
+}
+
+.results-table tbody td{ 
+    padding: 10px 12px; 
+    border-bottom: 1px solid var(--border);
+}
+
+.results-table tbody tr:nth-child(even){ 
+    background: color-mix(in srgb, var(--card) 70%, transparent); 
+}
+
+.results-table tfoot td{ 
+    padding: 12px; 
+    border-top: 2px solid var(--border); 
+    font-weight: 700; 
 }
 
 /* Align numeric columns right, leave first three left-aligned */
+.results-table td:nth-child(n+4),
+.results-table th:nth-child(n+4){ text-align: right; }
+.results-table td:nth-child(-n+3),
+.results-table th:nth-child(-n+3){ text-align: left; }
+
 /* Sort indicators */
+.results-table thead th.sorted-asc::after{ content: ' \25B2'; opacity: 0.8; }
+.results-table thead th.sorted-desc::after{ content: ' \25BC'; opacity: 0.8; }
+
 /* CSV/data status pill for FC page */
 .csv-status{
     display: inline-flex;
@@ -1719,95 +1759,22 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-radius: 6px;
     padding: 6px 10px;
     margin: 0;
-    background: linear-gradient(180deg, var(--card), color-mix(in srgb, var(--panel) 70%, transparent));
-    font-weight: 700;
 }
-.result-grid{
-    display:grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap:12px;
+.results-wrap{ 
+    /* Allow horizontal scroll if table gets wide, but no vertical clipping */
+    overflow-x: auto; 
+    overflow-y: visible;
+    border-radius: 8px; 
+    background: var(--card); 
+    padding: 10px; 
+    border: 1px solid var(--border); 
+    max-height: none;
 }
-@media (max-width:1023px){
-    .result-grid{
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
-}
-.result-card{
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--panel) 85%, transparent);
-    padding: 10px 12px;
-    box-shadow: 0 6px 14px var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap:6px;
-}
-.result-card .result-value{
-    font-size: 1.1em;
-    font-weight: 700;
-}
-.result-card .gap-line{
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-}
+.results-table{ width: 100%; border-collapse: collapse; }
+.results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
+.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
+.results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
 
-/* Stat recap */
-.stat-recap-card{
-    margin-top: 12px;
-}
-.stat-grid{
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 12px;
-}
-.stat-col{
-    background: color-mix(in srgb, var(--panel) 80%, transparent);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-}
-.stat-list{
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-.stat-list li{
-    margin: 4px 0;
-    font-size: 0.95em;
-}
-.stat-list .muted{
-    color: var(--muted-text);
-}
-@media (max-width: 900px){
-    .stat-grid{
-        grid-template-columns: 1fr;
-    }
-}
-/* War lab main layout */
-.war-lab-main-row{
-    display: block;
-}
-@media (min-width:1024px){
-    .war-lab-main-row{
-        display: flex;
-        align-items: flex-start;
-        gap: 24px;
-    }
-    .war-lab-left-col{
-        flex: 1 1 50%;
-        max-width: 50%;
-    }
-    .war-lab-results-col{
-        flex: 1 1 50%;
-        max-width: 50%;
-    }
-    .war-lab-results-col > section,
-    .war-lab-results-col .results-card{
-        width: 100%;
-        max-width: 100%;
-    }
-}
 /* Responsive breakpoints */
 @media (max-width: 1200px) {
     .main-layout-wrapper {
@@ -1850,6 +1817,10 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 @media (width <=720px){
     .batch-inline .batch-select{ width:64px; }
+    .results-table{ min-width:480px; }
+    .result-totals{ justify-content:center; }
+}
+
 /* Chief Gear specific styling ------------------------------------------------------- */
 .gear-input-section {
     margin: 20px;
@@ -1953,18 +1924,6 @@ html:not(.light-theme) .profiles input[type="text"]{
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
 }
-
-/* Helios inventory 2x4 layout */
-.inventory-grid-2x4{
-    display:grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap:12px;
-}
-@media (max-width:1023px){
-    .inventory-grid-2x4{
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-}
 @media (min-width: 1100px) {
     .inventory-grid.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
@@ -1978,6 +1937,16 @@ html:not(.light-theme) .profiles input[type="text"]{
     max-width: 45%;
     text-align: right;
 }
+    .results-table{ 
+        width: 100%; 
+        border-collapse: collapse; 
+        background: var(--panel);
+        table-layout: fixed; /* stretch columns to fill available width */
+    }
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .inventory-row h3 {
     margin: 0;
     font-size: 1.1em;
@@ -2091,6 +2060,8 @@ html:not(.light-theme) .profiles input[type="text"]{
 .results-section #results-display{ width: 100%; }
 .results-section .results-wrap{ margin-left: 0; margin-right: 0; width: 100%; }
 .results-section #results-display .results-wrap{ grid-column: 1 / -1; }
+.results-table th, .results-table td{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 /* FC breakdown specific column sizing (10 columns) */
 .results-section .results-table th:nth-child(1),
 .results-section .results-table td:nth-child(1){ width: 18%; }
@@ -2916,16 +2887,109 @@ button, .dark-mode-toggle, select, input[type="number"] {
     border: 1px solid transparent; 
 }
 
- / *   W a r   L a b o r a t o r y   * / 
- . t r e e - s u r f a c e { m i n - h e i g h t : 4 8 0 p x } 
- . g r i d - 2 - c o l { d i s p l a y : g r i d ; g r i d - t e m p l a t e - c o l u m n s : r e p e a t ( a u t o - f i t , m i n m a x ( 3 2 0 p x , 1 f r ) ) } 
- . t r e e - n o d e : f o c u s { o u t l i n e : 3 p x   s o l i d   c o l o r - m i x ( i n   s r g b , v a r ( - - a c c e n t )   6 0 % ,   t r a n s p a r e n t ) } 
- 
- 
- 
+/* ==========================================================================
+   War Laboratory – Helios Research (scoped)
+   ========================================================================== */
+/* Main 2-column layout */
+.war-lab-page .war-lab-main{
+    display: grid;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 24px;
+    align-items: flex-start;
+}
+.war-lab-page .war-lab-left{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.war-lab-page .war-lab-right{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+@media (max-width: 991px){
+    .war-lab-page .war-lab-main{
+        grid-template-columns: minmax(0,1fr);
+    }
+}
 
-/* Helios branch tabs */
-.tab-row{
+/* Inventory grid (mobile stack -> 2x4 desktop) */
+.war-lab-inventory-grid{
+    display: block;
+}
+@media (min-width: 1024px){
+    .war-lab-inventory-grid{
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: 1fr;
+        gap: 12px 16px;
+    }
+    .war-lab-inv-item{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .war-lab-inv-item input,
+    .war-lab-inv-item .input,
+    .war-lab-inv-item .text-input{
+        width: 100%;
+    }
+}
+
+/* Profiles (vertical list) */
+.war-lab-profiles{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.war-lab-profiles .profiles-column{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.profiles-list-vertical{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 260px;
+    overflow: auto;
+    width: 100%;
+}
+.war-lab-profiles .profile-row{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    cursor: pointer;
+    transition: border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease;
+}
+.war-lab-profiles .profile-row:hover{
+    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+.war-lab-profiles .profile-row.is-active{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent);
+    background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+.war-lab-profiles .profile-name{
+    flex: 1;
+    text-align: center;
+    font-weight: 700;
+}
+.war-lab-profiles .profile-edit{
+    flex: 0 0 auto;
+}
+.war-lab-profiles .profiles-delete{
+    width: 100%;
+    margin-top: 6px;
+}
+
+/* Branch tabs */
+.war-lab-page .tab-row{
     display:flex;
     gap:8px;
     background: var(--card);
@@ -2933,7 +2997,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
     border-radius: 12px;
     border:1px solid var(--border);
 }
-.tab{
+.war-lab-page .tab{
     background: transparent;
     color: var(--text);
     border:1px solid transparent;
@@ -2943,72 +3007,95 @@ button, .dark-mode-toggle, select, input[type="number"] {
     font-weight:600;
     transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
-.tab:hover{
+.war-lab-page .tab:hover{
     background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
-.tab.is-active{
+.war-lab-page .tab.is-active{
     background: color-mix(in srgb, var(--accent) 25%, transparent);
     border-color: color-mix(in srgb, var(--accent) 40%, transparent);
     color: var(--text);
 }
 
-/* War Laboratory tree surface override */
-.tree-surface{
+/* Tree surface + positioning */
+.war-lab-page .tree-surface{
     min-height: 340px !important;
     overflow: visible;
 }
-
-@media (min-width:1024px){
-  .mobile-branch-nav{
-    display:none !important;
-  }
-  .layout-two-col{
-    grid-template-columns: minmax(0,2.5fr) minmax(340px,1fr);
-  }
-}
 @media (max-width:1023px){
-  .tree-surface{
-    overflow-x: auto;
-  }
+  .war-lab-page .tree-surface{ overflow-x: auto; }
+  .war-lab-page .mobile-branch-nav{ display:flex !important; }
 }
-
-.layout-two-col{
-    display: grid;
-    grid-template-columns: minmax(0,2.2fr) minmax(320px,1fr);
-    align-items: start;
-}
-.trees-column{
+.war-lab-page .trees-column{
     overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
-.results-card{
-    position: sticky;
-    top: 12px;
+
+/* Stat recap */
+.war-lab-page .stat-recap-card{ margin-top: 12px; }
+.war-lab-page .stat-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 12px;
 }
-@media (max-width:1023px){
-    .layout-two-col{
-        display: block;
-    }
-    .results-card{
-        position: relative;
-        top: 0;
-        margin-top: 12px;
-    }
+.war-lab-page .stat-col{
+    background: color-mix(in srgb, var(--panel) 80%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
 }
-.results-wrap{
-    overflow: auto;
+.war-lab-page .stat-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.war-lab-page .stat-list li{ margin: 4px 0; font-size: 0.95em; }
+.war-lab-page .stat-list .muted{ color: var(--muted-text); }
+@media (max-width: 900px){
+    .war-lab-page .stat-grid{ grid-template-columns: 1fr; }
+}
+
+/* Results (scoped) */
+.war-lab-results .results-wrap{
+    overflow-x: auto;
+    overflow-y: auto;
     border-radius: 8px;
     background: var(--card);
     padding: 10px;
     max-height: 260px;
 }
-
-.results-table{ width: 100%; border-collapse: collapse; }
-.results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
-.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
-.results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
-
-.war-lab-slot-table{ table-layout: auto; min-width: 1100px; }
-.war-lab-slot-table th, .war-lab-slot-table td{ min-width: 80px; white-space: nowrap; overflow: visible; text-overflow: clip; }
-.war-lab-slot-table .col-name{ min-width: 160px; }
-.war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
-
+.war-lab-results .results-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.war-lab-results .results-table th,
+.war-lab-results .results-table td{
+    padding: 4px 6px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+.war-lab-results .results-table thead th{
+    position: sticky;
+    top: 0;
+    background: linear-gradient(90deg, var(--card), transparent);
+    backdrop-filter: blur(2px);
+}
+.war-lab-results .results-table tfoot td{
+    font-weight: 700;
+    border-top: 2px solid var(--border);
+}
+.war-lab-results .war-lab-slot-table{
+    width: max-content;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+.war-lab-results .war-lab-slot-table th,
+.war-lab-results .war-lab-slot-table td{
+    min-width: 80px;
+}
+.war-lab-results .war-lab-slot-table .col-name{ min-width: 180px; }
+.war-lab-results .war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
