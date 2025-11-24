@@ -81,7 +81,7 @@
     if (!nodes.length) return;
 
     // Tighter vertical spacing to fit on laptop screens.
-    const CELL = 95;
+    const CELL = 90;
     const PADDING = 36;
     const minX = Math.min(...nodes.map((n) => n.position.x));
     const maxX = Math.max(...nodes.map((n) => n.position.x));
@@ -136,7 +136,7 @@
       });
     });
 
-    const baseSize = 72;
+    const baseSize = 66;
     nodes.forEach((node) => {
       const size = node.variant === 'unlock' ? baseSize + 18 : baseSize;
       const iconSrc = node.icon || 'assets/app-icon.png';
@@ -157,15 +157,17 @@
       btn.style.alignItems = 'center';
       btn.style.justifyContent = 'center';
       btn.style.overflow = 'hidden';
-      btn.style.padding = '8px 6px';
+      btn.style.padding = '6px 4px';
       btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
       btn.setAttribute('data-id', node.id);
       const range = selections[node.id];
       const levelText = range ? `${range.start} → ${range.end} / ${node.maxLevel}` : `0 → ${node.maxLevel}`;
       btn.innerHTML = `
-        <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:70%;height:70%;object-fit:contain;display:block;margin:0 auto;">
-        <span style="font-size:9px;color:var(--text,#e8f4f8);display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;">${node.name}</span>
-        <span style="font-size:9px;color:var(--muted-text,#a8c5d4);">${levelText}</span>
+        <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+          <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:82%;height:82%;object-fit:contain;display:block;margin:0 auto;">
+          <span style="position:absolute;bottom:6px;left:6px;right:6px;padding:2px 4px;font-size:9px;border-radius:6px;background:rgba(0,0,0,0.5);color:#fff;text-align:center;">${levelText}</span>
+        </div>
+        <span style="font-size:8px;color:var(--text,#e8f4f8);display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;">${node.name}</span>
       `;
       const isSelected = !!selections[node.id];
       if (isSelected) {
