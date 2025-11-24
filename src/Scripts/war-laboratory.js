@@ -15,7 +15,9 @@
 
   let currentBranch = 'marksman';
   const selections = {}; // nodeId -> { start, end }
+  const inventory = { fc: 0, meat: 0, wood: 0, coal: 0, iron: 0, steel: 0 };
   let lastSelected = null;
+  let editorEl = null;
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -44,15 +46,59 @@
     const node = window.WOSData.helios.nodeMap[nodeId];
     if (!node) return;
     lastSelected = nodeId;
-    if (selections[nodeId]) {
-      delete selections[nodeId];
-    } else {
+    if (!selections[nodeId]) {
       selections[nodeId] = { start: 0, end: node.maxLevel };
     }
     renderSelectionPanel();
     renderSelectionList();
     updateSummary();
     renderTree();
+  }
+
+  function showNodeEditor(btn, node) {
+    if (!btn || !node) return;
+    if (editorEl && editorEl.parentNode) {
+      editorEl.parentNode.removeChild(editorEl);
+    }
+    editorEl = document.createElement('div');
+    editorEl.style.position = 'absolute';
+    editorEl.style.top = '100%';
+    editorEl.style.left = '50%';
+    editorEl.style.transform = 'translateX(-50%)';
+    editorEl.style.marginTop = '4px';
+    editorEl.style.padding = '6px';
+    editorEl.style.background = 'rgba(15,31,53,0.9)';
+    editorEl.style.border = '1px solid var(--border, #0af)';
+    editorEl.style.borderRadius = '8px';
+    editorEl.style.boxShadow = '0 6px 16px rgba(0,0,0,0.45)';
+    editorEl.style.zIndex = '10';
+    editorEl.style.display = 'flex';
+    editorEl.style.gap = '6px';
+    editorEl.style.alignItems = 'center';
+    const current = selections[node.id] || { start: 0, end: node.maxLevel };
+    editorEl.innerHTML = `
+      <label style="font-size:10px;color:var(--text,#e8f4f8);display:flex;flex-direction:column;gap:2px;">
+        From
+        <input type="number" style="width:54px;" min="0" max="${node.maxLevel - 1}" value="${current.start}">
+      </label>
+      <label style="font-size:10px;color:var(--text,#e8f4f8);display:flex;flex-direction:column;gap:2px;">
+        To
+        <input type="number" style="width:54px;" min="1" max="${node.maxLevel}" value="${current.end}">
+      </label>
+    `;
+    const [fromInput, toInput] = editorEl.querySelectorAll('input');
+    const apply = () => {
+      const start = Math.max(0, Math.min(node.maxLevel - 1, parseInt(fromInput.value || '0', 10)));
+      const end = Math.max(start + 1, Math.min(node.maxLevel, parseInt(toInput.value || `${node.maxLevel}`, 10)));
+      selections[node.id] = { start, end };
+      renderSelectionList();
+      updateSummary();
+      renderTree();
+    };
+    fromInput.addEventListener('change', apply);
+    toInput.addEventListener('change', apply);
+    editorEl.addEventListener('click', (e) => e.stopPropagation());
+    btn.appendChild(editorEl);
   }
 
   function renderBranchTabs() {
@@ -153,7 +199,8 @@
         });
       });
 
-      const baseSize = 66;
+      const baseSize = 70;
+      const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
         const iconSrc = node.icon || 'assets/app-icon.png';
@@ -181,7 +228,7 @@
         const levelText = range ? `${range.start} → ${range.end}` : `0 → ${node.maxLevel}`;
         btn.innerHTML = `
           <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
-            <div style="width:94%;height:94%;display:flex;align-items:center;justify-content:center;">
+            <div style="width:96%;height:96%;display:flex;align-items:center;justify-content:center;">
               <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
             </div>
             <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -196,7 +243,11 @@
         }
         const statHint = mainStatKey((node.levels && node.levels[0] && node.levels[0].stats) || {}) || 'Stat';
         btn.title = `${node.name} (${BRANCH_LABELS[node.branch]})\nMax level: ${node.maxLevel}\n${statHint}`;
-        btn.addEventListener('click', () => handleNodeClick(node.id));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleNodeClick(node.id);
+          showNodeEditor(btn, node);
+        });
         btn.addEventListener('mouseenter', () => {
           btn.style.transform = 'scale(1.04)';
         });
@@ -204,6 +255,7 @@
           btn.style.transform = 'scale(1)';
         });
         wrapper.appendChild(btn);
+        btnMap[node.id] = { btn, node };
       });
 
       requestAnimationFrame(() => {
@@ -212,6 +264,9 @@
         const rawScale = target > 0 ? target / width : 1;
         const scale = Math.min(1.05, Math.max(0.55, rawScale));
         wrapper.style.transform = `scale(${scale})`;
+        if (lastSelected && btnMap[lastSelected]) {
+          showNodeEditor(btnMap[lastSelected].btn, btnMap[lastSelected].node);
+        }
       });
 
       tree.appendChild(col);
@@ -221,24 +276,7 @@
   function renderSelectionPanel() {
     const panel = document.getElementById('selection-panel');
     if (!panel) return;
-    if (!lastSelected) {
-      panel.innerHTML = '<p>Select a node in the tree to configure its level range.</p>';
-      return;
-    }
-    const node = window.WOSData.helios.nodeMap[lastSelected];
-    if (!node) return;
-    panel.innerHTML = `
-      <div class="card" style="margin:0;">
-        <div style="display:flex;gap:12px;align-items:center;">
-          <img src="${node.icon}" alt="${node.name}" style="width:56px;height:56px;object-fit:contain;">
-          <div>
-            <h3 style="margin:0;">${node.name}</h3>
-            <p style="margin:2px 0;">Branch: <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span></p>
-            <p style="margin:2px 0;">Max level: ${node.maxLevel}</p>
-          </div>
-        </div>
-      </div>
-    `;
+    panel.innerHTML = `<p>Ranges are edited directly on each node. Click a node to set From → To.</p>`;
   }
 
   function renderSelectionList() {
@@ -263,7 +301,7 @@
         const li = document.createElement('li');
         li.className = 'gift-code-log__item';
         li.style.display = 'grid';
-        li.style.gridTemplateColumns = 'auto 1fr auto';
+        li.style.gridTemplateColumns = 'auto 1fr';
         li.style.alignItems = 'center';
         li.style.gap = '8px';
         li.innerHTML = `
@@ -273,58 +311,13 @@
               <strong>${node.name}</strong>
               <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
             </div>
-            <div style="display:flex;gap:6px;align-items:center;margin-top:6px;">
-              <label style="display:flex;flex-direction:column;font-size:12px;gap:2px;">
-                Start
-                <input type="number" min="0" max="${node.maxLevel - 1}" value="${range.start}" data-role="start" data-id="${id}" style="width:80px;">
-              </label>
-              <label style="display:flex;flex-direction:column;font-size:12px;gap:2px;">
-                End
-                <input type="number" min="1" max="${node.maxLevel}" value="${range.end}" data-role="end" data-id="${id}" style="width:80px;">
-              </label>
-              <span style="font-size:12px;color:var(--muted-text);">/ ${node.maxLevel}</span>
+            <div style="margin-top:4px;font-size:12px;color:var(--muted-text);">
+              Range: ${range.start} → ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • Time: ${formatTime(summary.timeSeconds)}` : ''}
             </div>
-            ${
-              summary
-                ? `<div style="margin-top:6px;font-size:12px;color:var(--muted-text);">
-                    FC: ${summary.fc.toLocaleString()} • Time: ${formatTime(summary.timeSeconds)}${statPreview ? ` • ${statPreview}` : ''}
-                  </div>`
-                : ''
-            }
           </div>
-          <button class="secondary" data-remove="${id}" aria-label="Remove selection">Remove</button>
         `;
         list.appendChild(li);
       });
-
-    list.querySelectorAll('input[type="number"]').forEach((input) => {
-      input.addEventListener('change', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const node = window.WOSData.helios.nodeMap[id];
-        if (!node) return;
-        const role = e.target.getAttribute('data-role');
-        const startVal = role === 'start' ? parseInt(e.target.value || '0', 10) : selections[id].start;
-        const endVal = role === 'end' ? parseInt(e.target.value || `${node.maxLevel}`, 10) : selections[id].end;
-        const start = Math.max(0, Math.min(node.maxLevel - 1, startVal));
-        const end = Math.max(start + 1, Math.min(node.maxLevel, endVal));
-        selections[id] = { start, end };
-        renderSelectionList();
-        updateSummary();
-        renderTree();
-      });
-    });
-
-    list.querySelectorAll('button[data-remove]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-remove');
-        delete selections[id];
-        if (lastSelected === id) lastSelected = null;
-        renderSelectionPanel();
-        renderSelectionList();
-        updateSummary();
-        renderTree();
-      });
-    });
   }
 
   function accumulateTotals() {
@@ -399,16 +392,26 @@
       return;
     }
     const totals = accumulateTotals();
+    const owned = inventory;
     summary.querySelector('.gift-code-status-text').textContent = `Aggregated totals for ${Object.keys(selections).length} selection(s).`;
-    costsList.innerHTML = `
-      <li class="gift-code-log__item">Fire Crystals: ${totals.fc.toLocaleString()}</li>
-      <li class="gift-code-log__item">Meat: ${totals.meat.toLocaleString()}</li>
-      <li class="gift-code-log__item">Wood: ${totals.wood.toLocaleString()}</li>
-      <li class="gift-code-log__item">Coal: ${totals.coal.toLocaleString()}</li>
-      <li class="gift-code-log__item">Iron: ${totals.iron.toLocaleString()}</li>
-      <li class="gift-code-log__item">Steel: ${totals.steel.toLocaleString()}</li>
-      <li class="gift-code-log__item">Time: ${formatTime(totals.timeSeconds)}</li>
-    `;
+    const rows = [
+      { label: 'Fire Crystal shards', key: 'fc' },
+      { label: 'Meat', key: 'meat' },
+      { label: 'Wood', key: 'wood' },
+      { label: 'Coal', key: 'coal' },
+      { label: 'Iron', key: 'iron' },
+      { label: 'Steel', key: 'steel' }
+    ];
+    costsList.innerHTML = rows
+      .map((r) => {
+        const req = totals[r.key] || 0;
+        const have = owned[r.key] || 0;
+        const missing = req - have;
+        const status = missing > 0 ? `Missing: ${missing.toLocaleString()}` : `Surplus: ${(have - req).toLocaleString()}`;
+        return `<li class="gift-code-log__item">${r.label}: Required ${req.toLocaleString()} | Owned ${have.toLocaleString()} | ${status}</li>`;
+      })
+      .concat([`<li class="gift-code-log__item">Time: ${formatTime(totals.timeSeconds)}</li>`])
+      .join('');
     const statsMarkup = renderStats(totals.stats);
     statsList.innerHTML = `
       <li class="gift-code-log__item">Power: ${totals.power.toLocaleString()}</li>
@@ -432,6 +435,26 @@
     });
   }
 
+  function wireInventory() {
+    const map = [
+      ['inv-fc', 'fc'],
+      ['inv-meat', 'meat'],
+      ['inv-wood', 'wood'],
+      ['inv-coal', 'coal'],
+      ['inv-iron', 'iron'],
+      ['inv-steel', 'steel']
+    ];
+    map.forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        const val = parseInt(el.value || '0', 10);
+        inventory[key] = isNaN(val) ? 0 : val;
+        updateSummary();
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     renderBranchTabs();
     renderTree();
@@ -439,6 +462,7 @@
     renderSelectionList();
     updateSummary();
     wireReset();
+    wireInventory();
     window.addEventListener('resize', () => {
       renderTree();
     });

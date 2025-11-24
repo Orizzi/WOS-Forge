@@ -55,7 +55,7 @@
           Explore the Helios (Fire Crystal) research tree, pick start/end levels, and tally Fire Crystal, resources, time,
           power, SVS points, and stat gains. Icons mirror the in-game War Academy layout.
         </p>
-        <div class="grid-2-col" style="gap:16px;align-items:start;">
+        <div class="grid-2-col" style="gap:16px;align-items:start;grid-template-columns:2fr 1fr;">
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
               <h2 class="section-title" style="margin:0;">Tree</h2>
@@ -66,31 +66,37 @@
               </div>
             </div>
             <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
-          </div>
-          <div class="card" style="margin:0;">
-            <h2 class="section-title">Selection</h2>
-            <div id="selection-panel">
-              <p>Select a node to configure its level range.</p>
+            <div class="card" style="margin-top:12px;">
+              <h2 class="section-title">Inventory</h2>
+              <div class="grid-2-col" style="gap:8px;">
+                <label>Fire Crystal shards<input type="number" id="inv-fc" min="0" value="0" inputmode="numeric"></label>
+                <label>Meat<input type="number" id="inv-meat" min="0" value="0" inputmode="numeric"></label>
+                <label>Wood<input type="number" id="inv-wood" min="0" value="0" inputmode="numeric"></label>
+                <label>Coal<input type="number" id="inv-coal" min="0" value="0" inputmode="numeric"></label>
+                <label>Iron<input type="number" id="inv-iron" min="0" value="0" inputmode="numeric"></label>
+                <label>Steel<input type="number" id="inv-steel" min="0" value="0" inputmode="numeric"></label>
+              </div>
             </div>
-            <h3 class="section-title">Active selections</h3>
-            <ul id="selection-list" class="gift-code-log"></ul>
-            <button id="reset-selections" class="secondary">Reset</button>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" aria-labelledby="war-lab-summary">
-        <h2 id="war-lab-summary">Summary</h2>
-        <div id="summary-content" class="gift-code-result">
-          <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
-          <div class="grid-2-col" style="gap:12px;">
-            <div>
-              <h4>Costs</h4>
-              <ul id="costs-list" class="gift-code-log"></ul>
+            <div class="card" style="margin-top:12px;">
+              <h2 class="section-title">Active selections</h2>
+              <ul id="selection-list" class="gift-code-log"></ul>
+              <button id="reset-selections" class="secondary">Reset</button>
             </div>
-            <div>
-              <h4>Stats & Points</h4>
-              <ul id="stats-list" class="gift-code-log"></ul>
+          </div>
+          <div class="card" style="margin:0;position:sticky;top:12px;">
+            <h2 class="section-title">Results</h2>
+            <div id="summary-content" class="gift-code-result">
+              <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
+              <div class="grid-2-col" style="gap:12px;">
+                <div>
+                  <h4>Costs & Inventory</h4>
+                  <ul id="costs-list" class="gift-code-log"></ul>
+                </div>
+                <div>
+                  <h4>Stats & Points</h4>
+                  <ul id="stats-list" class="gift-code-log"></ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
