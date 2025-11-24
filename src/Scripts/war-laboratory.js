@@ -330,7 +330,7 @@
         });
       });
 
-      const baseSize = 56;
+      const baseSize = 64;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 10 : baseSize;
@@ -393,7 +393,8 @@
         const available = (tree.clientWidth / (isDesktop ? 3 : 1)) - 24;
         const target = available * 0.9;
         const rawScale = target > 0 ? target / width : 1;
-        const scale = Math.min(1.05, Math.max(0.8, rawScale));
+        const enlarged = rawScale * 1.2;
+        const scale = Math.min(1.25, Math.max(0.9, enlarged));
         wrapper.style.transform = `scale(${scale})`;
         if (lastSelected && btnMap[lastSelected]) {
           showNodeEditor(btnMap[lastSelected].btn, btnMap[lastSelected].node);

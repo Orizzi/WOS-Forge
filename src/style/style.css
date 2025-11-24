@@ -2966,8 +2966,9 @@ button, .dark-mode-toggle, select, input[type="number"] {
 
 /* Tree surface + positioning */
 .war-lab-page .tree-surface{
-    min-height: 340px !important;
-    overflow: visible;
+    min-height: 420px !important;
+    width: 100%;
+    overflow: hidden; /* fill available space, no scrollbars on desktop */
 }
 @media (max-width:1023px){
   .war-lab-page .tree-surface{ overflow-x: auto; }
