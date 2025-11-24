@@ -3032,6 +3032,14 @@ button, .dark-mode-toggle, select, input[type="number"] {
     align-items: center;
     gap: 10px;
 }
+.war-lab-page .mobile-branch-nav{
+    display: flex;
+}
+@media (min-width: 1024px){
+    .war-lab-page .mobile-branch-nav{
+        display: none !important;
+    }
+}
 
 /* Stat recap */
 .war-lab-page .stat-recap-card{ margin-top: 12px; }
