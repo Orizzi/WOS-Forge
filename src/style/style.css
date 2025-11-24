@@ -2926,4 +2926,16 @@ button, .dark-mode-toggle, select, input[type="number"] {
 /* War Laboratory tree surface override */
 .tree-surface{
     min-height: 340px !important;
+    overflow: visible;
+}
+
+@media (min-width:1024px){
+  .mobile-branch-nav{
+    display:none !important;
+  }
+}
+@media (max-width:1023px){
+  .tree-surface{
+    overflow-x: auto;
+  }
 }

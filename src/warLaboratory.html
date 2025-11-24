@@ -55,28 +55,26 @@
           Explore the Helios (Fire Crystal) research tree, pick start/end levels, and tally Fire Crystal, resources, time,
           power, SVS points, and stat gains. Icons mirror the in-game War Academy layout.
         </p>
+        <div class="card" style="margin-bottom:16px;">
+          <h2 class="section-title">Inventory</h2>
+          <div class="grid-2-col" style="gap:8px;">
+            <label>Fire Crystal shards<input type="number" id="inv-fc" min="0" value="0" inputmode="numeric"></label>
+            <label>Meat<input type="number" id="inv-meat" min="0" value="0" inputmode="numeric"></label>
+            <label>Wood<input type="number" id="inv-wood" min="0" value="0" inputmode="numeric"></label>
+            <label>Coal<input type="number" id="inv-coal" min="0" value="0" inputmode="numeric"></label>
+            <label>Iron<input type="number" id="inv-iron" min="0" value="0" inputmode="numeric"></label>
+            <label>Steel<input type="number" id="inv-steel" min="0" value="0" inputmode="numeric"></label>
+          </div>
+        </div>
         <div class="grid-2-col" style="gap:16px;align-items:start;grid-template-columns:2fr 1fr;">
           <div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <h2 class="section-title" style="margin:0;">Tree</h2>
-              <div id="branch-tabs" class="tab-row" role="tablist" aria-label="Helios branches">
-                <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
-                <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
-                <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
-              </div>
+            <h2 class="section-title" style="margin:0;">Tree</h2>
+            <div id="branch-tabs" class="tab-row mobile-branch-nav" role="tablist" aria-label="Helios branches">
+              <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
+              <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
+              <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
             </div>
             <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
-            <div class="card" style="margin-top:12px;">
-              <h2 class="section-title">Inventory</h2>
-              <div class="grid-2-col" style="gap:8px;">
-                <label>Fire Crystal shards<input type="number" id="inv-fc" min="0" value="0" inputmode="numeric"></label>
-                <label>Meat<input type="number" id="inv-meat" min="0" value="0" inputmode="numeric"></label>
-                <label>Wood<input type="number" id="inv-wood" min="0" value="0" inputmode="numeric"></label>
-                <label>Coal<input type="number" id="inv-coal" min="0" value="0" inputmode="numeric"></label>
-                <label>Iron<input type="number" id="inv-iron" min="0" value="0" inputmode="numeric"></label>
-                <label>Steel<input type="number" id="inv-steel" min="0" value="0" inputmode="numeric"></label>
-              </div>
-            </div>
             <div class="card" style="margin-top:12px;">
               <h2 class="section-title">Active selections</h2>
               <ul id="selection-list" class="gift-code-log"></ul>
