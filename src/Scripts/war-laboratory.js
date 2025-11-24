@@ -77,123 +77,144 @@
   function renderTree() {
     const tree = document.getElementById('helios-tree');
     if (!tree || !window.WOSData?.helios) return;
-    const nodes = branchNodes();
-    if (!nodes.length) return;
-
-    // Tighter vertical spacing to fit on laptop screens.
-    const CELL = 90;
-    const PADDING = 36;
-    const minX = Math.min(...nodes.map((n) => n.position.x));
-    const maxX = Math.max(...nodes.map((n) => n.position.x));
-    const minY = Math.min(...nodes.map((n) => n.position.y));
-    const maxY = Math.max(...nodes.map((n) => n.position.y));
-    const width = (maxX - minX + 1) * CELL + PADDING * 2;
-    const height = (maxY - minY + 1) * CELL + PADDING * 2;
+    const isDesktop = window.innerWidth >= 1024;
+    const branchesToRender = isDesktop ? window.WOSData.helios.branches : [currentBranch];
 
     tree.innerHTML = '';
     tree.style.position = 'relative';
     tree.style.overflowX = 'auto';
     tree.style.overflowY = 'auto';
-    tree.style.display = 'flex';
+    tree.style.display = isDesktop ? 'grid' : 'flex';
+    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(260px, 1fr))' : '';
+    tree.style.gap = isDesktop ? '24px' : '0';
     tree.style.justifyContent = 'center';
-    tree.style.alignItems = 'center';
-    tree.style.minHeight = '55vh';
+    tree.style.alignItems = 'start';
+    tree.style.minHeight = '50vh';
 
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'relative';
-    wrapper.style.width = `${width}px`;
-    wrapper.style.height = `${height}px`;
-    wrapper.style.margin = '0 auto';
-    wrapper.style.transformOrigin = 'top left';
-    tree.appendChild(wrapper);
+    branchesToRender.forEach((branch) => {
+      const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
+      if (!nodes.length) return;
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', `${width}`);
-    svg.setAttribute('height', `${height}`);
-    svg.style.position = 'absolute';
-    svg.style.top = '0';
-    svg.style.left = '0';
-    wrapper.appendChild(svg);
+      const CELL = 55;
+      const PADDING = 22;
+      const minX = Math.min(...nodes.map((n) => n.position.x));
+      const maxX = Math.max(...nodes.map((n) => n.position.x));
+      const minY = Math.min(...nodes.map((n) => n.position.y));
+      const maxY = Math.max(...nodes.map((n) => n.position.y));
+      const width = (maxX - minX + 1) * CELL + PADDING * 2;
+      const height = (maxY - minY + 1) * CELL + PADDING * 2;
 
-    // connections
-    nodes.forEach((node) => {
-      node.parents.forEach((pid) => {
-        const parent = nodes.find((n) => n.id === pid);
-        if (!parent) return;
-        const x1 = PADDING + (parent.position.x - minX) * CELL + CELL / 2;
-        const y1 = PADDING + (parent.position.y - minY) * CELL + CELL / 2;
-        const x2 = PADDING + (node.position.x - minX) * CELL + CELL / 2;
-        const y2 = PADDING + (node.position.y - minY) * CELL + CELL / 2;
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', x1);
-        line.setAttribute('y1', y1);
-        line.setAttribute('x2', x2);
-        line.setAttribute('y2', y2);
-        line.setAttribute('stroke', BRANCH_COLORS[node.branch] || '#888');
-        line.setAttribute('stroke-width', '4');
-        line.setAttribute('stroke-linecap', 'round');
-        svg.appendChild(line);
+      const col = document.createElement('div');
+      col.style.position = 'relative';
+      col.style.padding = '8px';
+      col.style.display = 'flex';
+      col.style.flexDirection = 'column';
+      col.style.alignItems = 'center';
+      const label = document.createElement('div');
+      label.textContent = BRANCH_LABELS[branch];
+      label.style.marginBottom = '8px';
+      label.style.fontWeight = '700';
+      label.style.color = BRANCH_COLORS[branch];
+      col.appendChild(label);
+
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.width = `${width}px`;
+      wrapper.style.height = `${height}px`;
+      wrapper.style.margin = '0 auto';
+      wrapper.style.transformOrigin = 'top left';
+      col.appendChild(wrapper);
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', `${width}`);
+      svg.setAttribute('height', `${height}`);
+      svg.style.position = 'absolute';
+      svg.style.top = '0';
+      svg.style.left = '0';
+      wrapper.appendChild(svg);
+
+      nodes.forEach((node) => {
+        node.parents.forEach((pid) => {
+          const parent = nodes.find((n) => n.id === pid);
+          if (!parent) return;
+          const x1 = PADDING + (parent.position.x - minX) * CELL + CELL / 2;
+          const y1 = PADDING + (parent.position.y - minY) * CELL + CELL / 2;
+          const x2 = PADDING + (node.position.x - minX) * CELL + CELL / 2;
+          const y2 = PADDING + (node.position.y - minY) * CELL + CELL / 2;
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', x1);
+          line.setAttribute('y1', y1);
+          line.setAttribute('x2', x2);
+          line.setAttribute('y2', y2);
+          line.setAttribute('stroke', BRANCH_COLORS[node.branch] || '#888');
+          line.setAttribute('stroke-width', '4');
+          line.setAttribute('stroke-linecap', 'round');
+          svg.appendChild(line);
+        });
       });
-    });
 
-    const baseSize = 66;
-    nodes.forEach((node) => {
-      const size = node.variant === 'unlock' ? baseSize + 18 : baseSize;
-      const iconSrc = node.icon || 'assets/app-icon.png';
-      const btn = document.createElement('button');
-      btn.className = 'tree-node';
-      btn.style.position = 'absolute';
-      btn.style.left = `${PADDING + (node.position.x - minX) * CELL - size / 2 + CELL / 2}px`;
-      btn.style.top = `${PADDING + (node.position.y - minY) * CELL - size / 2 + CELL / 2}px`;
-      btn.style.width = `${size}px`;
-      btn.style.height = `${size}px`;
-      btn.style.border = `3px solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
-      btn.style.borderRadius = '14px';
-      btn.style.background = 'rgba(255,255,255,0.08)';
-      btn.style.backdropFilter = 'blur(4px)';
-      btn.style.cursor = 'pointer';
-      btn.style.display = 'flex';
-      btn.style.alignItems = 'center';
-      btn.style.justifyContent = 'center';
-      btn.style.overflow = 'hidden';
-      btn.style.padding = '0';
-      btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
-      btn.setAttribute('data-id', node.id);
-      const range = selections[node.id];
-      const levelText = range ? `${range.start} → ${range.end} / ${node.maxLevel}` : `0 → ${node.maxLevel}`;
-      btn.innerHTML = `
-        <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
-          <div style="width:86%;height:86%;margin:7%;display:flex;align-items:center;justify-content:center;">
-            <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
+      const baseSize = 66;
+      nodes.forEach((node) => {
+        const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
+        const iconSrc = node.icon || 'assets/app-icon.png';
+        const btn = document.createElement('button');
+        btn.className = 'tree-node';
+        btn.style.position = 'absolute';
+        btn.style.left = `${PADDING + (node.position.x - minX) * CELL - size / 2 + CELL / 2}px`;
+        btn.style.top = `${PADDING + (node.position.y - minY) * CELL - size / 2 + CELL / 2}px`;
+        btn.style.width = `${size}px`;
+        btn.style.height = `${size}px`;
+        btn.style.border = `3px solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
+        btn.style.borderRadius = '14px';
+        btn.style.background = 'rgba(255,255,255,0.08)';
+        btn.style.backdropFilter = 'blur(4px)';
+        btn.style.cursor = 'pointer';
+        btn.style.display = 'flex';
+        btn.style.flexDirection = 'column';
+        btn.style.alignItems = 'center';
+        btn.style.justifyContent = 'flex-start';
+        btn.style.overflow = 'visible';
+        btn.style.padding = '0';
+        btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
+        btn.setAttribute('data-id', node.id);
+        const range = selections[node.id];
+        const levelText = range ? `${range.start} → ${range.end}` : `0 → ${node.maxLevel}`;
+        btn.innerHTML = `
+          <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
+            <div style="width:94%;height:94%;display:flex;align-items:center;justify-content:center;">
+              <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
+            </div>
+            <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              ${levelText}
+            </div>
           </div>
-          <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.2;padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-            ${node.name} — ${levelText}
-          </div>
-        </div>
-      `;
-      const isSelected = !!selections[node.id];
-      if (isSelected) {
-        btn.style.boxShadow = `0 0 0 3px ${BRANCH_COLORS[node.branch]}55, 0 10px 22px rgba(0,0,0,0.45)`;
-      }
-      const statHint = mainStatKey((node.levels && node.levels[0] && node.levels[0].stats) || {}) || 'Stat';
-      btn.title = `${node.name} (${BRANCH_LABELS[node.branch]})\nMax level: ${node.maxLevel}\n${statHint}`;
-      btn.addEventListener('click', () => handleNodeClick(node.id));
-      btn.addEventListener('mouseenter', () => {
-        btn.style.transform = 'scale(1.04)';
+          <div style="margin-top:2px;font-size:8px;color:var(--text,#e8f4f8);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;width:100%;">${node.name}</div>
+        `;
+        const isSelected = !!selections[node.id];
+        if (isSelected) {
+          btn.style.boxShadow = `0 0 0 3px ${BRANCH_COLORS[node.branch]}55, 0 10px 22px rgba(0,0,0,0.45)`;
+        }
+        const statHint = mainStatKey((node.levels && node.levels[0] && node.levels[0].stats) || {}) || 'Stat';
+        btn.title = `${node.name} (${BRANCH_LABELS[node.branch]})\nMax level: ${node.maxLevel}\n${statHint}`;
+        btn.addEventListener('click', () => handleNodeClick(node.id));
+        btn.addEventListener('mouseenter', () => {
+          btn.style.transform = 'scale(1.04)';
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = 'scale(1)';
+        });
+        wrapper.appendChild(btn);
       });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'scale(1)';
-      });
-      wrapper.appendChild(btn);
-    });
 
-    // scale down if overflowing
-    requestAnimationFrame(() => {
-      const available = tree.clientWidth - 48;
-      const target = available * 0.8;
-      const rawScale = target > 0 ? target / width : 1;
-      const scale = Math.min(1.05, Math.max(0.65, rawScale));
-      wrapper.style.transform = `scale(${scale})`;
+      requestAnimationFrame(() => {
+        const available = (tree.clientWidth / (isDesktop ? 3 : 1)) - 24;
+        const target = available * 0.9;
+        const rawScale = target > 0 ? target / width : 1;
+        const scale = Math.min(1.05, Math.max(0.55, rawScale));
+        wrapper.style.transform = `scale(${scale})`;
+      });
+
+      tree.appendChild(col);
     });
   }
 
@@ -418,5 +439,8 @@
     renderSelectionList();
     updateSummary();
     wireReset();
+    window.addEventListener('resize', () => {
+      renderTree();
+    });
   });
 })();
