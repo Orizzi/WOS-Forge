@@ -2933,6 +2933,9 @@ button, .dark-mode-toggle, select, input[type="number"] {
   .mobile-branch-nav{
     display:none !important;
   }
+  .layout-two-col{
+    grid-template-columns: minmax(0,2.5fr) minmax(340px,1fr);
+  }
 }
 @media (max-width:1023px){
   .tree-surface{
