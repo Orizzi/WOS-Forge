@@ -86,7 +86,7 @@
       if (i === current.start) opt.selected = true;
       fromSelect.appendChild(opt);
     }
-    for (let i = current.start + 1; i <= node.maxLevel; i++) {
+    for (let i = current.start; i <= node.maxLevel; i++) {
       const opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = String(i);
@@ -95,7 +95,8 @@
     }
     const apply = () => {
       const start = parseInt(fromSelect.value, 10);
-      const end = parseInt(toSelect.value, 10);
+      let end = parseInt(toSelect.value, 10);
+      if (end < start) end = start;
       selections[node.id] = { start, end };
       renderSelectionList();
       updateSummary();
@@ -105,7 +106,7 @@
     fromSelect.addEventListener('change', () => {
       const start = parseInt(fromSelect.value, 10);
       toSelect.innerHTML = '';
-      for (let i = start + 1; i <= node.maxLevel; i++) {
+      for (let i = start; i <= node.maxLevel; i++) {
         const opt = document.createElement('option');
         opt.value = String(i);
         opt.textContent = String(i);
@@ -249,7 +250,7 @@
         });
       });
 
-      const baseSize = 70;
+      const baseSize = 60;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
@@ -285,8 +286,7 @@
               ${levelText}
             </div>
           </div>
-          <div style="margin-top:2px;font-size:8px;color:var(--text,#e8f4f8);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;width:100%;">${node.name}</div>
-        `;
+          `;
         const isSelected = !!selections[node.id];
         if (isSelected) {
           btn.style.boxShadow = `0 0 0 3px ${BRANCH_COLORS[node.branch]}55, 0 10px 22px rgba(0,0,0,0.45)`;
@@ -370,6 +370,49 @@
       });
   }
 
+  function renderRecap() {
+    const recap = document.getElementById('recap-list');
+    if (!recap) return;
+    recap.innerHTML = '';
+    const entries = Object.entries(selections);
+    if (!entries.length) {
+      const empty = document.createElement('li');
+      empty.className = 'gift-code-log__item';
+      empty.textContent = 'No slots selected yet.';
+      recap.appendChild(empty);
+      return;
+    }
+    entries
+      .map(([id, range]) => ({ id, range, node: window.WOSData.helios.nodeMap[id] }))
+      .filter((e) => e.node)
+      .sort((a, b) => a.node.branch.localeCompare(b.node.branch) || a.node.name.localeCompare(b.node.name))
+      .forEach(({ id, range, node }) => {
+        const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || null;
+        const li = document.createElement('li');
+        li.className = 'gift-code-log__item';
+        li.style.display = 'grid';
+        li.style.gridTemplateColumns = 'auto 1fr';
+        li.style.alignItems = 'center';
+        li.style.gap = '8px';
+        li.innerHTML = `
+          <img src="${node.icon}" alt="${node.name}" style="width:42px;height:42px;object-fit:contain;">
+          <div>
+            <div style="display:flex;justify-content:space-between;gap:8px;">
+              <strong>${node.name}</strong>
+              <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted-text);margin-top:2px;">${range.start} → ${range.end} / ${node.maxLevel}</div>
+            ${
+              summary
+                ? `<div style="font-size:12px;color:var(--muted-text);margin-top:2px;">FC: ${summary.fc.toLocaleString()} • Time: ${formatTime(summary.timeSeconds)}</div>`
+                : ''
+            }
+          </div>
+        `;
+        recap.appendChild(li);
+      });
+  }
+
   function accumulateTotals() {
     const totals = {
       fc: 0,
@@ -410,6 +453,7 @@
     summary.querySelector('.gift-code-status-text').textContent = 'Select a node and set a level range to see totals here.';
     document.getElementById('costs-list').innerHTML = '';
     document.getElementById('stats-list').innerHTML = '';
+    renderRecap();
   }
 
   function renderStats(stats) {
@@ -468,6 +512,7 @@
       <li class="gift-code-log__item">SVS Points: ${totals.svsPoints.toLocaleString()}</li>
       ${statsMarkup || '<li class="gift-code-log__item">No stat gains</li>'}
     `;
+    renderRecap();
   }
 
   function wireReset() {

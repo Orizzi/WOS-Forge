@@ -5173,7 +5173,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "marksman",
-    "maxLevel": 0,
+    "maxLevel": 1,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5184,7 +5184,7 @@
     "variant": null,
     "levels": [
       {
-        "level": 0,
+        "level": 1,
         "costs": {
           "fc": 0,
           "meat": 0,
@@ -5205,7 +5205,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "infantry",
-    "maxLevel": 0,
+    "maxLevel": 1,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5216,7 +5216,7 @@
     "variant": null,
     "levels": [
       {
-        "level": 0,
+        "level": 1,
         "costs": {
           "fc": 0,
           "meat": 0,
@@ -5237,7 +5237,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "lancer",
-    "maxLevel": 0,
+    "maxLevel": 1,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5248,7 +5248,7 @@
     "variant": null,
     "levels": [
       {
-        "level": 0,
+        "level": 1,
         "costs": {
           "fc": 0,
           "meat": 0,
