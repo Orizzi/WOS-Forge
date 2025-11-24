@@ -1791,6 +1791,39 @@ html:not(.light-theme) .profiles input[type="text"]{
     border-radius: 6px;
     border: 1px solid var(--border);
 }
+
+/* Stat recap */
+.stat-recap-card{
+    margin-top: 12px;
+}
+.stat-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 12px;
+}
+.stat-col{
+    background: color-mix(in srgb, var(--panel) 80%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+.stat-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.stat-list li{
+    margin: 4px 0;
+    font-size: 0.95em;
+}
+.stat-list .muted{
+    color: var(--muted-text);
+}
+@media (max-width: 900px){
+    .stat-grid{
+        grid-template-columns: 1fr;
+    }
+}
 .results-wrap{ 
     /* Allow horizontal scroll if table gets wide, but no vertical clipping */
     overflow-x: auto; 

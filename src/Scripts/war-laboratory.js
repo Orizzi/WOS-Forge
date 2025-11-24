@@ -557,9 +557,13 @@
       svsPoints: 0,
       stats: {}
     };
+    const branchStats = {
+      marksman: {},
+      infantry: {},
+      lancer: {}
+    };
     for (const [id, range] of Object.entries(selections)) {
       const [branch] = id.split('-');
-      const slotId = id.replace(`${branch}-`, '');
       const sum = window.WOSData.helios.sumRange(id, range.start, range.end);
       if (!sum) continue;
       totals.fc += sum.fc;
@@ -573,9 +577,34 @@
       totals.svsPoints += sum.svsPoints;
       for (const [k, v] of Object.entries(sum.stats || {})) {
         totals.stats[k] = (totals.stats[k] || 0) + v;
+        branchStats[branch][k] = (branchStats[branch][k] || 0) + v;
       }
     }
-    return totals;
+    return { totals, branchStats };
+  }
+
+  function renderStatRecap(branchStats) {
+    const grid = document.getElementById('stat-recap-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const branches = ['marksman', 'infantry', 'lancer'];
+    branches.forEach((branch) => {
+      const stats = branchStats?.[branch] || {};
+      const entries = Object.entries(stats).filter(([, v]) => v);
+      const list =
+        entries.length === 0
+          ? '<li class="muted">No stats selected.</li>'
+          : entries
+              .map(([k, v]) => `<li><strong>${k}</strong>: ${v.toFixed(2)}</li>`)
+              .join('');
+      const col = document.createElement('div');
+      col.className = 'stat-col';
+      col.innerHTML = `
+        <h4 style="margin:0 0 6px;color:${BRANCH_COLORS[branch]};">${BRANCH_LABELS[branch]}</h4>
+        <ul class="stat-list">${list}</ul>
+      `;
+      grid.appendChild(col);
+    });
   }
 
   function renderSummaryEmpty() {
@@ -592,6 +621,7 @@
     const svsPill = document.getElementById('svs-pill');
     if (powerPill) powerPill.textContent = 'Total Power: 0';
     if (svsPill) svsPill.textContent = 'Total SvS Points: 0';
+    renderStatRecap(null);
   }
 
   function renderStats(stats) {
@@ -622,7 +652,7 @@
       renderSummaryEmpty();
       return;
     }
-    const totals = accumulateTotals();
+    const { totals, branchStats } = accumulateTotals();
     const owned = inventory;
     summary.querySelector('.gift-code-status-text').textContent = `Aggregated totals for ${Object.keys(selections).length} selection(s).`;
     const rows = [
@@ -658,6 +688,7 @@
     if (powerPill) powerPill.textContent = `Total Power: ${totals.power.toLocaleString()}`;
     if (svsPill) svsPill.textContent = `Total SvS Points: ${totals.svsPoints.toLocaleString()}`;
     renderRecap(totals);
+    renderStatRecap(branchStats);
   }
 
   function wireReset() {
