@@ -5161,7 +5161,8 @@
     const levels = node.levels.filter(l => typeof l.level === 'number' && l.level > startLevel && l.level <= endLevel);
     const total = {fc:0, meat:0, wood:0, coal:0, iron:0, steel:0, timeSeconds:0, stats:{}, power:0, svsPoints:0};
     levels.forEach(l => {
-      total.fc += l.costs.fc;
+      const fcCost = (l.costs && (l.costs.fc ?? l.costs.fcs ?? l.costs.fc_shards ?? l.costs.fireCrystals)) || 0;
+      total.fc += fcCost;
       total.meat += l.costs.meat;
       total.wood += l.costs.wood;
       total.coal += l.costs.coal;

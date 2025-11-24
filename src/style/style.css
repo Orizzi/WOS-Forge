@@ -1767,6 +1767,11 @@ html:not(.light-theme) .profiles input[type="text"]{
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap:12px;
 }
+@media (min-width:1024px){
+    .result-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
 .result-card{
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -1800,6 +1805,10 @@ html:not(.light-theme) .profiles input[type="text"]{
 .results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
 .results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
 .results-table tfoot td{ font-weight: 700; border-top: 2px solid var(--border); }
+.results-table th:first-child,
+.results-table td:first-child{ min-width: 120px; }
+.results-table th,
+.results-table td{ min-width: 70px; }
 
 /* Responsive breakpoints */
 @media (max-width: 1200px) {

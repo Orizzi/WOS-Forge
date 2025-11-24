@@ -308,8 +308,8 @@
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
       if (!nodes.length) return;
 
-      const CELL = 60;
-      const PADDING = 18;
+      const CELL = 48;
+      const PADDING = 14;
       const minX = Math.min(...nodes.map((n) => n.position.x));
       const maxX = Math.max(...nodes.map((n) => n.position.x));
       const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -366,7 +366,7 @@
         });
       });
 
-      const baseSize = 54;
+      const baseSize = 48;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
