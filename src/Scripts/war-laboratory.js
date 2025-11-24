@@ -513,17 +513,18 @@
         const statPreview = mainStatKey(summary.stats || {});
         return `
           <tr>
-            <td><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
-            <td>${node.name}</td>
-            <td style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</td>
-            <td>${range.start} → ${range.end} / ${node.maxLevel}</td>
-            <td>${(summary.fc || 0).toLocaleString()}</td>
+            <td style="text-align:center;"><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
+            <td class="col-name">${node.name}</td>
+            <td>${range.start}</td>
+            <td>${range.end}</td>
             <td>${(summary.meat || 0).toLocaleString()}</td>
             <td>${(summary.wood || 0).toLocaleString()}</td>
             <td>${(summary.coal || 0).toLocaleString()}</td>
             <td>${(summary.iron || 0).toLocaleString()}</td>
             <td>${(summary.steel || 0).toLocaleString()}</td>
-            <td>${statPreview || ''}</td>
+            <td>${(summary.fc || 0).toLocaleString()}</td>
+            <td>${(summary.power || 0).toLocaleString()}</td>
+            <td>${(summary.svsPoints || 0).toLocaleString()}</td>
           </tr>
         `;
       })
@@ -532,14 +533,17 @@
     if (totals) {
       tfoot.innerHTML = `
         <tr>
-          <td colspan="3"><strong>Totals</strong></td>
-          <td>${(totals.fc || 0).toLocaleString()}</td>
+          <td colspan="2"><strong>Totals</strong></td>
+          <td></td>
+          <td></td>
           <td>${(totals.meat || 0).toLocaleString()}</td>
           <td>${(totals.wood || 0).toLocaleString()}</td>
           <td>${(totals.coal || 0).toLocaleString()}</td>
           <td>${(totals.iron || 0).toLocaleString()}</td>
           <td>${(totals.steel || 0).toLocaleString()}</td>
-          <td></td>
+          <td>${(totals.fc || 0).toLocaleString()}</td>
+          <td>${(totals.power || 0).toLocaleString()}</td>
+          <td>${(totals.svsPoints || 0).toLocaleString()}</td>
         </tr>
       `;
     }

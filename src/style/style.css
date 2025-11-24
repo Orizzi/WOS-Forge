@@ -1825,8 +1825,8 @@ html:not(.light-theme) .profiles input[type="text"]{
     }
 }
 .results-wrap{ 
-    /* Allow scroll if table gets wide, hide overflow otherwise */
-    overflow: hidden;
+    /* Allow scroll if table gets wide */
+    overflow: auto;
     border-radius: 8px; 
     background: var(--card); 
     padding: 10px; 
@@ -1838,6 +1838,16 @@ html:not(.light-theme) .profiles input[type="text"]{
     overflow: auto;
     max-height: 260px;
 }
+
+.war-lab-slot-table th,
+.war-lab-slot-table td{
+    min-width: 80px;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+}
+.war-lab-slot-table .col-name{ min-width: 160px; }
+.war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
 .results-table{ width: 100%; border-collapse: collapse; }
 .results-table th, .results-table td{ padding: 4px 6px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9em; }
 .results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(2px); }
