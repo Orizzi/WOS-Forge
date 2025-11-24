@@ -19,6 +19,7 @@
   let lastSelected = null;
   let editorEl = null;
   let editorNodeId = null;
+  let editorOutsideHandler = null;
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -58,14 +59,19 @@
 
   function showNodeEditor(btn, node) {
     if (!btn || !node) return;
-    if (editorEl && editorEl.parentNode) {
-      editorEl.parentNode.removeChild(editorEl);
-    }
+    hideEditor();
     editorNodeId = node.id;
+    const portal = document.createElement('div');
+    portal.className = 'helios-editor-portal';
+    portal.style.position = 'absolute';
+    portal.style.inset = '0';
+    portal.style.zIndex = '3000';
+    portal.style.pointerEvents = 'none';
+
     editorEl = document.createElement('div');
     editorEl.className = 'helios-editor-pop';
     editorEl.style.position = 'absolute';
-    editorEl.style.zIndex = '3000';
+    editorEl.style.zIndex = '3100';
     editorEl.style.background = 'rgba(15,31,53,0.95)';
     editorEl.style.border = '1px solid var(--border, #0af)';
     editorEl.style.borderRadius = '8px';
@@ -130,7 +136,8 @@
     editorEl.appendChild(labelFrom);
     editorEl.appendChild(labelTo);
 
-    (document.body || document.documentElement).appendChild(editorEl);
+    portal.appendChild(editorEl);
+    (document.body || document.documentElement).appendChild(portal);
     const rect = btn.getBoundingClientRect();
     const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
@@ -140,14 +147,24 @@
     const outsideClick = (e) => {
       if (editorEl && !editorEl.contains(e.target)) {
         hideEditor();
-        document.removeEventListener('click', outsideClick, true);
       }
     };
+    editorOutsideHandler = outsideClick;
     setTimeout(() => document.addEventListener('click', outsideClick, true), 0);
   }
 
   function hideEditor() {
-    if (editorEl && editorEl.parentNode) editorEl.parentNode.remove();
+    if (editorOutsideHandler) {
+      document.removeEventListener('click', editorOutsideHandler, true);
+      editorOutsideHandler = null;
+    }
+    if (editorEl) {
+      const portal = editorEl.parentElement;
+      editorEl.remove();
+      if (portal && portal.parentElement === document.body) {
+        portal.remove();
+      }
+    }
     editorEl = null;
     editorNodeId = null;
   }
@@ -276,7 +293,7 @@
         btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
         btn.setAttribute('data-id', node.id);
         const range = selections[node.id];
-        const levelText = range ? `${range.start} → ${range.end}` : `0 → ${node.maxLevel}`;
+        const levelText = range ? `${range.start} -> ${range.end}` : `0 -> ${node.maxLevel}`;
         btn.innerHTML = `
           <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
             <div style="width:96%;height:96%;display:flex;align-items:center;justify-content:center;">
@@ -326,7 +343,7 @@
   function renderSelectionPanel() {
     const panel = document.getElementById('selection-panel');
     if (!panel) return;
-    panel.innerHTML = `<p>Ranges are edited directly on each node. Click a node to set From → To.</p>`;
+    panel.innerHTML = `<p>Ranges are edited directly on each node. Click a node to set From -> To.</p>`;
   }
 
   function renderSelectionList() {
@@ -362,7 +379,7 @@
               <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
             </div>
             <div style="margin-top:4px;font-size:12px;color:var(--muted-text);">
-              Range: ${range.start} → ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • Time: ${formatTime(summary.timeSeconds)}` : ''}
+              Range: ${range.start} -> ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • Time: ${formatTime(summary.timeSeconds)}` : ''}
             </div>
           </div>
         `;
@@ -401,7 +418,7 @@
               <strong>${node.name}</strong>
               <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
             </div>
-            <div style="font-size:12px;color:var(--muted-text);margin-top:2px;">${range.start} → ${range.end} / ${node.maxLevel}</div>
+            <div style="font-size:12px;color:var(--muted-text);margin-top:2px;">${range.start} -> ${range.end} / ${node.maxLevel}</div>
             ${
               summary
                 ? `<div style="font-size:12px;color:var(--muted-text);margin-top:2px;">FC: ${summary.fc.toLocaleString()} • Time: ${formatTime(summary.timeSeconds)}</div>`
@@ -471,7 +488,7 @@
     });
     return Object.entries(groups)
       .filter(([, arr]) => arr.length)
-      .map(([label, arr]) => `<li class="gift-code-log__item"><strong>${label}</strong> ${arr.join(' ? ')}</li>`)
+      .map(([label, arr]) => `<li class="gift-code-log__item"><strong>${label}</strong> ${arr.join(' -> ')}</li>`)
       .join('');
   }
 

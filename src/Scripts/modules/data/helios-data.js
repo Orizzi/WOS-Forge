@@ -5173,7 +5173,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "marksman",
-    "maxLevel": 1,
+    "maxLevel": 5,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5187,15 +5187,85 @@
         "level": 1,
         "costs": {
           "fc": 0,
-          "meat": 0,
-          "wood": 0,
-          "coal": 0,
-          "iron": 0,
-          "steel": 0
+          "meat": 300000,
+          "wood": 300000,
+          "coal": 60000,
+          "iron": 15000,
+          "steel": 5000
         },
-        "timeSeconds": 0,
-        "stats": {},
-        "power": 0,
+        "timeSeconds": 28800,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 2,
+        "costs": {
+          "fc": 0,
+          "meat": 480000,
+          "wood": 480000,
+          "coal": 96000,
+          "iron": 24000,
+          "steel": 8000
+        },
+        "timeSeconds": 46080,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 3,
+        "costs": {
+          "fc": 0,
+          "meat": 780000,
+          "wood": 780000,
+          "coal": 150000,
+          "iron": 39000,
+          "steel": 13000
+        },
+        "timeSeconds": 74880,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 4,
+        "costs": {
+          "fc": 0,
+          "meat": 1200000,
+          "wood": 1200000,
+          "coal": 250000,
+          "iron": 64000,
+          "steel": 21000
+        },
+        "timeSeconds": 123840,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 5,
+        "costs": {
+          "fc": 0,
+          "meat": 2000000,
+          "wood": 2000000,
+          "coal": 400000,
+          "iron": 100000,
+          "steel": 33000
+        },
+        "timeSeconds": 194400,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
         "svsPoints": 0
       }
     ]
@@ -5205,7 +5275,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "infantry",
-    "maxLevel": 1,
+    "maxLevel": 5,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5219,15 +5289,85 @@
         "level": 1,
         "costs": {
           "fc": 0,
-          "meat": 0,
-          "wood": 0,
-          "coal": 0,
-          "iron": 0,
-          "steel": 0
+          "meat": 300000,
+          "wood": 300000,
+          "coal": 60000,
+          "iron": 15000,
+          "steel": 5000
         },
-        "timeSeconds": 0,
-        "stats": {},
-        "power": 0,
+        "timeSeconds": 28800,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 2,
+        "costs": {
+          "fc": 0,
+          "meat": 480000,
+          "wood": 480000,
+          "coal": 96000,
+          "iron": 24000,
+          "steel": 8000
+        },
+        "timeSeconds": 46080,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 3,
+        "costs": {
+          "fc": 0,
+          "meat": 780000,
+          "wood": 780000,
+          "coal": 150000,
+          "iron": 39000,
+          "steel": 13000
+        },
+        "timeSeconds": 74880,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 4,
+        "costs": {
+          "fc": 0,
+          "meat": 1200000,
+          "wood": 1200000,
+          "coal": 250000,
+          "iron": 64000,
+          "steel": 21000
+        },
+        "timeSeconds": 123840,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 5,
+        "costs": {
+          "fc": 0,
+          "meat": 2000000,
+          "wood": 2000000,
+          "coal": 400000,
+          "iron": 100000,
+          "steel": 33000
+        },
+        "timeSeconds": 194400,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
         "svsPoints": 0
       }
     ]
@@ -5237,7 +5377,7 @@
     "slotId": "root",
     "name": "Fire Crystal Wagon",
     "branch": "lancer",
-    "maxLevel": 1,
+    "maxLevel": 5,
     "icon": "../research-icons/Flame_Squad.png",
     "position": {
       "x": 0,
@@ -5251,15 +5391,85 @@
         "level": 1,
         "costs": {
           "fc": 0,
-          "meat": 0,
-          "wood": 0,
-          "coal": 0,
-          "iron": 0,
-          "steel": 0
+          "meat": 300000,
+          "wood": 300000,
+          "coal": 60000,
+          "iron": 15000,
+          "steel": 5000
         },
-        "timeSeconds": 0,
-        "stats": {},
-        "power": 0,
+        "timeSeconds": 28800,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 2,
+        "costs": {
+          "fc": 0,
+          "meat": 480000,
+          "wood": 480000,
+          "coal": 96000,
+          "iron": 24000,
+          "steel": 8000
+        },
+        "timeSeconds": 46080,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 3,
+        "costs": {
+          "fc": 0,
+          "meat": 780000,
+          "wood": 780000,
+          "coal": 150000,
+          "iron": 39000,
+          "steel": 13000
+        },
+        "timeSeconds": 74880,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 4,
+        "costs": {
+          "fc": 0,
+          "meat": 1200000,
+          "wood": 1200000,
+          "coal": 250000,
+          "iron": 64000,
+          "steel": 21000
+        },
+        "timeSeconds": 123840,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
+        "svsPoints": 0
+      },
+      {
+        "level": 5,
+        "costs": {
+          "fc": 0,
+          "meat": 2000000,
+          "wood": 2000000,
+          "coal": 400000,
+          "iron": 100000,
+          "steel": 33000
+        },
+        "timeSeconds": 194400,
+        "stats": {
+          "Troop Deployment Capacity": 200.0
+        },
+        "power": 60000,
         "svsPoints": 0
       }
     ]
