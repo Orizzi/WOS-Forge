@@ -15,11 +15,13 @@
 
   let currentBranch = 'marksman';
   const selections = {}; // nodeId -> { start, end }
-  const inventory = { fc: 0, meat: 0, wood: 0, coal: 0, iron: 0, steel: 0 };
+  const inventory = { fc: 0, meat: 0, wood: 0, coal: 0, iron: 0, steel: 0, speedups: 0, reduction: 0 };
   let lastSelected = null;
   let editorEl = null;
   let editorNodeId = null;
   let editorOutsideHandler = null;
+  let profiles = {};
+  const PROFILE_KEY = 'helios-profiles';
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -27,6 +29,104 @@
     if (!entries.length) return null;
     const [k, v] = entries[0];
     return `${k}: ${typeof v === 'number' ? v.toFixed(2) : v}`;
+  }
+
+  function saveProfilesToStorage() {
+    try {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(profiles));
+    } catch (e) {
+      console.warn('Failed to persist Helios profiles', e);
+    }
+  }
+
+  function loadProfilesFromStorage() {
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      profiles = raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      profiles = {};
+    }
+  }
+
+  function captureProfileState() {
+    return {
+      selections: { ...selections },
+      inventory: { ...inventory }
+    };
+  }
+
+  function applyProfileState(state) {
+    if (!state) return;
+    Object.keys(selections).forEach((k) => delete selections[k]);
+    Object.assign(selections, state.selections || {});
+    Object.assign(inventory, state.inventory || {});
+    // Repaint UI with inventory values
+    const invIds = {
+      fc: 'inventory-fc',
+      meat: 'inventory-meat',
+      wood: 'inventory-wood',
+      coal: 'inventory-coal',
+      iron: 'inventory-iron',
+      steel: 'inventory-steel',
+      speedups: 'inventory-speedups',
+      reduction: 'inventory-reduction'
+    };
+    Object.entries(invIds).forEach(([key, id]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = state.inventory && state.inventory[key] != null ? state.inventory[key] : 0;
+    });
+    renderTree();
+    renderSelectionList();
+    updateSummary();
+  }
+
+  function refreshProfilesList() {
+    const sel = document.getElementById('helios-profiles-list');
+    if (!sel) return;
+    sel.innerHTML = '';
+    Object.keys(profiles).forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function initProfiles() {
+    loadProfilesFromStorage();
+    refreshProfilesList();
+    const saveBtn = document.getElementById('helios-profile-save');
+    const loadBtn = document.getElementById('helios-profile-load');
+    const delBtn = document.getElementById('helios-profile-delete');
+    const list = document.getElementById('helios-profiles-list');
+    const nameInput = document.getElementById('helios-profile-name');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const name = (nameInput?.value || '').trim();
+        if (!name) return alert('Enter a profile name');
+        profiles[name] = captureProfileState();
+        saveProfilesToStorage();
+        refreshProfilesList();
+        if (list) list.value = name;
+      });
+    }
+    if (loadBtn) {
+      loadBtn.addEventListener('click', () => {
+        const name = list?.value;
+        if (!name || !profiles[name]) return;
+        applyProfileState(profiles[name]);
+      });
+    }
+    if (delBtn) {
+      delBtn.addEventListener('click', () => {
+        const name = list?.value;
+        if (!name || !profiles[name]) return;
+        if (!confirm(`Delete profile "${name}"?`)) return;
+        delete profiles[name];
+        saveProfilesToStorage();
+        refreshProfilesList();
+      });
+    }
   }
 
   function formatTime(totalSeconds) {
@@ -204,8 +304,8 @@
     tree.style.overflowX = 'auto';
     tree.style.overflowY = 'auto';
     tree.style.display = isDesktop ? 'grid' : 'flex';
-    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(300px, 1fr))' : '';
-    tree.style.gap = isDesktop ? '28px' : '0';
+    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(260px, 1fr))' : '';
+    tree.style.gap = isDesktop ? '18px' : '0';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = 'start';
     tree.style.minHeight = '50vh';
@@ -214,8 +314,8 @@
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
       if (!nodes.length) return;
 
-      const CELL = 70;
-      const PADDING = 28;
+      const CELL = 60;
+      const PADDING = 18;
       const minX = Math.min(...nodes.map((n) => n.position.x));
       const maxX = Math.max(...nodes.map((n) => n.position.x));
       const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -272,7 +372,7 @@
         });
       });
 
-      const baseSize = 60;
+      const baseSize = 54;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 14 : baseSize;
@@ -545,20 +645,14 @@
     costsList.innerHTML = rows
       .map((r) => {
         const req = totals[r.key] || 0;
-        const have = owned[r.key] || 0;
-        const missing = req - have;
-        const statusLabel = missing > 0 ? 'Missing' : 'Surplus';
-        const statusValue = missing > 0 ? missing : have - req;
         return `
-        <div class="result-box label-with-icon" style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin-bottom:8px;">
-          <img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}">
-          <div>
-            <div style="font-weight:700">${r.label}</div>
-            <div style="font-size:12px;color:var(--muted-text);">Required: ${req.toLocaleString()}</div>
-            <div style="font-size:12px;color:var(--muted-text);">Owned: ${have.toLocaleString()}</div>
-            <div style="font-size:12px;color:var(--muted-text);">${statusLabel}: ${statusValue.toLocaleString()}</div>
-          </div>
-        </div>`;
+          <div class="result-box label-with-icon" style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin-bottom:8px;">
+            <img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}">
+            <div>
+              <div style="font-weight:700">${r.label}</div>
+              <div style="font-size:12px;color:var(--muted-text);">Required: ${req.toLocaleString()}</div>
+            </div>
+          </div>`;
       })
       .concat([`<div class="result-box" style="margin-top:8px;">Time: ${formatTime(totals.timeSeconds)}</div>`])
       .join('');
@@ -588,12 +682,14 @@
 
   function wireInventory() {
     const map = [
-      ['inv-fc', 'fc'],
-      ['inv-meat', 'meat'],
-      ['inv-wood', 'wood'],
-      ['inv-coal', 'coal'],
-      ['inv-iron', 'iron'],
-      ['inv-steel', 'steel']
+      ['inventory-fc', 'fc'],
+      ['inventory-meat', 'meat'],
+      ['inventory-wood', 'wood'],
+      ['inventory-coal', 'coal'],
+      ['inventory-iron', 'iron'],
+      ['inventory-steel', 'steel'],
+      ['inventory-speedups', 'speedups'],
+      ['inventory-reduction', 'reduction']
     ];
     map.forEach(([id, key]) => {
       const el = document.getElementById(id);
@@ -614,6 +710,7 @@
     updateSummary();
     wireReset();
     wireInventory();
+    initProfiles();
     window.addEventListener('resize', () => {
       renderTree();
     });
