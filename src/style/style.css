@@ -50,12 +50,11 @@ body {
 .form-field,
 /* ===== Results tables (shared: Charms, Fire Crystals) ===== */
 .results-wrap{ 
-    margin: 16px; 
-    padding: 12px; 
-    background: color-mix(in srgb, var(--panel) 80%, transparent); 
-    border: 1px solid var(--border); 
-    border-radius: 10px; 
-    box-shadow: 0 4px 14px var(--shadow);
+    overflow: auto;
+    border-radius: 8px; 
+    background: var(--card); 
+    padding: 10px; 
+    max-height: 260px;
 }
 
 .results-table{ 
@@ -1824,21 +1823,6 @@ html:not(.light-theme) .profiles input[type="text"]{
         grid-template-columns: 1fr;
     }
 }
-.results-wrap{ 
-    /* Allow scroll if table gets wide */
-    overflow: auto;
-    border-radius: 8px; 
-    background: var(--card); 
-    padding: 10px; 
-    border: 1px solid var(--border); 
-    max-height: none;
-}
-
-.results-table-wrapper{
-    overflow: auto;
-    max-height: 260px;
-}
-
 .war-lab-slot-table th,
 .war-lab-slot-table td{
     min-width: 80px;
