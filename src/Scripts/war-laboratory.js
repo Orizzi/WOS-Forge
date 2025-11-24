@@ -156,13 +156,14 @@
       btn.style.flexDirection = 'column';
       btn.style.alignItems = 'center';
       btn.style.justifyContent = 'center';
+      btn.style.overflow = 'hidden';
       btn.style.padding = '8px 6px';
       btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
       btn.setAttribute('data-id', node.id);
       const range = selections[node.id];
       const levelText = range ? `${range.start} → ${range.end} / ${node.maxLevel}` : `0 → ${node.maxLevel}`;
       btn.innerHTML = `
-        <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="max-width:60px;max-height:60px;object-fit:contain;">
+        <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:70%;height:70%;object-fit:contain;display:block;margin:0 auto;">
         <span style="font-size:9px;color:var(--text,#e8f4f8);display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;">${node.name}</span>
         <span style="font-size:9px;color:var(--muted-text,#a8c5d4);">${levelText}</span>
       `;
