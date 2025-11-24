@@ -149,7 +149,7 @@
     if (!node) return;
     lastSelected = nodeId;
     if (!selections[nodeId]) {
-      selections[nodeId] = { start: 0, end: node.maxLevel };
+      selections[nodeId] = { start: 0, end: 0 };
     }
     renderSelectionPanel();
     renderSelectionList();
@@ -182,47 +182,41 @@
     editorEl.style.alignItems = 'center';
     editorEl.style.pointerEvents = 'auto';
 
-    const current = selections[node.id] || { start: 0, end: node.maxLevel };
+    const current = selections[node.id] || { start: 0, end: 0 };
     const fromSelect = document.createElement('select');
     const toSelect = document.createElement('select');
-    for (let i = 0; i <= node.maxLevel; i++) {
-      const opt = document.createElement('option');
-      opt.value = String(i);
-      opt.textContent = String(i);
-      if (i === current.start) opt.selected = true;
-      fromSelect.appendChild(opt);
-    }
-    for (let i = current.start; i <= node.maxLevel; i++) {
-      const opt = document.createElement('option');
-      opt.value = String(i);
-      opt.textContent = String(i);
-      if (i === current.end) opt.selected = true;
-      toSelect.appendChild(opt);
-    }
+    const buildOptions = (select, start, max, selectedVal) => {
+      select.innerHTML = '';
+      for (let i = start; i <= max; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = String(i);
+        if (i === selectedVal) opt.selected = true;
+        select.appendChild(opt);
+      }
+    };
+    buildOptions(fromSelect, 0, node.maxLevel, current.start);
+    buildOptions(toSelect, current.start, node.maxLevel, current.end);
     const apply = () => {
-      const start = parseInt(fromSelect.value, 10);
-      let end = parseInt(toSelect.value, 10);
-      if (isNaN(end) || end < start) end = start;
-      selections[node.id] = { start, end };
+      const startRaw = parseInt(fromSelect.value, 10);
+      const endRaw = parseInt(toSelect.value, 10);
+      const safeFrom = Math.max(0, Math.min(isNaN(startRaw) ? 0 : startRaw, node.maxLevel));
+      const safeTo = Math.max(safeFrom, Math.min(isNaN(endRaw) ? safeFrom : endRaw, node.maxLevel));
+      selections[node.id] = { start: safeFrom, end: safeTo };
       renderSelectionList();
       updateSummary();
       renderTree();
     };
     fromSelect.addEventListener('change', () => {
       const start = parseInt(fromSelect.value, 10);
-      let end = parseInt(toSelect.value, 10);
-      toSelect.innerHTML = '';
-      for (let i = start; i <= node.maxLevel; i++) {
-        const opt = document.createElement('option');
-        opt.value = String(i);
-        opt.textContent = String(i);
-        if (i === end) opt.selected = true;
-        toSelect.appendChild(opt);
-      }
-      if (isNaN(end) || end < start) {
-        toSelect.value = String(start);
-      }
-      apply();
+      const end = parseInt(toSelect.value, 10);
+      const safeFrom = Math.max(0, Math.min(isNaN(start) ? 0 : start, node.maxLevel));
+      const safeEnd = Math.max(safeFrom, Math.min(isNaN(end) ? safeFrom : end, node.maxLevel));
+      buildOptions(toSelect, safeFrom, node.maxLevel, safeEnd);
+      selections[node.id] = { start: safeFrom, end: safeEnd };
+      renderSelectionList();
+      updateSummary();
+      renderTree();
     });
     toSelect.addEventListener('change', apply);
 
@@ -492,40 +486,26 @@
       });
   }
 
-  function renderRecap() {
-    const recap = document.getElementById('recap-list');
-    if (!recap) return;
-    recap.innerHTML = '';
+  function renderRecap(totals) {
+    const tbody = document.querySelector('#recap-table tbody');
+    const tfoot = document.querySelector('#recap-table tfoot');
+    if (!tbody || !tfoot) return;
+    tbody.innerHTML = '';
+    tfoot.innerHTML = '';
     const entries = Object.entries(selections);
     if (!entries.length) {
-      recap.innerHTML = '<div class="gift-code-log__item">No slots selected yet.</div>';
+      tbody.innerHTML = '<tr><td colspan="10">No slots selected yet.</td></tr>';
       return;
     }
     const rows = entries
       .map(([id, range]) => ({ id, range, node: window.WOSData.helios.nodeMap[id] }))
       .filter((e) => e.node)
+      .filter((e) => e.range.start < e.range.end)
       .sort((a, b) => a.node.branch.localeCompare(b.node.branch) || a.node.name.localeCompare(b.node.name));
-
-    const header = `
-      <div class="table-wrapper">
-        <table class="slot-recap-table">
-          <thead>
-            <tr>
-              <th>Icon</th>
-              <th>Tech</th>
-              <th>Branch</th>
-              <th>From → To</th>
-              <th>FCs</th>
-              <th>Meat</th>
-              <th>Wood</th>
-              <th>Coal</th>
-              <th>Iron</th>
-              <th>Steel</th>
-              <th>Key stat</th>
-            </tr>
-          </thead>
-          <tbody>
-    `;
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="10">No slots selected yet.</td></tr>';
+      return;
+    }
     const body = rows
       .map(({ id, range, node }) => {
         const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || {};
@@ -547,8 +527,21 @@
         `;
       })
       .join('');
-    const footer = `</tbody></table></div>`;
-    recap.innerHTML = header + body + footer;
+    tbody.innerHTML = body;
+    if (totals) {
+      tfoot.innerHTML = `
+        <tr>
+          <td colspan="3"><strong>Totals</strong></td>
+          <td>${(totals.fc || 0).toLocaleString()}</td>
+          <td>${(totals.meat || 0).toLocaleString()}</td>
+          <td>${(totals.wood || 0).toLocaleString()}</td>
+          <td>${(totals.coal || 0).toLocaleString()}</td>
+          <td>${(totals.iron || 0).toLocaleString()}</td>
+          <td>${(totals.steel || 0).toLocaleString()}</td>
+          <td></td>
+        </tr>
+      `;
+    }
   }
 
   function accumulateTotals() {
@@ -589,9 +582,16 @@
     const summary = document.getElementById('summary-content');
     if (!summary) return;
     summary.querySelector('.gift-code-status-text').textContent = 'Select a node and set a level range to see totals here.';
-    document.getElementById('costs-list').innerHTML = '';
-    document.getElementById('stats-list').innerHTML = '';
-    renderRecap();
+    const costs = document.getElementById('costs-cards');
+    if (costs) costs.innerHTML = '';
+    const tbody = document.querySelector('#recap-table tbody');
+    const tfoot = document.querySelector('#recap-table tfoot');
+    if (tbody) tbody.innerHTML = '';
+    if (tfoot) tfoot.innerHTML = '';
+    const powerPill = document.getElementById('power-pill');
+    const svsPill = document.getElementById('svs-pill');
+    if (powerPill) powerPill.textContent = 'Total Power: 0';
+    if (svsPill) svsPill.textContent = 'Total SvS Points: 0';
   }
 
   function renderStats(stats) {
@@ -615,9 +615,8 @@
 
   function updateSummary() {
     const summary = document.getElementById('summary-content');
-    const costsList = document.getElementById('costs-list');
-    const statsList = document.getElementById('stats-list');
-    if (!summary || !costsList || !statsList) return;
+    const costsCards = document.getElementById('costs-cards');
+    if (!summary || !costsCards) return;
     const hasSelections = Object.keys(selections).length > 0;
     if (!hasSelections) {
       renderSummaryEmpty();
@@ -627,42 +626,38 @@
     const owned = inventory;
     summary.querySelector('.gift-code-status-text').textContent = `Aggregated totals for ${Object.keys(selections).length} selection(s).`;
     const rows = [
-      { label: 'FCs', key: 'fc' },
-      { label: 'Meat', key: 'meat' },
-      { label: 'Wood', key: 'wood' },
-      { label: 'Coal', key: 'coal' },
-      { label: 'Iron', key: 'iron' },
-      { label: 'Steel', key: 'steel' }
+      { label: 'FCs', key: 'fc', icon: 'assets/resources/base/fire-crystal-shards.png' },
+      { label: 'Meat', key: 'meat', icon: 'assets/resources/base/meat.png' },
+      { label: 'Wood', key: 'wood', icon: 'assets/resources/base/wood.png' },
+      { label: 'Coal', key: 'coal', icon: 'assets/resources/base/coal.png' },
+      { label: 'Iron', key: 'iron', icon: 'assets/resources/base/iron.png' },
+      { label: 'Steel', key: 'steel', icon: 'assets/resources/base/steel.png' }
     ];
-    const iconMap = {
-      fc: 'assets/resources/base/fire-crystal-shards.png',
-      meat: 'assets/resources/base/meat.png',
-      wood: 'assets/resources/base/wood.png',
-      coal: 'assets/resources/base/coal.png',
-      iron: 'assets/resources/base/iron.png',
-      steel: 'assets/resources/base/steel.png'
-    };
-    costsList.innerHTML = rows
+    costsCards.innerHTML = rows
       .map((r) => {
         const req = totals[r.key] || 0;
+        const have = owned[r.key] || 0;
+        const missing = Math.max(0, req - have);
+        const gapClass = missing > 0 ? 'gap-line deficit' : 'gap-line surplus';
+        const gapText = missing > 0 ? `⚠ need ${missing.toLocaleString()} more` : 'OK';
         return `
-          <div class="result-box label-with-icon" style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin-bottom:8px;">
-            <img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}">
-            <div>
-              <div style="font-weight:700">${r.label}</div>
-              <div style="font-size:12px;color:var(--muted-text);">Required: ${req.toLocaleString()}</div>
+          <div class="result-card">
+            <div class="label-with-icon" style="gap:8px;">
+              <img class="res-icon" src="${r.icon}" alt="${r.label}">
+              <strong>${r.label}:</strong>
             </div>
-          </div>`;
+            <div class="result-value">${req.toLocaleString()}</div>
+            <div class="${gapClass}">${gapText}</div>
+          </div>
+        `;
       })
-      .concat([`<div class="result-box" style="margin-top:8px;">Time: ${formatTime(totals.timeSeconds)}</div>`])
-      .join('');
-    const statsMarkup = renderStats(totals.stats);
-    statsList.innerHTML = `
-      <li class="gift-code-log__item">Power: ${totals.power.toLocaleString()}</li>
-      <li class="gift-code-log__item">SVS Points: ${totals.svsPoints.toLocaleString()}</li>
-      ${statsMarkup || '<li class="gift-code-log__item">No stat gains</li>'}
-    `;
-    renderRecap();
+      .join('') + `<div class="result-card"><strong>Time:</strong> ${formatTime(totals.timeSeconds)}</div>`;
+
+    const powerPill = document.getElementById('power-pill');
+    const svsPill = document.getElementById('svs-pill');
+    if (powerPill) powerPill.textContent = `Total Power: ${totals.power.toLocaleString()}`;
+    if (svsPill) svsPill.textContent = `Total SvS Points: ${totals.svsPoints.toLocaleString()}`;
+    renderRecap(totals);
   }
 
   function wireReset() {

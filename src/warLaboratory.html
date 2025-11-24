@@ -55,58 +55,60 @@
           Explore the Helios (Fire Crystal) research tree, pick start/end levels, and tally Fire Crystal, resources, time,
           power, SVS points, and stat gains. Icons mirror the in-game War Academy layout.
         </p>
-        <section class="inventory-section card" aria-label="Helios Inventory">
-          <h3>Your Inventory</h3>
-          <div class="inventory-grid inventory-grid-2x4">
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat">Meat</span></label>
-              <input type="number" id="inventory-meat" min="0" value="0" inputmode="numeric">
+        <div class="inventory-profiles-row">
+          <section class="inventory-section card" aria-label="Helios Inventory">
+            <h3>Your Inventory</h3>
+            <div class="inventory-grid inventory-grid-2x4">
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat">Meat</span></label>
+                <input type="number" id="inventory-meat" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood">Wood</span></label>
+                <input type="number" id="inventory-wood" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal">Coal</span></label>
+                <input type="number" id="inventory-coal" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron">Iron</span></label>
+                <input type="number" id="inventory-iron" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystal-shards.png" alt="FCs">FCs</span></label>
+                <input type="number" id="inventory-fc" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel">Steel</span></label>
+                <input type="number" id="inventory-steel" min="0" value="0" inputmode="numeric">
+              </div>
+              <div class="inventory-item">
+                <label>Speedups (time)</label>
+                <input type="number" id="inventory-speedups" min="0" value="0" inputmode="numeric" placeholder="minutes">
+              </div>
+              <div class="inventory-item">
+                <label>Research % reduction</label>
+                <input type="number" id="inventory-reduction" min="0" max="100" value="0" inputmode="numeric" placeholder="%">
+              </div>
             </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood">Wood</span></label>
-              <input type="number" id="inventory-wood" min="0" value="0" inputmode="numeric">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal">Coal</span></label>
-              <input type="number" id="inventory-coal" min="0" value="0" inputmode="numeric">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron">Iron</span></label>
-              <input type="number" id="inventory-iron" min="0" value="0" inputmode="numeric">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystal-shards.png" alt="FCs">FCs</span></label>
-              <input type="number" id="inventory-fc" min="0" value="0" inputmode="numeric">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel">Steel</span></label>
-              <input type="number" id="inventory-steel" min="0" value="0" inputmode="numeric">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/app-icon.png" alt="Speedups">Speedups (time)</span></label>
-              <input type="number" id="inventory-speedups" min="0" value="0" inputmode="numeric" placeholder="minutes">
-            </div>
-            <div class="inventory-item">
-              <label><span class="label-with-icon"><img class="res-icon" src="assets/app-icon.png" alt="Reduction %">Research % reduction</span></label>
-              <input type="number" id="inventory-reduction" min="0" max="100" value="0" inputmode="numeric" placeholder="%">
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="card profiles" aria-label="Helios Profiles">
-          <div class="profiles-header">
-            <h3>Profiles</h3>
-          </div>
-          <div class="profiles-body">
-            <select id="helios-profiles-list" aria-label="Saved profiles"></select>
-            <input type="text" id="helios-profile-name" placeholder="Profile name" maxlength="20">
-            <div class="profiles-actions">
-              <button id="helios-profile-save" class="btn primary">Save</button>
-              <button id="helios-profile-load" class="btn secondary">Load</button>
-              <button id="helios-profile-delete" class="btn danger">Delete</button>
+          <section class="card profiles" aria-label="Helios Profiles">
+            <div class="profiles-header">
+              <h3>Profiles</h3>
             </div>
-          </div>
-        </section>
+            <div class="profiles-body">
+              <select id="helios-profiles-list" aria-label="Saved profiles"></select>
+              <input type="text" id="helios-profile-name" placeholder="Profile name" maxlength="20">
+              <div class="profiles-actions">
+                <button id="helios-profile-save" class="btn primary">Save</button>
+                <button id="helios-profile-load" class="btn secondary">Load</button>
+                <button id="helios-profile-delete" class="btn danger">Delete</button>
+              </div>
+            </div>
+          </section>
+        </div>
 
         <div class="layout-two-col" style="gap:16px;">
           <div class="trees-column">
@@ -119,21 +121,32 @@
           </div>
           <div class="card results-card">
             <h2 class="section-title">Results</h2>
-            <div id="summary-content" class="gift-code-result">
+            <div id="summary-content" class="calculation-output">
               <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
-              <div class="grid-2-col" style="gap:12px;">
-                <div>
-                  <h4>Costs & Inventory</h4>
-                  <ul id="costs-list" class="gift-code-log"></ul>
-                </div>
-                <div>
-                  <h4>Stats & Points</h4>
-                  <ul id="stats-list" class="gift-code-log"></ul>
-                </div>
+              <div id="costs-cards" class="result-grid"></div>
+              <div class="result-totals" style="display:grid;grid-template-columns: repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                <div class="summary-pill" id="power-pill">Total Power: 0</div>
+                <div class="summary-pill" id="svs-pill">Total SvS Points: 0</div>
               </div>
-              <div style="margin-top:12px;">
-                <h4>Slot recap</h4>
-                <ul id="recap-list" class="gift-code-log"></ul>
+              <div class="results-wrap">
+                <table class="results-table" id="recap-table">
+                  <thead>
+                    <tr>
+                      <th>Slot</th>
+                      <th>FROM</th>
+                      <th>TO</th>
+                      <th>FCs</th>
+                      <th>Meat</th>
+                      <th>Wood</th>
+                      <th>Coal</th>
+                      <th>Iron</th>
+                      <th>Steel</th>
+                      <th>Key stat</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tfoot></tfoot>
+                </table>
               </div>
             </div>
           </div>
