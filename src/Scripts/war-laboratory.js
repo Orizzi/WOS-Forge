@@ -153,22 +153,22 @@
       btn.style.backdropFilter = 'blur(4px)';
       btn.style.cursor = 'pointer';
       btn.style.display = 'flex';
-      btn.style.flexDirection = 'column';
       btn.style.alignItems = 'center';
       btn.style.justifyContent = 'center';
       btn.style.overflow = 'hidden';
-      btn.style.padding = '6px 4px';
+      btn.style.padding = '0';
       btn.style.transition = 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease';
       btn.setAttribute('data-id', node.id);
       const range = selections[node.id];
       const levelText = range ? `${range.start} → ${range.end} / ${node.maxLevel}` : `0 → ${node.maxLevel}`;
       btn.innerHTML = `
-        <div style="width:100%;height:100%;display:flex;flex-direction:column;gap:4px;align-items:center;justify-content:flex-start;overflow:hidden;">
-          <div style="flex:1;width:100%;display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;overflow:hidden;border-radius:12px;padding:4px;">
+        <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
+          <div style="width:86%;height:86%;margin:7%;display:flex;align-items:center;justify-content:center;">
             <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
           </div>
-          <div style="width:100%;text-align:center;font-size:8px;color:var(--text,#e8f4f8);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${node.name}</div>
-          <div style="width:100%;text-align:center;font-size:8px;color:var(--muted-text,#a8c5d4);line-height:1.2;">${levelText}</div>
+          <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.2;padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            ${node.name} — ${levelText}
+          </div>
         </div>
       `;
       const isSelected = !!selections[node.id];
