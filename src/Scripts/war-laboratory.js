@@ -668,13 +668,14 @@
       { label: 'Iron', key: 'iron', icon: 'assets/resources/base/iron.png' },
       { label: 'Steel', key: 'steel', icon: 'assets/resources/base/steel.png' }
     ];
-    costsCards.innerHTML = rows
+    const resourceCards = rows
       .map((r) => {
         const req = totals[r.key] || 0;
         const have = owned[r.key] || 0;
-        const missing = Math.max(0, req - have);
-        const gapClass = missing > 0 ? 'gap-line deficit' : 'gap-line surplus';
-        const gapText = missing > 0 ? `⚠ need ${missing.toLocaleString()} more` : 'OK';
+        const diff = have - req;
+        const missing = diff < 0 ? Math.abs(diff) : diff;
+        const gapClass = diff < 0 ? 'gap-line deficit' : 'gap-line surplus';
+        const gapText = diff < 0 ? `⚠ need ${missing.toLocaleString()} more` : `left ${missing.toLocaleString()}`;
         return `
           <div class="result-card">
             <div class="label-with-icon" style="gap:8px;">
@@ -686,7 +687,32 @@
           </div>
         `;
       })
-      .join('') + `<div class="result-card"><strong>Time:</strong> ${formatTime(totals.timeSeconds)}</div>`;
+      .join('');
+
+    // Time + speedups handling
+    const researchPct =
+      (owned.reduction || 0) +
+      Object.entries(totals.stats || {})
+        .filter(([k]) => k.toLowerCase().includes('research'))
+        .reduce((acc, [, v]) => acc + v, 0);
+    const factor = 100 / (100 + (researchPct || 0));
+    const effectiveSeconds = totals.timeSeconds * factor;
+    const speedupDays = Number(owned.speedups || 0);
+    const speedupSeconds = speedupDays * 24 * 60 * 60;
+    const remainingSeconds = effectiveSeconds - speedupSeconds;
+    const stripeClass = remainingSeconds > 0 ? 'gap-line deficit' : 'gap-line surplus';
+    const daysVal = Math.abs(remainingSeconds) / (24 * 60 * 60);
+    const stripeText =
+      remainingSeconds > 0 ? `⚠ need ${daysVal.toFixed(1)} days more` : `left ${daysVal.toFixed(1)} days`;
+
+    const timeCard = `
+      <div class="result-card">
+        <div><strong>Time (after research):</strong> ${formatTime(effectiveSeconds)}</div>
+        <div class="${stripeClass}">${stripeText}</div>
+      </div>
+    `;
+
+    costsCards.innerHTML = resourceCards + timeCard;
 
     const powerPill = document.getElementById('power-pill');
     const svsPill = document.getElementById('svs-pill');
