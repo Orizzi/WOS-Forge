@@ -32,7 +32,7 @@
   },
   {
     "id": "helios_unlock",
-    "row": 1.5,
+    "row": 1.8,
     "col": 0,
     "parents": [
       "flame_legion",
@@ -45,7 +45,7 @@
   },
   {
     "id": "flame_legion",
-    "row": 3.5,
+    "row": 3.0,
     "col": 0,
     "parents": [
       "crystal_armor",
@@ -55,7 +55,7 @@
   },
   {
     "id": "crystal_protection",
-    "row": 3,
+    "row": 2.4,
     "col": -1,
     "parents": [
       "crystal_armor"
@@ -64,7 +64,7 @@
   },
   {
     "id": "crystal_arrow",
-    "row": 3,
+    "row": 2.4,
     "col": 1,
     "parents": [
       "crystal_vision"
@@ -73,7 +73,7 @@
   },
   {
     "id": "crystal_armor",
-    "row": 4,
+    "row": 3.8,
     "col": -1,
     "parents": [
       "flame_squad"
@@ -82,7 +82,7 @@
   },
   {
     "id": "crystal_vision",
-    "row": 4,
+    "row": 3.8,
     "col": 1,
     "parents": [
       "flame_squad"
@@ -93,17 +93,8 @@
     "id": "flame_squad",
     "row": 5,
     "col": 0,
-    "parents": [
-      "root"
-    ],
-    "category": "utility"
-  },
-  {
-    "id": "root",
-    "row": 6,
-    "col": 0,
     "parents": [],
-    "category": "root"
+    "category": "utility"
   }
 ];
   const NODES = [
@@ -1817,7 +1808,7 @@
     "icon": "../research-icons/Helios_Marksman.png",
     "position": {
       "x": 0,
-      "y": 1
+      "y": 1.8
     },
     "parents": [
       "marksman-flame_legion",
@@ -1853,7 +1844,7 @@
     "icon": "../research-icons/Helios_Infantry.png",
     "position": {
       "x": 0,
-      "y": 1
+      "y": 1.8
     },
     "parents": [
       "infantry-flame_legion",
@@ -1889,7 +1880,7 @@
     "icon": "../research-icons/Helios_Lancer.png",
     "position": {
       "x": 0,
-      "y": 1
+      "y": 1.8
     },
     "parents": [
       "lancer-flame_legion",
@@ -1925,7 +1916,7 @@
     "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
-      "y": 3.5
+      "y": 3
     },
     "parents": [
       "marksman-crystal_armor",
@@ -2149,7 +2140,7 @@
     "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
-      "y": 3.5
+      "y": 3
     },
     "parents": [
       "infantry-crystal_armor",
@@ -2373,7 +2364,7 @@
     "icon": "../research-icons/Flame_Legion.png",
     "position": {
       "x": 0,
-      "y": 3.5
+      "y": 3
     },
     "parents": [
       "lancer-crystal_armor",
@@ -2597,7 +2588,7 @@
     "icon": "../research-icons/Flame_Protection.png",
     "position": {
       "x": -1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "marksman-crystal_armor"
@@ -2820,7 +2811,7 @@
     "icon": "../research-icons/Blazing_Guardian.png",
     "position": {
       "x": -1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "infantry-crystal_armor"
@@ -3043,7 +3034,7 @@
     "icon": "../research-icons/Crystal_Protection.png",
     "position": {
       "x": -1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "lancer-crystal_armor"
@@ -3266,7 +3257,7 @@
     "icon": "../research-icons/Flame_Tomahawk.png",
     "position": {
       "x": 1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "marksman-crystal_vision"
@@ -3489,7 +3480,7 @@
     "icon": "../research-icons/Blazing_Lance.png",
     "position": {
       "x": 1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "infantry-crystal_vision"
@@ -3712,7 +3703,7 @@
     "icon": "../research-icons/Crystal_Arrow.png",
     "position": {
       "x": 1,
-      "y": 3
+      "y": 2.4
     },
     "parents": [
       "lancer-crystal_vision"
@@ -3935,7 +3926,7 @@
     "icon": "../research-icons/Flame_Shield.png",
     "position": {
       "x": -1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "marksman-flame_squad"
@@ -4090,7 +4081,7 @@
     "icon": "../research-icons/Blazing_Armor.png",
     "position": {
       "x": -1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "infantry-flame_squad"
@@ -4245,7 +4236,7 @@
     "icon": "../research-icons/Crystal_Armor.png",
     "position": {
       "x": -1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "lancer-flame_squad"
@@ -4400,7 +4391,7 @@
     "icon": "../research-icons/Flame_Strike.png",
     "position": {
       "x": 1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "marksman-flame_squad"
@@ -4555,7 +4546,7 @@
     "icon": "../research-icons/Blazing_Charge.png",
     "position": {
       "x": 1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "infantry-flame_squad"
@@ -4710,7 +4701,7 @@
     "icon": "../research-icons/Crystal_Vision.png",
     "position": {
       "x": 1,
-      "y": 4
+      "y": 3.8
     },
     "parents": [
       "lancer-flame_squad"
@@ -4867,9 +4858,7 @@
       "x": 0,
       "y": 5
     },
-    "parents": [
-      "marksman-root"
-    ],
+    "parents": [],
     "type": "utility",
     "variant": null,
     "levels": [
@@ -4971,9 +4960,7 @@
       "x": 0,
       "y": 5
     },
-    "parents": [
-      "infantry-root"
-    ],
+    "parents": [],
     "type": "utility",
     "variant": null,
     "levels": [
@@ -5075,9 +5062,7 @@
       "x": 0,
       "y": 5
     },
-    "parents": [
-      "lancer-root"
-    ],
+    "parents": [],
     "type": "utility",
     "variant": null,
     "levels": [
@@ -5168,312 +5153,6 @@
       }
     ]
   },
-  {
-    "id": "marksman-root",
-    "slotId": "root",
-    "name": "Fire Crystal Wagon",
-    "branch": "marksman",
-    "maxLevel": 5,
-    "icon": "../research-icons/Flame_Squad.png",
-    "position": {
-      "x": 0,
-      "y": 6
-    },
-    "parents": [],
-    "type": "root",
-    "variant": null,
-    "levels": [
-      {
-        "level": 1,
-        "costs": {
-          "fc": 0,
-          "meat": 300000,
-          "wood": 300000,
-          "coal": 60000,
-          "iron": 15000,
-          "steel": 5000
-        },
-        "timeSeconds": 28800,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 2,
-        "costs": {
-          "fc": 0,
-          "meat": 480000,
-          "wood": 480000,
-          "coal": 96000,
-          "iron": 24000,
-          "steel": 8000
-        },
-        "timeSeconds": 46080,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 3,
-        "costs": {
-          "fc": 0,
-          "meat": 780000,
-          "wood": 780000,
-          "coal": 150000,
-          "iron": 39000,
-          "steel": 13000
-        },
-        "timeSeconds": 74880,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 4,
-        "costs": {
-          "fc": 0,
-          "meat": 1200000,
-          "wood": 1200000,
-          "coal": 250000,
-          "iron": 64000,
-          "steel": 21000
-        },
-        "timeSeconds": 123840,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 5,
-        "costs": {
-          "fc": 0,
-          "meat": 2000000,
-          "wood": 2000000,
-          "coal": 400000,
-          "iron": 100000,
-          "steel": 33000
-        },
-        "timeSeconds": 194400,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      }
-    ]
-  },
-  {
-    "id": "infantry-root",
-    "slotId": "root",
-    "name": "Fire Crystal Wagon",
-    "branch": "infantry",
-    "maxLevel": 5,
-    "icon": "../research-icons/Flame_Squad.png",
-    "position": {
-      "x": 0,
-      "y": 6
-    },
-    "parents": [],
-    "type": "root",
-    "variant": null,
-    "levels": [
-      {
-        "level": 1,
-        "costs": {
-          "fc": 0,
-          "meat": 300000,
-          "wood": 300000,
-          "coal": 60000,
-          "iron": 15000,
-          "steel": 5000
-        },
-        "timeSeconds": 28800,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 2,
-        "costs": {
-          "fc": 0,
-          "meat": 480000,
-          "wood": 480000,
-          "coal": 96000,
-          "iron": 24000,
-          "steel": 8000
-        },
-        "timeSeconds": 46080,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 3,
-        "costs": {
-          "fc": 0,
-          "meat": 780000,
-          "wood": 780000,
-          "coal": 150000,
-          "iron": 39000,
-          "steel": 13000
-        },
-        "timeSeconds": 74880,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 4,
-        "costs": {
-          "fc": 0,
-          "meat": 1200000,
-          "wood": 1200000,
-          "coal": 250000,
-          "iron": 64000,
-          "steel": 21000
-        },
-        "timeSeconds": 123840,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 5,
-        "costs": {
-          "fc": 0,
-          "meat": 2000000,
-          "wood": 2000000,
-          "coal": 400000,
-          "iron": 100000,
-          "steel": 33000
-        },
-        "timeSeconds": 194400,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      }
-    ]
-  },
-  {
-    "id": "lancer-root",
-    "slotId": "root",
-    "name": "Fire Crystal Wagon",
-    "branch": "lancer",
-    "maxLevel": 5,
-    "icon": "../research-icons/Flame_Squad.png",
-    "position": {
-      "x": 0,
-      "y": 6
-    },
-    "parents": [],
-    "type": "root",
-    "variant": null,
-    "levels": [
-      {
-        "level": 1,
-        "costs": {
-          "fc": 0,
-          "meat": 300000,
-          "wood": 300000,
-          "coal": 60000,
-          "iron": 15000,
-          "steel": 5000
-        },
-        "timeSeconds": 28800,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 2,
-        "costs": {
-          "fc": 0,
-          "meat": 480000,
-          "wood": 480000,
-          "coal": 96000,
-          "iron": 24000,
-          "steel": 8000
-        },
-        "timeSeconds": 46080,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 3,
-        "costs": {
-          "fc": 0,
-          "meat": 780000,
-          "wood": 780000,
-          "coal": 150000,
-          "iron": 39000,
-          "steel": 13000
-        },
-        "timeSeconds": 74880,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 4,
-        "costs": {
-          "fc": 0,
-          "meat": 1200000,
-          "wood": 1200000,
-          "coal": 250000,
-          "iron": 64000,
-          "steel": 21000
-        },
-        "timeSeconds": 123840,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      },
-      {
-        "level": 5,
-        "costs": {
-          "fc": 0,
-          "meat": 2000000,
-          "wood": 2000000,
-          "coal": 400000,
-          "iron": 100000,
-          "steel": 33000
-        },
-        "timeSeconds": 194400,
-        "stats": {
-          "Troop Deployment Capacity": 200.0
-        },
-        "power": 60000,
-        "svsPoints": 0
-      }
-    ]
-  }
 ];
   const nodeMap = Object.fromEntries(NODES.map(n => [n.id, n]));
   function sumRange(nodeId, startLevel, endLevel){

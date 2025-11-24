@@ -102,22 +102,27 @@
     const apply = () => {
       const start = parseInt(fromSelect.value, 10);
       let end = parseInt(toSelect.value, 10);
-      if (end < start) end = start;
+      if (isNaN(end) || end < start) end = start;
       selections[node.id] = { start, end };
       renderSelectionList();
       updateSummary();
       renderTree();
-      hideEditor();
     };
     fromSelect.addEventListener('change', () => {
       const start = parseInt(fromSelect.value, 10);
+      let end = parseInt(toSelect.value, 10);
       toSelect.innerHTML = '';
       for (let i = start; i <= node.maxLevel; i++) {
         const opt = document.createElement('option');
         opt.value = String(i);
         opt.textContent = String(i);
+        if (i === end) opt.selected = true;
         toSelect.appendChild(opt);
       }
+      if (isNaN(end) || end < start) {
+        toSelect.value = String(start);
+      }
+      apply();
     });
     toSelect.addEventListener('change', apply);
 
@@ -199,8 +204,8 @@
     tree.style.overflowX = 'auto';
     tree.style.overflowY = 'auto';
     tree.style.display = isDesktop ? 'grid' : 'flex';
-    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(260px, 1fr))' : '';
-    tree.style.gap = isDesktop ? '24px' : '0';
+    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(300px, 1fr))' : '';
+    tree.style.gap = isDesktop ? '28px' : '0';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = 'start';
     tree.style.minHeight = '50vh';
@@ -209,8 +214,8 @@
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
       if (!nodes.length) return;
 
-      const CELL = 55;
-      const PADDING = 22;
+      const CELL = 70;
+      const PADDING = 28;
       const minX = Math.min(...nodes.map((n) => n.position.x));
       const maxX = Math.max(...nodes.map((n) => n.position.x));
       const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -393,41 +398,57 @@
     recap.innerHTML = '';
     const entries = Object.entries(selections);
     if (!entries.length) {
-      const empty = document.createElement('li');
-      empty.className = 'gift-code-log__item';
-      empty.textContent = 'No slots selected yet.';
-      recap.appendChild(empty);
+      recap.innerHTML = '<div class="gift-code-log__item">No slots selected yet.</div>';
       return;
     }
-    entries
+    const rows = entries
       .map(([id, range]) => ({ id, range, node: window.WOSData.helios.nodeMap[id] }))
       .filter((e) => e.node)
-      .sort((a, b) => a.node.branch.localeCompare(b.node.branch) || a.node.name.localeCompare(b.node.name))
-      .forEach(({ id, range, node }) => {
-        const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || null;
-        const li = document.createElement('li');
-        li.className = 'gift-code-log__item';
-        li.style.display = 'grid';
-        li.style.gridTemplateColumns = 'auto 1fr';
-        li.style.alignItems = 'center';
-        li.style.gap = '8px';
-        li.innerHTML = `
-          <img src="${node.icon}" alt="${node.name}" style="width:42px;height:42px;object-fit:contain;">
-          <div>
-            <div style="display:flex;justify-content:space-between;gap:8px;">
-              <strong>${node.name}</strong>
-              <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
-            </div>
-            <div style="font-size:12px;color:var(--muted-text);margin-top:2px;">${range.start} -> ${range.end} / ${node.maxLevel}</div>
-            ${
-              summary
-                ? `<div style="font-size:12px;color:var(--muted-text);margin-top:2px;">FC: ${summary.fc.toLocaleString()} • Time: ${formatTime(summary.timeSeconds)}</div>`
-                : ''
-            }
-          </div>
+      .sort((a, b) => a.node.branch.localeCompare(b.node.branch) || a.node.name.localeCompare(b.node.name));
+
+    const header = `
+      <div class="table-wrapper">
+        <table class="slot-recap-table">
+          <thead>
+            <tr>
+              <th>Icon</th>
+              <th>Tech</th>
+              <th>Branch</th>
+              <th>From → To</th>
+              <th>FCs</th>
+              <th>Meat</th>
+              <th>Wood</th>
+              <th>Coal</th>
+              <th>Iron</th>
+              <th>Steel</th>
+              <th>Key stat</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    const body = rows
+      .map(({ id, range, node }) => {
+        const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || {};
+        const statPreview = mainStatKey(summary.stats || {});
+        return `
+          <tr>
+            <td><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
+            <td>${node.name}</td>
+            <td style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</td>
+            <td>${range.start} → ${range.end} / ${node.maxLevel}</td>
+            <td>${(summary.fc || 0).toLocaleString()}</td>
+            <td>${(summary.meat || 0).toLocaleString()}</td>
+            <td>${(summary.wood || 0).toLocaleString()}</td>
+            <td>${(summary.coal || 0).toLocaleString()}</td>
+            <td>${(summary.iron || 0).toLocaleString()}</td>
+            <td>${(summary.steel || 0).toLocaleString()}</td>
+            <td>${statPreview || ''}</td>
+          </tr>
         `;
-        recap.appendChild(li);
-      });
+      })
+      .join('');
+    const footer = `</tbody></table></div>`;
+    recap.innerHTML = header + body + footer;
   }
 
   function accumulateTotals() {
@@ -506,7 +527,7 @@
     const owned = inventory;
     summary.querySelector('.gift-code-status-text').textContent = `Aggregated totals for ${Object.keys(selections).length} selection(s).`;
     const rows = [
-      { label: 'Fire Crystal shards', key: 'fc' },
+      { label: 'FCs', key: 'fc' },
       { label: 'Meat', key: 'meat' },
       { label: 'Wood', key: 'wood' },
       { label: 'Coal', key: 'coal' },
@@ -526,10 +547,20 @@
         const req = totals[r.key] || 0;
         const have = owned[r.key] || 0;
         const missing = req - have;
-        const status = missing > 0 ? `Missing: ${missing.toLocaleString()}` : `Surplus: ${(have - req).toLocaleString()}`;
-        return `<li class="gift-code-log__item label-with-icon"><img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}"> ${r.label}: Required ${req.toLocaleString()} | Owned ${have.toLocaleString()} | ${status}</li>`;
+        const statusLabel = missing > 0 ? 'Missing' : 'Surplus';
+        const statusValue = missing > 0 ? missing : have - req;
+        return `
+        <div class="result-box label-with-icon" style="display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin-bottom:8px;">
+          <img class="res-icon" src="${iconMap[r.key] || ''}" alt="${r.label}">
+          <div>
+            <div style="font-weight:700">${r.label}</div>
+            <div style="font-size:12px;color:var(--muted-text);">Required: ${req.toLocaleString()}</div>
+            <div style="font-size:12px;color:var(--muted-text);">Owned: ${have.toLocaleString()}</div>
+            <div style="font-size:12px;color:var(--muted-text);">${statusLabel}: ${statusValue.toLocaleString()}</div>
+          </div>
+        </div>`;
       })
-      .concat([`<li class="gift-code-log__item">Time: ${formatTime(totals.timeSeconds)}</li>`])
+      .concat([`<div class="result-box" style="margin-top:8px;">Time: ${formatTime(totals.timeSeconds)}</div>`])
       .join('');
     const statsMarkup = renderStats(totals.stats);
     statsList.innerHTML = `
