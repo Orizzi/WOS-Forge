@@ -107,52 +107,59 @@
           </section>
         </div>
 
-        <div class="layout-two-col" style="gap:16px;">
-          <div class="trees-column">
-            <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
-              <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
-              <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
-              <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
+        <div class="war-lab-main-row">
+          <div class="war-lab-left-col">
+            <div class="layout-two-col" style="gap:16px;">
+              <div class="trees-column">
+                <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
+                  <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
+                  <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
+                  <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
+                </div>
+                <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
+              </div>
             </div>
-            <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
             <section class="card stat-recap-card" aria-label="Stat recap">
               <h3 class="section-title">Stat recap</h3>
               <div class="stat-grid" id="stat-recap-grid"></div>
             </section>
           </div>
-          <div class="card results-card">
-            <h2 class="section-title">Results</h2>
-            <div id="summary-content" class="calculation-output">
-              <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
-              <div id="costs-cards" class="result-grid"></div>
-              <div class="result-totals" style="display:grid;grid-template-columns: repeat(auto-fit,minmax(220px,1fr));gap:12px;">
-                <div class="summary-pill" id="power-pill">Total Power: 0</div>
-                <div class="summary-pill" id="svs-pill">Total SvS Points: 0</div>
-              </div>
-              <div class="results-wrap results-table-wrapper">
-                <table id="helios-slot-table" class="results-table war-lab-slot-table">
-                  <thead>
-                    <tr>
-                      <th class="col-icon">Icon</th>
-                      <th class="col-name">Name</th>
-                      <th>From</th>
-                      <th>To</th>
-                      <th>Meat</th>
-                      <th>Wood</th>
-                      <th>Coal</th>
-                      <th>Iron</th>
-                      <th>Steel</th>
-                      <th>FCs</th>
-                      <th>Power</th>
-                      <th>SvS</th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                  <tfoot></tfoot>
-                </table>
+
+          <aside class="war-lab-results-col">
+            <div class="card results-card">
+              <h2 class="section-title">Results</h2>
+              <div id="summary-content" class="calculation-output">
+                <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
+                <div id="costs-cards" class="result-grid"></div>
+                <div class="result-totals" style="display:grid;grid-template-columns: repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+                  <div class="summary-pill" id="power-pill">Total Power: 0</div>
+                  <div class="summary-pill" id="svs-pill">Total SvS Points: 0</div>
+                </div>
+                <div class="results-wrap results-table-wrapper">
+                  <table id="helios-slot-table" class="results-table war-lab-slot-table">
+                    <thead>
+                      <tr>
+                        <th class="col-icon">Icon</th>
+                        <th class="col-name">Name</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Meat</th>
+                        <th>Wood</th>
+                        <th>Coal</th>
+                        <th>Iron</th>
+                        <th>Steel</th>
+                        <th>FCs</th>
+                        <th>Power</th>
+                        <th>SvS</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot></tfoot>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
+          </aside>
         </div>
       </section>
     </main>

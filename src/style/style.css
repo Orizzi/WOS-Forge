@@ -1784,15 +1784,30 @@ html:not(.light-theme) .profiles input[type="text"]{
         grid-template-columns: 1fr;
     }
 }
-.war-lab-slot-table th,
-.war-lab-slot-table td{
-    min-width: 80px;
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: clip;
+/* War lab main layout */
+.war-lab-main-row{
+    display: block;
 }
-.war-lab-slot-table .col-name{ min-width: 160px; }
-.war-lab-slot-table .col-icon{ min-width: 48px; width:48px; text-align: center; }
+@media (min-width:1024px){
+    .war-lab-main-row{
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+    }
+    .war-lab-left-col{
+        flex: 1 1 50%;
+        max-width: 50%;
+    }
+    .war-lab-results-col{
+        flex: 1 1 50%;
+        max-width: 50%;
+    }
+    .war-lab-results-col > section,
+    .war-lab-results-col .results-card{
+        width: 100%;
+        max-width: 100%;
+    }
+}
 /* Responsive breakpoints */
 @media (max-width: 1200px) {
     .main-layout-wrapper {
