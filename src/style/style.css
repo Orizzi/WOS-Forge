@@ -3035,9 +3035,11 @@ button, .dark-mode-toggle, select, input[type="number"] {
 
 /* Mobile: allow single horizontal scroll only */
 @media (max-width: 1023px){
-  .war-lab-page .war-lab-tree-section{
+.war-lab-page .war-lab-tree-section{
     width: 100%;
-  }
+    display: flex;
+    justify-content: center;
+}
   .war-lab-page .war-lab-tree-wrapper{
     width: 100%;
     overflow-x: auto;
@@ -3046,11 +3048,12 @@ button, .dark-mode-toggle, select, input[type="number"] {
     padding: 0 8px 4px;
     display: flex;
     justify-content: center;
+    max-width: 100vw;
   }
   .war-lab-page .war-lab-trees-row{
     display: inline-flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 0;
     overflow: visible;
     padding-bottom: 8px;
     justify-content: center;
@@ -3058,22 +3061,42 @@ button, .dark-mode-toggle, select, input[type="number"] {
   }
   .war-lab-page .war-lab-tree-column{
     flex: 0 0 auto;
+    position: relative;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
   }
   .war-lab-page #helios-tree{
     display: inline-flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 0;
     overflow: visible;
-    min-width: 340px;
+    min-width: 220px;
     justify-content: center;
+    align-items: flex-start;
   }
   .war-lab-page #helios-tree .tree-column{
     flex: 0 0 auto;
+    position: relative;
+    width: 200px;
+    height: 368px;
+    margin: 0 auto;
+    transform-origin: center top;
+    transform: scale(1.3);
   }
 }
 .war-lab-page .mobile-branch-nav{
     display: flex;
     margin: 12px 0;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+}
+.war-lab-page .mobile-branch-nav .tab{
+    min-width: 110px;
+    flex: 0 0 auto;
 }
 @media (min-width: 1024px){
     .war-lab-page .mobile-branch-nav{

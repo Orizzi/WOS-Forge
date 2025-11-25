@@ -300,7 +300,12 @@
       wrapper.style.width = `${width}px`;
       wrapper.style.height = `${height}px`;
       wrapper.style.margin = '0 auto';
-      wrapper.style.transformOrigin = 'top left';
+      wrapper.style.transformOrigin = 'top';
+      if (!isDesktop) {
+        wrapper.style.transform = 'scale(1.3)';
+      } else {
+        wrapper.style.transform = '';
+      }
       col.appendChild(wrapper);
 
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -331,7 +336,7 @@
         });
       });
 
-      const baseSize = isDesktop ? 60 : 64;
+      const baseSize = isDesktop ? 60 : 56;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 10 : baseSize;
