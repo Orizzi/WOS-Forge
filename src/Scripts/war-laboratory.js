@@ -260,7 +260,7 @@
     tree.innerHTML = '';
     tree.style.position = 'relative';
     tree.style.overflowX = isDesktop ? 'visible' : 'auto';
-    tree.style.overflowY = isDesktop ? 'visible' : 'visible';
+    tree.style.overflowY = isDesktop ? 'visible' : 'hidden';
     tree.style.display = isDesktop ? 'grid' : 'flex';
     tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(280px, 1fr))' : '';
     tree.style.gap = isDesktop ? '16px' : '0';
@@ -290,9 +290,9 @@
       col.style.alignItems = 'center';
       const label = document.createElement('div');
       label.textContent = BRANCH_LABELS[branch];
-      label.style.marginBottom = '8px';
+      label.style.marginBottom = isDesktop ? '8px' : '0';
       label.style.fontWeight = '700';
-      label.style.color = BRANCH_COLORS[branch];
+      label.style.color = isDesktop ? BRANCH_COLORS[branch] : 'transparent';
       col.appendChild(label);
 
       const wrapper = document.createElement('div');
@@ -364,12 +364,14 @@
         const range = selections[node.id];
         const defaultText = '0 -> 0';
         const levelText = range ? `${range.start} -> ${range.end}` : defaultText;
+        const isChanged = !!range && (range.start > 0 || range.end > 0);
+        const overlayBg = isChanged ? 'rgba(0,217,255,0.75)' : 'rgba(0,0,0,0.45)';
         btn.innerHTML = `
           <div style="position:relative;width:100%;height:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:inherit;">
             <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
               <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
             </div>
-            <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            <div style="position:absolute;left:0;right:0;bottom:0;background:${overlayBg};color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
               ${levelText}
             </div>
           </div>
@@ -753,20 +755,23 @@
       ['inventory-speedups', 'speedups'],
       ['inventory-reduction', 'reduction']
     ];
+    const handleInvChange = (id, key, el) => {
+      // Enforce digit limits for FCs (7 digits) and Steel (10 digits)
+      if (id === 'inventory-fc') {
+        el.value = limitDigits(el.value, 7);
+      } else if (id === 'inventory-steel') {
+        el.value = limitDigits(el.value, 10);
+      }
+      const val = parseInt(el.value || '0', 10);
+      inventory[key] = isNaN(val) ? 0 : val;
+      updateSummary();
+      autoSaveProfileSelections();
+    };
     map.forEach(([id, key]) => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('input', () => {
-        // Enforce digit limits for FCs (7 digits) and Steel (10 digits)
-        if (id === 'inventory-fc') {
-          el.value = limitDigits(el.value, 7);
-        } else if (id === 'inventory-steel') {
-          el.value = limitDigits(el.value, 10);
-        }
-        const val = parseInt(el.value || '0', 10);
-        inventory[key] = isNaN(val) ? 0 : val;
-        updateSummary();
-      });
+      el.addEventListener('input', () => handleInvChange(id, key, el));
+      el.addEventListener('change', () => handleInvChange(id, key, el));
     });
   }
 

@@ -3035,6 +3035,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
 
 /* Mobile: allow single horizontal scroll only */
 @media (max-width: 1023px){
+  .inventory-profiles-row .profiles {
+    flex: 1 1 0;
+    min-width: 1em;
+  }
 .war-lab-page .war-lab-tree-section{
     width: 100%;
     display: flex;
@@ -3055,9 +3059,36 @@ button, .dark-mode-toggle, select, input[type="number"] {
     flex-direction: row;
     gap: 0;
     overflow: visible;
-    padding-bottom: 8px;
+    padding-bottom: 72px;
     justify-content: center;
     width: 100%;
+    /* mobile-specific theming */
+    --bg: #0a1628;
+    --panel: #0f1f35;
+    --muted: #1a2d47;
+    --accent: #00d9ff;
+    --accent-secondary: #0099cc;
+    --text: #e8f4f8;
+    --muted-text: #a8c5d4;
+    --card: rgb(0 217 255 / 5%);
+    --success: #00d9ff;
+    --danger: #ff7b7b;
+    --border: rgb(0 217 255 / 12%);
+    --shadow: rgb(0 0 0 / 30%);
+    --field-bg: color-mix(in srgb, var(--panel) 85%, transparent);
+    --field-border: color-mix(in srgb, var(--border) 150%, transparent);
+    --field-focus: color-mix(in srgb, var(--accent) 55%, transparent);
+    --field-radius: 12px;
+    --field-padding: 10px 14px;
+    --field-height: 48px;
+    --field-font: 1rem;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: var(--text);
+    line-height: 1.55 !important;
+    min-width: 220px;
+    position: relative;
+    align-items: flex-start;
+    min-height: 50vh;
   }
   .war-lab-page .war-lab-tree-column{
     flex: 0 0 auto;
@@ -3137,6 +3168,21 @@ button, .dark-mode-toggle, select, input[type="number"] {
     padding: 10px;
     max-height: 260px;
     width: 100%;
+}
+.war-lab-results .slot-card{
+    overflow: hidden;
+}
+@media (max-width: 1023px) {
+  .war-lab-results .slot-card .results-wrap{
+      overflow-x: auto;
+      overflow-y: hidden;
+      width: 100%;
+      max-width: calc(100vw - 8rem);
+  }
+  .war-lab-results .results-table-wrapper{
+      width: max-content;
+      min-width: 100%;
+  }
 }
 .war-lab-results .result-grid{
     display: grid;
