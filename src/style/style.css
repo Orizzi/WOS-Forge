@@ -3073,6 +3073,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
 }
 .war-lab-page .mobile-branch-nav{
     display: flex;
+    margin: 12px 0;
 }
 @media (min-width: 1024px){
     .war-lab-page .mobile-branch-nav{
