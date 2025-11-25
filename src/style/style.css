@@ -2971,7 +2971,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
     overflow: hidden; /* fill available space, no scrollbars on desktop */
 }
 @media (max-width:1023px){
-  .war-lab-page .tree-surface{ overflow-x: auto; }
+  .war-lab-page .tree-surface{ overflow-x: auto; overflow-y: hidden; }
   .war-lab-page .mobile-branch-nav{ display:flex !important; }
 }
 .war-lab-page .trees-column{
@@ -2980,6 +2980,90 @@ button, .dark-mode-toggle, select, input[type="number"] {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+}
+
+/* Desktop tree layout: fill width, no inner scrollbars */
+@media (min-width: 1024px){
+  .war-lab-page .war-lab-tree-section{
+    width: 100%;
+    overflow: visible;
+  }
+  .war-lab-page .war-lab-tree-wrapper{
+    width: 100%;
+    max-width: none;
+    display: flex;
+    justify-content: center;
+    overflow: visible !important;
+  }
+  .war-lab-page .war-lab-trees-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: 18px;
+    width: 100%;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    flex-wrap: nowrap;
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  .war-lab-page .war-lab-tree-column{
+    flex: 1 1 0;
+    max-width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .war-lab-page #helios-tree{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 24px;
+    width: 100%;
+    max-width: none;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+  .war-lab-page #helios-tree .tree-column{
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* Mobile: allow single horizontal scroll only */
+@media (max-width: 1023px){
+  .war-lab-page .war-lab-tree-section{
+    width: 100%;
+  }
+  .war-lab-page .war-lab-tree-wrapper{
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .war-lab-page .war-lab-trees-row{
+    display: inline-flex;
+    flex-direction: row;
+    gap: 16px;
+    overflow: visible;
+    padding-bottom: 8px;
+  }
+  .war-lab-page .war-lab-tree-column{
+    flex: 0 0 auto;
+  }
+  .war-lab-page #helios-tree{
+    display: inline-flex;
+    flex-direction: row;
+    gap: 16px;
+    overflow: visible;
+    width: 100%;
+  }
+  .war-lab-page #helios-tree .tree-column{
+    flex: 0 0 auto;
+  }
 }
 .war-lab-page .mobile-branch-nav{
     display: flex;

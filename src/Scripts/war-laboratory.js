@@ -259,11 +259,11 @@
 
     tree.innerHTML = '';
     tree.style.position = 'relative';
-    tree.style.overflowX = 'auto';
-    tree.style.overflowY = 'auto';
+    tree.style.overflowX = isDesktop ? 'visible' : 'auto';
+    tree.style.overflowY = isDesktop ? 'visible' : 'auto';
     tree.style.display = isDesktop ? 'grid' : 'flex';
-    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(260px, 1fr))' : '';
-    tree.style.gap = isDesktop ? '18px' : '0';
+    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(280px, 1fr))' : '';
+    tree.style.gap = isDesktop ? '16px' : '0';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = 'start';
     tree.style.minHeight = '50vh';
@@ -272,8 +272,8 @@
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
       if (!nodes.length) return;
 
-      const CELL = 56;
-      const PADDING = 16;
+      const CELL = isDesktop ? 68 : 56;
+      const PADDING = isDesktop ? 20 : 16;
       const minX = Math.min(...nodes.map((n) => n.position.x));
       const maxX = Math.max(...nodes.map((n) => n.position.x));
       const minY = Math.min(...nodes.map((n) => n.position.y));
@@ -330,7 +330,7 @@
         });
       });
 
-      const baseSize = 64;
+      const baseSize = isDesktop ? 60 : 64;
       const btnMap = {};
       nodes.forEach((node) => {
         const size = node.variant === 'unlock' ? baseSize + 10 : baseSize;
