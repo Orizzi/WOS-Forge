@@ -3095,7 +3095,7 @@ button, .dark-mode-toggle, select, input[type="number"] {
     text-align: center;
 }
 .war-lab-page .mobile-branch-nav .tab{
-    min-width: 110px;
+    min-width: 1em;
     flex: 0 0 auto;
 }
 @media (min-width: 1024px){
