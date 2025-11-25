@@ -3043,13 +3043,18 @@ button, .dark-mode-toggle, select, input[type="number"] {
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    padding: 0 8px 4px;
+    display: flex;
+    justify-content: center;
   }
   .war-lab-page .war-lab-trees-row{
     display: inline-flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 12px;
     overflow: visible;
     padding-bottom: 8px;
+    justify-content: center;
+    width: 100%;
   }
   .war-lab-page .war-lab-tree-column{
     flex: 0 0 auto;
@@ -3057,9 +3062,10 @@ button, .dark-mode-toggle, select, input[type="number"] {
   .war-lab-page #helios-tree{
     display: inline-flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 12px;
     overflow: visible;
-    width: 100%;
+    min-width: 340px;
+    justify-content: center;
   }
   .war-lab-page #helios-tree .tree-column{
     flex: 0 0 auto;
@@ -3106,6 +3112,31 @@ button, .dark-mode-toggle, select, input[type="number"] {
     background: var(--card);
     padding: 10px;
     max-height: 260px;
+    width: 100%;
+}
+.war-lab-results .result-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 12px;
+}
+.war-lab-results .result-card.span-2{
+    grid-column: 1 / -1;
+}
+.war-lab-results .summary-pill{
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 80%, transparent);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.war-lab-results .summary-pill.accent{
+    background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+    color: #fff;
+}
+.war-lab-results .summary-pill.span-2{
+    grid-column: 1 / -1;
 }
 .war-lab-results .results-table{
     width: 100%;

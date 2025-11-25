@@ -5169,8 +5169,9 @@
       total.iron += l.costs.iron;
       total.steel += l.costs.steel;
       total.timeSeconds += l.timeSeconds;
-      total.power += l.power;
-      total.svsPoints += l.svsPoints;
+      // Power should be the gain between FROM and TO, which equals the sum of per-level increments
+      total.power += l.power || 0;
+      // svsPoints handled in UI (speedups + FCs); ignore per-level values here
       Object.entries(l.stats || {}).forEach(([k,v]) => { total.stats[k] = (total.stats[k]||0)+v; });
     });
     return total;

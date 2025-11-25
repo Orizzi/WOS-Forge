@@ -109,14 +109,13 @@
 
         <div class="war-lab-main">
           <section class="war-lab-left">
-            <div class="trees-column">
-              <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
-                <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
-                <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
-                <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
+            <section class="war-lab-tree-section">
+              <div class="war-lab-tree-wrapper">
+                <div class="war-lab-trees-row" id="helios-tree">
+                  <div class="tree-column"></div>
+                </div>
               </div>
-              <div id="helios-tree" class="tree-surface" aria-label="Helios research tree"></div>
-            </div>
+            </section>
             <section class="card stat-recap-card" aria-label="Stat recap">
               <h3 class="section-title">Stat recap</h3>
               <div class="stat-grid" id="stat-recap-grid"></div>
@@ -127,12 +126,11 @@
             <div class="card results-card war-lab-results">
               <h2 class="section-title">Results</h2>
               <div id="summary-content" class="calculation-output">
-                <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
-              <div id="costs-cards" class="result-grid"></div>
-                <div class="result-totals" style="display:grid;grid-template-columns: repeat(auto-fit,minmax(220px,1fr));gap:12px;">
-                  <div class="summary-pill" id="power-pill">Total Power: 0</div>
-                  <div class="summary-pill" id="svs-pill">Total SvS Points: 0</div>
+                <div class="result-card grouped-results">
+                  <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
+                  <div id="costs-cards" class="result-grid"></div>
                 </div>
+                <div class="result-totals"></div>
                 <div class="result-card slot-card">
                   <div class="result-card-header">
                     <h3>Slot recap</h3>

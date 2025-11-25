@@ -260,13 +260,14 @@
     tree.innerHTML = '';
     tree.style.position = 'relative';
     tree.style.overflowX = isDesktop ? 'visible' : 'auto';
-    tree.style.overflowY = isDesktop ? 'visible' : 'auto';
+    tree.style.overflowY = isDesktop ? 'visible' : 'visible';
     tree.style.display = isDesktop ? 'grid' : 'flex';
     tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(280px, 1fr))' : '';
     tree.style.gap = isDesktop ? '16px' : '0';
     tree.style.justifyContent = 'center';
-    tree.style.alignItems = 'start';
+    tree.style.alignItems = isDesktop ? 'start' : 'flex-start';
     tree.style.minHeight = '50vh';
+    tree.style.width = '100%';
 
     branchesToRender.forEach((branch) => {
       const nodes = (window.WOSData?.helios?.nodes || []).filter((n) => n.branch === branch);
@@ -563,7 +564,7 @@
       totals.steel += sum.steel;
       totals.timeSeconds += sum.timeSeconds;
       totals.power += sum.power;
-      totals.svsPoints += sum.svsPoints;
+      // svs handled later (speedups + FCs)
       for (const [k, v] of Object.entries(sum.stats || {})) {
         totals.stats[k] = (totals.stats[k] || 0) + v;
         branchStats[branch][k] = (branchStats[branch][k] || 0) + v;
@@ -647,31 +648,25 @@
     }
     const { totals, branchStats } = accumulateTotals();
     const owned = inventory;
-    summary.querySelector('.gift-code-status-text').textContent = `Aggregated totals for ${Object.keys(selections).length} selection(s).`;
+    const status = summary.querySelector('.gift-code-status-text');
+    if (status) status.textContent = '';
     const rows = [
-      { label: 'FCs', key: 'fc', icon: 'assets/resources/base/fire-crystal-shards.png' },
       { label: 'Meat', key: 'meat', icon: 'assets/resources/base/meat.png' },
       { label: 'Wood', key: 'wood', icon: 'assets/resources/base/wood.png' },
       { label: 'Coal', key: 'coal', icon: 'assets/resources/base/coal.png' },
       { label: 'Iron', key: 'iron', icon: 'assets/resources/base/iron.png' },
-      { label: 'Steel', key: 'steel', icon: 'assets/resources/base/steel.png' }
+      { label: 'Steel', key: 'steel', icon: 'assets/resources/base/steel.png' },
+      { label: 'FCs', key: 'fc', icon: 'assets/resources/base/fire-crystal-shards.png' }
     ];
     const resourceCards = rows
       .map((r) => {
         const req = totals[r.key] || 0;
-        const have = owned[r.key] || 0;
-        const diff = have - req;
-        const missing = diff < 0 ? Math.abs(diff) : diff;
-        const gapClass = diff < 0 ? 'gap-line deficit' : 'gap-line surplus';
-        const gapText = diff < 0 ? `⚠ need ${missing.toLocaleString()} more` : `left ${missing.toLocaleString()}`;
         return `
-          <div class="result-card">
+          <div class="summary-pill">
             <div class="label-with-icon" style="gap:8px;">
               <img class="res-icon" src="${r.icon}" alt="${r.label}">
-              <strong>${r.label}:</strong>
+              <strong>${r.label}: ${req.toLocaleString()}</strong>
             </div>
-            <div class="result-value">${req.toLocaleString()}</div>
-            <div class="${gapClass}">${gapText}</div>
           </div>
         `;
       })
@@ -693,19 +688,31 @@
     const stripeText =
       remainingSeconds > 0 ? `⚠ need ${daysVal.toFixed(1)} days more` : `left ${daysVal.toFixed(1)} days`;
 
+    // SVS points: 30 per speedup minute actually used (capped by effective time) + 1000 per FC shard
+    const speedupSecondsUsed = Math.min(speedupSeconds, effectiveSeconds);
+    const svsFromSpeedups = (speedupSecondsUsed / 60) * 30;
+    const svsFromFCs = (totals.fc || 0) * 1000;
+    totals.svsPoints = Math.round(svsFromSpeedups + svsFromFCs);
+
     const timeCard = `
-      <div class="result-card">
-        <div><strong>Time (after research):</strong> ${formatTime(effectiveSeconds)}</div>
-        <div class="${stripeClass}">${stripeText}</div>
+      <div class="summary-pill span-2">
+        <strong>Time (after research): ${formatTime(effectiveSeconds)}</strong>
+        <div class="${stripeClass}" style="margin-top:4px;">${stripeText}</div>
+      </div>
+    `;
+    const powerCard = `
+      <div class="summary-pill accent">
+        <strong>Total Power: ${totals.power.toLocaleString()}</strong>
+      </div>
+    `;
+    const svsCard = `
+      <div class="summary-pill accent">
+        <strong>Total SvS Points: ${totals.svsPoints.toLocaleString()}</strong>
       </div>
     `;
 
-    costsCards.innerHTML = resourceCards + timeCard;
+    costsCards.innerHTML = resourceCards + timeCard + powerCard + svsCard;
 
-    const powerPill = document.getElementById('power-pill');
-    const svsPill = document.getElementById('svs-pill');
-    if (powerPill) powerPill.textContent = `Total Power: ${totals.power.toLocaleString()}`;
-    if (svsPill) svsPill.textContent = `Total SvS Points: ${totals.svsPoints.toLocaleString()}`;
     renderRecap(totals);
     renderStatRecap(branchStats);
   }
@@ -727,6 +734,10 @@
   }
 
   function wireInventory() {
+    const limitDigits = (value, maxDigits) => {
+      if (typeof value !== 'string') value = String(value ?? '');
+      return value.replace(/\D/g, '').slice(0, maxDigits);
+    };
     const map = [
       ['inventory-fc', 'fc'],
       ['inventory-meat', 'meat'],
@@ -741,6 +752,12 @@
       const el = document.getElementById(id);
       if (!el) return;
       el.addEventListener('input', () => {
+        // Enforce digit limits for FCs (7 digits) and Steel (10 digits)
+        if (id === 'inventory-fc') {
+          el.value = limitDigits(el.value, 7);
+        } else if (id === 'inventory-steel') {
+          el.value = limitDigits(el.value, 10);
+        }
         const val = parseInt(el.value || '0', 10);
         inventory[key] = isNaN(val) ? 0 : val;
         updateSummary();
