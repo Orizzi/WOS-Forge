@@ -787,12 +787,17 @@
     const resourceCards = rows
       .map((r) => {
         const req = totals[r.key] || 0;
+        const have = owned[r.key] || 0;
+        const gap = req - have;
+        const gapClass = gap > 0 ? 'deficit' : 'surplus';
+        const gapText = gap > 0 ? `Need ${gap.toLocaleString()} more` : gap < 0 ? `Have ${Math.abs(gap).toLocaleString()} extra` : 'Exact match';
         return `
           <div class="summary-pill">
             <div class="label-with-icon" style="gap:${toEm(8)};">
               <img class="res-icon" src="${r.icon}" alt="${r.label}">
               <strong>${r.label}: ${req.toLocaleString()}</strong>
             </div>
+            <div class="gap-line ${gapClass}" style="margin-top:${toEm(4)};">${gapText}</div>
           </div>
         `;
       })

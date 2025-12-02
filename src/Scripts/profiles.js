@@ -540,6 +540,11 @@ const ProfilesModule = (function(){
     if (obj.dynamic) {
       applyDynamicFields(obj.dynamic);
     }
+
+    // Re-calculate Chief Gear after inventory is applied (inventory is set after gear selections above)
+    if (isChiefGear && obj.inventory && typeof ChiefGearCalculator !== 'undefined') {
+      try { ChiefGearCalculator.calculateAll(); } catch(_) {}
+    }
   }
 
   /**
