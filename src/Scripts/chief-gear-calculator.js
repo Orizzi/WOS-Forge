@@ -178,52 +178,64 @@ const ChiefGearCalculatorModule = (function(){
     };
   });
 
-  async function loadChiefGearCostsFromCsv(url = 'assets/chief_gear_unified.csv') {
-    try {
-      const res = await fetch(url, { cache: 'no-cache' });
-      if (!res.ok) return;
-      const text = await res.text();
-      const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-      if (lines.length === 0) return;
+  async function loadChiefGearCostsFromCsv(primaryUrl = 'assets/chief_gear_unified.csv') {
+    // Supports both unified and legacy extractor CSVs. Falls back if parsing fails.
+    async function tryLoad(url) {
+      try {
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) return 0;
+        const text = await res.text();
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length === 0) return 0;
 
-      const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-      const idx = {
-        level: header.indexOf('level'),
-        alloy: header.indexOf('hardenedalloy'),
-        solution: header.indexOf('polishingsolution'),
-        plans: header.indexOf('designplans'),
-        amber: header.indexOf('lunaramber'),
-        power: header.indexOf('power'),
-        svsPoints: header.indexOf('svspoints')
-      };
-      if (Object.values(idx).some(v => v === -1)) return;
-
-      let applied = 0;
-      for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(',');
-        if (parts.length < header.length) continue;
-
-        const rawLevel = parts[idx.level]?.trim();
-        const levelName = toInternalLevel(rawLevel);
-        if (!levelName || !GEAR_LEVELS.includes(levelName)) continue;
-
-        costs[levelName] = {
-          hardenedAlloy: parseFloat(parts[idx.alloy]) || 0,
-          polishingSolution: parseFloat(parts[idx.solution]) || 0,
-          designPlans: parseFloat(parts[idx.plans]) || 0,
-          lunarAmber: parseFloat(parts[idx.amber]) || 0,
-          power: parseFloat(parts[idx.power]) || 0,
-          svsPoints: parseFloat(parts[idx.svsPoints]) || 0
+        const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+        // Accept multiple header variants
+        const idx = {
+          level: header.indexOf('level') !== -1 ? header.indexOf('level') : header.indexOf('gearlevel'),
+          alloy: header.indexOf('hardenedalloy') !== -1 ? header.indexOf('hardenedalloy') : header.indexOf('alloy'),
+          solution: header.indexOf('polishingsolution') !== -1 ? header.indexOf('polishingsolution') : header.indexOf('polish'),
+          plans: header.indexOf('designplans') !== -1 ? header.indexOf('designplans') : header.indexOf('plans'),
+          amber: header.indexOf('lunaramber') !== -1 ? header.indexOf('lunaramber') : header.indexOf('amber'),
+          power: header.indexOf('power'),
+          svsPoints: header.indexOf('svspoints') !== -1 ? header.indexOf('svspoints') : header.indexOf('svspoints')
         };
-        applied++;
+        if (idx.level === -1 || idx.alloy === -1 || idx.solution === -1 || idx.plans === -1 || idx.amber === -1) {
+          return 0;
+        }
+
+        let applied = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const parts = lines[i].split(',');
+          if (parts.length < header.length) continue;
+
+          const rawLevel = (parts[idx.level] || '').trim();
+          const levelName = toInternalLevel(rawLevel);
+          if (!levelName || !GEAR_LEVELS.includes(levelName)) continue;
+
+          costs[levelName] = {
+            hardenedAlloy: parseFloat(parts[idx.alloy]) || 0,
+            polishingSolution: parseFloat(parts[idx.solution]) || 0,
+            designPlans: parseFloat(parts[idx.plans]) || 0,
+            lunarAmber: parseFloat(parts[idx.amber]) || 0,
+            power: idx.power !== -1 ? (parseFloat(parts[idx.power]) || 0) : 0,
+            svsPoints: idx.svsPoints !== -1 ? (parseFloat(parts[idx.svsPoints]) || 0) : 0
+          };
+          applied++;
+        }
+        if (applied > 0) {
+          console.info(`[Chief Gear] Applied ${applied} cost overrides from ${url}.`);
+        }
+        return applied;
+      } catch (e) {
+        console.warn('[Chief Gear] CSV override skipped for', url, ':', e.message || e);
+        return 0;
       }
-      
-      if (applied > 0) {
-        console.info(`[Chief Gear] Applied ${applied} cost overrides from CSV.`);
-      }
-    } catch (e) {
-      console.warn('[Chief Gear] CSV override skipped:', e.message || e);
     }
+
+    // Try unified first, then fallback to legacy extractor output
+    const appliedPrimary = await tryLoad(primaryUrl);
+    if (appliedPrimary > 0) return;
+    await tryLoad('assets/chief_gear_costs.csv');
   }
 
   // Render a label with a local icon
