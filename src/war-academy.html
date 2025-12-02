@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WOSC - War Academy</title>
+  <link rel="icon" href="../src/assets/app-icon.png">
+  <link rel="stylesheet" href="style/style.css" />
+  <script src="Scripts/theme.js" defer></script>
+  <script src="Scripts/translations.js" defer></script>
+  <script src="Scripts/calculation-core.js" defer></script>
+  <script src="Scripts/nav.js" defer></script>
+  <script src="Scripts/sw-register.js" defer></script>
+  <!-- Data + helpers -->
+  <script src="Scripts/modules/helpers/csv.js" defer></script>
+  <script src="Scripts/modules/helpers/number-format.js" defer></script>
+  <script src="Scripts/modules/data/data-loader.js" defer></script>
+  <script src="Scripts/modules/data/helios-data.js" defer></script>
+  <script src="Scripts/profiles.js" defer></script>
+  <script src="Scripts/war-laboratory.js" defer></script>
+</head>
+<body>
+  <div id="top"></div>
+  <header class="header-with-nav" role="banner">
+    <a href="../index.html" class="logo-link">
+      <img src="../src/assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+    </a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">&#9776;</button>
+    <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-links">
+        <a href="../index.html" data-i18n="nav-home">Home</a>
+        <a href="charms.html" data-i18n="nav-charms">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
+        <a href="war-academy.html" data-i18n="nav-war-academy" aria-current="page">War Academy</a>
+        <a href="pets.html" data-i18n="nav-pets">Pets</a>
+        <a href="experts.html" data-i18n="nav-experts">Experts</a>
+      </div>
+      <div class="nav-actions">
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="ko">한국어</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+
+  <div class="app-shell">
+    <main role="main" class="war-lab-page">
+      <section class="card" aria-labelledby="war-lab-title">
+        <h1 id="war-lab-title" data-i18n="war-academy-title">War Academy – Helios Research</h1>
+        
+        <div class="inventory-profiles-row">
+          <section class="inventory-section card" aria-label="Helios Inventory">
+            <h3 data-i18n="your-inventory">Your Inventory</h3>
+            <div class="war-lab-inventory-grid">
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat"><span data-i18n="meat">Meat</span></span></label>
+                <input type="number" id="inventory-meat" min="0" value="0" inputmode="numeric" maxlength="12" max="999999999999" pattern="[0-9]{1,12}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood"><span data-i18n="wood">Wood</span></span></label>
+                <input type="number" id="inventory-wood" min="0" value="0" inputmode="numeric" maxlength="12" max="999999999999" pattern="[0-9]{1,12}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal"><span data-i18n="coal">Coal</span></span></label>
+                <input type="number" id="inventory-coal" min="0" value="0" inputmode="numeric" maxlength="11" max="99999999999" pattern="[0-9]{1,11}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron"><span data-i18n="iron">Iron</span></span></label>
+                <input type="number" id="inventory-iron" min="0" value="0" inputmode="numeric" maxlength="10" max="9999999999" pattern="[0-9]{1,10}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/fire-crystal-shards.png" alt="FCs">FCs</span></label>
+                <input type="number" id="inventory-fc" min="0" value="0" inputmode="numeric" maxlength="7" max="9999999" pattern="[0-9]{1,7}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel"><span data-i18n="steel">Steel</span></span></label>
+                <input type="number" id="inventory-steel" min="0" value="0" inputmode="numeric" maxlength="10" max="9999999999" pattern="[0-9]{1,10}">
+              </div>
+              <div class="war-lab-inv-item">
+                <label data-i18n="speedups-days">Speedups (days)</label>
+                <input type="number" id="inventory-speedups" min="0" value="0" inputmode="numeric" placeholder="minutes">
+              </div>
+              <div class="war-lab-inv-item">
+                <label data-i18n="research-reduction">Research % reduction</label>
+                <input type="number" id="inventory-reduction" min="0" max="100" value="0" inputmode="numeric" placeholder="%">
+              </div>
+            </div>
+          </section>
+
+          <section class="profiles card" aria-label="War Academy profiles" role="region">
+            <h3 data-i18n="profiles-header">Profiles</h3>
+            <div class="profiles-row">
+              <div class="input-with-icon">
+                <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+                <button id="profile-save" type="button" title="Save profile" aria-label="Save profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
+              </div>
+              <div class="select-with-icon">
+                <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+                <button id="profile-rename" type="button" title="Rename selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
+              </div>
+              <button id="profile-delete" type="button" title="Delete selected profile" class="danger"><span data-i18n="delete">Delete</span></button>
+            </div>
+          </section>
+        </div>
+
+        <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
+          <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true" data-i18n="marksman">Marksman</button>
+          <button class="tab" data-branch="infantry" role="tab" aria-selected="false" data-i18n="infantry">Infantry</button>
+          <button class="tab" data-branch="lancer" role="tab" aria-selected="false" data-i18n="lancer">Lancer</button>
+        </div>
+
+        <div class="war-lab-main">
+          <section class="war-lab-left">
+            <section class="war-lab-tree-section">
+              <div class="war-lab-tree-wrapper">
+                <div class="war-lab-trees-row" id="helios-tree"></div>
+              </div>
+            </section>
+            <section class="card stat-recap-card" aria-label="Stat recap">
+              <h3 class="section-title" data-i18n="stat-recap">Stat recap</h3>
+              <div class="stat-grid" id="stat-recap-grid"></div>
+            </section>
+          </section>
+
+          <aside class="war-lab-right">
+            <div class="card results-card war-lab-results">
+              <h2 class="section-title" data-i18n="results">Results</h2>
+              <div id="summary-content" class="calculation-output">
+                <div class="result-card grouped-results">
+                  <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
+                  <div id="costs-cards" class="result-grid"></div>
+                </div>
+                <div class="result-totals"></div>
+                <div class="result-card slot-card">
+                  <div class="result-card-header">
+                    <h3 data-i18n="slot-recap">Slot recap</h3>
+                  </div>
+                  <div class="results-wrap">
+                    <div class="results-table-wrapper">
+                      <table id="helios-slot-table" class="results-table war-lab-slot-table">
+                        <thead>
+                          <tr>
+                            <th class="col-icon">Icon</th>
+                            <th class="col-name">Name</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Meat</th>
+                            <th>Wood</th>
+                            <th>Coal</th>
+                            <th>Iron</th>
+                            <th>Steel</th>
+                            <th>FCs</th>
+                            <th>Power</th>
+                            <th>SvS</th>
+                          </tr>
+                        </thead>
+                        <tbody id="war-lab-slot-body"></tbody>
+                        <tfoot id="war-lab-slot-foot"></tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <ul class="bottom-nav__list">
+      <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
+      <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
+      <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
+      <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
+      <li class="bottom-nav__item"><a href="war-academy.html" aria-current="page" class="is-active">War Academy</a></li>
+      <li class="bottom-nav__item"><a href="pets.html">Pets</a></li>
+      <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
+    </ul>
+  </nav>
+  <a href="#top" class="back-to-top" aria-label="Back to top">&uarr;</a>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+      if(active && active.scrollIntoView){
+        active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
+      }
+    });
+  </script>
+</body>
+</html>

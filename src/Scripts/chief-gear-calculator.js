@@ -178,41 +178,30 @@ const ChiefGearCalculatorModule = (function(){
     };
   });
 
-  /**
-   * Load chief gear costs from CSV and override defaults
-   */
-  async function loadChiefGearCostsFromCsv(url = 'assets/chief_gear_costs.csv') {
+  async function loadChiefGearCostsFromCsv(url = 'assets/chief_gear_unified.csv') {
     try {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) return;
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
       if (lines.length === 0) return;
-      
+
       const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-      const normalizedHeader = header.map(h => h.replace(/\s+/g, ''));
-      const findIdx = (...candidates) => {
-        for (const candidate of candidates) {
-          const normalized = candidate.replace(/\s+/g, '').toLowerCase();
-          const match = normalizedHeader.indexOf(normalized);
-          if (match !== -1) return match;
-        }
-        return -1;
-      };
       const idx = {
-        level: findIdx('gear level', 'level', 'gearlevel'),
-        alloy: findIdx('hardened alloy', 'hardenedalloy', 'alloy'),
-        solution: findIdx('polishing solution', 'polishingsolution', 'polish'),
-        plans: findIdx('design plans', 'designplans', 'plans'),
-        amber: findIdx('lunar amber', 'lunaramber', 'amber'),
-        power: findIdx('power'),
-        svsPoints: findIdx('svspoints', 'svs points', 'svspoints')
+        level: header.indexOf('level'),
+        alloy: header.indexOf('hardenedalloy'),
+        solution: header.indexOf('polishingsolution'),
+        plans: header.indexOf('designplans'),
+        amber: header.indexOf('lunaramber'),
+        power: header.indexOf('power'),
+        svsPoints: header.indexOf('svspoints')
       };
+      if (Object.values(idx).some(v => v === -1)) return;
 
       let applied = 0;
       for (let i = 1; i < lines.length; i++) {
         const parts = lines[i].split(',');
-        if (parts.length < 6) continue;
+        if (parts.length < header.length) continue;
 
         const rawLevel = parts[idx.level]?.trim();
         const levelName = toInternalLevel(rawLevel);

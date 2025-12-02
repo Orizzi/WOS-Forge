@@ -16,9 +16,36 @@
 const ProfilesModule = (function(){
   const PROFILES_KEY = 'wos-unified-profiles';  // Key used for browser storage
   const LAST_PROFILE_KEY = 'wos-last-profile';  // Remember last loaded profile name
+  const LAST_SNAPSHOT_KEY = 'wos-last-snapshot'; // Fallback snapshot when no profile is selected
+  const SHARED_RES_KEY = 'wos-shared-base-resources'; // Shared base resources across pages
   let currentLoadedProfile = null;  // Track which profile is currently loaded
   const CONSENT_KEY = 'wos-storage-consent';     // Flag to remember user consent for storage
   const CONSENT_DECLINED_SESSION = 'wos-storage-consent-declined-session';
+  const SHARED_RESOURCE_GROUPS = [
+    ['inventory-meat'],
+    ['inventory-wood'],
+    ['inventory-coal'],
+    ['inventory-iron'],
+    // Fire Crystals (building resource) kept distinct from FC shards
+    ['inventory-fire-crystals'],
+    ['inventory-fc'], // FC shards
+    ['inventory-refine-crystals']
+  ];
+  const SHARED_RESOURCE_IDS = SHARED_RESOURCE_GROUPS.flat();
+  const DYNAMIC_ATTR = 'data-profile-key';
+  const DYNAMIC_SCOPE_ATTR = 'data-profile-scope';
+  const DEFAULT_DYNAMIC_SCOPE = 'dynamic';
+
+  const PAGE_DETECTORS = {
+    fireCrystals: () => !!document.getElementById('furnace-start'),
+    chiefGear: () => !!document.getElementById('helmet-start'),
+    charms: () => !!document.querySelector('select[id*="-charm-"]'),
+    warLab: () => !!document.querySelector('.war-lab-page') && !!window.WarLabProfile
+  };
+
+  function detectPages(){
+    return Object.fromEntries(Object.entries(PAGE_DETECTORS).map(([key, fn]) => [key, !!fn()]));
+  }
 
   /**
    * canUseLocalStorage()
@@ -33,6 +60,86 @@ const ProfilesModule = (function(){
     }catch(e){
       return false;
     }
+  }
+
+  function readSharedResources(){
+    try{
+      const raw = localStorage.getItem(SHARED_RES_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return {};
+  }
+
+  function persistSharedResources(){
+    const payload = {};
+    SHARED_RESOURCE_GROUPS.forEach(group => {
+      const key = group[0];
+      for (const id of group) {
+        const el = document.getElementById(id);
+        if (el && el.value !== undefined) {
+          payload[key] = el.value;
+          break;
+        }
+      }
+    });
+    try{ localStorage.setItem(SHARED_RES_KEY, JSON.stringify(payload)); }catch(e){}
+  }
+
+  function applySharedResources(){
+    const data = readSharedResources();
+    SHARED_RESOURCE_GROUPS.forEach(group => {
+      const key = group[0];
+      const val = data[key];
+      if (val === undefined) return;
+      group.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== undefined){
+          setFormValue(el, val);
+        }
+      });
+    });
+  }
+
+  function setFormValue(el, value){
+    if(!el) return;
+    if(el.type === 'checkbox'){
+      el.checked = !!value;
+    } else {
+      el.value = value == null ? '' : String(value);
+    }
+    // Bubble both input and change so listeners run and calculations refresh
+    try{ el.dispatchEvent(new Event('input', { bubbles: true })); }catch(e){}
+    try{ el.dispatchEvent(new Event('change', { bubbles: true })); }catch(e){}
+  }
+
+  function captureDynamicFields(initialScopes = {}){
+    const scoped = {};
+    const nodes = document.querySelectorAll(`[${DYNAMIC_ATTR}]`);
+    nodes.forEach(el => {
+      const key = el.getAttribute(DYNAMIC_ATTR);
+      if(!key) return;
+      const scope = el.getAttribute(DYNAMIC_SCOPE_ATTR) || DEFAULT_DYNAMIC_SCOPE;
+      const val = el.type === 'checkbox' ? !!el.checked : (el.value ?? '');
+      if(!scoped[scope]) scoped[scope] = {};
+      scoped[scope][key] = val;
+    });
+    Object.entries(scoped).forEach(([scope, data]) => {
+      if(initialScopes[scope]){
+        scoped[scope] = { ...initialScopes[scope], ...data };
+      }
+    });
+    return scoped;
+  }
+
+  function applyDynamicFields(dynamicData = {}){
+    Object.entries(dynamicData || {}).forEach(([scope, fields]) => {
+      if(!fields || typeof fields !== 'object') return;
+      Object.entries(fields).forEach(([key, value]) => {
+        const el = document.querySelector(`[${DYNAMIC_ATTR}="${key}"]`);
+        if(!el) return;
+        setFormValue(el, value);
+      });
+    });
   }
 
   /**
@@ -207,6 +314,19 @@ const ProfilesModule = (function(){
     }catch(e){}  // Silently fail if localStorage unavailable
   }
 
+  function writeLastSnapshot(snapshot){
+    try{ localStorage.setItem(LAST_SNAPSHOT_KEY, JSON.stringify(snapshot || {})); }catch(e){}
+  }
+
+  function readLastSnapshot(){
+    try{
+      const raw = localStorage.getItem(LAST_SNAPSHOT_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){
+      return null;
+    }
+  }
+
   /**
    * captureCurrent()
    * Takes a "snapshot" of current selections across ALL pages
@@ -214,12 +334,13 @@ const ProfilesModule = (function(){
    * @returns {object} Current selections from all calculators
    */
   function captureCurrent(){
-    // Page detection helpers
-    const isFireCrystals = !!document.getElementById('furnace-start');
-    const isChiefGear = !!document.getElementById('helmet-start');
-    const isCharms = !!document.querySelector('select[id*="-charm-"]');
+    const pages = detectPages();
+    const isFireCrystals = pages.fireCrystals;
+    const isChiefGear = pages.chiefGear;
+    const isCharms = pages.charms;
+    const isWarLab = pages.warLab;
 
-    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {}, meta: {} };
+    const data = { charms: {}, chiefGear: {}, inventory: {}, fireCrystals: {}, warLab: {}, meta: {}, dynamic: {} };
 
     // Capture Charms data (only on Charms page; selects contain -charm- in id)
     if(isCharms){
@@ -257,18 +378,44 @@ const ProfilesModule = (function(){
       // Chief Gear inventory
       'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',
       // Fire Crystals inventory
-      'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
-      // Base resources
-      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'
+      'inventory-fire-crystals', 'inventory-fc', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
+      // Base resources + War Lab extras
+      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron', 'inventory-steel', 'inventory-speedups', 'inventory-reduction'
     ];
     inventoryIds.forEach(id => {
       const input = document.getElementById(id);
-      if(input && input.value !== undefined) data.inventory[id] = input.value;
+      if(!input || input.value === undefined) return;
+      const group = SHARED_RESOURCE_GROUPS.find(g => g.includes(id));
+      const key = group ? group[0] : id;
+      data.inventory[key] = input.value;
     });
     const zinmanSel = document.getElementById('zinman-level');
     if (zinmanSel) {
       data.meta.zinmanLevel = parseInt(zinmanSel.value, 10) || 0;
     }
+
+    if (isWarLab && window.WarLabProfile && typeof window.WarLabProfile.captureState === 'function') {
+      try {
+        data.warLab = window.WarLabProfile.captureState();
+      } catch (e) {
+        console.warn('[Profiles] Failed to capture War Lab state', e);
+      }
+    }
+
+    const dynamic = captureDynamicFields({
+      charms: data.charms,
+      chiefGear: data.chiefGear,
+      inventory: data.inventory,
+      fireCrystals: data.fireCrystals,
+      warLab: data.warLab,
+      meta: data.meta,
+      dynamic: data.dynamic
+    });
+    Object.entries(dynamic).forEach(([scope, scopedData]) => {
+      if(!scopedData || !Object.keys(scopedData).length) return;
+      if(!data[scope] || typeof data[scope] !== 'object') data[scope] = {};
+      data[scope] = { ...data[scope], ...scopedData };
+    });
 
     return data;
   }
@@ -282,16 +429,17 @@ const ProfilesModule = (function(){
   function applyProfileObject(obj){
     if(!obj) return;
     
-    // Detect page
-    const isFireCrystals = !!document.getElementById('furnace-start');
-    const isChiefGear = !!document.getElementById('helmet-start');
-    const isCharms = !!document.querySelector('select[id*="-charm-"]');
+    const pages = detectPages();
+    const isFireCrystals = pages.fireCrystals;
+    const isChiefGear = pages.chiefGear;
+    const isCharms = pages.charms;
+    const isWarLab = pages.warLab;
 
     // Apply only for the current page
     if(isCharms && obj.charms){
       Object.keys(obj.charms).forEach(id => {
         const el = document.getElementById(id);
-        if(el && el.tagName === 'SELECT') el.value = String(obj.charms[id]);
+        if(el && el.tagName === 'SELECT') setFormValue(el, obj.charms[id]);
       });
       // Update charms batch/select validations
       const startSelects = Array.from(document.querySelectorAll('select[id*="-charm-"][id$="-start"]'));
@@ -316,7 +464,7 @@ const ProfilesModule = (function(){
     if(isChiefGear && obj.chiefGear){
       Object.keys(obj.chiefGear).forEach(id => {
         const el = document.getElementById(id);
-        if(el && el.tagName === 'SELECT') el.value = String(obj.chiefGear[id]);
+        if(el && el.tagName === 'SELECT') setFormValue(el, obj.chiefGear[id]);
       });
       const gearTypes = ['helmet', 'chestplate', 'ring', 'watch', 'pants', 'staff'];
       gearTypes.forEach(gear => {
@@ -339,7 +487,7 @@ const ProfilesModule = (function(){
       });
       Object.keys(fcData).forEach(id => {
         const el = document.getElementById(id);
-        if(el && el.tagName === 'SELECT') el.value = String(fcData[id]);
+        if(el && el.tagName === 'SELECT') setFormValue(el, fcData[id]);
       });
       if(typeof FireCrystalsCalculator !== 'undefined'){
         try {
@@ -360,14 +508,42 @@ const ProfilesModule = (function(){
 
     // Apply Inventory (only inputs present on this page)
     if(obj.inventory){
+      const findInventoryTarget = (id) => {
+        const direct = document.getElementById(id);
+        if(direct) return direct;
+        const group = SHARED_RESOURCE_GROUPS.find(g => g.includes(id));
+        if(!group) return null;
+        return group
+          .map(candidate => document.getElementById(candidate))
+          .find(Boolean) || null;
+      };
       Object.keys(obj.inventory).forEach(id => {
-        const el = document.getElementById(id);
-        if(el && el.tagName === 'INPUT') el.value = String(obj.inventory[id]);
+        const el = findInventoryTarget(id);
+        if(el && el.tagName === 'INPUT') setFormValue(el, obj.inventory[id]);
       });
+      // Persist shared base resources so they follow across pages
+      persistSharedResources();
     }
     if (obj.meta && obj.meta.zinmanLevel !== undefined) {
       const zinSel = document.getElementById('zinman-level');
-      if (zinSel) zinSel.value = String(obj.meta.zinmanLevel || 0);
+      if (zinSel) setFormValue(zinSel, obj.meta.zinmanLevel || 0);
+    }
+
+    if (isWarLab && obj.warLab && window.WarLabProfile && typeof window.WarLabProfile.applyState === 'function') {
+      try {
+        window.WarLabProfile.applyState(obj.warLab);
+      } catch (e) {
+        console.warn('[Profiles] Failed to apply War Lab state', e);
+      }
+    }
+
+    if (obj.dynamic) {
+      applyDynamicFields(obj.dynamic);
+    }
+
+    // Re-calculate Chief Gear after inventory is applied (inventory is set after gear selections above)
+    if (isChiefGear && obj.inventory && typeof ChiefGearCalculator !== 'undefined') {
+      try { ChiefGearCalculator.calculateAll(); } catch(_) {}
     }
   }
 
@@ -434,6 +610,9 @@ const ProfilesModule = (function(){
     if(current.chiefGear && Object.keys(current.chiefGear).length){ merged.chiefGear = { ...(profiles[name].chiefGear||{}), ...current.chiefGear }; }
     if(current.fireCrystals && Object.keys(current.fireCrystals).length){ merged.fireCrystals = { ...(profiles[name].fireCrystals||{}), ...current.fireCrystals }; }
     if(current.inventory && Object.keys(current.inventory).length){ merged.inventory = { ...(profiles[name].inventory||{}), ...current.inventory }; }
+    if(current.warLab && Object.keys(current.warLab).length){ merged.warLab = { ...(profiles[name].warLab||{}), ...current.warLab }; }
+    if(current.meta && Object.keys(current.meta).length){ merged.meta = { ...(profiles[name].meta||{}), ...current.meta }; }
+    if(current.dynamic && Object.keys(current.dynamic).length){ merged.dynamic = { ...(profiles[name].dynamic||{}), ...current.dynamic }; }
     profiles[name] = merged;
     writeProfiles(profiles);
     renderProfilesList();
@@ -452,6 +631,9 @@ const ProfilesModule = (function(){
       const fromLast = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
       currentLoadedProfile = fromList || fromLast || null;
     }
+    // Capture current state once, so we can snapshot even if no profile is active
+    const current = captureCurrent();
+
     // If no profile is marked current but exactly one exists, select it implicitly
     if(!currentLoadedProfile){
       const names = Object.keys(profiles);
@@ -459,20 +641,25 @@ const ProfilesModule = (function(){
         currentLoadedProfile = names[0];
         try { localStorage.setItem(LAST_PROFILE_KEY, currentLoadedProfile); } catch(e){}
       } else {
-        return; // No current profile and ambiguous which to use
+        // No active profile; keep a lightweight snapshot so reloads can restore state
+        writeLastSnapshot(current);
+        return;
       }
     }
     if(!profiles[currentLoadedProfile]) return; // Profile was deleted
     // Silently merge current page selections with existing profile
-    const current = captureCurrent();
     const existing = profiles[currentLoadedProfile];
     if(current.charms && Object.keys(current.charms).length){ existing.charms = { ...(existing.charms||{}), ...current.charms }; }
     if(current.chiefGear && Object.keys(current.chiefGear).length){ existing.chiefGear = { ...(existing.chiefGear||{}), ...current.chiefGear }; }
     if(current.fireCrystals && Object.keys(current.fireCrystals).length){ existing.fireCrystals = { ...(existing.fireCrystals||{}), ...current.fireCrystals }; }
     if(current.inventory && Object.keys(current.inventory).length){ existing.inventory = { ...(existing.inventory||{}), ...current.inventory }; }
+    if(current.warLab && Object.keys(current.warLab).length){ existing.warLab = { ...(existing.warLab||{}), ...current.warLab }; }
     if(current.meta && Object.keys(current.meta).length){ existing.meta = { ...(existing.meta||{}), ...current.meta }; }
+    if(current.dynamic && Object.keys(current.dynamic).length){ existing.dynamic = { ...(existing.dynamic||{}), ...current.dynamic }; }
     profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
+    // Keep a fallback snapshot for cases where no profile is loaded on next visit
+    writeLastSnapshot(existing);
   }
 
   /**
@@ -486,11 +673,38 @@ const ProfilesModule = (function(){
 
     // Inventory and other numeric inputs
     const inputNodes = document.querySelectorAll('input[id^="inventory-"]');
-    inputNodes.forEach(input => input.addEventListener('input', autoSaveCurrentProfile));
+    inputNodes.forEach(input => {
+      const isShared = SHARED_RESOURCE_GROUPS.some(group => group.includes(input.id));
+      if(isShared){
+        input.addEventListener('input', () => {
+          persistSharedResources();
+          autoSaveCurrentProfile();
+        });
+      } else {
+        input.addEventListener('input', autoSaveCurrentProfile);
+      }
+    });
+    const dynamicNodes = document.querySelectorAll(`[${DYNAMIC_ATTR}]`);
+    dynamicNodes.forEach(node => {
+      const handler = () => {
+        if(node.id && SHARED_RESOURCE_IDS.includes(node.id)) persistSharedResources();
+        autoSaveCurrentProfile();
+      };
+      node.addEventListener('input', handler);
+      node.addEventListener('change', handler);
+    });
     const zinSel = document.getElementById('zinman-level');
     if (zinSel) zinSel.addEventListener('change', () => {
       autoSaveCurrentProfile();
       try { FireCrystalsCalculator.calculateAll(); } catch(_) {}
+    });
+
+    // Delegated safety net for selects that may be added/rebuilt after init (e.g., FC UI tweaks)
+    document.addEventListener('change', (e) => {
+      const el = e.target;
+      if (!el || el.tagName !== 'SELECT') return;
+      if (el.id === 'profiles-list' || el.id === 'language-selector') return;
+      autoSaveCurrentProfile();
     });
   }
 
@@ -623,14 +837,29 @@ const ProfilesModule = (function(){
     // Auto-save for calculator controls (covers batch selects)
     wireAutoSaveListeners();
 
+    // If no profile is selected, try to restore the last snapshot (autosave fallback)
+    if(!currentLoadedProfile){
+      const snap = readLastSnapshot();
+      if(snap) applyProfileObject(snap);
+    }
+
     // Last-chance save when leaving or hiding the tab
     window.addEventListener('beforeunload', autoSaveCurrentProfile);
     document.addEventListener('visibilitychange', () => {
       if(document.visibilityState === 'hidden') autoSaveCurrentProfile();
     });
 
+    // Apply shared base resources (Meat/Wood/Coal/Iron) across pages
+    applySharedResources();
+
     // Render existing profiles on load
     renderProfilesList();
+
+    // Apply last snapshot as a guard (helps when profile selection isn't active yet)
+    const lastSnap = readLastSnapshot();
+    if(lastSnap) {
+      try { applyProfileObject(lastSnap); } catch(_) {}
+    }
 
     // Auto-load last used profile (or first available) on page load
     if(list){
@@ -639,9 +868,13 @@ const ProfilesModule = (function(){
       const applyAndRecalc = () => {
         loadSelectedProfile();
         setTimeout(() => {
-          if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
-          if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
-          if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
+          if (window.WOSCalcCore && typeof window.WOSCalcCore.runActive === 'function') {
+            window.WOSCalcCore.runActive();
+          } else {
+            if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
+            if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
+            if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
+          }
         }, 0);
       };
       // Wait for calculators to be ready (event-based)

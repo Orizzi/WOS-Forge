@@ -7,6 +7,7 @@ const ExcelJS = require('exceljs');
  *
  * Source sheets (building sheets):
  *  - Furnace, Command Center, Embassy, Infirmary, Infantry Camp, Marksman Camp, Lancer Camp, War Academy
+ *    (War Academy has no F30/30-x rows in-game; it starts at FC1)
  * Columns used (1-based):
  *  B: levelId (must start with "FC")
  *  C: order index (optional)

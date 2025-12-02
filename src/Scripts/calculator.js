@@ -23,29 +23,8 @@
  */
 
 const CalculatorModule = (function(){
-  /**
-   * costs: Resource table
-   * Stores how much it costs to upgrade FROM level N-1 TO level N
-   * Will be loaded from charms_costs.csv if available, otherwise defaults below
-   */
-  const costs = {
-    1: { guides: 5, designs: 5, secrets: 0, power: 205700, svsPoints: 43750 },
-    2: { guides: 40, designs: 15, secrets: 0, power: 288000, svsPoints: 87500 },
-    3: { guides: 60, designs: 40, secrets: 0, power: 370000, svsPoints: 218750 },
-    4: { guides: 80, designs: 100, secrets: 0, power: 452000, svsPoints: 612500 },
-    5: { guides: 100, designs: 200, secrets: 0, power: 576000, svsPoints: 787500 },
-    6: { guides: 120, designs: 300, secrets: 0, power: 700000, svsPoints: 875000 },
-    7: { guides: 140, designs: 400, secrets: 0, power: 824000, svsPoints: 875000 },
-    8: { guides: 200, designs: 400, secrets: 0, power: 948000, svsPoints: 910000 },
-    9: { guides: 300, designs: 400, secrets: 0, power: 1072000, svsPoints: 980000 },
-    10: { guides: 420, designs: 420, secrets: 0, power: 1196000, svsPoints: 1050000 },
-    11: { guides: 560, designs: 420, secrets: 0, power: 1320000, svsPoints: 1120000 },
-    12: { guides: 580, designs: 450, secrets: 15, power: 1536000, svsPoints: 1190000 },
-    13: { guides: 580, designs: 450, secrets: 30, power: 1752000, svsPoints: 1260000 },
-    14: { guides: 600, designs: 500, secrets: 45, power: 1968000, svsPoints: 1330000 },
-    15: { guides: 600, designs: 500, secrets: 70, power: 2184000, svsPoints: 1400000 },
-    16: { guides: 650, designs: 550, secrets: 100, power: 2400000, svsPoints: 1470000 }
-  };
+  // Costs are now loaded solely from charms_unified.csv
+  const costs = {};
 
   const LOCKED_LEVEL = -1;
   const MAX_CHARM_LEVEL = 16;
@@ -105,7 +84,7 @@ const CalculatorModule = (function(){
   /**
    * Load charm costs from CSV and override defaults (optional)
    */
-  async function loadCharmCostsFromCsv(url = 'assets/charms_costs.csv') {
+  async function loadCharmCostsFromCsv(url = 'assets/charms_unified.csv') {
     try {
       const res = await fetch(url, { cache: 'no-cache' });
       if (!res.ok) return;

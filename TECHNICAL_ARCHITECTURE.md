@@ -1168,6 +1168,709 @@ function sumCosts(from, to) {
 
 ---
 
-**Document Version:** 2.0.0  
-**Last Updated:** November 13, 2024  
+---
+
+## Project Scope & Constraints
+
+### Project Scope
+**WOS Calculator** provides web-based calculators for multiple Whiteout Survival game systems:
+- **Pages**: Root `index.html` (landing page), calculator pages in `src/`
+- **Data Source**: `src/assets/resource_data.xlsx` → CSV/JS artifacts
+- **Runtime**: Browser loads minified bundles from `src/Scripts/min/`, computes totals, updates DOM
+- **Deployment**: Static hosting via GitHub Pages, Netlify, or any web server
+
+### Technical Constraints
+1. **GitHub Pages Requirement**: `index.html` must remain at repository root
+2. **Game Vocabulary**: Preserve domain-specific terms (do not "correct" game terminology)
+3. **Path Stability**: All HTML-referenced scripts/assets paths must remain stable
+4. **Static Hosting**: No server-side processing, all computation client-side
+5. **Browser Compatibility**: Support modern browsers (Chrome, Firefox, Edge, Safari)
+
+### Data Flow
+```
+Excel Workbook (src/assets/resource_data.xlsx)
+        ↓
+    [npm scripts in scripts/]
+        ↓
+    CSV/JS files (src/assets/)
+        ↓
+    Data Loaders (browser fetch)
+        ↓
+    Calculator Modules
+        ↓
+    UI Render → DOM Update
+```
+
+---
+
+## Module Dependency Graph
+
+### Runtime Module Loading (Per Page)
+```
+Page Load
+  ├── icon-helper.min.js (IconHelper utility)
+  ├── theme.min.js (dark/light theme toggle)
+  ├── table-sort.min.js (sortable tables)
+  ├── translations.min.js (I18n system)
+  ├── profiles.min.js (profile management)
+  ├── Calculator-specific bundle:
+  │     ├── calculator.min.js (Charms)
+  │     ├── chief-gear-calculator.min.js (Chief Gear)
+  │     ├── fire-crystals-calculator.min.js (Fire Crystals)
+  │     └── war-laboratory.min.js (War Academy)
+  └── Page-specific:
+        ├── data-loader.js (CSV loading with caching)
+        └── fc-status-ui.js (Fire Crystals status display)
+```
+
+### Event Flow
+**Fire Crystals Data Loading:**
+```javascript
+// Dispatched when FC data loads
+document.dispatchEvent(new CustomEvent('fc-data-ready', {
+  detail: {
+    rows: [...],    // Data rows
+    source: 'csv',  // or 'inline'
+    error: null     // Error message if failed
+  }
+}));
+
+// Listeners
+fc-status-ui.js → Updates status badge
+fire-crystals-calculator.js → Processes data
+```
+
+### Future Namespace Structure (In Progress)
+```javascript
+WOS = {
+  helpers: {
+    icons: IconHelper,
+    numberFormat: formatNumber,
+    csv: parseCSV
+  },
+  data: {
+    loader: DataLoader
+  },
+  calcs: {
+    charms: CharmsCalculator,
+    chiefGear: ChiefGearCalculator,
+    fireCrystals: FireCrystalsCalculator,
+    warLab: WarLabCalculator
+  },
+  ui: {
+    charms: CharmsUI,
+    chiefGear: ChiefGearUI,
+    fireCrystals: FireCrystalsUI,
+    i18n: I18nUI,
+    theme: ThemeUI
+  }
+};
+```
+
+**Note**: Legacy globals remain bridged for backward compatibility during migration.
+
+---
+
+## Calculator Logic Deep Dive
+
+### Charms Calculator
+**Data Structure:**
+```javascript
+// Embedded defaults, CSV override via charms_costs.csv
+{
+  level: 1,
+  guides: 10,
+  designs: 5,
+  secrets: 2,
+  power: 100,
+  svsPoints: 50
+}
+```
+
+**Calculation Logic:**
+```javascript
+sumCosts(fromLevel, toLevel) {
+  // fromLevel: exclusive (start after this level)
+  // toLevel: inclusive (include this level's costs)
+  // Example: sumCosts(1, 3) = costs for levels 2 + 3
+  
+  let totals = { guides: 0, designs: 0, secrets: 0, svsPoints: 0 };
+  
+  for (let level = fromLevel + 1; level <= toLevel; level++) {
+    const costs = getCostsForLevel(level);
+    totals.guides += costs.guides;
+    totals.designs += costs.designs;
+    totals.secrets += costs.secrets;
+    totals.svsPoints += costs.svsPoints;
+  }
+  
+  // Power = target level power only (not cumulative)
+  totals.power = getPowerForLevel(toLevel);
+  
+  return totals;
+}
+```
+
+### Chief Gear Calculator
+**Data Structure:**
+```javascript
+// Ordered by tier: Green → Blue → Purple → Gold → Red
+{
+  level: "Green 1",
+  hardenedAlloy: 100,
+  polishingSolution: 50,
+  designPlans: 25,
+  lunarAmber: 0,
+  power: 500,
+  svsPoints: 100
+}
+```
+
+**Calculation Logic:**
+```javascript
+sumCosts(fromIndex, toIndex) {
+  // Index-based accumulation (46 total levels)
+  // Returns null for invalid ranges
+  
+  if (fromIndex < 0 || toIndex >= levels.length || fromIndex >= toIndex) {
+    return null;
+  }
+  
+  let totals = { hardenedAlloy: 0, polishingSolution: 0, designPlans: 0, lunarAmber: 0, svsPoints: 0 };
+  
+  for (let i = fromIndex + 1; i <= toIndex; i++) {
+    totals.hardenedAlloy += levels[i].hardenedAlloy;
+    totals.polishingSolution += levels[i].polishingSolution;
+    totals.designPlans += levels[i].designPlans;
+    totals.lunarAmber += levels[i].lunarAmber;
+    totals.svsPoints += levels[i].svsPoints;
+  }
+  
+  totals.power = levels[toIndex].power; // Target level power
+  
+  return totals;
+}
+```
+
+### Fire Crystals Calculator
+**Data Structure:**
+```javascript
+// Per-building, per-level data
+{
+  building: "Furnace",
+  level: 1,
+  fc: 10,      // Fire Crystals
+  rfc: 5,      // Refined Fire Crystals
+  meat: 1000,
+  wood: 800,
+  coal: 600,
+  iron: 400,
+  timeSeconds: 3600,
+  power: 200
+}
+```
+
+**Calculation Logic:**
+```javascript
+sumRange(building, fromLevel, toLevel) {
+  // Slice levelsArray from fromLevel to toLevel (inclusive)
+  // Returns null for invalid ranges
+  
+  const buildingData = data.filter(row => row.building === building);
+  
+  if (fromLevel < 1 || toLevel > maxLevel || fromLevel >= toLevel) {
+    return null;
+  }
+  
+  // Sum all levels from (fromLevel+1) to toLevel inclusive
+  const range = buildingData.slice(fromLevel, toLevel + 1);
+  
+  let totals = { fc: 0, rfc: 0, meat: 0, wood: 0, coal: 0, iron: 0, timeSeconds: 0 };
+  
+  range.forEach(level => {
+    totals.fc += level.fc;
+    totals.rfc += level.rfc;
+    totals.meat += level.meat;
+    totals.wood += level.wood;
+    totals.coal += level.coal;
+    totals.iron += level.iron;
+    totals.timeSeconds += level.timeSeconds;
+  });
+  
+  totals.power = buildingData[toLevel].power; // Target level power
+  
+  return totals;
+}
+```
+
+**Time Formatting:**
+```javascript
+formatTime(seconds) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  
+  // Uses I18n.t() for translation
+  let parts = [];
+  if (days > 0) parts.push(`${days} ${I18n.t('days')}`);
+  if (hours > 0) parts.push(`${hours} ${I18n.t('hours')}`);
+  if (minutes > 0) parts.push(`${minutes} ${I18n.t('minutes')}`);
+  
+  return parts.join(', ');
+}
+```
+
+### War Academy Calculator
+**Data Structure:**
+```javascript
+// Helios research tree (inline JS object)
+{
+  nodes: [
+    {
+      id: "helios-1-1",
+      name: "Research Name",
+      level: 1,
+      costs: {
+        books: 100,
+        research: 50,
+        power: 1000
+      },
+      timeSeconds: 7200,
+      requires: [] // Prerequisite node IDs
+    }
+  ]
+}
+```
+
+**Calculation Logic:**
+```javascript
+calculatePath(nodeId, targetLevel) {
+  // Calculate cumulative costs from level 1 to targetLevel
+  // Includes prerequisite nodes in dependency tree
+  
+  const node = findNode(nodeId);
+  let totals = { books: 0, research: 0, power: 0, timeSeconds: 0 };
+  
+  // Add prerequisites first
+  node.requires.forEach(reqId => {
+    const reqTotals = calculatePath(reqId, getMaxLevel(reqId));
+    mergeTotals(totals, reqTotals);
+  });
+  
+  // Add this node's levels
+  for (let level = 1; level <= targetLevel; level++) {
+    const levelCosts = node.costs[level];
+    totals.books += levelCosts.books;
+    totals.research += levelCosts.research;
+    totals.power += levelCosts.power;
+    totals.timeSeconds += levelCosts.timeSeconds;
+  }
+  
+  return totals;
+}
+```
+
+---
+
+## Calculation Core System (WOSCalcCore)
+
+### Purpose
+A centralized dispatcher that:
+- Runs the appropriate calculator(s) for the current page
+- Auto-recalculates when inventory values change
+- Provides unified API for triggering calculations
+- Eliminates duplicate calculation logic across modules
+
+### Architecture
+```javascript
+WOSCalcCore = {
+  adapters: Map(),
+  
+  registerAdapter(config) {
+    // config: { id, isActive(), run() }
+    this.adapters.set(config.id, config);
+  },
+  
+  run(id) {
+    // Run specific adapter by ID
+    const adapter = this.adapters.get(id);
+    if (adapter) adapter.run();
+  },
+  
+  runActive() {
+    // Run all adapters where isActive() returns true
+    for (const adapter of this.adapters.values()) {
+      if (adapter.isActive()) {
+        adapter.run();
+      }
+    }
+  },
+  
+  runAll() {
+    // Run all registered adapters (debug/refresh)
+    for (const adapter of this.adapters.values()) {
+      adapter.run();
+    }
+  }
+};
+```
+
+### Built-in Adapters
+```javascript
+// Charms Calculator
+WOSCalcCore.registerAdapter({
+  id: 'charms',
+  isActive: () => !!document.querySelector('#charm-life-start'),
+  run: () => CalculatorModule.calculateAll()
+});
+
+// Chief Gear Calculator
+WOSCalcCore.registerAdapter({
+  id: 'chiefGear',
+  isActive: () => !!document.querySelector('#helmet-start'),
+  run: () => ChiefGearCalculator.calculateAll()
+});
+
+// Fire Crystals Calculator
+WOSCalcCore.registerAdapter({
+  id: 'fireCrystals',
+  isActive: () => !!document.querySelector('#furnace-start'),
+  run: () => FireCrystalsCalculator.calculateAll()
+});
+
+// War Academy Calculator
+WOSCalcCore.registerAdapter({
+  id: 'warLab',
+  isActive: () => !!document.querySelector('.war-lab-page'),
+  run: () => WarLabCalculator.calculateAll()
+});
+```
+
+### Auto-Recalculation System
+```javascript
+// Listen to all inventory inputs
+document.addEventListener('input', (e) => {
+  if (e.target.id && e.target.id.startsWith('inventory-')) {
+    // Throttle with requestAnimationFrame
+    requestAnimationFrame(() => {
+      WOSCalcCore.runActive();
+    });
+  }
+});
+
+// Listen to form inputs (excludes profiles/language selectors)
+document.addEventListener('input', (e) => {
+  const input = e.target;
+  
+  // Skip non-relevant inputs
+  if (input.type === 'button' || input.type === 'submit') return;
+  if (input.id.includes('profile') || input.id.includes('language')) return;
+  
+  // Trigger recalculation
+  requestAnimationFrame(() => {
+    WOSCalcCore.runActive();
+  });
+});
+```
+
+### Integration with Other Modules
+```javascript
+// Profiles module - after loading profile
+ProfilesModule.loadProfile = (profileName) => {
+  const profile = getProfile(profileName);
+  applyValuesToForm(profile);
+  
+  // Trigger recalculation with new values
+  WOSCalcCore.runActive();
+};
+
+// Translations module - after language change
+I18n.setLanguage = (lang) => {
+  localStorage.setItem('language', lang);
+  updateAllTranslations();
+  
+  // Recalculate to update translated number formats
+  WOSCalcCore.runActive();
+};
+
+// Theme module - after theme toggle (optional)
+ThemeModule.toggle = () => {
+  document.documentElement.classList.toggle('light-theme');
+  localStorage.setItem('theme', getCurrentTheme());
+  
+  // Optional: recalculate if theme affects display
+  WOSCalcCore.runActive();
+};
+```
+
+### Adding New Calculator Page
+```javascript
+// 1. Include calculation-core.js in HTML
+<script src="Scripts/calculation-core.js"></script>
+
+// 2. Register adapter once calculator is loaded
+<script>
+  WOSCalcCore.registerAdapter({
+    id: 'myNewCalculator',
+    isActive: () => !!document.querySelector('.my-calculator-page'),
+    run: () => MyCalculator.calculateAll()
+  });
+</script>
+
+// 3. Ensure inventory inputs follow naming convention
+<input type="number" id="inventory-resource-name" />
+
+// Auto-recalculation will work automatically
+```
+
+### Benefits
+- **Single Responsibility**: Each calculator only implements calculation logic
+- **No Coupling**: Calculators don't need to know about profiles, translations, or themes
+- **Consistent Behavior**: All calculators respond to inventory changes identically
+- **Easy Testing**: Test calculators in isolation, test WOSCalcCore separately
+- **Simple Integration**: New calculators only need to register an adapter
+
+---
+
+## Gap Calculation System
+
+### Purpose
+Display the difference between required resources and owned inventory:
+- **"Need X more"** - When inventory < required
+- **"Have X extra"** - When inventory > required  
+- **"Exact match"** - When inventory = required
+
+### Implementation
+```javascript
+function displayGap(required, owned, resourceName) {
+  const gap = required - owned;
+  
+  if (gap > 0) {
+    // Need more
+    return `${I18n.t('need-x-more').replace('{x}', formatNumber(gap))} ${resourceName}`;
+  } else if (gap < 0) {
+    // Have extra
+    return `${I18n.t('have-x-extra').replace('{x}', formatNumber(Math.abs(gap)))} ${resourceName}`;
+  } else {
+    // Exact match
+    return I18n.t('exact-match');
+  }
+}
+```
+
+### UI Display
+```javascript
+// Summary display example (War Academy)
+function updateSummary(required, inventory) {
+  const resources = ['books', 'research', 'meat', 'wood', 'coal', 'iron'];
+  
+  resources.forEach(resource => {
+    const req = required[resource] || 0;
+    const own = inventory[resource] || 0;
+    const gap = req - own;
+    
+    // Update required cell
+    document.getElementById(`total-${resource}`).textContent = formatNumber(req);
+    
+    // Update gap cell with color coding
+    const gapCell = document.getElementById(`gap-${resource}`);
+    gapCell.textContent = displayGap(req, own, resource);
+    
+    // Color coding
+    if (gap > 0) {
+      gapCell.className = 'gap-need-more';  // Red
+    } else if (gap < 0) {
+      gapCell.className = 'gap-have-extra';  // Green
+    } else {
+      gapCell.className = 'gap-exact';  // Neutral
+    }
+  });
+}
+```
+
+### CSS Styling
+```css
+.gap-need-more {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.gap-have-extra {
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.gap-exact {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+```
+
+---
+
+## Profile System Architecture
+
+### Storage Structure
+```javascript
+// localStorage key: 'wos-profiles'
+{
+  "Profile 1": {
+    name: "Profile 1",
+    timestamp: 1701475200000,
+    values: {
+      "charm-life-start": 1,
+      "charm-life-end": 10,
+      "helmet-start": 0,
+      "helmet-end": 5
+      // ... all form values
+    },
+    inventory: {
+      "inventory-guides": 1000,
+      "inventory-designs": 500,
+      "inventory-hardenedAlloy": 2000
+      // ... all inventory values
+    }
+  },
+  "Profile 2": { ... }
+}
+```
+
+### Save Profile Flow
+```javascript
+ProfilesModule.saveProfile = (profileName) => {
+  // 1. Collect form values
+  const values = {};
+  document.querySelectorAll('input, select, textarea').forEach(input => {
+    if (input.type !== 'button' && input.type !== 'submit') {
+      values[input.id] = input.value;
+    }
+  });
+  
+  // 2. Collect inventory values separately
+  const inventory = {};
+  document.querySelectorAll('[id^="inventory-"]').forEach(input => {
+    inventory[input.id] = input.value;
+  });
+  
+  // 3. Create profile object
+  const profile = {
+    name: profileName,
+    timestamp: Date.now(),
+    values: values,
+    inventory: inventory
+  };
+  
+  // 4. Save to localStorage
+  const profiles = getAllProfiles();
+  profiles[profileName] = profile;
+  localStorage.setItem('wos-profiles', JSON.stringify(profiles));
+  
+  // 5. Update UI
+  updateProfileDropdown();
+};
+```
+
+### Load Profile Flow
+```javascript
+ProfilesModule.loadProfile = (profileName) => {
+  // 1. Retrieve profile
+  const profiles = getAllProfiles();
+  const profile = profiles[profileName];
+  
+  if (!profile) return;
+  
+  // 2. Apply form values
+  Object.keys(profile.values).forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.value = profile.values[id];
+    }
+  });
+  
+  // 3. Apply inventory values
+  Object.keys(profile.inventory).forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.value = profile.inventory[id];
+    }
+  });
+  
+  // 4. Trigger recalculation (IMPORTANT!)
+  // First calculation applies form values
+  WOSCalcCore.runActive();
+  
+  // Small delay to ensure DOM updates
+  setTimeout(() => {
+    // Second calculation includes inventory in gap calculation
+    WOSCalcCore.runActive();
+  }, 50);
+};
+```
+
+### Cross-Calculator Support
+Profiles work across all calculators because:
+1. Uses element IDs, not calculator-specific logic
+2. Stores ALL form inputs in single structure
+3. Each calculator has unique ID prefixes
+4. WOSCalcCore handles page-specific calculations
+
+### Profile Management UI
+```javascript
+// Rename profile
+ProfilesModule.renameProfile = (oldName, newName) => {
+  const profiles = getAllProfiles();
+  profiles[newName] = { ...profiles[oldName], name: newName };
+  delete profiles[oldName];
+  localStorage.setItem('wos-profiles', JSON.stringify(profiles));
+  updateProfileDropdown();
+};
+
+// Delete profile
+ProfilesModule.deleteProfile = (profileName) => {
+  if (!confirm(`Delete profile "${profileName}"?`)) return;
+  
+  const profiles = getAllProfiles();
+  delete profiles[profileName];
+  localStorage.setItem('wos-profiles', JSON.stringify(profiles));
+  updateProfileDropdown();
+};
+
+// Export profile (JSON download)
+ProfilesModule.exportProfile = (profileName) => {
+  const profiles = getAllProfiles();
+  const profile = profiles[profileName];
+  
+  const dataStr = JSON.stringify(profile, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${profileName}.json`;
+  link.click();
+};
+
+// Import profile (file upload)
+ProfilesModule.importProfile = (file) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const profile = JSON.parse(e.target.result);
+      const profiles = getAllProfiles();
+      profiles[profile.name] = profile;
+      localStorage.setItem('wos-profiles', JSON.stringify(profiles));
+      updateProfileDropdown();
+      alert(`Profile "${profile.name}" imported successfully!`);
+    } catch (err) {
+      alert('Invalid profile file!');
+    }
+  };
+  reader.readAsText(file);
+};
+```
+
+---
+
+**Document Version:** 2.1.0  
+**Last Updated:** December 2, 2025  
 **Maintainer:** Orizzi

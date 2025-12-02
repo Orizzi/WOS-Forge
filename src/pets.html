@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="style/style.css" />
   <script src="Scripts/theme.js" defer></script>
   <script src="Scripts/translations.js" defer></script>
+  <script src="Scripts/calculation-core.js" defer></script>
     <script src="Scripts/sw-register.js" defer></script>
 
 </head>
@@ -17,14 +18,14 @@
       <a href="../index.html" class="logo-link">
         <img src="../src/assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
       </a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">☰</button>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation">?</button>
       <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
         <div class="nav-links">
           <a href="../index.html" data-i18n="nav-home">Home</a>
           <a href="charms.html" data-i18n="nav-charms">Charms</a>
           <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
           <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
-          <a href="warAcademy.html" data-i18n="nav-war-academy">War Academy</a>
+          <a href="war-academy.html" data-i18n="nav-war-academy">War Academy</a>
           <a href="pets.html" data-i18n="nav-pets" aria-current="page">Pets</a>
           <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
         </div>
@@ -33,6 +34,10 @@
           <select id="language-selector" aria-label="Language" title="Select language">
           <option value="en"> English</option>
           <option value="es"> Español</option>
+          <option value="fr"> Français</option>
+          <option value="de"> Deutsch</option>
+          <option value="pt"> Português</option>
+          <option value="it"> Italiano</option>
           <option value="ko"> 한국어</option>
           <option value="ru"> Русский</option>
           </select>
@@ -42,7 +47,7 @@
   <main>
     <h2>Pets</h2>
     <section class="coming-soon" role="region" aria-labelledby="pets-coming-title">
-      <h3 id="pets-coming-title">Creature Companion Calculators Arriving Soon 🐾</h3>
+      <h3 id="pets-coming-title">Creature Companion Calculators Arriving Soon ??</h3>
       <p>We're taming the data for Pets to let you:</p>
       <ul>
         <li>Project upgrade materials & feeding costs</li>
@@ -67,12 +72,12 @@
       <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
       <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
         <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
-        <li class="bottom-nav__item"><a href="warAcademy.html">War Academy</a></li>
+        <li class="bottom-nav__item"><a href="war-academy.html">War Academy</a></li>
         <li class="bottom-nav__item"><a href="pets.html" aria-current="page" class="is-active">Pets</a></li>
       <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
     </ul>
   </nav>
-    <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+    <a href="#top" class="back-to-top" aria-label="Back to top">?</a>
     <script>
       document.addEventListener('DOMContentLoaded', function(){
         const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
