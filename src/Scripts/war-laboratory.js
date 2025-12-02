@@ -303,16 +303,17 @@
     });
     toSelect.addEventListener('change', apply);
 
+    const t = window.I18n?.t || ((k) => k);
     const labelFrom = document.createElement('label');
     labelFrom.style.fontSize = toEm(11);
     labelFrom.style.color = 'var(--text,#e8f4f8)';
-    labelFrom.textContent = 'From';
+    labelFrom.textContent = t('from').replace(':', '');
     labelFrom.appendChild(fromSelect);
 
     const labelTo = document.createElement('label');
     labelTo.style.fontSize = toEm(11);
     labelTo.style.color = 'var(--text,#e8f4f8)';
-    labelTo.textContent = 'To';
+    labelTo.textContent = t('to').replace(':', '');
     labelTo.appendChild(toSelect);
 
     editorEl.appendChild(labelFrom);
@@ -535,7 +536,9 @@
   function renderSelectionPanel() {
     const panel = document.getElementById('selection-panel');
     if (!panel) return;
-    panel.innerHTML = `<p>Ranges are edited directly on each node. Click a node to set From -> To.</p>`;
+    const t = window.I18n?.t || ((k) => k);
+    const instructionText = 'Ranges are edited directly on each node. Click a node to set From -> To.';
+    panel.innerHTML = `<p>${instructionText}</p>`;
   }
 
   function renderSelectionList() {
@@ -544,9 +547,10 @@
     list.innerHTML = '';
     const entries = Object.entries(selections);
     if (!entries.length) {
+      const t = window.I18n?.t || ((k) => k);
       const empty = document.createElement('li');
       empty.className = 'gift-code-log__item';
-      empty.textContent = 'No active selections. Pick nodes in the tree to begin.';
+      empty.textContent = t('no-selections');
       list.appendChild(empty);
       return;
     }
@@ -557,6 +561,7 @@
       .forEach(({ id, range, node }) => {
         const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || null;
         const statPreview = summary ? mainStatKey(summary.stats) : null;
+        const t = window.I18n?.t || ((k) => k);
         const li = document.createElement('li');
         li.className = 'gift-code-log__item';
         li.style.display = 'grid';
@@ -571,7 +576,7 @@
               <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
             </div>
             <div style="margin-top:${toEm(4)};font-size:${toEm(12)};color:var(--muted-text);">
-              Range: ${range.start} -> ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • Time: ${formatTime(summary.timeSeconds)}` : ''}
+              ${t('range')}: ${range.start} -> ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • ${t('time')}: ${formatTime(summary.timeSeconds)}` : ''}
             </div>
           </div>
         `;
@@ -730,7 +735,8 @@
   function renderSummaryEmpty() {
     const summary = document.getElementById('summary-content');
     if (!summary) return;
-    summary.querySelector('.gift-code-status-text').textContent = 'Select a node and set a level range to see totals here.';
+    const t = window.I18n?.t || ((k) => k);
+    summary.querySelector('.gift-code-status-text').textContent = t('select-node-prompt');
     const costs = document.getElementById('costs-cards');
     if (costs) costs.innerHTML = '';
     const tbody = document.getElementById('war-lab-slot-body');
@@ -790,7 +796,12 @@
         const have = owned[r.key] || 0;
         const gap = req - have;
         const gapClass = gap > 0 ? 'deficit' : 'surplus';
-        const gapText = gap > 0 ? `Need ${gap.toLocaleString()} more` : gap < 0 ? `Have ${Math.abs(gap).toLocaleString()} extra` : 'Exact match';
+        const t = window.I18n?.t || ((k) => k);
+        const gapText = gap > 0 
+          ? t('need-x-more').replace('%s', gap.toLocaleString())
+          : gap < 0 
+          ? t('have-x-extra').replace('%s', Math.abs(gap).toLocaleString())
+          : t('exact-match');
         return `
           <div class="summary-pill">
             <div class="label-with-icon" style="gap:${toEm(8)};">
@@ -816,8 +827,10 @@
     const remainingSeconds = effectiveSeconds - speedupSeconds;
     const stripeClass = remainingSeconds > 0 ? 'gap-line deficit' : 'gap-line surplus';
     const daysVal = Math.abs(remainingSeconds) / (24 * 60 * 60);
-    const stripeText =
-      remainingSeconds > 0 ? `⚠ need ${daysVal.toFixed(1)} days more` : `left ${daysVal.toFixed(1)} days`;
+    const t = window.I18n?.t || ((k) => k);
+    const stripeText = remainingSeconds > 0 
+      ? `⚠ ${t('need-more')} ${daysVal.toFixed(1)} ${t('days')} ${t('more')}`
+      : `${t('will-have')} ${daysVal.toFixed(1)} ${t('days')} ${t('left')}`;
 
     // SVS points: 30 per speedup minute actually used (capped by effective time) + 1000 per FC shard
     const speedupSecondsUsed = Math.min(speedupSeconds, effectiveSeconds);

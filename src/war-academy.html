@@ -41,6 +41,10 @@
         <select id="language-selector" aria-label="Language" title="Select language">
           <option value="en">English</option>
           <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
           <option value="ko">한국어</option>
           <option value="ru">Русский</option>
         </select>
@@ -51,26 +55,26 @@
   <div class="app-shell">
     <main role="main" class="war-lab-page">
       <section class="card" aria-labelledby="war-lab-title">
-        <h1 id="war-lab-title">War Academy – Helios Research</h1>
+        <h1 id="war-lab-title" data-i18n="war-academy-title">War Academy – Helios Research</h1>
         
         <div class="inventory-profiles-row">
           <section class="inventory-section card" aria-label="Helios Inventory">
-            <h3>Your Inventory</h3>
+            <h3 data-i18n="your-inventory">Your Inventory</h3>
             <div class="war-lab-inventory-grid">
               <div class="war-lab-inv-item">
-                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat">Meat</span></label>
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/meat.png" alt="Meat"><span data-i18n="meat">Meat</span></span></label>
                 <input type="number" id="inventory-meat" min="0" value="0" inputmode="numeric" maxlength="12" max="999999999999" pattern="[0-9]{1,12}">
               </div>
               <div class="war-lab-inv-item">
-                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood">Wood</span></label>
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/wood.png" alt="Wood"><span data-i18n="wood">Wood</span></span></label>
                 <input type="number" id="inventory-wood" min="0" value="0" inputmode="numeric" maxlength="12" max="999999999999" pattern="[0-9]{1,12}">
               </div>
               <div class="war-lab-inv-item">
-                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal">Coal</span></label>
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/coal.png" alt="Coal"><span data-i18n="coal">Coal</span></span></label>
                 <input type="number" id="inventory-coal" min="0" value="0" inputmode="numeric" maxlength="11" max="99999999999" pattern="[0-9]{1,11}">
               </div>
               <div class="war-lab-inv-item">
-                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron">Iron</span></label>
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/iron.png" alt="Iron"><span data-i18n="iron">Iron</span></span></label>
                 <input type="number" id="inventory-iron" min="0" value="0" inputmode="numeric" maxlength="10" max="9999999999" pattern="[0-9]{1,10}">
               </div>
               <div class="war-lab-inv-item">
@@ -78,15 +82,15 @@
                 <input type="number" id="inventory-fc" min="0" value="0" inputmode="numeric" maxlength="7" max="9999999" pattern="[0-9]{1,7}">
               </div>
               <div class="war-lab-inv-item">
-                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel">Steel</span></label>
+                <label><span class="label-with-icon"><img class="res-icon" src="assets/resources/base/steel.png" alt="Steel"><span data-i18n="steel">Steel</span></span></label>
                 <input type="number" id="inventory-steel" min="0" value="0" inputmode="numeric" maxlength="10" max="9999999999" pattern="[0-9]{1,10}">
               </div>
               <div class="war-lab-inv-item">
-                <label>Speedups (days)</label>
+                <label data-i18n="speedups-days">Speedups (days)</label>
                 <input type="number" id="inventory-speedups" min="0" value="0" inputmode="numeric" placeholder="minutes">
               </div>
               <div class="war-lab-inv-item">
-                <label>Research % reduction</label>
+                <label data-i18n="research-reduction">Research % reduction</label>
                 <input type="number" id="inventory-reduction" min="0" max="100" value="0" inputmode="numeric" placeholder="%">
               </div>
             </div>
@@ -109,9 +113,9 @@
         </div>
 
         <div class="tab-row mobile-branch-nav" id="branch-tabs" role="tablist" aria-label="Helios branches">
-          <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true">Marksman</button>
-          <button class="tab" data-branch="infantry" role="tab" aria-selected="false">Infantry</button>
-          <button class="tab" data-branch="lancer" role="tab" aria-selected="false">Lancer</button>
+          <button class="tab is-active" data-branch="marksman" role="tab" aria-selected="true" data-i18n="marksman">Marksman</button>
+          <button class="tab" data-branch="infantry" role="tab" aria-selected="false" data-i18n="infantry">Infantry</button>
+          <button class="tab" data-branch="lancer" role="tab" aria-selected="false" data-i18n="lancer">Lancer</button>
         </div>
 
         <div class="war-lab-main">
@@ -122,14 +126,14 @@
               </div>
             </section>
             <section class="card stat-recap-card" aria-label="Stat recap">
-              <h3 class="section-title">Stat recap</h3>
+              <h3 class="section-title" data-i18n="stat-recap">Stat recap</h3>
               <div class="stat-grid" id="stat-recap-grid"></div>
             </section>
           </section>
 
           <aside class="war-lab-right">
             <div class="card results-card war-lab-results">
-              <h2 class="section-title">Results</h2>
+              <h2 class="section-title" data-i18n="results">Results</h2>
               <div id="summary-content" class="calculation-output">
                 <div class="result-card grouped-results">
                   <p class="gift-code-status-text" data-status="info">Select a node to view totals.</p>
@@ -138,7 +142,7 @@
                 <div class="result-totals"></div>
                 <div class="result-card slot-card">
                   <div class="result-card-header">
-                    <h3>Slot recap</h3>
+                    <h3 data-i18n="slot-recap">Slot recap</h3>
                   </div>
                   <div class="results-wrap">
                     <div class="results-table-wrapper">
