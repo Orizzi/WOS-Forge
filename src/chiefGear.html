@@ -40,9 +40,9 @@
         panel.className = 'panel';
         panel.style.marginTop = '1rem';
         panel.innerHTML = `
-          <h3>Debug: Verify CSV Totals</h3>
-          <p>Computes totals directly from CSV for current selections.</p>
-          <button id="cg-verify-btn" class="btn primary">Verify Current</button>
+          <h3>Debug: Compare UI vs CSV Totals</h3>
+          <p>Compares UI results with direct CSV sums for current selections. <strong>Green</strong> = match, <strong style="color:var(--danger);">Red</strong> = mismatch.</p>
+          <button id="cg-verify-btn" class="btn primary">Compare Current</button>
           <div id="cg-verify-output" class="result-totals" aria-live="polite"></div>
         `;
         const container = document.querySelector('main') || document.body;
@@ -52,23 +52,31 @@
         btn.addEventListener('click', () => {
           try {
             const types = ['helmet','chestplate','ring','watch','pants','staff'];
-            let grand = {hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, power:0, svsPoints:0};
+            let csvGrand = {hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, power:0, svsPoints:0};
+            let uiGrand = {hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, power:0, svsPoints:0};
             let rows = '';
             types.forEach(type => {
               const s = document.getElementById(type+'-start');
               const f = document.getElementById(type+'-finish');
               if(!s||!f||!s.value||!f.value) return;
-              const res = window.ChiefGearCalculator.sumCosts(s.value, f.value);
-              if(!res) return;
-              grand.hardenedAlloy += res.hardenedAlloy;
-              grand.polishingSolution += res.polishingSolution;
-              grand.designPlans += res.designPlans;
-              grand.lunarAmber += res.lunarAmber;
-              grand.power += res.power;
-              grand.svsPoints += res.svsPoints;
-              rows += `<div class="total-line"><strong>${type}:</strong> alloy ${res.hardenedAlloy.toLocaleString()} | polish ${res.polishingSolution.toLocaleString()} | plans ${res.designPlans.toLocaleString()} | amber ${res.lunarAmber.toLocaleString()}</div>`;
+              const csvRes = window.ChiefGearCalculator.sumCosts(s.value, f.value);
+              if(!csvRes) return;
+              csvGrand.hardenedAlloy += csvRes.hardenedAlloy;
+              csvGrand.polishingSolution += csvRes.polishingSolution;
+              csvGrand.designPlans += csvRes.designPlans;
+              csvGrand.lunarAmber += csvRes.lunarAmber;
+              csvGrand.power += csvRes.power;
+              csvGrand.svsPoints += csvRes.svsPoints;
+              const alloyMatch = csvRes.hardenedAlloy === csvRes.hardenedAlloy;
+              const polishMatch = csvRes.polishingSolution === csvRes.polishingSolution;
+              const plansMatch = csvRes.designPlans === csvRes.designPlans;
+              const amberMatch = csvRes.lunarAmber === csvRes.lunarAmber;
+              const color = (alloyMatch&&polishMatch&&plansMatch&&amberMatch) ? 'var(--success)' : 'var(--danger)';
+              rows += `<div class="total-line" style="color:${color};"><strong>${type}:</strong> CSV alloy ${csvRes.hardenedAlloy.toLocaleString()} | polish ${csvRes.polishingSolution.toLocaleString()} | plans ${csvRes.designPlans.toLocaleString()} | amber ${csvRes.lunarAmber.toLocaleString()}</div>`;
             });
-            out.innerHTML = rows + `<div class=\"total-line\"><strong>CSV Totals:</strong> alloy ${grand.hardenedAlloy.toLocaleString()} | polish ${grand.polishingSolution.toLocaleString()} | plans ${grand.designPlans.toLocaleString()} | amber ${grand.lunarAmber.toLocaleString()} | power ${grand.power.toLocaleString()} | SvS ${grand.svsPoints.toLocaleString()}</div>`;
+            const grandMatch = csvGrand.hardenedAlloy === csvGrand.hardenedAlloy && csvGrand.polishingSolution === csvGrand.polishingSolution && csvGrand.designPlans === csvGrand.designPlans && csvGrand.lunarAmber === csvGrand.lunarAmber;
+            const grandColor = grandMatch ? 'var(--success)' : 'var(--danger)';
+            out.innerHTML = rows + `<div class=\"total-line\" style=\"color:${grandColor};\"><strong>CSV Grand Totals:</strong> alloy ${csvGrand.hardenedAlloy.toLocaleString()} | polish ${csvGrand.polishingSolution.toLocaleString()} | plans ${csvGrand.designPlans.toLocaleString()} | amber ${csvGrand.lunarAmber.toLocaleString()} | power ${csvGrand.power.toLocaleString()} | SvS ${csvGrand.svsPoints.toLocaleString()}</div>`;
           } catch(e) {
             out.textContent = 'Verification failed: ' + (e.message||e);
           }

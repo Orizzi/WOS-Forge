@@ -165,6 +165,8 @@ function main(){
     console.error('Parsed 0 levels from CSV. Check headers and data in', file);
     process.exit(1);
   }
+
+  // Red T2 -> Red T3 specific test
   const special = {from:'Red T2', to:'Red T3'};
   const res = sumCosts(costs, special.from, special.to);
   console.log('Red T2 -> Red T3 totals:');
@@ -177,9 +179,22 @@ function main(){
     svsPoints: fmt(res?.svsPoints)
   });
 
-  const randoms = pickRandomPairs(10);
-  console.log('\nRandom checks:');
+  // 100 random tests with CSV output
+  console.log('\nGenerating 100 random test samples...');
+  const randoms = pickRandomPairs(100);
+  const csvLines = ['from,to,hardenedAlloy,polishingSolution,designPlans,lunarAmber,power,svsPoints'];
   randoms.forEach(p=>{
+    const r = sumCosts(costs, p.from, p.to);
+    if(!r) return;
+    csvLines.push(`${p.from},${p.to},${r.hardenedAlloy},${r.polishingSolution},${r.designPlans},${r.lunarAmber},${r.power},${r.svsPoints}`);
+  });
+  const reportPath = path.join(ROOT, 'scripts/chief-gear-test-report.csv');
+  fs.writeFileSync(reportPath, csvLines.join('\n'), 'utf8');
+  console.log(`Wrote ${csvLines.length-1} test cases to ${reportPath}`);
+  
+  // Show first 10 random checks in console
+  console.log('\nFirst 10 random checks:');
+  randoms.slice(0,10).forEach(p=>{
     const r = sumCosts(costs, p.from, p.to);
     if(!r){
       console.log(`${p.from} -> ${p.to}: invalid`);
