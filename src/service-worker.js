@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v9';
 const CACHE_NAME = `wos-cache-${CACHE_VERSION}`;
 const PRECACHE_URLS = [
   './index.html',

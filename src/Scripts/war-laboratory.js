@@ -875,8 +875,16 @@
       ['inventory-reduction', 'reduction']
     ];
     const handleInvChange = (id, key, el) => {
-      // Enforce digit limits for FCs (7 digits) and Steel (10 digits)
-      if (id === 'inventory-fc') {
+      // Enforce digit limits based on max needed values + 2 digits
+      if (id === 'inventory-meat') {
+        el.value = limitDigits(el.value, 12);
+      } else if (id === 'inventory-wood') {
+        el.value = limitDigits(el.value, 12);
+      } else if (id === 'inventory-coal') {
+        el.value = limitDigits(el.value, 11);
+      } else if (id === 'inventory-iron') {
+        el.value = limitDigits(el.value, 10);
+      } else if (id === 'inventory-fc') {
         el.value = limitDigits(el.value, 7);
       } else if (id === 'inventory-steel') {
         el.value = limitDigits(el.value, 10);
