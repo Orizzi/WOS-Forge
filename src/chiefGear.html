@@ -1,39 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WOSC-Chief Gear</title>
-    <link rel="stylesheet" href="../src/style/style.min.css">
-    <link rel="manifest" href="../src/manifest.json">
-    <script src="../src/Scripts/min/icon-helper.min.js" defer></script>
-    <script src="../src/Scripts/min/theme.min.js" defer></script>
-    <script src="../src/Scripts/min/table-sort.min.js" defer></script>
-    <script src="../src/Scripts/calculation-core.js" defer></script>
-    <script src="../src/Scripts/min/chief-gear-calculator.min.js" defer></script>
-    <script src="../src/Scripts/min/profiles.min.js" defer></script>
-    <script src="../src/Scripts/min/translations.min.js" defer="defer" type="module" async></script>
-    <script type="module" async>
-      window.addEventListener('DOMContentLoaded', () => {
-        import('./Scripts/min/translations.min.js');
-      });
-    </script>
-    <script src="Scripts/sw-register.js" defer></script>
-
-</head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Chief Gear calculator for Whiteout Survival. Plan upgrades, save profiles, and get resource breakdowns for every gear type.">
     <title>WOSC-Chief Gear</title>
     <link rel="icon" href="../src/assets/app-icon.png">
     <link rel="stylesheet" href="style/style.min.css">
+    <script>(function(){try{var l=localStorage.getItem('wos-language')||'en';document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
+    <script src="Scripts/translations.js" defer></script>
     <script src="Scripts/min/icon-helper.min.js" defer></script>
     <script src="Scripts/min/theme.min.js" defer></script>
     <script src="Scripts/min/table-sort.min.js" defer></script>
     <script src="Scripts/calculation-core.js" defer></script>
     <script src="Scripts/min/chief-gear-calculator.min.js" defer></script>
     <script src="Scripts/min/profiles.min.js" defer></script>
-    <script src="Scripts/min/translations.min.js" defer></script>
     <script src="Scripts/nav.js" defer></script>
+    <script src="Scripts/sw-register.js" defer></script>
+</head>
 <body>
     <div id="top"></div>
        <header class="header-with-nav" role="banner">
