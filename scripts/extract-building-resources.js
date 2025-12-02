@@ -19,6 +19,7 @@ const BUILDING_SHEETS = [
   'Furnace', 'Embassy', 'Command Center', 'Infirmary',
   'Infantry Camp', 'Marksman Camp', 'Lancer Camp', 'War Academy'
 ];
+// Note: War Academy starts at FC1 in-game (no F30/30-x rows); keep it in the list for FC1+.
 
 function getAllowedKeys() {
   const keys = ['30-1','30-2','30-3','30-4'];

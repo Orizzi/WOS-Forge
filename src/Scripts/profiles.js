@@ -16,6 +16,7 @@
 const ProfilesModule = (function(){
   const PROFILES_KEY = 'wos-unified-profiles';  // Key used for browser storage
   const LAST_PROFILE_KEY = 'wos-last-profile';  // Remember last loaded profile name
+  const LAST_SNAPSHOT_KEY = 'wos-last-snapshot'; // Fallback snapshot when no profile is selected
   const SHARED_RES_KEY = 'wos-shared-base-resources'; // Shared base resources across pages
   let currentLoadedProfile = null;  // Track which profile is currently loaded
   const CONSENT_KEY = 'wos-storage-consent';     // Flag to remember user consent for storage
@@ -311,6 +312,19 @@ const ProfilesModule = (function(){
     try{ 
       localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); 
     }catch(e){}  // Silently fail if localStorage unavailable
+  }
+
+  function writeLastSnapshot(snapshot){
+    try{ localStorage.setItem(LAST_SNAPSHOT_KEY, JSON.stringify(snapshot || {})); }catch(e){}
+  }
+
+  function readLastSnapshot(){
+    try{
+      const raw = localStorage.getItem(LAST_SNAPSHOT_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){
+      return null;
+    }
   }
 
   /**
@@ -612,6 +626,9 @@ const ProfilesModule = (function(){
       const fromLast = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
       currentLoadedProfile = fromList || fromLast || null;
     }
+    // Capture current state once, so we can snapshot even if no profile is active
+    const current = captureCurrent();
+
     // If no profile is marked current but exactly one exists, select it implicitly
     if(!currentLoadedProfile){
       const names = Object.keys(profiles);
@@ -619,12 +636,13 @@ const ProfilesModule = (function(){
         currentLoadedProfile = names[0];
         try { localStorage.setItem(LAST_PROFILE_KEY, currentLoadedProfile); } catch(e){}
       } else {
-        return; // No current profile and ambiguous which to use
+        // No active profile; keep a lightweight snapshot so reloads can restore state
+        writeLastSnapshot(current);
+        return;
       }
     }
     if(!profiles[currentLoadedProfile]) return; // Profile was deleted
     // Silently merge current page selections with existing profile
-    const current = captureCurrent();
     const existing = profiles[currentLoadedProfile];
     if(current.charms && Object.keys(current.charms).length){ existing.charms = { ...(existing.charms||{}), ...current.charms }; }
     if(current.chiefGear && Object.keys(current.chiefGear).length){ existing.chiefGear = { ...(existing.chiefGear||{}), ...current.chiefGear }; }
@@ -635,6 +653,8 @@ const ProfilesModule = (function(){
     if(current.dynamic && Object.keys(current.dynamic).length){ existing.dynamic = { ...(existing.dynamic||{}), ...current.dynamic }; }
     profiles[currentLoadedProfile] = existing;
     writeProfiles(profiles);
+    // Keep a fallback snapshot for cases where no profile is loaded on next visit
+    writeLastSnapshot(existing);
   }
 
   /**
@@ -672,6 +692,14 @@ const ProfilesModule = (function(){
     if (zinSel) zinSel.addEventListener('change', () => {
       autoSaveCurrentProfile();
       try { FireCrystalsCalculator.calculateAll(); } catch(_) {}
+    });
+
+    // Delegated safety net for selects that may be added/rebuilt after init (e.g., FC UI tweaks)
+    document.addEventListener('change', (e) => {
+      const el = e.target;
+      if (!el || el.tagName !== 'SELECT') return;
+      if (el.id === 'profiles-list' || el.id === 'language-selector') return;
+      autoSaveCurrentProfile();
     });
   }
 
@@ -804,6 +832,12 @@ const ProfilesModule = (function(){
     // Auto-save for calculator controls (covers batch selects)
     wireAutoSaveListeners();
 
+    // If no profile is selected, try to restore the last snapshot (autosave fallback)
+    if(!currentLoadedProfile){
+      const snap = readLastSnapshot();
+      if(snap) applyProfileObject(snap);
+    }
+
     // Last-chance save when leaving or hiding the tab
     window.addEventListener('beforeunload', autoSaveCurrentProfile);
     document.addEventListener('visibilitychange', () => {
@@ -815,6 +849,12 @@ const ProfilesModule = (function(){
 
     // Render existing profiles on load
     renderProfilesList();
+
+    // Apply last snapshot as a guard (helps when profile selection isn't active yet)
+    const lastSnap = readLastSnapshot();
+    if(lastSnap) {
+      try { applyProfileObject(lastSnap); } catch(_) {}
+    }
 
     // Auto-load last used profile (or first available) on page load
     if(list){
