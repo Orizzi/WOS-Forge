@@ -709,14 +709,18 @@
             saveLanguage(newLang);
             applyTranslations(newLang);
 
-            if (typeof ChiefGearCalculator !== 'undefined') {
-                ChiefGearCalculator.calculateAll();
-            }
-            if (typeof CalculatorModule !== 'undefined') {
-                CalculatorModule.calculateAll();
-            }
-            if (typeof FireCrystalsCalculator !== 'undefined') {
-                FireCrystalsCalculator.calculateAll();
+            if (window.WOSCalcCore && typeof window.WOSCalcCore.runActive === 'function') {
+                window.WOSCalcCore.runActive();
+            } else {
+                if (typeof ChiefGearCalculator !== 'undefined') {
+                    ChiefGearCalculator.calculateAll();
+                }
+                if (typeof CalculatorModule !== 'undefined') {
+                    CalculatorModule.calculateAll();
+                }
+                if (typeof FireCrystalsCalculator !== 'undefined') {
+                    FireCrystalsCalculator.calculateAll();
+                }
             }
         });
     }

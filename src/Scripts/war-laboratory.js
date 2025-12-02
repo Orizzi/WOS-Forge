@@ -12,6 +12,13 @@
     infantry: 'Infantry',
     lancer: 'Lancer'
   };
+  const PX_BASE = 16;
+  const toEm = (px) => {
+    const val = (typeof px === 'number' ? px : Number(px || 0)) / PX_BASE;
+    if (!isFinite(val) || val === 0) return '0';
+    const rounded = parseFloat(val.toFixed(4));
+    return `${rounded}em`;
+  };
 
   let currentBranch = 'marksman';
   const selections = {}; // nodeId -> { start, end }
@@ -21,6 +28,118 @@
   let editorNodeId = null;
   let editorOutsideHandler = null;
   const LOCAL_STATE_KEY = 'wos-war-lab-last-state';
+  const HELIOS_CSV_URL = 'assets/war_lab_unified.csv';
+
+  async function ensureHeliosData() {
+    if (window.WOSData && window.WOSData.helios && window.WOSData.helios.nodes) return;
+    const loader = window.WOSData && window.WOSData.loader;
+    if (!loader || !loader.loadCsv) return;
+    const csv = await loader.loadCsv(HELIOS_CSV_URL);
+    if (!csv || !csv.header || !csv.rows || csv.rows.length === 0) return;
+    const lower = csv.header.map((h) => (h || '').toLowerCase());
+    const idx = {
+      id: lower.indexOf('id'),
+      branch: lower.indexOf('branch'),
+      name: lower.indexOf('name'),
+      maxLevel: lower.indexOf('maxlevel'),
+      parents: lower.indexOf('parents'),
+      variant: lower.indexOf('variant'),
+      isUnlock: lower.indexOf('isunlocknode'),
+      category: lower.indexOf('category'),
+      row: lower.indexOf('row'),
+      col: lower.indexOf('col'),
+      icon: lower.indexOf('icon'),
+      level: lower.indexOf('level'),
+      statKey: lower.indexOf('statkey'),
+      statValue: lower.indexOf('statvalue'),
+      power: lower.indexOf('power'),
+      svsPoints: lower.indexOf('svspoints'),
+      fc: lower.indexOf('costfc'),
+      meat: lower.indexOf('costmeat'),
+      wood: lower.indexOf('costwood'),
+      coal: lower.indexOf('costcoal'),
+      iron: lower.indexOf('costiron'),
+      steel: lower.indexOf('coststeel'),
+      timeSeconds: lower.indexOf('timeseconds')
+    };
+    if (Object.values(idx).some((v) => v === -1)) return;
+
+    const nodesMap = {};
+    csv.rows.forEach((row) => {
+      const id = row[idx.id];
+      if (!id) return;
+      const node = nodesMap[id] || {
+        id,
+        branch: row[idx.branch],
+        name: row[idx.name],
+        maxLevel: Number(row[idx.maxLevel]) || 0,
+        parents: row[idx.parents] ? row[idx.parents].split('|').filter(Boolean) : [],
+        variant: row[idx.variant],
+        isUnlockNode: row[idx.isUnlock] === 'true' || row[idx.isUnlock] === true,
+        category: row[idx.category],
+        row: Number(row[idx.row]) || 0,
+        col: Number(row[idx.col]) || 0,
+        icon: row[idx.icon],
+        levels: []
+      };
+      const levelEntry = {
+        level: Number(row[idx.level]) || 0,
+        stats: row[idx.statKey] ? { [row[idx.statKey]]: Number(row[idx.statValue]) || 0 } : {},
+        power: Number(row[idx.power]) || 0,
+        svsPoints: Number(row[idx.svsPoints]) || 0,
+        costs: {
+          fc: Number(row[idx.fc]) || 0,
+          meat: Number(row[idx.meat]) || 0,
+          wood: Number(row[idx.wood]) || 0,
+          coal: Number(row[idx.coal]) || 0,
+          iron: Number(row[idx.iron]) || 0,
+          steel: Number(row[idx.steel]) || 0
+        },
+        timeSeconds: Number(row[idx.timeSeconds]) || 0
+      };
+      node.levels.push(levelEntry);
+      node.maxLevel = Math.max(node.maxLevel || 0, levelEntry.level || 0);
+      nodesMap[id] = node;
+    });
+
+    const nodes = Object.values(nodesMap).map((n) => {
+      n.levels.sort((a, b) => (a.level || 0) - (b.level || 0));
+      return n;
+    });
+
+    const nodeMap = Object.fromEntries(nodes.map((n) => [n.id, n]));
+    function sumRange(nodeId, startLevel, endLevel) {
+      const node = nodeMap[nodeId];
+      if (!node || startLevel >= endLevel) return null;
+      const levels = node.levels.filter(
+        (l) => typeof l.level === 'number' && l.level > startLevel && l.level <= endLevel
+      );
+      const total = { fc: 0, meat: 0, wood: 0, coal: 0, iron: 0, steel: 0, timeSeconds: 0, stats: {}, power: 0, svsPoints: 0 };
+      levels.forEach((l) => {
+        total.fc += l.costs.fc || 0;
+        total.meat += l.costs.meat || 0;
+        total.wood += l.costs.wood || 0;
+        total.coal += l.costs.coal || 0;
+        total.iron += l.costs.iron || 0;
+        total.steel += l.costs.steel || 0;
+        total.timeSeconds += l.timeSeconds || 0;
+        total.power += l.power || 0;
+        Object.entries(l.stats || {}).forEach(([k, v]) => {
+          total.stats[k] = (total.stats[k] || 0) + v;
+        });
+      });
+      return total;
+    }
+
+    window.WOSData = window.WOSData || {};
+    window.WOSData.helios = {
+      branches: Array.from(new Set(nodes.map((n) => n.branch).filter(Boolean))),
+      slotTemplate: [],
+      nodes,
+      nodeMap,
+      sumRange
+    };
+  }
 
   function mainStatKey(stats) {
     if (!stats) return null;
@@ -135,12 +254,12 @@
     editorEl.style.position = 'absolute';
     editorEl.style.zIndex = '3100';
     editorEl.style.background = 'rgba(15,31,53,0.95)';
-    editorEl.style.border = '1px solid var(--border, #0af)';
-    editorEl.style.borderRadius = '8px';
-    editorEl.style.boxShadow = '0 8px 24px rgba(0,0,0,0.55)';
-    editorEl.style.padding = '8px';
+    editorEl.style.border = `${toEm(1)} solid var(--border, #0af)`;
+    editorEl.style.borderRadius = toEm(8);
+    editorEl.style.boxShadow = `0 ${toEm(8)} ${toEm(24)} rgba(0,0,0,0.55)`;
+    editorEl.style.padding = toEm(8);
     editorEl.style.display = 'flex';
-    editorEl.style.gap = '8px';
+    editorEl.style.gap = toEm(8);
     editorEl.style.alignItems = 'center';
     editorEl.style.pointerEvents = 'auto';
 
@@ -185,13 +304,13 @@
     toSelect.addEventListener('change', apply);
 
     const labelFrom = document.createElement('label');
-    labelFrom.style.fontSize = '11px';
+    labelFrom.style.fontSize = toEm(11);
     labelFrom.style.color = 'var(--text,#e8f4f8)';
     labelFrom.textContent = 'From';
     labelFrom.appendChild(fromSelect);
 
     const labelTo = document.createElement('label');
-    labelTo.style.fontSize = '11px';
+    labelTo.style.fontSize = toEm(11);
     labelTo.style.color = 'var(--text,#e8f4f8)';
     labelTo.textContent = 'To';
     labelTo.appendChild(toSelect);
@@ -204,8 +323,8 @@
     const rect = btn.getBoundingClientRect();
     const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    editorEl.style.left = `${rect.left + scrollX}px`;
-    editorEl.style.top = `${rect.bottom + scrollY + 6}px`;
+    editorEl.style.left = toEm(rect.left + scrollX);
+    editorEl.style.top = toEm(rect.bottom + scrollY + 6);
 
     const outsideClick = (e) => {
       if (editorEl && !editorEl.contains(e.target)) {
@@ -262,8 +381,8 @@
     tree.style.overflowX = isDesktop ? 'visible' : 'auto';
     tree.style.overflowY = isDesktop ? 'visible' : 'hidden';
     tree.style.display = isDesktop ? 'grid' : 'flex';
-    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(280px, 1fr))' : '';
-    tree.style.gap = isDesktop ? '16px' : '0';
+    tree.style.gridTemplateColumns = isDesktop ? 'repeat(3, minmax(17.5em, 1fr))' : '';
+    tree.style.gap = isDesktop ? toEm(16) : '0';
     tree.style.justifyContent = 'center';
     tree.style.alignItems = isDesktop ? 'start' : 'flex-start';
     tree.style.minHeight = '50vh';
@@ -284,21 +403,21 @@
 
       const col = document.createElement('div');
       col.style.position = 'relative';
-      col.style.padding = '8px';
+      col.style.padding = toEm(8);
       col.style.display = 'flex';
       col.style.flexDirection = 'column';
       col.style.alignItems = 'center';
       const label = document.createElement('div');
       label.textContent = BRANCH_LABELS[branch];
-      label.style.marginBottom = isDesktop ? '8px' : '0';
+      label.style.marginBottom = isDesktop ? toEm(8) : '0';
       label.style.fontWeight = '700';
       label.style.color = isDesktop ? BRANCH_COLORS[branch] : 'transparent';
       col.appendChild(label);
 
       const wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
-      wrapper.style.width = `${width}px`;
-      wrapper.style.height = `${height}px`;
+      wrapper.style.width = toEm(width);
+      wrapper.style.height = toEm(height);
       wrapper.style.margin = '0 auto';
       wrapper.style.transformOrigin = 'top';
       if (!isDesktop) {
@@ -344,14 +463,14 @@
         const btn = document.createElement('button');
         btn.className = 'tree-node';
         btn.style.position = 'absolute';
-        btn.style.left = `${PADDING + (node.position.x - minX) * CELL - size / 2 + CELL / 2}px`;
-        btn.style.top = `${PADDING + (node.position.y - minY) * CELL - size / 2 + CELL / 2}px`;
-        btn.style.width = `${size}px`;
-        btn.style.height = `${size}px`;
-        btn.style.border = `3px solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
-        btn.style.borderRadius = '14px';
+        btn.style.left = toEm(PADDING + (node.position.x - minX) * CELL - size / 2 + CELL / 2);
+        btn.style.top = toEm(PADDING + (node.position.y - minY) * CELL - size / 2 + CELL / 2);
+        btn.style.width = toEm(size);
+        btn.style.height = toEm(size);
+        btn.style.border = `${toEm(3)} solid ${BRANCH_COLORS[node.branch] || '#fff'}`;
+        btn.style.borderRadius = toEm(14);
         btn.style.background = 'rgba(255,255,255,0.08)';
-        btn.style.backdropFilter = 'blur(4px)';
+        btn.style.backdropFilter = `blur(${toEm(4)})`;
         btn.style.cursor = 'pointer';
         btn.style.display = 'flex';
         btn.style.flexDirection = 'column';
@@ -371,14 +490,14 @@
             <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
               <img src="${iconSrc}" alt="${node.name}" onerror="this.src='../assets/app-icon.png';" style="width:100%;height:100%;object-fit:contain;display:block;">
             </div>
-            <div style="position:absolute;left:0;right:0;bottom:0;background:${overlayBg};color:#fff;font-size:10px;line-height:1.1;padding:1px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            <div style="position:absolute;left:0;right:0;bottom:0;background:${overlayBg};color:#fff;font-size:${toEm(10)};line-height:1.1;padding:${toEm(1)} ${toEm(3)};text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
               ${levelText}
             </div>
           </div>
           `;
         const isSelected = !!selections[node.id];
         if (isSelected) {
-          btn.style.boxShadow = `0 0 0 3px ${BRANCH_COLORS[node.branch]}55, 0 10px 22px rgba(0,0,0,0.45)`;
+          btn.style.boxShadow = `0 0 0 ${toEm(3)} ${BRANCH_COLORS[node.branch]}55, 0 ${toEm(10)} ${toEm(22)} rgba(0,0,0,0.45)`;
         }
         const statHint = mainStatKey((node.levels && node.levels[0] && node.levels[0].stats) || {}) || 'Stat';
         btn.title = `${node.name} (${BRANCH_LABELS[node.branch]})\nMax level: ${node.maxLevel}\n${statHint}`;
@@ -443,15 +562,15 @@
         li.style.display = 'grid';
         li.style.gridTemplateColumns = 'auto 1fr';
         li.style.alignItems = 'center';
-        li.style.gap = '8px';
+        li.style.gap = toEm(8);
         li.innerHTML = `
-          <img src="${node.icon}" alt="${node.name}" style="width:42px;height:42px;object-fit:contain;">
+          <img src="${node.icon}" alt="${node.name}" style="width:${toEm(42)};height:${toEm(42)};object-fit:contain;">
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:${toEm(8)};">
               <strong>${node.name}</strong>
               <span style="color:${BRANCH_COLORS[node.branch]};text-transform:capitalize;">${node.branch}</span>
             </div>
-            <div style="margin-top:4px;font-size:12px;color:var(--muted-text);">
+            <div style="margin-top:${toEm(4)};font-size:${toEm(12)};color:var(--muted-text);">
               Range: ${range.start} -> ${range.end} / ${node.maxLevel}${statPreview ? ` • ${statPreview}` : ''}${summary ? ` • Time: ${formatTime(summary.timeSeconds)}` : ''}
             </div>
           </div>
@@ -505,7 +624,7 @@
         const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || {};
         return `
           <tr>
-            <td class="col-icon"><img src="${node.icon}" alt="${node.name}" style="width:34px;height:34px;object-fit:contain;"></td>
+            <td class="col-icon"><img src="${node.icon}" alt="${node.name}" style="width:${toEm(34)};height:${toEm(34)};object-fit:contain;"></td>
             <td class="col-name">${node.name}</td>
             <td>${range.start}</td>
             <td>${range.end}</td>
@@ -601,7 +720,7 @@
       const col = document.createElement('div');
       col.className = 'stat-col';
       col.innerHTML = `
-        <h4 style="margin:0 0 6px;color:${BRANCH_COLORS[branch]};">${BRANCH_LABELS[branch]}</h4>
+        <h4 style="margin:0 0 ${toEm(6)};color:${BRANCH_COLORS[branch]};">${BRANCH_LABELS[branch]}</h4>
         <ul class="stat-list">${list}</ul>
       `;
       grid.appendChild(col);
@@ -670,7 +789,7 @@
         const req = totals[r.key] || 0;
         return `
           <div class="summary-pill">
-            <div class="label-with-icon" style="gap:8px;">
+            <div class="label-with-icon" style="gap:${toEm(8)};">
               <img class="res-icon" src="${r.icon}" alt="${r.label}">
               <strong>${r.label}: ${req.toLocaleString()}</strong>
             </div>
@@ -704,7 +823,7 @@
     const timeCard = `
       <div class="summary-pill span-2">
         <strong>Time (after research): ${formatTime(effectiveSeconds)}</strong>
-        <div class="${stripeClass}" style="margin-top:4px;">${stripeText}</div>
+        <div class="${stripeClass}" style="margin-top:${toEm(4)};">${stripeText}</div>
       </div>
     `;
     const powerCard = `
@@ -781,17 +900,34 @@
     applyState: applyProfileState
   };
 
+  // Expose a minimal calculator adapter for shared calculation core
+  window.WarLabCalculator = {
+    calculateAll: updateSummary,
+    isActive: () => !!document.querySelector('.war-lab-page')
+  };
+
+  // Register with unified calculation core when available
+  if (window.WOSCalcCore && typeof window.WOSCalcCore.registerAdapter === 'function') {
+    window.WOSCalcCore.registerAdapter({
+      id: 'warLab',
+      isActive: () => !!document.querySelector('.war-lab-page'),
+      run: () => updateSummary()
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    renderBranchTabs();
-    renderTree();
-    renderSelectionPanel();
-    renderSelectionList();
-    updateSummary();
-    wireReset();
-    wireInventory();
-    restoreLocalState();
-    window.addEventListener('resize', () => {
+    ensureHeliosData().then(() => {
+      renderBranchTabs();
       renderTree();
+      renderSelectionPanel();
+      renderSelectionList();
+      updateSummary();
+      wireReset();
+      wireInventory();
+      restoreLocalState();
+      window.addEventListener('resize', () => {
+        renderTree();
+      });
     });
   });
 })();
