@@ -25,9 +25,12 @@ const ProfilesModule = (function(){
     ['inventory-wood'],
     ['inventory-coal'],
     ['inventory-iron'],
-    ['inventory-fire-crystals', 'inventory-fc'], // FC shards aliases across pages
+    // Fire Crystals (building resource) kept distinct from FC shards
+    ['inventory-fire-crystals'],
+    ['inventory-fc'], // FC shards
     ['inventory-refine-crystals']
   ];
+  const SHARED_RESOURCE_IDS = SHARED_RESOURCE_GROUPS.flat();
   const DYNAMIC_ATTR = 'data-profile-key';
   const DYNAMIC_SCOPE_ATTR = 'data-profile-scope';
   const DEFAULT_DYNAMIC_SCOPE = 'dynamic';
@@ -361,13 +364,16 @@ const ProfilesModule = (function(){
       // Chief Gear inventory
       'inventory-alloy', 'inventory-solution', 'inventory-plans', 'inventory-amber',
       // Fire Crystals inventory
-      'inventory-fire-crystals', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
-      // Base resources
-      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron'
+      'inventory-fire-crystals', 'inventory-fc', 'inventory-refine-crystals', 'inventory-speedup-days', 'inventory-construction-speed',
+      // Base resources + War Lab extras
+      'inventory-meat', 'inventory-wood', 'inventory-coal', 'inventory-iron', 'inventory-steel', 'inventory-speedups', 'inventory-reduction'
     ];
     inventoryIds.forEach(id => {
       const input = document.getElementById(id);
-      if(input && input.value !== undefined) data.inventory[id] = input.value;
+      if(!input || input.value === undefined) return;
+      const group = SHARED_RESOURCE_GROUPS.find(g => g.includes(id));
+      const key = group ? group[0] : id;
+      data.inventory[key] = input.value;
     });
     const zinmanSel = document.getElementById('zinman-level');
     if (zinmanSel) {
@@ -488,8 +494,17 @@ const ProfilesModule = (function(){
 
     // Apply Inventory (only inputs present on this page)
     if(obj.inventory){
+      const findInventoryTarget = (id) => {
+        const direct = document.getElementById(id);
+        if(direct) return direct;
+        const group = SHARED_RESOURCE_GROUPS.find(g => g.includes(id));
+        if(!group) return null;
+        return group
+          .map(candidate => document.getElementById(candidate))
+          .find(Boolean) || null;
+      };
       Object.keys(obj.inventory).forEach(id => {
-        const el = document.getElementById(id);
+        const el = findInventoryTarget(id);
         if(el && el.tagName === 'INPUT') setFormValue(el, obj.inventory[id]);
       });
       // Persist shared base resources so they follow across pages
