@@ -34,6 +34,47 @@
     <script src="Scripts/min/profiles.min.js" defer></script>
     <script src="Scripts/min/translations.min.js" defer></script>
     <script src="Scripts/nav.js" defer></script>
+    <script defer>
+      window.addEventListener('DOMContentLoaded', () => {
+        const panel = document.createElement('div');
+        panel.className = 'panel';
+        panel.style.marginTop = '1rem';
+        panel.innerHTML = `
+          <h3>Debug: Verify CSV Totals</h3>
+          <p>Computes totals directly from CSV for current selections.</p>
+          <button id="cg-verify-btn" class="btn primary">Verify Current</button>
+          <div id="cg-verify-output" class="result-totals" aria-live="polite"></div>
+        `;
+        const container = document.querySelector('main') || document.body;
+        container.appendChild(panel);
+        const btn = panel.querySelector('#cg-verify-btn');
+        const out = panel.querySelector('#cg-verify-output');
+        btn.addEventListener('click', () => {
+          try {
+            const types = ['helmet','chestplate','ring','watch','pants','staff'];
+            let grand = {hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, power:0, svsPoints:0};
+            let rows = '';
+            types.forEach(type => {
+              const s = document.getElementById(type+'-start');
+              const f = document.getElementById(type+'-finish');
+              if(!s||!f||!s.value||!f.value) return;
+              const res = window.ChiefGearCalculator.sumCosts(s.value, f.value);
+              if(!res) return;
+              grand.hardenedAlloy += res.hardenedAlloy;
+              grand.polishingSolution += res.polishingSolution;
+              grand.designPlans += res.designPlans;
+              grand.lunarAmber += res.lunarAmber;
+              grand.power += res.power;
+              grand.svsPoints += res.svsPoints;
+              rows += `<div class="total-line"><strong>${type}:</strong> alloy ${res.hardenedAlloy.toLocaleString()} | polish ${res.polishingSolution.toLocaleString()} | plans ${res.designPlans.toLocaleString()} | amber ${res.lunarAmber.toLocaleString()}</div>`;
+            });
+            out.innerHTML = rows + `<div class=\"total-line\"><strong>CSV Totals:</strong> alloy ${grand.hardenedAlloy.toLocaleString()} | polish ${grand.polishingSolution.toLocaleString()} | plans ${grand.designPlans.toLocaleString()} | amber ${grand.lunarAmber.toLocaleString()} | power ${grand.power.toLocaleString()} | SvS ${grand.svsPoints.toLocaleString()}</div>`;
+          } catch(e) {
+            out.textContent = 'Verification failed: ' + (e.message||e);
+          }
+        });
+      });
+    </script>
 <body>
     <div id="top"></div>
        <header class="header-with-nav" role="banner">
