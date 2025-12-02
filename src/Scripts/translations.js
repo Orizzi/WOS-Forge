@@ -1437,7 +1437,13 @@
     function getCurrentLanguage() {
         try {
             const stored = localStorage.getItem(LANGUAGE_KEY);
-            if (stored && translations[stored]) return stored;
+            if (stored && translations[stored]) {
+                return stored;
+            } else if (stored) {
+                // Clear invalid stored language
+                console.warn('[I18n] Invalid language in storage:', stored, 'Clearing...');
+                localStorage.removeItem(LANGUAGE_KEY);
+            }
         } catch (e) {
             // ignore storage errors
         }
@@ -1449,6 +1455,11 @@
     }
 
     function saveLanguage(lang) {
+        // Only save if it's a valid language
+        if (!translations[lang]) {
+            console.warn('[I18n] Attempted to save invalid language:', lang);
+            return;
+        }
         try {
             localStorage.setItem(LANGUAGE_KEY, lang);
         } catch (e) {
@@ -1463,6 +1474,11 @@
         }
 
         debug('applyTranslations start', { lang });
+
+        // Update the html lang attribute for proper language detection
+        if (document.documentElement) {
+            document.documentElement.setAttribute('lang', lang);
+        }
 
         const elements = document.querySelectorAll('[data-i18n]');
         let translatedCount = 0;
@@ -1507,21 +1523,22 @@
         console.debug('[I18n] init start');
         validateTranslations();
 
+        // Apply saved language immediately, even before selector is found
+        const currentLang = getCurrentLanguage();
+        applyTranslations(currentLang);
+
         const selector = document.getElementById('language-selector');
         if (!selector) {
             console.error('[I18n] init aborted: language selector not found');
             return;
         }
 
-        const currentLang = getCurrentLanguage();
         selector.value = currentLang;
         if (!selector.value || selector.selectedIndex === -1) {
             selector.value = 'en';
             saveLanguage('en');
         }
-        console.debug('[I18n] init: applying language', currentLang);
-
-        applyTranslations(currentLang);
+        console.debug('[I18n] init: language set to', currentLang);
 
         selector.addEventListener('change', (e) => {
             const newLang = e.target.value;

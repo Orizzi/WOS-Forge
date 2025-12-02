@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v9';
+const CACHE_VERSION = 'v10';
 const CACHE_NAME = `wos-cache-${CACHE_VERSION}`;
 const PRECACHE_URLS = [
   './index.html',
@@ -7,6 +7,8 @@ const PRECACHE_URLS = [
   './fireCrystals.html',
   './war-academy.html',
   './style/style.min.css',
+  './Scripts/translations.js',
+  './Scripts/translations-extended.js',
   './Scripts/calculation-core.js',
   './Scripts/min/calculation-core.min.js',
   './Scripts/min/calculator.min.js',
