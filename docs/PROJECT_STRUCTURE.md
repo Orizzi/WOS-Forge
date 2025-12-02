@@ -1,5 +1,7 @@
 # WOS Calculator - Project Structure Guide
 
+> **Note:** Project was restructured on December 2, 2025. Legacy/unused files moved to `.archive/`. See `RESTRUCTURE_SUMMARY.md` for details.
+
 This guide explains what every file does and where to find things.
 
 ---
@@ -8,22 +10,56 @@ This guide explains what every file does and where to find things.
 
 ```
 Wos calculator/
+├── .archive/               ← Archived unused files (see RESTRUCTURE_SUMMARY.md)
+│   ├── tmp-folders/       ← External tools/bots
+│   ├── root-legacy-docs/  ← Legacy documentation
+│   ├── Projet/            ← Old nested folder
+│   ├── gift-code-service/ ← Gift code tools
+│   └── research-icons/    ← Icon research
 ├── src/
 │   ├── index.html          ← Home page
-│   ├── charms.html         ← Main calculator page
+│   ├── charms.html         ← Charms calculator
+│   ├── chiefGear.html      ← Chief Gear calculator
+│   ├── fireCrystals.html   ← Fire Crystals calculator
+│   ├── war-academy.html    ← War Academy calculator
+│   ├── pets.html           ← Pets (coming soon)
+│   ├── experts.html        ← Experts (coming soon)
 │   ├── style/
-│   │   └── style.css       ← All styling & colors
-│   └── Scripts/
-│       ├── theme.js        ← Theme toggle
-│       ├── table-sort.js   ← Sorting behavior
-│       ├── calculator.js   ← Calculations, batch, reset
-│       └── profiles.js     ← Profiles (save/load/rename/delete)
+│   │   ├── style.css       ← All styling & colors
+│   │   └── style.min.css   ← Minified CSS
+│   ├── Scripts/
+│   │   ├── theme.js        ← Theme toggle
+│   │   ├── table-sort.js   ← Sorting behavior
+│   │   ├── calculator.js   ← Charms calculations
+│   │   ├── chief-gear-calculator.js ← Chief gear calculations
+│   │   ├── fire-crystals-calculator.js ← Fire crystals calculations
+│   │   ├── war-laboratory.js ← War academy calculations
+│   │   ├── profiles.js     ← Profiles (save/load/rename/delete)
+│   │   ├── translations.js ← i18n system
+│   │   ├── icon-helper.js  ← Icon rendering
+│   │   ├── data-loader.js  ← CSV loading
+│   │   └── ...             ← Other modules
+│   └── assets/
+│       ├── resource_data.xlsx ← Source of truth for all game data
+│       ├── *.csv           ← Generated CSV files
+│       └── resources/      ← Icon images
+├── docs/
+│   ├── START_HERE.md       ← Entry point
+│   ├── MAINTENANCE.md      ← How-to guide
+│   ├── PROJECT_STRUCTURE.md ← This file
+│   └── ...                 ← Other documentation
+├── scripts/
+│   ├── extract-charms-costs.js ← Data extraction
+│   ├── extract-chief-gear-costs.js
+│   └── ...                 ← Build scripts
+├── .github/                ← GitHub workflows
+├── index.html              ← Main entry point
 ├── package.json            ← npm configuration
-├── package-lock.json       ← Dependency lock file
-├── .stylelintrc.json       ← CSS linter rules
-├── README.md               ← Quick start & overview
-├── MAINTENANCE.md          ← How to change things
-└── PROJECT_STRUCTURE.md    ← This file
+├── README.md               ← User documentation
+├── CHANGELOG.md            ← Version history
+├── TECHNICAL_ARCHITECTURE.md ← Architecture overview
+├── RESTRUCTURE_SUMMARY.md  ← Restructure details
+└── ...                     ← Config files
 ```
 
 ---
