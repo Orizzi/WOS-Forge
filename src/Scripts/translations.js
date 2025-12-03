@@ -1416,22 +1416,70 @@
         }
     };
 
-    // Dev-time guard: surface any replacement-character junk in translations
+    // Missing translations tracking (for development/debugging)
+    const missingTranslations = new Set();
+
+    // Enhanced validation: check for invalid characters and missing keys
     function validateTranslations() {
         const badKeys = [];
-        const walk = (obj, path = []) => {
+        const missingKeys = {};
+        const languages = Object.keys(translations);
+        const baseKeys = new Set();
+
+        // Collect all keys from English (base language)
+        const collectKeys = (obj, path = []) => {
             Object.entries(obj || {}).forEach(([key, value]) => {
-                if (value && typeof value === 'object') {
-                    walk(value, path.concat(key));
-                } else if (typeof value === 'string' && value.includes('\uFFFD')) {
-                    badKeys.push(path.concat(key).join('.'));
+                const fullPath = path.concat(key).join('.');
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    collectKeys(value, path.concat(key));
+                } else {
+                    baseKeys.add(fullPath);
+                    // Check for invalid characters
+                    if (typeof value === 'string' && value.includes('\uFFFD')) {
+                        badKeys.push(fullPath);
+                    }
                 }
             });
         };
-        walk(translations);
+        collectKeys(translations.en);
+
+        // Check each language for missing keys
+        languages.forEach(lang => {
+            if (lang === 'en') return; // Skip base language
+            const missing = [];
+            baseKeys.forEach(keyPath => {
+                const keys = keyPath.split('.');
+                let obj = translations[lang];
+                for (const k of keys) {
+                    if (!obj || !obj.hasOwnProperty(k)) {
+                        missing.push(keyPath);
+                        break;
+                    }
+                    obj = obj[k];
+                }
+            });
+            if (missing.length > 0) {
+                missingKeys[lang] = missing;
+            }
+        });
+
+        // Report validation results
         if (badKeys.length) {
             console.warn('[I18n] Found invalid characters in translations (contains �):', badKeys);
         }
+        if (Object.keys(missingKeys).length > 0) {
+            console.warn('[I18n] Missing translation keys detected:');
+            Object.entries(missingKeys).forEach(([lang, keys]) => {
+                console.warn(`  ${lang}: ${keys.length} missing keys`, keys.slice(0, 5));
+            });
+        }
+        
+        debug('Validation complete', {
+            languages: languages.length,
+            totalKeys: baseKeys.size,
+            invalidChars: badKeys.length,
+            missingInLanguages: Object.keys(missingKeys).length
+        });
     }
 
     function getCurrentLanguage() {
@@ -1512,11 +1560,93 @@
         debug('applyTranslations complete', { lang, translatedCount });
     }
 
-    function t(key, lang) {
-        lang = lang || getCurrentLanguage();
-        if (translations[lang] && translations[lang][key]) return translations[lang][key];
-        if (translations.en && translations.en[key]) return translations.en[key];
-        return key;
+    /**
+     * Enhanced translation function with variable interpolation and plural support
+     * @param {string} key - Translation key (can use dot notation for nested keys)
+     * @param {Object|string} options - Options object or language string (for backward compatibility)
+     * @param {string} options.lang - Language code (defaults to current language)
+     * @param {Object} options.vars - Variables for interpolation {name: value}
+     * @param {number} options.count - Count for pluralization
+     * @param {string} options.context - Context for context-aware translations
+     * @returns {string} Translated text
+     */
+    function t(key, options) {
+        // Backward compatibility: if options is a string, treat it as lang
+        if (typeof options === 'string') {
+            options = { lang: options };
+        }
+        
+        const opts = options || {};
+        const lang = opts.lang || getCurrentLanguage();
+        const vars = opts.vars || {};
+        const count = opts.count;
+        const context = opts.context;
+
+        // Navigate nested keys (e.g., 'nav.home')
+        const getNestedValue = (obj, path) => {
+            const keys = path.split('.');
+            let current = obj;
+            for (const k of keys) {
+                if (!current || !current.hasOwnProperty(k)) return null;
+                current = current[k];
+            }
+            return current;
+        };
+
+        // Try to get translation
+        let text = getNestedValue(translations[lang], key);
+        
+        // Fallback to English if not found
+        if (!text) {
+            text = getNestedValue(translations.en, key);
+            if (!text) {
+                // Track missing translation
+                const trackKey = `${lang}:${key}`;
+                if (!missingTranslations.has(trackKey)) {
+                    missingTranslations.add(trackKey);
+                    debug('missing translation', { lang, key });
+                }
+                return key; // Return key as fallback
+            }
+        }
+
+        // Handle context-aware translations
+        if (context && typeof text === 'object' && text[context]) {
+            text = text[context];
+        }
+
+        // Handle pluralization
+        if (count !== undefined && typeof text === 'object') {
+            if (count === 0 && text.zero) {
+                text = text.zero;
+            } else if (count === 1 && text.one) {
+                text = text.one;
+            } else if (text.other) {
+                text = text.other;
+            } else if (typeof text === 'string') {
+                // Already a string, use as-is
+            } else {
+                text = String(text);
+            }
+        }
+
+        // Ensure text is a string
+        if (typeof text !== 'string') {
+            text = String(text);
+        }
+
+        // Variable interpolation: {{varName}}
+        Object.entries(vars).forEach(([varName, value]) => {
+            const regex = new RegExp(`\\{\\{${varName}\\}\\}`, 'g');
+            text = text.replace(regex, String(value));
+        });
+
+        // Legacy number replacement: %d
+        if (count !== undefined) {
+            text = text.replace(/%d/g, String(count));
+        }
+
+        return text;
     }
 
     function init() {
@@ -1562,17 +1692,113 @@
         });
     }
 
+    /**
+     * Export missing translations for analysis
+     * Useful for development and identifying translation gaps
+     * @returns {Array<string>} Array of missing translation keys in format 'lang:key'
+     */
+    function getMissingTranslations() {
+        return Array.from(missingTranslations);
+    }
+
+    /**
+     * Get translation statistics
+     * @returns {Object} Statistics about translations
+     */
+    function getTranslationStats() {
+        const languages = Object.keys(translations);
+        const baseKeys = new Set();
+        
+        const collectKeys = (obj, path = []) => {
+            Object.entries(obj || {}).forEach(([key, value]) => {
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    collectKeys(value, path.concat(key));
+                } else {
+                    baseKeys.add(path.concat(key).join('.'));
+                }
+            });
+        };
+        collectKeys(translations.en);
+
+        return {
+            languages: languages.length,
+            languageList: languages,
+            totalKeys: baseKeys.size,
+            missingCount: missingTranslations.size,
+            currentLanguage: getCurrentLanguage()
+        };
+    }
+
+    /**
+     * Clear missing translations tracker
+     * Useful for resetting during development
+     */
+    function clearMissingTranslations() {
+        missingTranslations.clear();
+        debug('Missing translations tracker cleared');
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
+    /**
+     * Export missing translations for analysis
+     * Useful for development and identifying translation gaps
+     * @returns {Array<string>} Array of missing translation keys in format 'lang:key'
+     */
+    function getMissingTranslations() {
+        return Array.from(missingTranslations);
+    }
+
+    /**
+     * Get translation statistics
+     * @returns {Object} Statistics about translations
+     */
+    function getTranslationStats() {
+        const languages = Object.keys(translations);
+        const baseKeys = new Set();
+        
+        const collectKeys = (obj, path = []) => {
+            Object.entries(obj || {}).forEach(([key, value]) => {
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
+                    collectKeys(value, path.concat(key));
+                } else {
+                    baseKeys.add(path.concat(key).join('.'));
+                }
+            });
+        };
+        collectKeys(translations.en);
+
+        return {
+            languages: languages.length,
+            languageList: languages,
+            totalKeys: baseKeys.size,
+            missingCount: missingTranslations.size,
+            currentLanguage: getCurrentLanguage()
+        };
+    }
+
+    /**
+     * Clear missing translations tracker
+     * Useful for resetting during development
+     */
+    function clearMissingTranslations() {
+        missingTranslations.clear();
+        debug('Missing translations tracker cleared');
+    }
+
     window.I18n = {
         t,
         getCurrentLanguage,
         applyTranslations,
-        translations
+        translations,
+        getMissingTranslations,
+        getTranslationStats,
+        clearMissingTranslations,
+        validateTranslations
     };
 
 })();

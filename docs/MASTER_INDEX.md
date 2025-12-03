@@ -51,6 +51,9 @@ You have 8 comprehensive guides. Pick one based on what you need:
 | **PROJECT_STRUCTURE.md** | Where everything is | Finding code | 30-45 min |
 | **DOCUMENTATION_INDEX.md** | Guide to all guides | Any question | 10 min |
 | **PROJECT_COMPLETE.md** | What's been done | Summary | 10 min |
+| **TRANSLATION_SYSTEM.md** | Translation guide | i18n development | 45 min |
+| **TRANSLATION_UPGRADES.md** | v2.0 enhancements | Understanding upgrades | 30 min |
+| **TRANSLATION_QUICK_REFERENCE.md** | Translation lookup | Quick translation help | 5 min |
 | **THIS FILE** | Master map | Navigation | 5 min |
 
 ---
@@ -129,6 +132,10 @@ READY TO DEPLOY?
 | "How do profiles save?" | PROJECT_STRUCTURE.md → Data Storage Locations |
 | "What file should I edit?" | PROJECT_STRUCTURE.md → File Details |
 | "How do I fix [problem]?" | MAINTENANCE.md → Fix Common Problems |
+| "How does translation work?" | TRANSLATION_SYSTEM.md → Overview |
+| "How do I translate text?" | TRANSLATION_QUICK_REFERENCE.md → Basic Usage |
+| "What's new in translation system?" | TRANSLATION_UPGRADES.md → Phase 1 Features |
+| "How do I add new translations?" | TRANSLATION_SYSTEM.md → Adding New Translations |
 | "Which guide do I need?" | DOCUMENTATION_INDEX.md |
 | "Tell me everything" | PROJECT_STRUCTURE.md |
 | "One-page overview?" | QUICK_REFERENCE.md |
