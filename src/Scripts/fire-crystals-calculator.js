@@ -219,9 +219,21 @@
     async function ensureUnifiedData() {
         if (unifiedDataCache) return unifiedDataCache;
         const loader = window.WOSData && window.WOSData.loader;
-        if (!loader || !loader.loadCsv) return null;
+        if (!loader || !loader.loadCsv) {
+            try {
+                window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
+                loader && loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+            } catch (_) {}
+            return null;
+        }
         const csv = await loader.loadCsv(UNIFIED_CSV_URL);
-        if (!csv || !csv.header || !csv.rows || csv.header.length === 0) return null;
+        if (!csv || !csv.header || !csv.rows || csv.header.length === 0) {
+            try {
+                window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
+                loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+            } catch (_) {}
+            return null;
+        }
         const lower = csv.header.map((h) => (h || '').toLowerCase());
         const idx = {
             building: lower.indexOf('building'),
@@ -237,6 +249,10 @@
         };
         if (Object.values(idx).some((v) => v === -1)) {
             console.warn('[FireCrystals] Unified CSV missing required columns');
+            try {
+                window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
+                loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+            } catch (_) {}
             return null;
         }
         const byBuilding = {};
@@ -258,6 +274,10 @@
             byBuilding[b][lvl] = entry;
         });
         unifiedDataCache = { byBuilding };
+        try {
+            window.FCDataStatus = { loaded: true, rows: (csv.rows || []).length, source: 'unified-csv', error: false };
+            loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+        } catch (_) {}
         return unifiedDataCache;
     }
 
@@ -335,50 +355,7 @@
         return base;
     }
 
-    /**
-     * Count how many upgrade steps (edges) exist for each base level.
-     * Steps are counted on edges where the CURRENT level shares the base.
-     */
-    // --- Per-step Fire Crystal dataset (from fire_crystals_steps.json) ---
-    let fireCrystalStepsCache = null;
-
-    async function loadFireCrystalSteps() {
-        if (fireCrystalStepsCache) return fireCrystalStepsCache;
-        const candidates = ['assets/fire_crystals_steps.json', '../src/assets/fire_crystals_steps.json'];
-        for (const url of candidates) {
-            try {
-                const res = await fetch(url, { cache: 'no-cache' });
-                if (!res.ok) {
-                    console.warn('[FireCrystals] Failed to load', url, res.status);
-                    continue;
-                }
-                const data = await res.json();
-                fireCrystalStepsCache = data;
-                return data;
-            } catch (e) {
-                console.warn('[FireCrystals] Error loading steps from', url, e);
-            }
-        }
-        console.error('[FireCrystals] Could not load fire_crystals_steps.json from any known path');
-        return null;
-    }
-
-    function getStepsByBuilding(data) {
-        const map = {};
-        (data || []).forEach((row) => {
-            if (!row.building) return;
-            if (!map[row.building]) map[row.building] = [];
-            map[row.building].push(row);
-        });
-        // Sort by orderIndex then levelId for stability
-        Object.keys(map).forEach((b) => {
-            map[b].sort((a, b) => {
-                if (a.orderIndex !== b.orderIndex) return a.orderIndex - b.orderIndex;
-                return a.levelId.localeCompare(b.levelId);
-            });
-        });
-        return map;
-    }
+    // Removed legacy JSON step loader; all data comes from CSV now.
 
     /**
      * Compute totals for Fire Crystal upgrades using real per-step data.        

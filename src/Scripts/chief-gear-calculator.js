@@ -203,27 +203,66 @@ const ChiefGearCalculatorModule = (function(){
           return 0;
         }
 
-        let applied = 0;
+        // Collect rows in order, including rows that don't map to canonical levels (e.g., Status steps)
+        const parsedRows = [];
         for (let i = 1; i < lines.length; i++) {
           const parts = lines[i].split(',');
-          if (parts.length < header.length) continue;
-
+          if (parts.length < 1) continue;
           const rawLevel = (parts[idx.level] || '').trim();
-          const levelName = toInternalLevel(rawLevel);
-          if (!levelName || !GEAR_LEVELS.includes(levelName)) continue;
-
-          costs[levelName] = {
+          if (!rawLevel) continue;
+          const uiLevel = toInternalLevel(rawLevel);
+          parsedRows.push({
+            raw: rawLevel,
+            ui: uiLevel,
+            isCanonical: !!uiLevel && GEAR_LEVELS.includes(uiLevel),
             hardenedAlloy: parseFloat(parts[idx.alloy]) || 0,
             polishingSolution: parseFloat(parts[idx.solution]) || 0,
             designPlans: parseFloat(parts[idx.plans]) || 0,
             lunarAmber: parseFloat(parts[idx.amber]) || 0,
             power: idx.power !== -1 ? (parseFloat(parts[idx.power]) || 0) : 0,
             svsPoints: idx.svsPoints !== -1 ? (parseFloat(parts[idx.svsPoints]) || 0) : 0
-          };
-          applied++;
+          });
         }
+
+        // Fold: sum any non-canonical (e.g., Status) rows into the next canonical UI level
+        let applied = 0;
+        let pending = { hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, svsPoints:0 };
+        let lastCanonical = null;
+        for (const row of parsedRows) {
+          if (!row.isCanonical) {
+            // Accumulate pending between anchors
+            pending.hardenedAlloy += row.hardenedAlloy;
+            pending.polishingSolution += row.polishingSolution;
+            pending.designPlans += row.designPlans;
+            pending.lunarAmber += row.lunarAmber;
+            pending.svsPoints += row.svsPoints;
+            continue;
+          }
+
+          // Canonical step: assign sum(pending + this row) to this canonical level
+          const total = {
+            hardenedAlloy: pending.hardenedAlloy + row.hardenedAlloy,
+            polishingSolution: pending.polishingSolution + row.polishingSolution,
+            designPlans: pending.designPlans + row.designPlans,
+            lunarAmber: pending.lunarAmber + row.lunarAmber,
+            // Power convention: final target level only (from this row)
+            power: row.power || 0,
+            svsPoints: pending.svsPoints + row.svsPoints
+          };
+
+          // Respect defined levels only
+          if (GEAR_LEVELS.includes(row.ui)) {
+            costs[row.ui] = total;
+            applied++;
+          }
+
+          // Reset pending for next segment
+          pending = { hardenedAlloy:0, polishingSolution:0, designPlans:0, lunarAmber:0, svsPoints:0 };
+          lastCanonical = row.ui;
+        }
+
         if (applied > 0) {
-          console.info(`[Chief Gear] Applied ${applied} cost overrides from ${url}.`);
+          console.info(`[Chief Gear] Applied ${applied} aggregated cost overrides from ${url}.`);
         }
         return applied;
       } catch (e) {
