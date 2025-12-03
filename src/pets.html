@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WOSFORGE-Pets</title>
-  <link rel="icon" href="assets/app-icon.png">
-  <link rel="stylesheet" href="style/style.css" />
-  <script src="Scripts/theme.js" defer></script>
-  <script src="Scripts/translations.js" defer></script>
-  <script src="Scripts/calculation-core.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate and optimize your Whiteout Survival pet upgrades. Track food, manuals, potions, serums, and SVS points for all pets.">
+    <title>WOSC-Pets</title>
+    <link rel="icon" href="assets/app-icon.png">
+    <link rel="stylesheet" href="style/style.min.css">
+    <script>(function(){try{var l=localStorage.getItem('wos-language')||'en';document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
+    <!-- Load dependencies in order -->
+    <script src="Scripts/translations.js" defer></script>
+    <script src="Scripts/min/icon-helper.min.js" defer></script>
+    <script src="Scripts/min/theme.min.js" defer></script>
+    <script src="Scripts/min/table-sort.min.js" defer></script>
+    <script src="Scripts/calculation-core.js" defer></script>
+    <script src="Scripts/pets-calculator.js" defer></script>
+    <script src="Scripts/min/profiles.min.js" defer></script>
     <script src="Scripts/sw-register.js" defer></script>
-
 </head>
-<body>
-  <div id="top"></div>
-      <header class="header-with-nav" role="banner">
+<body class="pets-page">
+<div id="top"></div>
+    <header class="header-with-nav" role="banner">
       <a href="../index.html" class="logo-link">
         <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
       </a>
@@ -43,47 +49,409 @@
         </div>
       </nav>
     </header>
-  <main>
-    <h2>Pets</h2>
-    <section class="coming-soon" role="region" aria-labelledby="pets-coming-title">
-      <h3 id="pets-coming-title">Creature Companion Calculators Arriving Soon ??</h3>
-      <p>We're taming the data for Pets to let you:</p>
-      <ul>
-        <li>Project upgrade materials & feeding costs</li>
-        <li>Track power impact of fully evolved companions</li>
-        <li>Simulate optimal XP vs. resource usage routes</li>
-        <li>Integrate pet boosts into global profile plans</li>
-      </ul>
-      <p><strong>Roadmap:</strong> After War Academy & Fire Crystal power refinements. Your feedback can reprioritize features.</p>
-      <div class="teaser-box"><p><em>Teaser:</em> A synergy matrix will soon cross-reference pet buffs with gear & charm stats.</p></div>
+
+ <div class="app-shell">
+ <main role="main">  
+   <h2 data-i18n="pets-header">Pets Calculator</h2>
+
+  <!-- Inventory and Profiles side-by-side -->
+  <div class="inventory-profiles-row" role="group" aria-label="Inventory and profiles">
+    <!-- Inventory for pet resources (left) -->
+    <section class="inventory-section card" aria-label="Your Pet Resources Inventory" role="region">
+      <h3 data-i18n="pets-inventory">Pet Resources Inventory</h3>
+      <div class="inventory-inputs">
+        <div class="inventory-item">
+          <label for="inventory-food"><span class="label-with-icon" data-i18n="food-base">Food</span></label>
+          <input type="number" id="inventory-food" min="0" step="1" value="0" data-profile-key="inventory-food" data-profile-scope="pets">
+        </div>
+        <div class="inventory-item">
+          <label for="inventory-manual"><span class="label-with-icon" data-i18n="manual-base">Manual</span></label>
+          <input type="number" id="inventory-manual" min="0" step="1" value="0" data-profile-key="inventory-manual" data-profile-scope="pets">
+        </div>
+        <div class="inventory-item">
+          <label for="inventory-potion"><span class="label-with-icon" data-i18n="potion-base">Potion</span></label>
+          <input type="number" id="inventory-potion" min="0" step="1" value="0" data-profile-key="inventory-potion" data-profile-scope="pets">
+        </div>
+        <div class="inventory-item">
+          <label for="inventory-serum"><span class="label-with-icon" data-i18n="serum-base">Serum</span></label>
+          <input type="number" id="inventory-serum" min="0" step="1" value="0" data-profile-key="inventory-serum" data-profile-scope="pets">
+        </div>
+        <div class="inventory-item">
+          <label for="inventory-svs-points"><span class="label-with-icon" data-i18n="svs-points-base">SVS Points</span></label>
+          <input type="number" id="inventory-svs-points" min="0" step="1" value="0" data-profile-key="inventory-svs-points" data-profile-scope="pets">
+        </div>
+      </div>
     </section>
-  </main>
-</div>
-</body>
-</html>
 
+    <!-- Profiles section (right) -->
+    <section class="profiles card" aria-label="Pet profiles" role="region">
+      <h3 data-i18n="profiles-header">Profiles</h3>
+      <div class="profiles-row">
+        <div class="input-with-icon">
+          <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+          <button id="profile-save" type="button" title="Save current pet setup as a new profile" aria-label="Save new profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
+        </div>
+        <div class="select-with-icon">
+          <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+          <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
+        </div>
+        <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger"><span data-i18n="delete">Delete</span></button>
+      </div>
+    </section>
+  </div>
 
+  <!-- Main layout: Pets grid on left, Results on right -->
+  <div class="main-layout-wrapper">
+    <section class="calculation-input card" aria-label="Pet Level Inputs" role="region">
+      <p class="helper-text" data-i18n="pets-helper">Set current and target levels for each pet to calculate upgrade costs.</p>
 
+      <!-- Pets Grid - 15 individual pet slots in 5 columns -->
+      <div class="pets-grid">
+        <!-- Pet 1: Cave Hyena -->
+      <div class="pet-slot equipment-section" data-pet-id="cave-hyena">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/cave-hyena.svg" alt="Cave Hyena" onerror="this.style.display='none'">
+          <h4 data-i18n="cave-hyena">Cave Hyena</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="cave-hyena-start" data-i18n="from">FROM</label>
+            <select id="cave-hyena-start" class="level-select building-select" aria-label="Cave Hyena current level" data-profile-key="cave-hyena-start" data-profile-scope="pets">
+              <option value="">--</option>
+              <option value="10">10</option>
+              <option value="10.1">10.1</option>
+              <option value="20">20</option>
+              <option value="20.1">20.1</option>
+              <option value="30">30</option>
+              <option value="30.1">30.1</option>
+              <option value="40">40</option>
+              <option value="40.1">40.1</option>
+              <option value="50">50</option>
+              <option value="50.1">50.1</option>
+              <option value="60">60</option>
+              <option value="60.1">60.1</option>
+              <option value="70">70</option>
+              <option value="70.1">70.1</option>
+              <option value="80">80</option>
+              <option value="80.1">80.1</option>
+              <option value="90">90</option>
+              <option value="90.1">90.1</option>
+              <option value="100">100</option>
+              <option value="100.1">100.1</option>
+            </select>
+          </div>
+          <div class="select-group">
+            <label for="cave-hyena-finish" data-i18n="to">TO</label>
+            <select id="cave-hyena-finish" class="level-select building-select" aria-label="Cave Hyena target level" data-profile-key="cave-hyena-finish" data-profile-scope="pets">
+              <option value="">--</option>
+              <option value="10">10</option>
+              <option value="10.1">10.1</option>
+              <option value="20">20</option>
+              <option value="20.1">20.1</option>
+              <option value="30">30</option>
+              <option value="30.1">30.1</option>
+              <option value="40">40</option>
+              <option value="40.1">40.1</option>
+              <option value="50">50</option>
+              <option value="50.1">50.1</option>
+              <option value="60">60</option>
+              <option value="60.1">60.1</option>
+              <option value="70">70</option>
+              <option value="70.1">70.1</option>
+              <option value="80">80</option>
+              <option value="80.1">80.1</option>
+              <option value="90">90</option>
+              <option value="90.1">90.1</option>
+              <option value="100">100</option>
+              <option value="100.1">100.1</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-  <nav class="bottom-nav" aria-label="Mobile navigation">
-    <ul class="bottom-nav__list">
-      <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
-      <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
-      <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
-        <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
-        <li class="bottom-nav__item"><a href="war-academy.html">War Academy</a></li>
-        <li class="bottom-nav__item"><a href="pets.html" aria-current="page" class="is-active">Pets</a></li>
-      <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
-    </ul>
-  </nav>
-    <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
-    <script>
-      document.addEventListener('DOMContentLoaded', function(){
-        const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
-        if(active && active.scrollIntoView){
-          active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
-        }
-      });
-    </script>
+      <!-- Pet 2: Arctic Wolf -->
+      <div class="pet-slot equipment-section" data-pet-id="arctic-wolf">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/arctic-wolf.svg" alt="Arctic Wolf" onerror="this.style.display='none'">
+          <h4 data-i18n="arctic-wolf">Arctic Wolf</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="arctic-wolf-start" data-i18n="from">FROM</label>
+            <select id="arctic-wolf-start" class="level-select building-select" data-profile-key="arctic-wolf-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="arctic-wolf-finish" data-i18n="to">TO</label>
+            <select id="arctic-wolf-finish" class="level-select building-select" data-profile-key="arctic-wolf-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 3: Musk Ox -->
+      <div class="pet-slot equipment-section" data-pet-id="musk-ox">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/musk-ox.svg" alt="Musk Ox" onerror="this.style.display='none'">
+          <h4 data-i18n="musk-ox">Musk Ox</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="musk-ox-start" data-i18n="from">FROM</label>
+            <select id="musk-ox-start" class="level-select building-select" data-profile-key="musk-ox-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="musk-ox-finish" data-i18n="to">TO</label>
+            <select id="musk-ox-finish" class="level-select building-select" data-profile-key="musk-ox-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 4: Giant Tapir -->
+      <div class="pet-slot equipment-section" data-pet-id="giant-tapir">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/giant-tapir.svg" alt="Giant Tapir" onerror="this.style.display='none'">
+          <h4 data-i18n="giant-tapir">Giant Tapir</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="giant-tapir-start" data-i18n="from">FROM</label>
+            <select id="giant-tapir-start" class="level-select building-select" data-profile-key="giant-tapir-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="giant-tapir-finish" data-i18n="to">TO</label>
+            <select id="giant-tapir-finish" class="level-select building-select" data-profile-key="giant-tapir-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 5: Titan Roc -->
+      <div class="pet-slot equipment-section" data-pet-id="titan-roc">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/titan-roc.svg" alt="Titan Roc" onerror="this.style.display='none'">
+          <h4 data-i18n="titan-roc">Titan Roc</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="titan-roc-start" data-i18n="from">FROM</label>
+            <select id="titan-roc-start" class="level-select building-select" data-profile-key="titan-roc-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="titan-roc-finish" data-i18n="to">TO</label>
+            <select id="titan-roc-finish" class="level-select building-select" data-profile-key="titan-roc-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 6: Giant Elk -->
+      <div class="pet-slot equipment-section" data-pet-id="giant-elk">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/giant-elk.svg" alt="Giant Elk" onerror="this.style.display='none'">
+          <h4 data-i18n="giant-elk">Giant Elk</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="giant-elk-start" data-i18n="from">FROM</label>
+            <select id="giant-elk-start" class="level-select building-select" data-profile-key="giant-elk-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="giant-elk-finish" data-i18n="to">TO</label>
+            <select id="giant-elk-finish" class="level-select building-select" data-profile-key="giant-elk-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 7: Snow Leopard -->
+      <div class="pet-slot equipment-section" data-pet-id="snow-leopard">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/snow-leopard.svg" alt="Snow Leopard" onerror="this.style.display='none'">
+          <h4 data-i18n="snow-leopard">Snow Leopard</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="snow-leopard-start" data-i18n="from">FROM</label>
+            <select id="snow-leopard-start" class="level-select building-select" data-profile-key="snow-leopard-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="snow-leopard-finish" data-i18n="to">TO</label>
+            <select id="snow-leopard-finish" class="level-select building-select" data-profile-key="snow-leopard-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 8: Cave Lion -->
+      <div class="pet-slot equipment-section" data-pet-id="cave-lion">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/cave-lion.svg" alt="Cave Lion" onerror="this.style.display='none'">
+          <h4 data-i18n="cave-lion">Cave Lion</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="cave-lion-start" data-i18n="from">FROM</label>
+            <select id="cave-lion-start" class="level-select building-select" data-profile-key="cave-lion-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="cave-lion-finish" data-i18n="to">TO</label>
+            <select id="cave-lion-finish" class="level-select building-select" data-profile-key="cave-lion-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 9: Snow Ape -->
+      <div class="pet-slot equipment-section" data-pet-id="snow-ape">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/snow-ape.svg" alt="Snow Ape" onerror="this.style.display='none'">
+          <h4 data-i18n="snow-ape">Snow Ape</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="snow-ape-start" data-i18n="from">FROM</label>
+            <select id="snow-ape-start" class="level-select building-select" data-profile-key="snow-ape-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="snow-ape-finish" data-i18n="to">TO</label>
+            <select id="snow-ape-finish" class="level-select building-select" data-profile-key="snow-ape-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 10: Iron Rhino -->
+      <div class="pet-slot equipment-section" data-pet-id="iron-rhino">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/iron-rhino.svg" alt="Iron Rhino" onerror="this.style.display='none'">
+          <h4 data-i18n="iron-rhino">Iron Rhino</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="iron-rhino-start" data-i18n="from">FROM</label>
+            <select id="iron-rhino-start" class="level-select building-select" data-profile-key="iron-rhino-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="iron-rhino-finish" data-i18n="to">TO</label>
+            <select id="iron-rhino-finish" class="level-select building-select" data-profile-key="iron-rhino-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 11: Sabertooth Tiger -->
+      <div class="pet-slot equipment-section" data-pet-id="sabertooth-tiger">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/sabertooth-tiger.svg" alt="Sabertooth Tiger" onerror="this.style.display='none'">
+          <h4 data-i18n="sabertooth-tiger">Sabertooth Tiger</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="sabertooth-tiger-start" data-i18n="from">FROM</label>
+            <select id="sabertooth-tiger-start" class="level-select building-select" data-profile-key="sabertooth-tiger-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="sabertooth-tiger-finish" data-i18n="to">TO</label>
+            <select id="sabertooth-tiger-finish" class="level-select building-select" data-profile-key="sabertooth-tiger-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 12: Mammoth -->
+      <div class="pet-slot equipment-section" data-pet-id="mammoth">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/mammoth.svg" alt="Mammoth" onerror="this.style.display='none'">
+          <h4 data-i18n="mammoth">Mammoth</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="mammoth-start" data-i18n="from">FROM</label>
+            <select id="mammoth-start" class="level-select building-select" data-profile-key="mammoth-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="mammoth-finish" data-i18n="to">TO</label>
+            <select id="mammoth-finish" class="level-select building-select" data-profile-key="mammoth-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 13: Frost Gorilla -->
+      <div class="pet-slot equipment-section" data-pet-id="frost-gorilla">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/frost-gorilla.svg" alt="Frost Gorilla" onerror="this.style.display='none'">
+          <h4 data-i18n="frost-gorilla">Frost Gorilla</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="frost-gorilla-start" data-i18n="from">FROM</label>
+            <select id="frost-gorilla-start" class="level-select building-select" data-profile-key="frost-gorilla-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="frost-gorilla-finish" data-i18n="to">TO</label>
+            <select id="frost-gorilla-finish" class="level-select building-select" data-profile-key="frost-gorilla-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 14: Frostscale Chameleon -->
+      <div class="pet-slot equipment-section" data-pet-id="frostscale-chameleon">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/frostscale-chameleon.svg" alt="Frostscale Chameleon" onerror="this.style.display='none'">
+          <h4 data-i18n="frostscale-chameleon">Frostscale Chameleon</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="frostscale-chameleon-start" data-i18n="from">FROM</label>
+            <select id="frostscale-chameleon-start" class="level-select building-select" data-profile-key="frostscale-chameleon-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="frostscale-chameleon-finish" data-i18n="to">TO</label>
+            <select id="frostscale-chameleon-finish" class="level-select building-select" data-profile-key="frostscale-chameleon-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pet 15: Abyssal Shelldragon -->
+      <div class="pet-slot equipment-section" data-pet-id="abyssal-shelldragon">
+        <div class="pet-header building-header">
+          <img class="pet-icon building-icon" src="assets/resources/pets/abyssal-shelldragon.svg" alt="Abyssal Shelldragon" onerror="this.style.display='none'">
+          <h4 data-i18n="abyssal-shelldragon">Abyssal Shelldragon</h4>
+        </div>
+        <div class="level-controls building-selects">
+          <div class="select-group">
+            <label for="abyssal-shelldragon-start" data-i18n="from">FROM</label>
+            <select id="abyssal-shelldragon-start" class="level-select building-select" data-profile-key="abyssal-shelldragon-start" data-profile-scope="pets"></select>
+          </div>
+          <div class="select-group">
+            <label for="abyssal-shelldragon-finish" data-i18n="to">TO</label>
+            <select id="abyssal-shelldragon-finish" class="level-select building-select" data-profile-key="abyssal-shelldragon-finish" data-profile-scope="pets"></select>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <!-- Results Section (right side) -->
+    <section class="results-section card" aria-label="Calculation Results" role="region">
+      <h3 data-i18n="totals-header">Items You Need</h3>
+      <div id="pets-results-display"></div>
+    </section>
+  </div>
+ </main>
+ </div>
+
+ <nav class="bottom-nav" aria-label="Mobile navigation">
+   <ul class="bottom-nav__list">
+     <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
+     <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
+     <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
+     <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
+     <li class="bottom-nav__item"><a href="war-academy.html">War Academy</a></li>
+     <li class="bottom-nav__item"><a href="pets.html" aria-current="page" class="is-active">Pets</a></li>
+     <li class="bottom-nav__item"><a href="experts.html">Experts</a></li>
+   </ul>
+ </nav>
+ <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+ <script>
+   document.addEventListener('DOMContentLoaded', function(){
+     const active = document.querySelector('.bottom-nav__item a.is-active, .bottom-nav__item a[aria-current="page"]');
+     if(active && active.scrollIntoView){
+       active.scrollIntoView({behavior:'auto', inline:'center', block:'nearest'});
+     }
+   });
+ </script>
+
 </body>
 </html>

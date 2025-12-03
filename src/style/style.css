@@ -1187,9 +1187,48 @@ html.light-theme select option:disabled {
 /* Main wrapper for side-by-side layout */
 .main-layout-wrapper {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
     gap: 1em;
     align-items: start;
+    width: 100%;
+}
+
+.main-layout-wrapper > * {
+    min-width: 0;
+}
+
+/* Pets-specific override to prevent global media queries from affecting layout */
+.pets-page .main-layout-wrapper {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1em;
+    align-items: start;
+}
+
+/* Ensure profiles section is visible and properly styled on pets page */
+.pets-page .profiles {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75em;
+    background: var(--card);
+    border: 0.0625em solid var(--border);
+    border-radius: 0.5em;
+    padding: 0.375em 0.5em;
+}
+
+.pets-page .profiles h3 {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.pets-page .profiles-row {
+    display: flex;
+    gap: 0.625em;
+    align-items: center;
+    flex-wrap: wrap;
+    flex: 1;
+    justify-content: center;
 }
 
 .main-layout-wrapper .results-section{
@@ -1200,6 +1239,43 @@ html.light-theme select option:disabled {
     top: 0.75em;
     max-height: calc(100vh - 10em);
     overflow: auto;
+}
+
+/* Pets inventory header + inputs layout to mirror buildings */
+.pets-page .inventory-profiles-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1em;
+}
+
+.pets-page .inventory-section {
+    display: block;
+}
+
+.pets-page .inventory-section h3 {
+    margin: 0 0 0.75em 0;
+}
+.pets-page .inventory-section .inventory-inputs {
+    display: grid;
+    gap: 0.75em 0.75em;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+.pets-page .inventory-section #pets-reset {
+    display: none;
+}
+
+/* Helper text spacing consistent with buildings */
+.calculation-input .helper-text {
+    margin: 0 0 0.75em 0;
+    color: var(--muted-text);
+}
+
+/* Normalize select sizing to FC compact style */
+.level-select {
+    height: clamp(2.5rem, 2rem + 0.75vw, 3rem);
+    font-size: clamp(0.9rem, 0.8rem + 0.3vw, 1rem);
 }
 
 /* Left column containing batch controls + equipment grid */
@@ -1386,6 +1462,148 @@ html.light-theme select option:disabled {
     text-align: center;
     text-align-last: center;
 }
+
+/* =============== Pets Calculator Specific Styles =============== */
+
+/* Pets grid - 5 columns on desktop */
+.pets-page .pets-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 1rem);
+    width: 100%;
+}
+
+/* Pet slot styling */
+.pet-slot {
+    background: var(--panel);
+    padding: clamp(0.5rem, 0.375rem + 0.5vw, 0.75rem);
+    border-radius: 0.5rem;
+    border: 0.0625rem solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.375rem, 0.25rem + 0.5vw, 0.5rem);
+}
+
+/* Pet header with icon */
+.pet-header {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.375rem, 0.25rem + 0.5vw, 0.625rem);
+    padding-bottom: clamp(0.25rem, 0.125rem + 0.5vw, 0.375rem);
+    border-bottom: 0.0625rem solid var(--border);
+}
+
+.pet-icon {
+    width: clamp(2rem, 1.5rem + 1vw, 2.5rem);
+    height: clamp(2rem, 1.5rem + 1vw, 2.5rem);
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.pet-header h4 {
+    margin: 0;
+    font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Level controls - horizontal layout */
+.level-controls {
+    display: flex;
+    gap: clamp(0.5rem, 0.375rem + 0.5vw, 0.75rem);
+    align-items: stretch;
+}
+
+.level-controls .select-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.25rem, 0.125rem + 0.5vw, 0.375rem);
+}
+
+.level-controls label {
+    font-size: clamp(0.75rem, 0.625rem + 0.5vw, 0.875rem);
+    color: var(--muted-text);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.level-select {
+    width: 100%;
+    padding: clamp(0.375rem, 0.25rem + 0.5vw, 0.5rem) clamp(0.5rem, 0.375rem + 0.5vw, 0.625rem);
+    border-radius: 0.375rem;
+    font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
+    background: var(--muted);
+    color: var(--text);
+    border: 0.0625rem solid var(--border);
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.level-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--bg);
+}
+
+/* Inventory section styling */
+.inventory-section {
+    background: var(--panel);
+    padding: clamp(0.75rem, 0.625rem + 0.5vw, 1rem);
+    border-radius: 0.625rem;
+    border: 0.0625rem solid var(--border);
+}
+
+.inventory-section h3 {
+    margin: 0 0 clamp(0.625rem, 0.5rem + 0.5vw, 0.875rem) 0;
+    font-size: clamp(1rem, 0.875rem + 0.5vw, 1.125rem);
+    color: var(--text);
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 0.875rem);
+}
+
+.inventory-item {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.25rem, 0.125rem + 0.5vw, 0.375rem);
+}
+
+.inventory-item label {
+    font-size: clamp(0.875rem, 0.75rem + 0.5vw, 0.95rem);
+    color: var(--muted-text);
+    font-weight: 500;
+}
+
+.inventory-item input {
+    width: 100%;
+    padding: clamp(0.5rem, 0.375rem + 0.5vw, 0.625rem);
+    border-radius: 0.375rem;
+    font-size: clamp(0.875rem, 0.75rem + 0.5vw, 1rem);
+    background: var(--muted);
+    color: var(--text);
+    border: 0.0625rem solid var(--border);
+    transition: border-color 150ms ease;
+    text-align: center;
+}
+
+.inventory-item input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Resource icons in results */
+.res-icon {
+    width: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    height: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+    vertical-align: middle;
+    margin-right: 0.375rem;
+}
+
+/* =============== End Pets Styles =============== */
 
 
 input {
@@ -2073,8 +2291,8 @@ html:not(.light-theme) .profiles input[type="text"]{
 
 /* Fire Crystals results summary */
 .totals-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(13.75em, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 0.75em;
     margin-bottom: 1em;
 }
@@ -3264,3 +3482,359 @@ button, .dark-mode-toggle, select, input[type="number"], input[type="text"] {
 }
 .war-lab-results .war-lab-slot-table .col-name{ min-width: 11.25em; }
 .war-lab-results .war-lab-slot-table .col-icon{ min-width: 3em; width:3em; text-align: center; }
+
+/* =============== Pets Mobile Responsiveness =============== */
+@media (max-width: 48em) {
+    /* Stack main layout vertically on mobile */
+    .pets-page .main-layout-wrapper {
+        grid-template-columns: 1fr !important;
+    }
+    /* Inventory & profiles stacked */
+    .pets-page .inventory-profiles-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    /* Stack pets grid to single column on mobile */
+    .pets-page .pets-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+    
+    /* Increase touch targets for mobile */
+    .pet-slot {
+        padding: 0.75rem;
+    }
+    
+    .pet-icon {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+    
+    .level-select {
+        min-height: 3rem;
+        font-size: 1rem;
+    }
+    
+    /* Stack inventory grid on very small screens */
+    .inventory-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .inventory-item input {
+        min-height: 3rem;
+        font-size: 1rem;
+    }
+    
+    /* Results display - stack items vertically */
+    .pets-page .totals-summary {
+        flex-direction: column !important;
+        gap: 0.625rem;
+    }
+    
+    .pets-page .totals-summary .total-item {
+        padding: 0.75rem;
+    }
+    
+    /* Make results section not sticky on mobile */
+    .pets-page .main-layout-wrapper .results-section {
+        position: relative;
+        top: 0;
+        max-height: none;
+    }
+}
+
+/* Tablet breakpoint - 3 columns for pets */
+@media (min-width: 48.0625em) and (max-width: 64em) {
+    .pets-page .main-layout-wrapper { grid-template-columns: 1fr !important; }
+    
+    .pets-page .pets-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    /* Inventory left, profiles right like buildings */
+    .pets-page .inventory-profiles-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem 1rem;
+        align-items: start;
+    }
+    .pets-page .inventory-section { grid-column: 1 / 2; }
+    .pets-page .profiles { grid-column: 2 / 3; }
+    
+    .pets-page .inventory-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .totals-summary {
+        flex-direction: column;
+    }
+}
+
+/* Desktop - 5 columns for pets, horizontal results (landscape tablets and up) */
+@media (min-width: 56em) {
+    /* Override the 64em breakpoint stacking for pets */
+    .pets-page .pets-grid { grid-template-columns: repeat(5, 1fr) !important; }
+    .pets-page .inventory-profiles-row {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 1rem;
+        align-items: start;
+    }
+    .pets-page .inventory-section { grid-column: 1 / 2; }
+    .pets-page .profiles { grid-column: 2 / 3; }
+    
+    .pets-page .inventory-grid {
+        grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    }
+    
+    .pets-page .totals-summary {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+    
+    .pets-page .totals-summary .total-item {
+        flex: 0 1 auto;
+        min-width: 8rem;
+    }
+    
+    /* Force side-by-side layout on pets page */
+    .pets-page .main-layout-wrapper {
+        grid-template-columns: 1.5fr 1fr !important;
+    }
+    
+    .pets-page .main-layout-wrapper .results-section {
+        position: sticky !important;
+        top: 0.75em !important;
+        max-height: calc(100vh - 10em) !important;
+    }
+}
+
+/* =============== End Pets Mobile Styles =============== */
+
+
+/* ========== PETS PAGE SPECIFIC FIXES ========== */
+
+/* Hide mobile bottom-nav on desktop */
+.bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bottom-nav__list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.bottom-nav__item {
+    flex: 0 0 auto;
+}
+
+.bottom-nav__item a {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--text);
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+}
+
+.bottom-nav__item a.is-active,
+.bottom-nav__item a[aria-current="page"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* Hide bottom-nav on desktop (>=64em / 1024px) */
+@media (min-width: 64em) {
+    .bottom-nav {
+        display: none;
+    }
+}
+
+/* Pets page: Full viewport height background */
+.pets-page {
+    min-height: 100vh;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.pets-page body {
+    min-height: 100vh;
+}
+
+/* Pets page: Inventory on single line on desktop */
+.pets-page .inventory-profiles-row {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+}
+
+.pets-page .inventory-section .inventory-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.pets-page .inventory-section .inventory-item {
+    flex: 1 1 auto;
+    min-width: 140px;
+    max-width: 180px;
+}
+
+.pets-page .inventory-section .inventory-item label {
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.pets-page .inventory-section .inventory-item input {
+    width: 100%;
+}
+
+/* Results in single column */
+.pets-page .totals-summary.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pets-page .totals-summary.vertical .total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--muted);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.pets-page .totals-summary.vertical .total-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.pets-page .totals-summary.vertical .total-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+}
+
+/* Pet slot FROM/TO labels and selects - prevent overflow */
+.pets-page .pet-slot .level-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.pets-page .pet-slot .select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.pets-page .pet-slot .select-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted-text);
+    white-space: nowrap;
+}
+
+.pets-page .pet-slot .select-group select {
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+/* Pets grid optimization - maximize space for 5 columns */
+.pets-page .pets-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.pets-page .pet-slot {
+    background: var(--panel);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pets-page .pet-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pets-page .pet-icon {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.pets-page .pet-header h4 {
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Resource icons in results */
+.pets-page .res-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+}
+
+/* Mobile responsive */
+@media (max-width: 48em) {
+    .pets-page .inventory-profiles-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .pets-page .inventory-section .inventory-inputs {
+        flex-direction: column;
+    }
+    
+    .pets-page .inventory-section .inventory-item {
+        max-width: 100%;
+    }
+    
+    .pets-page .pets-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Show bottom-nav on mobile */
+    .bottom-nav {
+        display: flex;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 48.0625em) and (max-width: 64em) {
+    .pets-page .pets-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+

@@ -26,11 +26,27 @@ const PetsCalculatorModule = (function(){
   // Pet costs data: { petName: { level: { foodBase, foodRequired, ... } } }
   const petsCosts = {};
   
-  // List of all available pets (populated from CSV)
-  const availablePets = [];
+  // Map of pet IDs to pet names
+  const PET_MAP = {
+    'cave-hyena': 'Cave Hyena',
+    'arctic-wolf': 'Arctic Wolf',
+    'musk-ox': 'Musk Ox',
+    'giant-tapir': 'Giant Tapir',
+    'titan-roc': 'Titan Roc',
+    'giant-elk': 'Giant Elk',
+    'snow-leopard': 'Snow Leopard',
+    'cave-lion': 'Cave Lion',
+    'snow-ape': 'Snow Ape',
+    'iron-rhino': 'Iron Rhino',
+    'sabertooth-tiger': 'Sabertooth Tiger',
+    'mammoth': 'Mammoth',
+    'frost-gorilla': 'Frost Gorilla',
+    'frostscale-chameleon': 'Frostscale Chameleon',
+    'abyssal-shelldragon': 'Abyssal Shelldragon'
+  };
   
   const LOCKED_LEVEL = -1;
-  const MAX_PET_LEVEL = 100.1; // Adjust based on actual max level
+  const MAX_PET_LEVEL = 100.1;
   const LOCKED_VALUE = LOCKED_LEVEL.toString();
 
   /**
@@ -38,8 +54,9 @@ const PetsCalculatorModule = (function(){
    */
   function initializeDefaultCosts() {
     // Fallback defaults - will be overridden by CSV
-    const defaultPets = ['Cave Hyena', 'Arctic Wolf', 'Musk Ox'];
-    const defaultLevels = [10, 10.1, 20, 20.1, 30, 30.1];
+    const defaultPets = Object.values(PET_MAP);
+    const defaultLevels = [10, 10.1, 20, 20.1, 30, 30.1, 40, 40.1, 50, 50.1, 
+                          60, 60.1, 70, 70.1, 80, 80.1, 90, 90.1, 100, 100.1];
     
     defaultPets.forEach(petName => {
       petsCosts[petName] = {};
@@ -138,11 +155,7 @@ const PetsCalculatorModule = (function(){
         rowsProcessed++;
       }
 
-      // Update available pets list
-      availablePets.length = 0;
-      availablePets.push(...Array.from(petSet).sort());
-
-      console.info(`[Pets] Applied ${rowsProcessed} cost overrides from CSV (${availablePets.length} pets)`);
+      console.info(`[Pets] Applied ${rowsProcessed} cost overrides from CSV (${petSet.size} pets)`);
     } catch (e) {
       console.warn('[Pets] CSV override skipped:', e.message);
     }
@@ -203,96 +216,98 @@ const PetsCalculatorModule = (function(){
   }
 
   /**
-   * Calculate all pets and update results table
+   * Calculate all pets and update results display
    */
   function calculateAll() {
-    const tbody = document.querySelector('#pets-results-table tbody');
-    if (!tbody) {
-      console.warn('[Pets] Results table not found');
+    const resultsDisplay = document.getElementById('pets-results-display');
+    if (!resultsDisplay) {
+      console.warn('[Pets] Results display not found');
       return;
     }
 
-    tbody.innerHTML = '';
-
     const totals = {
       foodBase: 0,
-      foodRequired: 0,
       manualBase: 0,
-      manualRequired: 0,
       potionBase: 0,
-      potionRequired: 0,
       serumBase: 0,
-      serumRequired: 0,
-      svsPointsBase: 0,
-      svsPointsRequired: 0
+      svsPointsBase: 0
     };
 
-    // Find all pet selects (pattern: {petId}-pet-start, {petId}-pet-finish)
-    const petContainers = document.querySelectorAll('[data-pet-id]');
-    
-    petContainers.forEach(container => {
-      const petId = container.getAttribute('data-pet-id');
-      const petSelect = document.getElementById(`${petId}-pet-select`);
-      const startSelect = document.getElementById(`${petId}-pet-start`);
-      const finishSelect = document.getElementById(`${petId}-pet-finish`);
+    // Iterate through all 15 pets using PET_MAP
+    Object.entries(PET_MAP).forEach(([petId, petName]) => {
+      const startSelect = document.getElementById(`${petId}-start`);
+      const finishSelect = document.getElementById(`${petId}-finish`);
       
-      if (!petSelect || !startSelect || !finishSelect) return;
+      if (!startSelect || !finishSelect) return;
       
-      const petName = petSelect.value;
       const fromLevel = startSelect.value;
       const toLevel = finishSelect.value;
       
-      if (!petName || fromLevel === '' || toLevel === '' || fromLevel === toLevel) return;
+      if (fromLevel === '' || toLevel === '' || fromLevel === toLevel) return;
       
       const costs = sumCosts(petName, fromLevel, toLevel);
       
-      // Add to totals
-      Object.keys(totals).forEach(key => {
-        totals[key] += costs[key];
-      });
-      
-      // Create result row
-      const row = tbody.insertRow();
-      row.innerHTML = `
-        <td>${petName}</td>
-        <td>${fromLevel}</td>
-        <td>${toLevel}</td>
-        <td>${costs.foodBase.toLocaleString()}</td>
-        <td>${costs.foodRequired.toLocaleString()}</td>
-        <td>${costs.manualBase.toLocaleString()}</td>
-        <td>${costs.manualRequired.toLocaleString()}</td>
-        <td>${costs.potionBase.toLocaleString()}</td>
-        <td>${costs.potionRequired.toLocaleString()}</td>
-        <td>${costs.serumBase.toLocaleString()}</td>
-        <td>${costs.serumRequired.toLocaleString()}</td>
-        <td>${costs.svsPointsBase.toLocaleString()}</td>
-        <td>${costs.svsPointsRequired.toLocaleString()}</td>
-      `;
+      // Add to totals (only base resources)
+      totals.foodBase += costs.foodBase;
+      totals.manualBase += costs.manualBase;
+      totals.potionBase += costs.potionBase;
+      totals.serumBase += costs.serumBase;
+      totals.svsPointsBase += costs.svsPointsBase;
     });
 
-    // Add totals row
-    if (tbody.rows.length > 0) {
-      const totalRow = tbody.insertRow();
-      totalRow.className = 'total-row';
-      totalRow.innerHTML = `
-        <td colspan="3"><strong data-i18n="total">Total</strong></td>
-        <td><strong>${totals.foodBase.toLocaleString()}</strong></td>
-        <td><strong>${totals.foodRequired.toLocaleString()}</strong></td>
-        <td><strong>${totals.manualBase.toLocaleString()}</strong></td>
-        <td><strong>${totals.manualRequired.toLocaleString()}</strong></td>
-        <td><strong>${totals.potionBase.toLocaleString()}</strong></td>
-        <td><strong>${totals.potionRequired.toLocaleString()}</strong></td>
-        <td><strong>${totals.serumBase.toLocaleString()}</strong></td>
-        <td><strong>${totals.serumRequired.toLocaleString()}</strong></td>
-        <td><strong>${totals.svsPointsBase.toLocaleString()}</strong></td>
-        <td><strong>${totals.svsPointsRequired.toLocaleString()}</strong></td>
-      `;
+    // Get inventory values
+    const inventoryFood = parseInt(document.getElementById('inventory-food')?.value || '0', 10);
+    const inventoryManual = parseInt(document.getElementById('inventory-manual')?.value || '0', 10);
+    const inventoryPotion = parseInt(document.getElementById('inventory-potion')?.value || '0', 10);
+    const inventorySerum = parseInt(document.getElementById('inventory-serum')?.value || '0', 10);
+    const inventorySvsPoints = parseInt(document.getElementById('inventory-svs-points')?.value || '0', 10);
+
+    // Calculate gaps
+    const foodGap = totals.foodBase - inventoryFood;
+    const manualGap = totals.manualBase - inventoryManual;
+    const potionGap = totals.potionBase - inventoryPotion;
+    const serumGap = totals.serumBase - inventorySerum;
+    const svsPointsGap = totals.svsPointsBase - inventorySvsPoints;
+
+    // Build results HTML with grid layout
+    const t = window.I18n?.t || (k => k);
+    const hasCalc = totals.foodBase > 0 || totals.manualBase > 0;
+
+    function formatGap(gap) {
+      const className = gap > 0 ? 'deficit' : 'surplus';
+      const text = gap > 0 
+        ? `⚠ Need ${gap.toLocaleString()} more`
+        : `✅ Have ${Math.abs(gap).toLocaleString()} left`;
+      return `<span class="gap ${className}">${text}</span>`;
     }
 
-    // Make table sortable if TableSortModule is available
-    if (window.TableSortModule) {
-      window.TableSortModule.makeSortable('pets-results-table');
+    function labelWithIcon(key) {
+      if (window.IconHelper && typeof window.IconHelper.label === 'function') {
+        return window.IconHelper.label(key, t);
+      }
+      const urlMap = {
+        'food-base': 'assets/resources/pet-items/food.svg',
+        'manual-base': 'assets/resources/pet-items/manual.svg',
+        'potion-base': 'assets/resources/pet-items/potion.svg',
+        'serum-base': 'assets/resources/pet-items/serum.svg',
+        'svs-points-base': 'assets/resources/base/svs-points.svg'
+      };
+      const url = urlMap[key];
+      const text = t(key);
+      if (!url) return text;
+      return `<img class="res-icon" src="${url}" alt="${text}" onerror="this.style.display='none'"> ${text}`;
     }
+
+    let html = '<div class="totals-summary">';
+
+    html += `<div class="total-item"><span class="resource-label">${labelWithIcon('food-base')}:</span><span class="resource-value">${totals.foodBase.toLocaleString()}</span>${hasCalc ? formatGap(foodGap) : ''}</div>`;
+    html += `<div class="total-item"><span class="resource-label">${labelWithIcon('manual-base')}:</span><span class="resource-value">${totals.manualBase.toLocaleString()}</span>${hasCalc ? formatGap(manualGap) : ''}</div>`;
+    html += `<div class="total-item"><span class="resource-label">${labelWithIcon('potion-base')}:</span><span class="resource-value">${totals.potionBase.toLocaleString()}</span>${hasCalc ? formatGap(potionGap) : ''}</div>`;
+    html += `<div class="total-item"><span class="resource-label">${labelWithIcon('serum-base')}:</span><span class="resource-value">${totals.serumBase.toLocaleString()}</span>${hasCalc ? formatGap(serumGap) : ''}</div>`;
+    html += `<div class="total-item"><span class="resource-label">${labelWithIcon('svs-points-base')}:</span><span class="resource-value">${totals.svsPointsBase.toLocaleString()}</span>${hasCalc ? formatGap(svsPointsGap) : ''}</div>`;
+
+    html += '</div>';
+    resultsDisplay.innerHTML = html;
   }
 
   /**
@@ -319,10 +334,10 @@ const PetsCalculatorModule = (function(){
    * Setup event listeners for all pet inputs
    */
   function setupEventListeners() {
-    // Listen for changes on pet selects
-    const allPetSelects = document.querySelectorAll('[id$="-pet-select"], [id$="-pet-start"], [id$="-pet-finish"]');
+    // Listen for changes on pet level selects
+    const allLevelSelects = document.querySelectorAll('[id$="-start"], [id$="-finish"]');
     
-    allPetSelects.forEach(select => {
+    allLevelSelects.forEach(select => {
       select.addEventListener('change', () => {
         calculateAll();
         
@@ -333,29 +348,115 @@ const PetsCalculatorModule = (function(){
       });
     });
 
+    // Inventory inputs auto-save
+    const inventoryInputs = document.querySelectorAll('#inventory-food, #inventory-manual, #inventory-potion, #inventory-serum, #inventory-svs-points');
+    inventoryInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+          ProfilesModule.autoSaveCurrentProfile();
+        }
+      });
+    });
+
+    // Reset button
+    const resetBtn = document.getElementById('pets-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', resetAll);
+    }
+
+    // Populate level dropdowns with options
+    populateLevelDropdowns();
+
     // Initial calculation
     calculateAll();
   }
 
   /**
+   * Populate all level dropdowns with level options
+   */
+  function populateLevelDropdowns() {
+    const levelOptions = ['', '10', '10.1', '20', '20.1', '30', '30.1', '40', '40.1', 
+                          '50', '50.1', '60', '60.1', '70', '70.1', '80', '80.1', 
+                          '90', '90.1', '100', '100.1'];
+    
+    Object.keys(PET_MAP).forEach(petId => {
+      const startSelect = document.getElementById(`${petId}-start`);
+      const finishSelect = document.getElementById(`${petId}-finish`);
+      
+      if (startSelect && startSelect.options.length <= 1) {
+        levelOptions.forEach(level => {
+          const option = document.createElement('option');
+          option.value = level;
+          option.textContent = level || '--';
+          startSelect.appendChild(option);
+        });
+      }
+      
+      if (finishSelect && finishSelect.options.length <= 1) {
+        levelOptions.forEach(level => {
+          const option = document.createElement('option');
+          option.value = level;
+          option.textContent = level || '--';
+          finishSelect.appendChild(option);
+        });
+      }
+    });
+  }
+
+  /**
+   * Reset all pet levels and inventory
+   */
+  function resetAll() {
+    Object.keys(PET_MAP).forEach(petId => {
+      const startSelect = document.getElementById(`${petId}-start`);
+      const finishSelect = document.getElementById(`${petId}-finish`);
+      
+      if (startSelect) startSelect.value = '';
+      if (finishSelect) finishSelect.value = '';
+    });
+
+    // Reset inventory
+    const inventoryInputs = ['inventory-food', 'inventory-manual', 'inventory-potion', 
+                             'inventory-serum', 'inventory-svs-points'];
+    inventoryInputs.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) input.value = '0';
+    });
+
+    calculateAll();
+    
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      ProfilesModule.autoSaveCurrentProfile();
+    }
+  }
+
+  /**
    * Get current state for profile saving
+   * Returns data in format compatible with unified profiles
    */
   function getCurrentState() {
     const state = {};
-    const petContainers = document.querySelectorAll('[data-pet-id]');
     
-    petContainers.forEach(container => {
-      const petId = container.getAttribute('data-pet-id');
-      const petSelect = document.getElementById(`${petId}-pet-select`);
-      const startSelect = document.getElementById(`${petId}-pet-start`);
-      const finishSelect = document.getElementById(`${petId}-pet-finish`);
+    // Save all 15 pet levels with data-profile-key format
+    Object.entries(PET_MAP).forEach(([petId, petName]) => {
+      const startSelect = document.getElementById(`${petId}-start`);
+      const finishSelect = document.getElementById(`${petId}-finish`);
       
-      if (petSelect && startSelect && finishSelect) {
-        state[petId] = {
-          pet: petSelect.value,
-          start: startSelect.value,
-          finish: finishSelect.value
-        };
+      if (startSelect) {
+        state[`${petId}-start`] = startSelect.value;
+      }
+      if (finishSelect) {
+        state[`${petId}-finish`] = finishSelect.value;
+      }
+    });
+    
+    // Save inventory
+    const inventoryIds = ['inventory-food', 'inventory-manual', 'inventory-potion', 
+                          'inventory-serum', 'inventory-svs-points'];
+    inventoryIds.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) {
+        state[id] = input.value;
       }
     });
     
@@ -364,23 +465,33 @@ const PetsCalculatorModule = (function(){
 
   /**
    * Load state from profile
+   * Compatible with unified profile system
    */
   function loadState(state) {
-    if (!state) return;
+    if (!state || typeof state !== 'object') return;
     
-    Object.entries(state).forEach(([petId, values]) => {
-      const petSelect = document.getElementById(`${petId}-pet-select`);
-      const startSelect = document.getElementById(`${petId}-pet-start`);
-      const finishSelect = document.getElementById(`${petId}-pet-finish`);
+    // Load pet levels
+    Object.entries(PET_MAP).forEach(([petId, petName]) => {
+      const startKey = `${petId}-start`;
+      const finishKey = `${petId}-finish`;
       
-      if (petSelect && values.pet !== undefined) {
-        petSelect.value = values.pet;
+      if (state[startKey] !== undefined) {
+        const startSelect = document.getElementById(startKey);
+        if (startSelect) startSelect.value = state[startKey];
       }
-      if (startSelect && values.start !== undefined) {
-        startSelect.value = values.start;
+      if (state[finishKey] !== undefined) {
+        const finishSelect = document.getElementById(finishKey);
+        if (finishSelect) finishSelect.value = state[finishKey];
       }
-      if (finishSelect && values.finish !== undefined) {
-        finishSelect.value = values.finish;
+    });
+    
+    // Load inventory
+    const inventoryIds = ['inventory-food', 'inventory-manual', 'inventory-potion',
+                          'inventory-serum', 'inventory-svs-points'];
+    inventoryIds.forEach(id => {
+      if (state[id] !== undefined) {
+        const input = document.getElementById(id);
+        if (input) input.value = state[id];
       }
     });
     
@@ -391,7 +502,7 @@ const PetsCalculatorModule = (function(){
    * Get available pets list
    */
   function getAvailablePets() {
-    return [...availablePets];
+    return Object.values(PET_MAP);
   }
 
   /**
@@ -407,12 +518,24 @@ const PetsCalculatorModule = (function(){
   // Initialize on load
   init();
 
+  // Register with unified profile system if available
+  if (window.WOSCalcCore && typeof window.WOSCalcCore.registerAdapter === 'function') {
+    window.WOSCalcCore.registerAdapter({
+      id: 'pets',
+      isActive: () => !!document.getElementById('cave-hyena-start'),
+      run: () => calculateAll(),
+      getCurrentState: () => getCurrentState(),
+      loadState: (state) => loadState(state)
+    });
+  }
+
   // Public API
   return {
     calculateAll,
     sumCosts,
     getCurrentState,
     loadState,
+    resetAll,
     getAvailablePets,
     getAvailableLevels
   };
