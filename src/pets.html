@@ -3,47 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pets calculator for Whiteout Survival. Plan companion upgrades, track feeding costs, and optimize evolution paths.">
   <title>WOSFORGE-Pets</title>
   <link rel="icon" href="assets/app-icon.png">
-  <link rel="stylesheet" href="style/style.css" />
-  <script src="Scripts/theme.js" defer></script>
+  <link rel="stylesheet" href="style/style.min.css">
+  <script>(function(){try{var l=localStorage.getItem('wos-language')||'en';document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
+  <script src="Scripts/min/icon-helper.min.js" defer></script>
+  <script src="Scripts/min/theme.min.js" defer></script>
   <script src="Scripts/translations.js" defer></script>
+  <script src="Scripts/min/table-sort.min.js" defer></script>
+  <script src="Scripts/min/data-loader.min.js" defer></script>
   <script src="Scripts/calculation-core.js" defer></script>
-    <script src="Scripts/sw-register.js" defer></script>
-
+  <script src="Scripts/min/profiles.min.js" defer></script>
+  <script src="Scripts/sw-register.js" defer></script>
 </head>
 <body>
   <div id="top"></div>
-      <header class="header-with-nav" role="banner">
-      <a href="../index.html" class="logo-link">
-        <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
-      </a>
-      <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
-        <div class="nav-links">
-          <a href="../index.html" data-i18n="nav-home">Home</a>
-          <a href="charms.html" data-i18n="nav-charms">Charms</a>
-          <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
-          <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
-          <a href="war-academy.html" data-i18n="nav-war-academy">War Academy</a>
-          <a href="pets.html" data-i18n="nav-pets" aria-current="page">Pets</a>
-          <a href="coming-soon.html" data-i18n="nav-experts">Experts</a>
-        </div>
-        <div class="nav-actions">
-          <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
-          <select id="language-selector" aria-label="Language" title="Select language">
-          <option value="en"> English</option>
-          <option value="es"> Español</option>
-          <option value="fr"> Français</option>
-          <option value="de"> Deutsch</option>
-          <option value="pt"> Português</option>
-          <option value="it"> Italiano</option>
-          <option value="ko"> 한국어</option>
-          <option value="ru"> Русский</option>
-          </select>
-        </div>
-      </nav>
-    </header>
-  <main>
+  <header class="header-with-nav" role="banner">
+    <a href="../index.html" class="logo-link">
+      <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+    </a>
+    <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-links">
+        <a href="../index.html" data-i18n="nav-home">Home</a>
+        <a href="charms.html" data-i18n="nav-charms">Charms</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
+        <a href="war-academy.html" data-i18n="nav-war-academy">War Academy</a>
+        <a href="pets.html" data-i18n="nav-pets" aria-current="page">Pets</a>
+        <a href="experts.html" data-i18n="nav-experts">Experts</a>
+      </div>
+      <div class="nav-actions">
+        <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
+        <select id="language-selector" aria-label="Language" title="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="ko">한국어</option>
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+    </nav>
+  </header>
+  <div class="app-shell">
+    <main role="main">
     <h2>Pets</h2>
     <section class="coming-soon" role="region" aria-labelledby="pets-coming-title">
       <h3 id="pets-coming-title">Creature Companion Calculators Arriving Soon ??</h3>

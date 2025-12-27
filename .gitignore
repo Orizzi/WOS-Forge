@@ -25,4 +25,4 @@ Thumbs.db
 *.tar.gz
 
 # Generated from Excel exports
-src/assets/sheets/
+src/assets/sheets/.archive/tmp-folders/

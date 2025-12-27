@@ -3,65 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Experts calculator for Whiteout Survival. Plan expert upgrades, track skill progression, and optimize talent paths.">
   <title>WOSFORGE-Experts</title>
   <link rel="icon" href="assets/app-icon.png">
-  <link rel="stylesheet" href="style/style.css" />
-  <script src="Scripts/theme.js" defer></script>
+  <link rel="stylesheet" href="style/style.min.css">
+  <script>(function(){try{var l=localStorage.getItem('wos-language')||'en';document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
+  <script src="Scripts/min/icon-helper.min.js" defer></script>
+  <script src="Scripts/min/theme.min.js" defer></script>
   <script src="Scripts/translations.js" defer></script>
+  <script src="Scripts/min/table-sort.min.js" defer></script>
+  <script src="Scripts/min/data-loader.min.js" defer></script>
   <script src="Scripts/calculation-core.js" defer></script>
-    <script src="Scripts/sw-register.js" defer></script>
-
+  <script src="Scripts/min/profiles.min.js" defer></script>
+  <script src="Scripts/sw-register.js" defer></script>
 </head>
 <body>
   <div id="top"></div>
   <header class="header-with-nav" role="banner">
-      <a href="../index.html" class="logo-link">
-        <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
-      </a>
-      <nav class="main-nav" role="navigation" aria-label="Main navigation">
-        <a href="../index.html" data-i18n="nav-home" >Home</a>
+    <a href="../index.html" class="logo-link">
+      <img src="assets/wos-forge-banner.png" alt="WOS FORGE" class="site-logo">
+    </a>
+    <nav id="main-nav" class="main-nav" role="navigation" aria-label="Main navigation">
+      <div class="nav-links">
+        <a href="../index.html" data-i18n="nav-home">Home</a>
         <a href="charms.html" data-i18n="nav-charms">Charms</a>
-        <a href="chiefGear.html" data-i18n="nav-chief-gear" >Chief Gear</a>
-        <a href="fireCrystals.html" data-i18n="nav-fire-crystals" >Fire Crystals</a>
+        <a href="chiefGear.html" data-i18n="nav-chief-gear">Chief Gear</a>
+        <a href="fireCrystals.html" data-i18n="nav-fire-crystals">Fire Crystals</a>
         <a href="war-academy.html" data-i18n="nav-war-academy">War Academy</a>
-        <a href="coming-soon.html" data-i18n="nav-pets">Pets</a>
-        <a href="coming-soon.html" data-i18n="nav-experts" aria-current="page">Experts</a>
+        <a href="pets.html" data-i18n="nav-pets">Pets</a>
+        <a href="experts.html" data-i18n="nav-experts" aria-current="page">Experts</a>
+      </div>
+      <div class="nav-actions">
         <button id="dark-mode-toggle" class="dark-mode-toggle" aria-pressed="false" title="Toggle dark/light Theme">T Theme</button>
         <select id="language-selector" aria-label="Language" title="Select language">
-        <option value="en"> English</option>
-        <option value="es"> Español</option>
-        <option value="fr"> Français</option>
-        <option value="de"> Deutsch</option>
-        <option value="pt"> Português</option>
-        <option value="it"> Italiano</option>
-        <option value="ko"> 한국어</option>
-        <option value="ru"> Русский</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+          <option value="it">Italiano</option>
+          <option value="ko">한국어</option>
+          <option value="ru">Русский</option>
         </select>
-      </nav>
-  <main>
-    <h2>Experts</h2>
-
-    <section class="introduction">
-      <p>Calculator coming soon. We'll use your workbook sheets (e.g., "Heroes", "Chief & Hero Data") to power expert-related calculations.</p>
-    </section>
-
-    <section class="results-section card">
-      <h3>Items You Need</h3>
-      <div id="results-display">Pending data integration?</div>
-    </section>
-    </main>
-</div>
-    <nav class="bottom-nav" aria-label="Mobile navigation">
-      <ul class="bottom-nav__list">
-        <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
-        <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
-        <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
-        <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
-        <li class="bottom-nav__item"><a href="war-academy.html">War Academy</a></li>
-        <li class="bottom-nav__item"><a href="pets.html">Pets</a></li>
-        <li class="bottom-nav__item"><a href="experts.html" aria-current="page" class="is-active">Experts</a></li>
-      </ul>
+      </div>
     </nav>
+  </header>
+  <div class="app-shell">
+    <main role="main">
+      <h2 data-i18n="experts-header">Experts</h2>
+      <section class="introduction">
+        <p>Calculator coming soon. We'll use your workbook sheets (e.g., "Heroes", "Chief & Hero Data") to power expert-related calculations.</p>
+      </section>
+      <section class="results-section card">
+        <h3>Items You Need</h3>
+        <div id="results-display">Pending data integration?</div>
+      </section>
+    </main>
+  </div>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <ul class="bottom-nav__list">
+      <li class="bottom-nav__item"><a href="../index.html">Home</a></li>
+      <li class="bottom-nav__item"><a href="charms.html">Charms</a></li>
+      <li class="bottom-nav__item"><a href="chiefGear.html">Chief Gear</a></li>
+      <li class="bottom-nav__item"><a href="fireCrystals.html">Fire Crystals</a></li>
+      <li class="bottom-nav__item"><a href="war-academy.html">War Academy</a></li>
+      <li class="bottom-nav__item"><a href="pets.html">Pets</a></li>
+      <li class="bottom-nav__item"><a href="experts.html" aria-current="page" class="is-active">Experts</a></li>
+    </ul>
+  </nav>
   <a href="#top" class="back-to-top" aria-label="Back to top">&#8593;</a>
   <script>
     document.addEventListener('DOMContentLoaded', function(){

@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="War Academy calculator for Whiteout Survival. Plan Helios research, track power impact, and optimize research material usage.">
   <title>WOSFORGE-War Academy</title>
   <link rel="icon" href="assets/app-icon.png">
-  <link rel="stylesheet" href="style/style.css" />
-  <script src="Scripts/theme.js" defer></script>
+  <link rel="stylesheet" href="style/style.min.css">
+  <script>(function(){try{var l=localStorage.getItem('wos-language')||'en';document.documentElement.setAttribute('lang',l);}catch(e){}})();</script>
+  <script src="Scripts/min/icon-helper.min.js" defer></script>
+  <script src="Scripts/min/theme.min.js" defer></script>
   <script src="Scripts/translations.js" defer></script>
+  <script src="Scripts/min/table-sort.min.js" defer></script>
+  <script src="Scripts/min/data-loader.min.js" defer></script>
   <script src="Scripts/calculation-core.js" defer></script>
-  <script src="Scripts/sw-register.js" defer></script>
-  <!-- Data + helpers -->
   <script src="Scripts/modules/helpers/csv.js" defer></script>
   <script src="Scripts/modules/helpers/number-format.js" defer></script>
-  <script src="Scripts/modules/data/data-loader.js" defer></script>
   <script src="Scripts/modules/data/helios-data.js" defer></script>
-  <script src="Scripts/profiles.js" defer></script>
   <script src="Scripts/war-laboratory.js" defer></script>
+  <script src="Scripts/min/profiles.min.js" defer></script>
+  <script src="Scripts/sw-register.js" defer></script>
 </head>
 <body>
   <div id="top"></div>
@@ -53,7 +56,7 @@
   <div class="app-shell">
     <main role="main" class="war-lab-page">
       <section class="card" aria-labelledby="war-lab-title">
-        <h1 id="war-lab-title" data-i18n="war-academy-title">War Academy – Helios Research</h1>
+        <h1 id="war-lab-title" data-i18n="w role="group" aria-label="Inventory and profiles"ar-academy-title">War Academy – Helios Research</h1>
         
         <div class="inventory-profiles-row">
           <section class="inventory-section card" aria-label="Helios Inventory">
