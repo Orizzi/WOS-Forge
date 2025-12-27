@@ -235,6 +235,10 @@ Script applies 3 regex patterns:
 ✅ **Theme Compatible:** Works with both light and dark themes  
 ✅ **Future-Proof:** Template for War Academy, Pets, Experts pages
 
+## Breakpoint Palette
+
+For the complete breakpoint map and rationale used across pages, see [docs/CSS_BREAKPOINTS_AUDIT.md](docs/CSS_BREAKPOINTS_AUDIT.md). Key thresholds: 80em, 75em, 68.75em, 64em (paired with 64.0625/63.9375 offsets), 56.25em, 48em, 43.75em, 37.5em, 30em.
+
 ## CSS Classes Using This Pattern
 
 | Class | File | Purpose |
