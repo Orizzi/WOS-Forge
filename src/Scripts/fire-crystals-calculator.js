@@ -223,14 +223,30 @@
             try {
                 window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
                 loader && loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+                document.dispatchEvent(new CustomEvent('csv-load-failed', {
+                    detail: { calculator: 'Fire Crystals', url: UNIFIED_CSV_URL, message: 'Data loader unavailable.' }
+                }));
             } catch (_) {}
             return null;
         }
-        const csv = await loader.loadCsv(UNIFIED_CSV_URL);
+        let csv;
+        try {
+            csv = await loader.loadCsv(UNIFIED_CSV_URL);
+        } catch (e) {
+            try {
+                document.dispatchEvent(new CustomEvent('csv-load-failed', {
+                    detail: { calculator: 'Fire Crystals', url: UNIFIED_CSV_URL, message: e?.message || String(e) }
+                }));
+            } catch (_) {}
+            return null;
+        }
         if (!csv || !csv.header || !csv.rows || csv.header.length === 0) {
             try {
                 window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
                 loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+                document.dispatchEvent(new CustomEvent('csv-load-failed', {
+                    detail: { calculator: 'Fire Crystals', url: UNIFIED_CSV_URL, message: 'CSV empty or missing header/rows.' }
+                }));
             } catch (_) {}
             return null;
         }
@@ -252,6 +268,9 @@
             try {
                 window.FCDataStatus = { loaded: false, rows: 0, source: 'unified-csv', error: true };
                 loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
+                document.dispatchEvent(new CustomEvent('csv-load-failed', {
+                    detail: { calculator: 'Fire Crystals', url: UNIFIED_CSV_URL, message: 'CSV header mismatch.' }
+                }));
             } catch (_) {}
             return null;
         }
@@ -278,6 +297,13 @@
             window.FCDataStatus = { loaded: true, rows: (csv.rows || []).length, source: 'unified-csv', error: false };
             loader.dispatchReady && loader.dispatchReady('fc-data', window.FCDataStatus);
         } catch (_) {}
+        if (!csv.rows || csv.rows.length === 0) {
+            try {
+                document.dispatchEvent(new CustomEvent('csv-load-failed', {
+                    detail: { calculator: 'Fire Crystals', url: UNIFIED_CSV_URL, message: 'No rows parsed from CSV.' }
+                }));
+            } catch (_) {}
+        }
         return unifiedDataCache;
     }
 
