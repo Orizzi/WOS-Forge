@@ -693,7 +693,6 @@ main{ width: 100%; box-sizing: border-box; }
     }
 
     /* Keep wide tables contained */
-    .table-responsive{ max-width: 100%; overflow-x: auto; }
     .results-wrap{ width: 100%; overflow-x: auto; }
 }
 
@@ -1811,10 +1810,10 @@ html:not(.light-theme) .profiles input[type="text"]{
     border: 0.0625em solid var(--border); 
     max-height: none;
 }
-.results-table{ width: 100%; border-collapse: collapse; }
-.results-table th, .results-table td{ padding: 0.25em 0.375em; text-align: left; border-bottom: 0.0625em solid var(--border); font-size: 0.9em; }
-.results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(0.125em); }
-.results-table tfoot td{ font-weight: 700; border-top: 0.125em solid var(--border); }
+.calculation-output .results-table{ width: 100%; border-collapse: collapse; }
+.calculation-output .results-table th, .calculation-output .results-table td{ padding: 0.25em 0.375em; text-align: left; border-bottom: 0.0625em solid var(--border); font-size: 0.9em; }
+.calculation-output .results-table thead th{ background: linear-gradient(90deg, var(--card), transparent); position: sticky; top: 0; backdrop-filter: blur(0.125em); }
+.calculation-output .results-table tfoot td{ font-weight: 700; border-top: 0.125em solid var(--border); }
 
 /* Responsive breakpoints */
 @media (max-width: 75em) {
@@ -1986,7 +1985,7 @@ html:not(.light-theme) .profiles input[type="text"]{
     box-sizing: border-box;
 }
 
-.results-table{ 
+.results-section .results-table{ 
     width: 100%; 
     border-collapse: collapse; 
     background: var(--panel);
@@ -2341,13 +2340,13 @@ html:not(.light-theme) .profiles input[type="text"]{
 }
 
 /* Responsive table wrapper for mobile horizontal scroll */
-.table-responsive {
+.results-section .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: 0.75em 0;
 }
 
-.table-responsive table {
+.results-section .table-responsive table {
     min-width: 37.5em; /* Force scroll on narrow screens */
 }
 
@@ -2845,18 +2844,6 @@ button, .dark-mode-toggle, select, input[type="number"], input[type="text"] {
         box-sizing: border-box;
         overflow-x: auto;
         position: relative;
-    }
-
-    /* Make first column sticky inside horizontal scroll */
-    .results-section .results-table th:first-child,
-    .results-section .results-table td:first-child{
-        position: sticky;
-        left: 0;
-        z-index: 2;
-        background: var(--panel);
-    }
-    .results-section .results-table thead th:first-child{
-        z-index: 3;
     }
     .back-to-top{
         bottom: 6em;
