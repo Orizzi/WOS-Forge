@@ -122,6 +122,11 @@ const CalculatorModule = (function(){
       }
     } catch (e) {
       console.warn('[Charms] CSV override skipped:', e.message || e);
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: { calculator: 'Charms', url, message: e.message || String(e) }
+        }));
+      } catch(_err) {}
     }
   }
 

@@ -77,7 +77,16 @@ const ProfilesModule = (function(){
       for (const id of group) {
         const el = document.getElementById(id);
         if (el && el.value !== undefined) {
-          payload[key] = el.value;
+          const raw = el.value;
+          let n = parseInt(raw, 10);
+          const valid = Number.isInteger(n) && n >= 0 && n <= 999999999;
+          if (!valid) {
+            try{ el.setAttribute('aria-invalid', 'true'); }catch(_e){}
+            n = Math.max(0, Number.isFinite(n) ? n : 0);
+          } else {
+            try{ el.removeAttribute('aria-invalid'); }catch(_e){}
+          }
+          payload[key] = String(n);
           break;
         }
       }
