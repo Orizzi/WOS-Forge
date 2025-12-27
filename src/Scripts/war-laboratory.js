@@ -600,7 +600,7 @@
         li.style.alignItems = 'center';
         li.style.gap = toEm(8);
         li.innerHTML = `
-          <img src="${node.icon}" alt="${node.name}" style="width:${toEm(42)};height:${toEm(42)};object-fit:contain;">
+          <img src="${node.icon}" alt="${node.name}" onerror="this.src='assets/app-icon.png';" style="width:${toEm(42)};height:${toEm(42)};object-fit:contain;">
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;gap:${toEm(8)};">
               <strong>${node.name}</strong>
@@ -660,7 +660,7 @@
         const summary = window.WOSData.helios.sumRange(id, range.start, range.end) || {};
         return `
           <tr>
-            <td class="col-icon"><img src="${node.icon}" alt="${node.name}" style="width:${toEm(34)};height:${toEm(34)};object-fit:contain;"></td>
+            <td class="col-icon"><img src="${node.icon}" alt="${node.name}" onerror="this.src='assets/app-icon.png';" style="width:${toEm(34)};height:${toEm(34)};object-fit:contain;"></td>
             <td class="col-name">${node.name}</td>
             <td>${range.start}</td>
             <td>${range.end}</td>
