@@ -1,0 +1,41 @@
+
+,Charm Upgrade Costs,Charm Upgrade Costs,Charm Upgrade Costs,Charm Upgrade Costs,Charm Upgrade Costs,Charm Upgrade Costs
+,Level,Guides,Designs,Secrets,Power,SvS Points
+,1,5,5,0,205700,625
+,2,40,15,0,288000,1250
+,3,60,40,0,370000,3125
+,4,80,100,0,452000,8750
+,5,100,200,0,576000,11250
+,6,120,300,0,700000,12500
+,7,140,400,0,824000,12500
+,8,200,400,0,948000,13000
+,9,300,400,0,1072000,14000
+,10,420,420,0,1196000,15000
+,11,560,420,0,1320000,16000
+,12,580,450,15,1536000,17000
+,13,580,450,30,1752000,18000
+,14,600,500,45,1968000,19000
+,15,600,500,70,2184000,20000
+,16,650,550,100,2400000,21000
+
+
+,,,,,,,Guides,Designs,Secrets,Cpower,Dpower,Svs Points
+,HatTopCurrentLevel,HatTopCurrentLevel,HatTopCurrentLevel,HatTopDesiredLevel,HatTopDesiredLevel,HatTopDesiredLevel,580,450,30,1536000,1752000,18000
+,HatLeftCurrentLevel,HatLeftCurrentLevel,HatLeftCurrentLevel,HatLeftDesiredLevel,HatLeftDesiredLevel,HatLeftDesiredLevel,580,450,30,1536000,1752000,18000
+,HatRightCurrentLevel,HatRightCurrentLevel,HatRightCurrentLevel,HatRightDesiredLevel,HatRightDesiredLevel,HatRightDesiredLevel,580,450,30,1536000,1752000,18000
+,CoatTopCurrentLevel,CoatTopCurrentLevel,CoatTopCurrentLevel,CoatTopDesiredLevel,CoatTopDesiredLevel,CoatTopDesiredLevel,600,500,70,1968000,2184000,20000
+,CoatLeftCurrentLevel,CoatLeftCurrentLevel,CoatLeftCurrentLevel,CoatLeftDesiredLevel,CoatLeftDesiredLevel,CoatLeftDesiredLevel,600,500,70,1968000,2184000,20000
+,CoatRightCurrentLevel,CoatRightCurrentLevel,CoatRightCurrentLevel,CoatRightDesiredLevel,CoatRightDesiredLevel,CoatRightDesiredLevel,600,500,70,1968000,2184000,20000
+,RingTopCurrentLevel,RingTopCurrentLevel,RingTopCurrentLevel,RingTopDesiredLevel,RingTopDesiredLevel,RingTopDesiredLevel,600,500,45,1752000,1968000,19000
+,RingLeftCurrentLevel,RingLeftCurrentLevel,RingLeftCurrentLevel,RingLeftDesiredLevel,RingLeftDesiredLevel,RingLeftDesiredLevel,600,500,45,1752000,1968000,19000
+,RingRightCurrentLevel,RingRightCurrentLevel,RingRightCurrentLevel,RingRightDesiredLevel,RingRightDesiredLevel,RingRightDesiredLevel,600,500,45,1752000,1968000,19000
+,WatchTopCurrentLevel,WatchTopCurrentLevel,WatchTopCurrentLevel,WatchTopDesiredLevel,WatchTopDesiredLevel,WatchTopDesiredLevel,[object Object],[object Object],[object Object],1536000,1536000,[object Object]
+,WatchLeftCurrentLevel,WatchLeftCurrentLevel,WatchLeftCurrentLevel,WatchLeftDesiredLevel,WatchLeftDesiredLevel,WatchLeftDesiredLevel,[object Object],[object Object],[object Object],1536000,1536000,[object Object]
+,WatchRightCurrentLevel,WatchRightCurrentLevel,WatchRightCurrentLevel,WatchRightDesiredLevel,WatchRightDesiredLevel,WatchRightDesiredLevel,[object Object],[object Object],[object Object],1536000,1536000,[object Object]
+,PantsTopCurrentLevel,PantsTopCurrentLevel,PantsTopCurrentLevel,PantsTopDesiredLevel,PantsTopDesiredLevel,PantsTopDesiredLevel,600,500,70,1968000,2184000,20000
+,PantsLeftCurrentLevel,PantsLeftCurrentLevel,PantsLeftCurrentLevel,PantsLeftDesiredLevel,PantsLeftDesiredLevel,PantsLeftDesiredLevel,600,500,70,1968000,2184000,20000
+,PantsRightCurrentLevel,PantsRightCurrentLevel,PantsRightCurrentLevel,PantsRightDesiredLevel,PantsRightDesiredLevel,PantsRightDesiredLevel,600,500,70,1968000,2184000,20000
+,CudgelTopCurrentLevel,CudgelTopCurrentLevel,CudgelTopCurrentLevel,CudgelTopDesiredLevel,CudgelTopDesiredLevel,CudgelTopDesiredLevel,600,500,45,1752000,1968000,19000
+,CudgelLeftCurrentLevel,CudgelLeftCurrentLevel,CudgelLeftCurrentLevel,CudgelLeftDesiredLevel,CudgelLeftDesiredLevel,CudgelLeftDesiredLevel,600,500,45,1752000,1968000,19000
+,CudgelRightCurrentLevel,CudgelRightCurrentLevel,CudgelRightCurrentLevel,CudgelRightDesiredLevel,CudgelRightDesiredLevel,CudgelRightDesiredLevel,600,500,45,1752000,1968000,19000
+,,,,,,,8940,7350,780,31536000,30168000,288000

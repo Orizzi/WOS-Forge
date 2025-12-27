@@ -1,0 +1,118 @@
+,,,,,,,,,,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs
+,,,,,,,,,,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille
+,,,,,,,,,,Entrapment,Entrapment,Entrapment,Entrapment,Scavenging,Scavenging,Scavenging,Scavenging,Weapon Master,Weapon Master,Weapon Master,Weapon Master,Ursa's Bane,Ursa's Bane,Ursa's Bane,Ursa's Bane
+,,,Expert Level Costs,Expert Level Costs,Expert Level Costs,Expert Level Costs,Expert Level Costs,,,Entrapment,Entrapment,Entrapment,Entrapment,Scavenging,Scavenging,Scavenging,Scavenging,Weapon Master,Weapon Master,Weapon Master,Weapon Master,Ursa's Bane,Ursa's Bane,Ursa's Bane,Ursa's Bane
+,,,Cyrille,Cyrille,Cyrille,Cyrille,Cyrille,,,Bear Rally Cap Up,Bear Rally Cap Up,Bear Rally Cap Up,Bear Rally Cap Up,100 Hero Gear XP per Bear Hunt,100 Hero Gear XP per Bear Hunt,100 Hero Gear XP per Bear Hunt,100 Hero Gear XP per Bear Hunt,Extra Essence Stones per Bear Hunt,Extra Essence Stones per Bear Hunt,Extra Essence Stones per Bear Hunt,Extra Essence Stones per Bear Hunt,Bear Deployment Cap Up,Bear Deployment Cap Up,Bear Deployment Cap Up,Bear Deployment Cap Up
+,,,Affinity,Sigils,Attack,Bear +,Power,,0,Books,XP,Change,Power,Books,XP,Change,Power,Books,XP,Change,Power,Books,XP,Change,Power
+,Relationship,0,,,,,,,1,0,0,30000,3000,0,0,1,13000,0,0,1,20000,0,0,3000,7000
+,Stranger,1,1000,,0.0158,0.02,36000,,2,70,3600,60000,6000,400,27600,2,26000,500,43200,2,40000,100,10200,6000,14000
+,,2,200,,0.0165,,,,3,140,7200,90000,9000,800,55200,3,39000,1000,86400,3,60000,200,20400,9000,21000
+,,3,210,,0.0173,,,,4,210,10800,120000,12000,1600,110400,4,52000,2000,172800,4,80000,300,30600,12000,28000
+,,4,220,,0.018,,,,5,280,14400,150000,15000,3200,220800,5,65000,4000,345600,5,100000,400,41400,15000,35000
+,,5,230,,0.0188,,,,6,350,18000,180000,18000,,,,,,,,,500,51600,18000,42000
+,,6,240,,0.0195,,,,7,420,21600,210000,21000,,,,,,,,,600,61800,21000,49000
+,,7,260,,0.0203,,,,8,490,25200,240000,24000,,,,,,,,,700,72600,24000,56000
+,,8,280,,0.021,,,,9,560,28800,270000,27000,,,,,,,,,800,82800,27000,63000
+,,9,300,,0.0218,,,,10,630,32400,300000,30000,,,,,,,,,900,93000,30000,70000
+,,10,320,,0.0225,,,,,3150,162000,,,6000,414000,,,7500,648000,,,4500,464400
+,Acquaintance 1,10.1,-,5,0.0285,0.04,72000
+,,11,340,,0.0293
+,,12,360,,0.03
+,,13,380,,0.0308
+,,14,400,,0.0315
+,,15,420,,0.0323
+,,16,440,,0.033
+,,17,460,,0.0338
+,,18,480,,0.0345
+,,19,500,,0.0353
+,,20,520,,0.036
+,Acquaintance 2,20.1,-,10,0.042,0.06,108000
+,,21,540,,0.0428
+,,22,560,,0.0435
+,,23,580,,0.0443
+,,24,600,,0.045
+,,25,620,,0.0458
+,,26,640,,0.0465
+,,27,660,,0.0473
+,,28,680,,0.048
+,,29,700,,0.0488
+,,30,730,,0.0495
+,Acquaintance 3,30.1,-,15,0.0555,0.09,144000
+,,31,760,,0.0563
+,,32,790,,0.057
+,,33,820,,0.0578
+,,34,850,,0.0585
+,,35,880,,0.0593
+,,36,910,,0.06
+,,37,940,,0.0608
+,,38,970,,0.0615
+,,39,1000,,0.0623
+,,40,1040,,0.063
+,Casual 1,40.1,-,20,0.069,0.12,180000
+,,41,1080,,0.0698
+,,42,1120,,0.0705
+,,43,1160,,0.0713
+,,44,1200,,0.072
+,,45,1240,,0.0728
+,,46,1280,,0.0735
+,,47,1320,,0.0743
+,,48,1360,,0.075
+,,49,1400,,0.0758
+,,50,1450,,0.0765
+,Casual 2,50.1,-,25,0.0825,0.15,216000
+,,51,1500,,0.0833
+,,52,1550,,0.084
+,,53,1600,,0.0848
+,,54,1650,,0.0855
+,,55,1700,,0.0863
+,,56,1750,,0.087
+,,57,1800,,0.0878
+,,58,1850,,0.0885
+,,59,1900,,0.0893
+,,60,1950,,0.09
+,Casual 3,60.1,-,30,0.096,0.18,252000
+,,61,2000,,0.0968
+,,62,2050,,0.0975
+,,63,2100,,0.0983
+,,64,2150,,0.099
+,,65,2200,,0.0998
+,,66,2250,,0.1005
+,,67,2300,,0.1013
+,,68,2350,,0.102
+,,69,2400,,0.1028
+,,70,2450,,0.1035
+,Close 1,70.1,-,35,0.1095,0.21,288000
+,,71,2500,,0.1103
+,,72,2550,,0.111
+,,73,2600,,0.1118
+,,74,2650,,0.1125
+,,75,2700,,0.1133
+,,76,2750,,0.114
+,,77,2800,,0.1148
+,,78,2850,,0.1155
+,,79,2900,,0.1163
+,,80,2950,,0.117
+,Close 2,80.1,-,40,0.123,0.24,324000
+,,81,3000,,0.1238
+,,82,3050,,0.1245
+,,83,3100,,0.1253
+,,84,3150,,0.126
+,,85,3200,,0.1268
+,,86,3250,,0.1275
+,,87,3300,,0.1283
+,,88,3350,,0.129
+,,89,3400,,0.1298
+,,90,3450,,0.1305
+,Close 3,90.1,-,45,0.1365,0.27,360000
+,,91,3500,,0.1373
+,,92,3550,,0.138
+,,93,3600,,0.1388
+,,94,3650,,0.1395
+,,95,3700,,0.1403
+,,96,3750,,0.141
+,,97,3800,,0.1418
+,,98,3850,,0.1425
+,,99,3900,,0.1433
+,,100,3950,,0.144
+,Intimate,100.1,-,50,0.15,0.3,396000
+,,,171690

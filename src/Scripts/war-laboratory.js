@@ -33,9 +33,33 @@
   async function ensureHeliosData() {
     if (window.WOSData && window.WOSData.helios && window.WOSData.helios.nodes) return;
     const loader = window.WOSData && window.WOSData.loader;
-    if (!loader || !loader.loadCsv) return;
-    const csv = await loader.loadCsv(HELIOS_CSV_URL);
-    if (!csv || !csv.header || !csv.rows || csv.rows.length === 0) return;
+    if (!loader || !loader.loadCsv) {
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: { calculator: 'War Academy', url: HELIOS_CSV_URL, message: 'Data loader unavailable.' }
+        }));
+      } catch(_e) { /* noop */ }
+      return;
+    }
+    let csv;
+    try {
+      csv = await loader.loadCsv(HELIOS_CSV_URL);
+    } catch(e) {
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: { calculator: 'War Academy', url: HELIOS_CSV_URL, message: e?.message || String(e) }
+        }));
+      } catch(_err) { /* noop */ }
+      return;
+    }
+    if (!csv || !csv.header || !csv.rows || csv.rows.length === 0) {
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: { calculator: 'War Academy', url: HELIOS_CSV_URL, message: 'CSV empty or missing rows.' }
+        }));
+      } catch(_e) { /* noop */ }
+      return;
+    }
     const lower = csv.header.map((h) => (h || '').toLowerCase());
     const idx = {
       id: lower.indexOf('id'),
@@ -62,7 +86,14 @@
       steel: lower.indexOf('coststeel'),
       timeSeconds: lower.indexOf('timeseconds')
     };
-    if (Object.values(idx).some((v) => v === -1)) return;
+    if (Object.values(idx).some((v) => v === -1)) {
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: { calculator: 'War Academy', url: HELIOS_CSV_URL, message: 'CSV header mismatch.' }
+        }));
+      } catch(_e) { /* noop */ }
+      return;
+    }
 
     const nodesMap = {};
     csv.rows.forEach((row) => {

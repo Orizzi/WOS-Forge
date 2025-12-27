@@ -1,0 +1,117 @@
+,,,,,,,,,,,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs,Expert Skill Costs
+,,,,,,,,,,,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes
+,,,,,,,,,,,Efficient Recon,Efficient Recon,Efficient Recon,Efficient Recon,Optimization,Optimization,Optimization,Optimization,Project Mgmt.,Project Mgmt.,Project Mgmt.,Project Mgmt.,Covert Knowledge,Covert Knowledge,Covert Knowledge,Covert Knowledge,Covert Knowledge
+,,,Expert Level Costs,Expert Level Costs,Expert Level Costs,Expert Level Costs,Expert Level Costs,Expert Level Costs,,,Efficient Recon,Efficient Recon,Efficient Recon,Efficient Recon,Optimization,Optimization,Optimization,Optimization,Project Mgmt.,Project Mgmt.,Project Mgmt.,Project Mgmt.,Covert Knowledge,Covert Knowledge,Covert Knowledge,Covert Knowledge,Covert Knowledge
+,,,Agnes,Agnes,Agnes,Agnes,Agnes,Agnes,,,Extra Intel Missions Daily,Extra Intel Missions Daily,Extra Intel Missions Daily,Extra Intel Missions Daily,Extra Stamina from Storehouse,Extra Stamina from Storehouse,Extra Stamina from Storehouse,Extra Stamina from Storehouse,Construction Speed Up on New Builds,Construction Speed Up on New Builds,Construction Speed Up on New Builds,Construction Speed Up on New Builds,Additional Mystery Badges and Mystery Shop Refreshes,Additional Mystery Badges and Mystery Shop Refreshes,Additional Mystery Badges and Mystery Shop Refreshes,Additional Mystery Badges and Mystery Shop Refreshes,Additional Mystery Badges and Mystery Shop Refreshes
+,,,Affinity,Sigils,Defense,Chests,Cap,Power,,0,Books,XP,Change,Power,Books,XP,Change,Power,Books,XP,Change,Power,Books,XP,Badges,Refresh,Power
+,Relationship,0,,,,,,,,1,0,0,2,20000,0,0,10,16000,0,0,2,7000,0,0,20,1,7000
+,Stranger,1,1000,,0.0158,1,10,36000,,2,500,43200,3,40000,400,34200,15,32000,200,13800,3,14000,100,10200,30,1,14000
+,,2,240,,0.0165,,,,,3,1000,86400,4,60000,800,69000,20,48000,400,27600,4,21000,200,20400,40,1,21000
+,,3,260,,0.0173,,,,,4,2000,172800,6,80000,1600,138000,30,64000,800,55200,6,28000,300,30600,50,2,28000
+,,4,270,,0.018,,,,,5,4000,345600,8,100000,3200,276000,40,80000,1600,11400,8,35000,400,41400,60,2,35000
+,,5,280,,0.0188,,,,,6,,,,,,,,,,,,,500,51600,70,2,42000
+,,6,290,,0.0195,,,,,7,,,,,,,,,,,,,600,61800,80,3,49000
+,,7,320,,0.0203,,,,,8,,,,,,,,,,,,,700,72600,90,3,56000
+,,8,340,,0.021,,,,,9,,,,,,,,,,,,,800,82800,100,3,63000
+,,9,360,,0.0218,,,,,10,,,,,,,,,,,,,900,93000,120,4,70000
+,,10,390,,0.0228,,,,,,7500,648000,,,6000,517200,,,3000,108000,,,4500,464400
+,Acquaintance 1,10.1,-,5,0.0285,1,12,72000
+,,11,410,,0.0293
+,,12,440,,0.03
+,,13,460,,0.0308
+,,14,480,,0.0315
+,,15,510,,0.0323
+,,16,530,,0.033
+,,17,560,,0.0338
+,,18,580,,0.0345
+,,19,600,,0.0353
+,,20,630,,0.036
+,Acquaintance 2,20.1,-,10,0.042,1,14,108000
+,,21,650,,0.0428
+,,22,680,,0.0435
+,,23,700,,0.0443
+,,24,720,,0.045
+,,25,750,,0.0458
+,,26,770,,0.0465
+,,27,800,,0.0473
+,,28,820,,0.048
+,,29,840,,0.0488
+,,30,880,,0.0495
+,Acquaintance 3,30.1,-,15,0.055,2,16,144000
+,,31,920,,0.0563
+,,32,950,,0.057
+,,33,990,,0.0578
+,,34,1020,,0.0585
+,,35,1060,,0.0593
+,,36,1100,,0.06
+,,37,1130,,0.0608
+,,38,1170,,0.0615
+,,39,1210,,0.0623
+,,40,1250,,0.063
+,Casual 1,40.1,-,20,0.069,2,18,180000
+,,41,1300,,0.0698
+,,42,1350,,0.0705
+,,43,1400,,0.0713
+,,44,1440,,0.072
+,,45,1490,,0.0728
+,,46,1540,,0.0735
+,,47,1590,,0.0743
+,,48,1640,,0.075
+,,49,1680,,0.0758
+,,50,1740,,0.0765
+,Casual 2,50.1,-,25,0.0825,3,20,216000
+,,51,1800,,0.0833
+,,52,1860,,0.084
+,,53,1920,,0.0848
+,,54,1980,,0.0855
+,,55,2040,,0.0863
+,,56,2100,,0.087
+,,57,2160,,0.0878
+,,58,2220,,0.0885
+,,59,2280,,0.0893
+,,60,2340,,0.09
+,Casual 3,60.1,-,30,0.096,3,22,252000
+,,61,2400,,0.0968
+,,62,2460,,0.0975
+,,63,2520,,0.0983
+,,64,2580,,0.099
+,,65,2640,,0.0998
+,,66,2700,,0.1005
+,,67,2760,,0.1013
+,,68,2820,,0.102
+,,69,2880,,0.1028
+,,70,2940,,0.1035
+,Close 1,70.1,-,35,0.1095,4,24,288000
+,,71,3000,,0.1103
+,,72,3060,,0.111
+,,73,3120,,0.1118
+,,74,3180,,0.1125
+,,75,3240,,0.1133
+,,76,3300,,0.114
+,,77,3360,,0.1148
+,,78,3420,,0.1155
+,,79,3480,,0.1163
+,,80,3540,,0.117
+,Close 2,80.1,-,40,0.123,4,26,324000
+,,81,3600,,0.1238
+,,82,3660,,0.1245
+,,83,3720,,0.1253
+,,84,3780,,0.126
+,,85,3840,,0.1268
+,,86,3900,,0.1275
+,,87,3960,,0.1283
+,,88,4020,,0.129
+,,89,4080,,0.1298
+,,90,4140,,0.1305
+,Close 3,90.1,-,45,0.1365,5,28,360000
+,,91,4200,,0.1373
+,,92,4260,,0.138
+,,93,4320,,0.1388
+,,94,4380,,0.1395
+,,95,4440,,0.1403
+,,96,4500,,0.141
+,,97,4560,,0.1418
+,,98,4620,,0.1425
+,,99,4680,,0.1433
+,,100,4740,,0.144
+,Intimate,100.1,-,50,0.15,5,30,396000

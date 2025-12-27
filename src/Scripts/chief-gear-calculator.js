@@ -267,6 +267,11 @@ const ChiefGearCalculatorModule = (function(){
         return applied;
       } catch (e) {
         console.warn('[Chief Gear] CSV override skipped for', url, ':', e.message || e);
+        try {
+          document.dispatchEvent(new CustomEvent('csv-load-failed', {
+            detail: { calculator: 'Chief Gear', url, message: e?.message || String(e) }
+          }));
+        } catch(_err) { /* noop */ }
         return 0;
       }
     }
@@ -274,7 +279,19 @@ const ChiefGearCalculatorModule = (function(){
     // Try unified first, then fallback to legacy extractor output
     const appliedPrimary = await tryLoad(primaryUrl);
     if (appliedPrimary > 0) return;
-    await tryLoad('assets/chief_gear_costs.csv');
+    const legacyUrl = 'assets/chief_gear_costs.csv';
+    const appliedLegacy = await tryLoad(legacyUrl);
+    if (appliedLegacy === 0) {
+      try {
+        document.dispatchEvent(new CustomEvent('csv-load-failed', {
+          detail: {
+            calculator: 'Chief Gear',
+            url: `${primaryUrl} (fallback: ${legacyUrl})`,
+            message: 'No CSV overrides applied.'
+          }
+        }));
+      } catch(_e) { /* noop */ }
+    }
   }
 
   // Render a label with a local icon
