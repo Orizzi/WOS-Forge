@@ -190,7 +190,32 @@
             "power": "Power",
             "data-ok": "Data OK",
             "data-failed": "Data failed to load",
-            "data-not-loaded": "Data not loaded"
+            "data-not-loaded": "Data not loaded",
+
+            // Pets Calculator
+            "pets-header": "Pets Calculator",
+            "pets-inventory": "Pet Resources Inventory",
+            "pets-helper": "Set current and target levels for each pet to see total resource requirements.",
+            "food-base": "Food",
+            "manual-base": "Manual",
+            "potion-base": "Potion",
+            "serum-base": "Serum",
+            "svs-points-base": "SvS Points",
+            "cave-hyena": "Cave Hyena",
+            "arctic-wolf": "Arctic Wolf",
+            "musk-ox": "Musk Ox",
+            "giant-tapir": "Giant Tapir",
+            "titan-roc": "Titan Roc",
+            "giant-elk": "Giant Elk",
+            "snow-leopard": "Snow Leopard",
+            "cave-lion": "Cave Lion",
+            "snow-ape": "Snow Ape",
+            "iron-rhino": "Iron Rhino",
+            "sabertooth-tiger": "Sabertooth Tiger",
+            "mammoth": "Mammoth",
+            "frost-gorilla": "Frost Gorilla",
+            "frostscale-chameleon": "Frostscale Chameleon",
+            "abyssal-shelldragon": "Abyssal Shelldragon"
         },
 
         /* ===========================
@@ -356,7 +381,39 @@
             "power": "Poder",
             "data-ok": "Datos OK",
             "data-failed": "Error al cargar datos",
-            "data-not-loaded": "Datos no cargados"
+            "data-not-loaded": "Datos no cargados",
+
+            // Pets Calculator
+            "pets-header": "Calculadora de Mascotas",
+            "pets-inventory": "Inventario de Recursos de Mascotas",
+            "pets-helper": "Establece los niveles actuales y deseados para cada mascota para ver los requisitos totales de recursos.",
+            "food-base": "Comida",
+            "manual-base": "Manual",
+            "potion-base": "Poción",
+            "serum-base": "Suero",
+            "svs-points-base": "Puntos SvS",
+            "cave-hyena": "Hiena de Cueva",
+            "arctic-wolf": "Lobo Ártico",
+            "musk-ox": "Buey Almizclero",
+            "giant-tapir": "Tapir Gigante",
+            "titan-roc": "Roc Titán",
+            "giant-elk": "Alce Gigante",
+            "snow-leopard": "Leopardo de Nieve",
+            "cave-lion": "León de Cueva",
+            "snow-ape": "Simio de Nieve",
+            "iron-rhino": "Rinoceronte de Hierro",
+            "sabertooth-tiger": "Tigre Dientes de Sable",
+            "mammoth": "Mamut",
+            "frost-gorilla": "Gorila de Escarcha",
+            "frostscale-chameleon": "Camaleón Escama de Escarcha",
+            "abyssal-shelldragon": "Dragón Concha Abisal",
+            
+            // Missing keys
+            "fire-buildings": "Edificios",
+            "pets-coming-title": "Calculadoras de Compañeros Llegando Pronto 🐾",
+            "pets-body-1": "Estamos creando herramientas para la progresión de mascotas y bonificaciones de compañeros.",
+            "pets-body-2": "Estas se integrarán con tus perfiles actuales para que puedas planificar de manera más inteligente.",
+            "pets-bullet-1": "Planificadores de mejora de mascotas con seguimiento de alimentación y evolución"
         },
 
         /* ===========================
@@ -522,7 +579,39 @@
             "power": "전투력",
             "data-ok": "데이터 정상",
             "data-failed": "데이터 로드 실패",
-            "data-not-loaded": "데이터가 로드되지 않음"
+            "data-not-loaded": "데이터가 로드되지 않음",
+
+            // Pets Calculator
+            "pets-header": "펫 계산기",
+            "pets-inventory": "펫 자원 인벤토리",
+            "pets-helper": "각 펫의 현재 및 목표 레벨을 설정하여 총 자원 요구 사항을 확인하세요.",
+            "food-base": "음식",
+            "manual-base": "매뉴얼",
+            "potion-base": "포션",
+            "serum-base": "세럼",
+            "svs-points-base": "SvS 점수",
+            "cave-hyena": "동굴 하이에나",
+            "arctic-wolf": "북극 늑대",
+            "musk-ox": "사향소",
+            "giant-tapir": "거대 맥",
+            "titan-roc": "타이탄 록",
+            "giant-elk": "거대 엘크",
+            "snow-leopard": "눈표범",
+            "cave-lion": "동굴 사자",
+            "snow-ape": "설원 원숭이",
+            "iron-rhino": "강철 코뿔소",
+            "sabertooth-tiger": "검치호",
+            "mammoth": "매머드",
+            "frost-gorilla": "서리 고릴라",
+            "frostscale-chameleon": "서리 비늘 카멜레온",
+            "abyssal-shelldragon": "심연 껍질 드래곤",
+            
+            // Missing keys from console
+            "fire-buildings": "건물",
+            "pets-coming-title": "반려동물 계산기가 곧 출시됩니다 🐾",
+            "pets-body-1": "반려동물 진행 및 동료 보너스를 위한 도구를 만들고 있습니다.",
+            "pets-body-2": "이들은 기존 프로필과 통합되어 더 스마트하게 계획할 수 있습니다.",
+            "pets-bullet-1": "먹이 주기 및 진화 추적이 포함된 반려동물 업그레이드 플래너"
         },
 
         /* ===========================
@@ -688,7 +777,39 @@
             "power": "Мощь",
             "data-ok": "Данные ОК",
             "data-failed": "Ошибка загрузки данных",
-            "data-not-loaded": "Данные не загружены"
+            "data-not-loaded": "Данные не загружены",
+
+            // Pets Calculator
+            "pets-header": "Калькулятор питомцев",
+            "pets-inventory": "Инвентарь ресурсов питомцев",
+            "pets-helper": "Установите текущий и целевой уровни для каждого питомца, чтобы увидеть общие требования к ресурсам.",
+            "food-base": "Еда",
+            "manual-base": "Руководство",
+            "potion-base": "Зелье",
+            "serum-base": "Сыворотка",
+            "svs-points-base": "Очки SvS",
+            "cave-hyena": "Пещерная гиена",
+            "arctic-wolf": "Арктический волк",
+            "musk-ox": "Овцебык",
+            "giant-tapir": "Гигантский тапир",
+            "titan-roc": "Титанская птица Рок",
+            "giant-elk": "Гигантский лось",
+            "snow-leopard": "Снежный барс",
+            "cave-lion": "Пещерный лев",
+            "snow-ape": "Снежная обезьяна",
+            "iron-rhino": "Железный носорог",
+            "sabertooth-tiger": "Саблезубый тигр",
+            "mammoth": "Мамонт",
+            "frost-gorilla": "Морозная горилла",
+            "frostscale-chameleon": "Морозночешуйчатый хамелеон",
+            "abyssal-shelldragon": "Безднный панцирный дракон",
+            
+            // Missing keys from console
+            "fire-buildings": "Здания",
+            "pets-coming-title": "Калькуляторы спутников скоро появятся 🐾",
+            "pets-body-1": "Мы создаем инструменты для прогресса питомцев и бонусов компаньонов.",
+            "pets-body-2": "Они будут интегрированы с вашими текущими профилями для более умного планирования.",
+            "pets-bullet-1": "Планировщики улучшения питомцев с отслеживанием кормления и эволюции"
         },
 
         /* ===========================
@@ -869,7 +990,32 @@
             "minutes": "minutes",
             "data-ok": "Données OK",
             "data-failed": "Échec du chargement des données",
-            "data-not-loaded": "Données non chargées"
+            "data-not-loaded": "Données non chargées",
+
+            // Pets Calculator
+            "pets-header": "Calculateur d'animaux",
+            "pets-inventory": "Inventaire des ressources pour animaux",
+            "pets-helper": "Définissez les niveaux actuels et cibles pour chaque animal afin de voir les exigences totales en ressources.",
+            "food-base": "Nourriture",
+            "manual-base": "Manuel",
+            "potion-base": "Potion",
+            "serum-base": "Sérum",
+            "svs-points-base": "Points SvS",
+            "cave-hyena": "Hyène des cavernes",
+            "arctic-wolf": "Loup arctique",
+            "musk-ox": "Bœuf musqué",
+            "giant-tapir": "Tapir géant",
+            "titan-roc": "Roc titan",
+            "giant-elk": "Élan géant",
+            "snow-leopard": "Léopard des neiges",
+            "cave-lion": "Lion des cavernes",
+            "snow-ape": "Singe des neiges",
+            "iron-rhino": "Rhinocéros de fer",
+            "sabertooth-tiger": "Tigre à dents de sabre",
+            "mammoth": "Mammouth",
+            "frost-gorilla": "Gorille de givre",
+            "frostscale-chameleon": "Caméléon à écailles de givre",
+            "abyssal-shelldragon": "Dragon à carapace abyssale"
         },
 
         /* ===========================
@@ -1050,7 +1196,32 @@
             "minutes": "Minuten",
             "data-ok": "Daten OK",
             "data-failed": "Daten konnten nicht geladen werden",
-            "data-not-loaded": "Daten nicht geladen"
+            "data-not-loaded": "Daten nicht geladen",
+
+            // Pets Calculator
+            "pets-header": "Haustier-Rechner",
+            "pets-inventory": "Haustier-Ressourcen-Inventar",
+            "pets-helper": "Legen Sie die aktuellen und Zielniveaus für jedes Haustier fest, um die gesamten Ressourcenanforderungen zu sehen.",
+            "food-base": "Nahrung",
+            "manual-base": "Handbuch",
+            "potion-base": "Trank",
+            "serum-base": "Serum",
+            "svs-points-base": "SvS-Punkte",
+            "cave-hyena": "Höhlenhyäne",
+            "arctic-wolf": "Arktischer Wolf",
+            "musk-ox": "Moschusochse",
+            "giant-tapir": "Riesentapir",
+            "titan-roc": "Titan-Roc",
+            "giant-elk": "Riesenelch",
+            "snow-leopard": "Schneeleopard",
+            "cave-lion": "Höhlenlöwe",
+            "snow-ape": "Schneaffe",
+            "iron-rhino": "Eisenhorn",
+            "sabertooth-tiger": "Säbelzahntiger",
+            "mammoth": "Mammut",
+            "frost-gorilla": "Frostgorilla",
+            "frostscale-chameleon": "Frostschuppen-Chamäleon",
+            "abyssal-shelldragon": "Abyssaler Schalendrachne"
         },
 
         /* ===========================
@@ -1231,7 +1402,32 @@
             "minutes": "minutos",
             "data-ok": "Dados OK",
             "data-failed": "Falha ao carregar dados",
-            "data-not-loaded": "Dados não carregados"
+            "data-not-loaded": "Dados não carregados",
+
+            // Pets Calculator
+            "pets-header": "Calculadora de Animais de Estimação",
+            "pets-inventory": "Inventário de Recursos de Animais",
+            "pets-helper": "Defina os níveis atuais e desejados para cada animal para ver os requisitos totais de recursos.",
+            "food-base": "Comida",
+            "manual-base": "Manual",
+            "potion-base": "Poção",
+            "serum-base": "Soro",
+            "svs-points-base": "Pontos SvS",
+            "cave-hyena": "Hiena das Cavernas",
+            "arctic-wolf": "Lobo Ártico",
+            "musk-ox": "Boi Almiscarado",
+            "giant-tapir": "Anta Gigante",
+            "titan-roc": "Roc Titã",
+            "giant-elk": "Alce Gigante",
+            "snow-leopard": "Leopardo das Neves",
+            "cave-lion": "Leão das Cavernas",
+            "snow-ape": "Macaco das Neves",
+            "iron-rhino": "Rinoceronte de Ferro",
+            "sabertooth-tiger": "Tigre Dentes de Sabre",
+            "mammoth": "Mamute",
+            "frost-gorilla": "Gorila de Gelo",
+            "frostscale-chameleon": "Camaleão de Escamas de Gelo",
+            "abyssal-shelldragon": "Dragão de Concha Abissal"
         },
 
         /* ===========================
@@ -1412,7 +1608,32 @@
             "minutes": "minuti",
             "data-ok": "Dati OK",
             "data-failed": "Caricamento dati fallito",
-            "data-not-loaded": "Dati non caricati"
+            "data-not-loaded": "Dati non caricati",
+
+            // Pets Calculator
+            "pets-header": "Calcolatore Animali Domestici",
+            "pets-inventory": "Inventario Risorse Animali",
+            "pets-helper": "Imposta i livelli attuali e target per ogni animale per vedere i requisiti totali delle risorse.",
+            "food-base": "Cibo",
+            "manual-base": "Manuale",
+            "potion-base": "Pozione",
+            "serum-base": "Siero",
+            "svs-points-base": "Punti SvS",
+            "cave-hyena": "Iena delle Caverne",
+            "arctic-wolf": "Lupo Artico",
+            "musk-ox": "Bue Muschiato",
+            "giant-tapir": "Tapiro Gigante",
+            "titan-roc": "Roc Titano",
+            "giant-elk": "Alce Gigante",
+            "snow-leopard": "Leopardo delle Nevi",
+            "cave-lion": "Leone delle Caverne",
+            "snow-ape": "Scimmia delle Nevi",
+            "iron-rhino": "Rinoceronte di Ferro",
+            "sabertooth-tiger": "Tigre dai Denti a Sciabola",
+            "mammoth": "Mammut",
+            "frost-gorilla": "Gorilla del Gelo",
+            "frostscale-chameleon": "Camaleonte Scaglie di Gelo",
+            "abyssal-shelldragon": "Drago Guscio Abissale"
         }
     };
 

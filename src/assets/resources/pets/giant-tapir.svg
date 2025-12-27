@@ -1,0 +1,11 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="giant-tapir-grad">
+      <stop offset="0%" style="stop-color:#708090;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000;stop-opacity:0.5" />
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="56" fill="url(#giant-tapir-grad)" stroke="#FFF" stroke-width="3" opacity="0.9"/>
+  <circle cx="64" cy="64" r="48" fill="none" stroke="#708090" stroke-width="4" opacity="0.6"/>
+  <text x="64" y="72" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFF" text-anchor="middle" stroke="#000" stroke-width="0.5">Giant Tapir</text>
+</svg>

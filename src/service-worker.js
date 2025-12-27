@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v10';
+const CACHE_VERSION = 'v17';
 const CACHE_NAME = `wos-cache-${CACHE_VERSION}`;
 const PRECACHE_URLS = [
   './index.html',
@@ -6,7 +6,9 @@ const PRECACHE_URLS = [
   './chiefGear.html',
   './fireCrystals.html',
   './war-academy.html',
+  './pets.html',
   './style/style.min.css',
+  './style/style.css',
   './Scripts/translations.js',
   './Scripts/translations-extended.js',
   './Scripts/calculation-core.js',
@@ -15,10 +17,12 @@ const PRECACHE_URLS = [
   './Scripts/min/chief-gear-calculator.min.js',
   './Scripts/min/fire-crystals-calculator.min.js',
   './Scripts/min/profiles.min.js',
+  './Scripts/min/pets-calculator.min.js',
   './Scripts/war-laboratory.js',
   './Scripts/min/war-laboratory.min.js',
   './assets/fire_crystals_unified.csv',
   './assets/war_lab_unified.csv',
+  './assets/pets_costs.csv',
   './assets/wos-forge-banner.png'
 ];
 
@@ -37,6 +41,14 @@ self.addEventListener('activate', event => {
         .map(key => caches.delete(key))
     )).then(() => self.clients.claim())
   );
+});
+
+// Allow page to request immediate activation without manual refresh
+self.addEventListener('message', event => {
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', event => {

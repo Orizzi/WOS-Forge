@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="foodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0522D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="32" rx="24" ry="28" fill="url(#foodGrad)" stroke="#654321" stroke-width="2"/>
+  <ellipse cx="32" cy="28" rx="18" ry="14" fill="#D2691E" opacity="0.6"/>
+  <text x="32" y="38" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#FFF" text-anchor="middle">FOOD</text>
+</svg>
