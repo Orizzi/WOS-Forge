@@ -819,7 +819,6 @@ header[role="banner"] {
     padding: 0.625em 0.875em;
     background: color-mix(in srgb, var(--panel) 88%, transparent);
     backdrop-filter: blur(0.5em);
-    backdrop-filter: blur(0.5em);
     border-bottom: 0.0625em solid var(--border);
     box-shadow: 0 0.375em 1.25em rgb(0 0 0 / 12%);
     gap: 0.5em;
@@ -985,7 +984,6 @@ button, input[type="button"] {
     font-weight: 500;
     box-sizing: border-box;
     transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
-    appearance: none;
     appearance: none;
 }
 
@@ -2763,7 +2761,6 @@ button, .dark-mode-toggle, select, input[type="number"], input[type="text"] {
     /* Fix Safari/iOS baseline issue */
     :where(select,
            input:not([type="checkbox"], [type="radio"], [type="range"])) {
-        appearance: none !important;
         appearance: none !important;
     }
 
