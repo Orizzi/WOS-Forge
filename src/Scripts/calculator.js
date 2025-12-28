@@ -1,20 +1,20 @@
-    // Add event listeners to all batch inputs to auto-save profile on any change
-    const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
-    allBatchInputs.forEach(batchInput => {
-      batchInput.addEventListener('change', () => {
-        // [Charms] Batch input changed: removed for production
-        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-          ProfilesModule.autoSaveCurrentProfile();
-          // [Charms] Profile auto-saved after batch input change: removed for production
-        }
-      });
-    });
+// Add event listeners to all batch inputs to auto-save profile on any change
+const allBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
+allBatchInputs.forEach(batchInput => {
+  batchInput.addEventListener('change', () => {
+    // [Charms] Batch input changed: removed for production
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      ProfilesModule.autoSaveCurrentProfile();
+      // [Charms] Profile auto-saved after batch input change: removed for production
+    }
+  });
+});
 /**
  * ====== CHARMS CALCULATOR MODULE ======
- * 
+ *
  * This module calculates the total resources needed to upgrade charms
  * from one level to another.
- * 
+ *
  * How it works:
  * 1. The 'costs' object stores how much each level upgrade costs
  * 2. When you select a FROM and TO level, sumCosts() adds up all costs between them
@@ -166,7 +166,7 @@ const CalculatorModule = (function(){
     const t = window.I18n?.t || (k => k);
     const resourceName = t(key) || (key.charAt(0).toUpperCase() + key.slice(1));
     const totalText = t('total') || 'Total';
-    
+
     if(window.IconHelper){
       return window.IconHelper.label(key, () => `${totalText} ${resourceName}`);
     }
@@ -197,11 +197,11 @@ const CalculatorModule = (function(){
    * sumCosts(from, to)
    * Calculates total cost from one level to another
    * Example: sumCosts(0, 5) = costs from level 1, 2, 3, 4, 5
-   * 
+   *
    * NOTE: The 'from' level is EXCLUSIVE (not included)
    *       The 'to' level is INCLUSIVE (included)
    * This matches the game's upgrade system.
-   * 
+   *
    * @param {number} from - Starting level
    * @param {number} to - Ending level
    * @returns {object} Object with guides, designs, secrets, power, svsPoints total
@@ -210,10 +210,10 @@ const CalculatorModule = (function(){
     const total = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };
     const a = Number(from);
     const b = Number(to);
-    
+
     // If invalid (to <= from), return 0 cost
     if(isNaN(a) || isNaN(b) || b <= a) return total;
-    
+
     // Loop from (from+1) to (to), adding up all costs (EXCEPT power)
     for(let lvl = a + 1; lvl <= b; lvl++){
       const c = costs[lvl];
@@ -223,11 +223,11 @@ const CalculatorModule = (function(){
       total.secrets += c.secrets || 0;
       total.svsPoints += c.svsPoints || 0;
     }
-    
+
     // Power is NOT accumulated; it should reflect the latest upgrade's power only
     const target = costs[b];
     total.power = target && typeof target.power === 'number' ? target.power : 0;
-    
+
     return total;
   }
 
@@ -236,14 +236,14 @@ const CalculatorModule = (function(){
    * Makes big numbers readable with commas
    * Example: 1000 → "1,000"
    */
-  function formatNumber(n){ 
-    return n.toLocaleString(); 
+  function formatNumber(n){
+    return n.toLocaleString();
   }
 
   /**
    * calculateAll()
    * Main calculation function
-   * 
+   *
    * This runs whenever you change any charm level.
    * It:
    * 1. Finds all charm input pairs (FROM and TO)
@@ -256,15 +256,15 @@ const CalculatorModule = (function(){
     // Find all 'FROM' selects (they end with '-start')
     // Example: 'hat-charm-1-start', 'ring-charm-2-start'
     const starts = Array.from(document.querySelectorAll('select[id$="-start"]'));
-    
-  const grand = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };  // Grand total
+
+    const grand = { guides: 0, designs: 0, secrets: 0, power: 0, svsPoints: 0 };  // Grand total
     const details = [];  // Array to store each charm's cost
-    
+
     // Detect which equipment types are in batch mode
     // Check if all charms of a type have the same from/to values (indicating batch was used)
     const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
     const batchModeByType = {}; // Track batch mode per equipment type
-    
+
     batchTypes.forEach(type => {
       const typeSelects = Array.from(document.querySelectorAll(`select[id^="${type}-charm-"][id$="-start"]`));
       if(typeSelects.length > 1){
@@ -290,22 +290,22 @@ const CalculatorModule = (function(){
       // Get the base ID by removing '-start'
       // 'hat-charm-1-start' → 'hat-charm-1'
       const base = startSel.id.slice(0, -6);
-      
+
       // Find the matching TO select
       // 'hat-charm-1' + '-finish' → 'hat-charm-1-finish'
       const finishSel = document.getElementById(base + '-finish');
-  if(!finishSel) return;
-      
+      if(!finishSel) return;
+
       // Get the FROM and TO values as numbers
       const range = validator?.sanitizeRange
         ? validator.sanitizeRange(startSel.value, finishSel.value, { min: LOCKED_LEVEL, max: MAX_CHARM_LEVEL, fallbackStart: LOCKED_LEVEL })
         : null;
       const from = range ? range.start : safeLevel(startSel.value, LOCKED_LEVEL);
       const to = range ? range.end : safeLevel(finishSel.value, from);
-      
+
       // Calculate cost for this charm
       const sum = sumCosts(from, to);
-      
+
       // If cost > 0, save it for display
       if(sum.guides || sum.designs || sum.secrets || sum.power || sum.svsPoints){
         details.push({ id: base, from, to, sum });
@@ -313,7 +313,7 @@ const CalculatorModule = (function(){
         grand.designs += sum.designs;
         grand.secrets += sum.secrets;
         grand.svsPoints += sum.svsPoints;
-        
+
         // Power: sum the target power of each charm (3 charms per type)
         grand.power += Number(sum.power || 0);
       }
@@ -340,7 +340,7 @@ const CalculatorModule = (function(){
 
     function gapHtml(label, total, inv){
       const gap = total - inv; // positive = need more, negative/zero = will have left
-      
+
       // Don't show gap message if there are no calculations
       if (!hasCalculations) {
         return `
@@ -348,7 +348,7 @@ const CalculatorModule = (function(){
             <p><strong>${label}:</strong> ${formatNumber(total)}</p>
           </div>`;
       }
-      
+
       // Get translations for gap messages
       const t = window.I18n?.t || (k => k);
       const cls = gap > 0 ? 'deficit' : 'surplus';
@@ -402,7 +402,7 @@ const CalculatorModule = (function(){
         .map(w => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ');
     }
-    
+
     // Group charms by type
     const grouped = {};
     details.forEach(d => {
@@ -416,7 +416,7 @@ const CalculatorModule = (function(){
       }
       grouped[type].charms.push(d);
     });
-    
+
     // Create rows: one line per type if in batch mode, individual lines otherwise
     const rows = [];
     Object.values(grouped).forEach(g => {
@@ -467,7 +467,7 @@ const CalculatorModule = (function(){
         });
       }
     });
-    
+
     const rowsHtml = rows.join('\n');
 
     // Create the full table HTML
@@ -505,7 +505,7 @@ const CalculatorModule = (function(){
         </table>
       </div>`;
 
-  out.innerHTML = totalsHtml + tableHtml;
+    out.innerHTML = totalsHtml + tableHtml;
 
     // Make the table sortable (clickable headers)
     if(typeof TableSortModule !== 'undefined'){
@@ -516,10 +516,10 @@ const CalculatorModule = (function(){
   /**
    * applyBatch(type, which, value)
    * Quick-set feature: Sets all FROM or TO selects for a charm type to the same value
-   * 
+   *
    * Example: User selects "5" from the "Hat FROM" dropdown
    * This sets all hat charms' FROM (start) select to 5
-   * 
+   *
    * @param {string} type - Charm type ('hat', 'ring', 'watch', etc)
    * @param {string} which - 'from' for start selects, 'to' for finish selects
    * @param {number} value - The level to set
@@ -527,16 +527,16 @@ const CalculatorModule = (function(){
   function applyBatch(type, which, value){
     // Determine if we're setting -start or -finish selects
     const suffix = which === 'from' ? '-start' : '-finish';
-    
+
     // Find all selects for this charm type with the matching suffix
     // Example: 'hat' + 'from' → find all [hat-charm-*-start]
     const nodes = Array.from(document.querySelectorAll(`select[id^="${type}-charm-"]`))
       .filter(s => s.id.endsWith(suffix));
-    
+
     // Set all matching selects to the same value
-    nodes.forEach(s => { 
+    nodes.forEach(s => {
       s.value = String(value);
-      
+
       // If we're setting TO values, validate against the FROM value
       if(which === 'to'){
         const base = s.id.replace(/-finish$/, '');
@@ -552,7 +552,7 @@ const CalculatorModule = (function(){
           validateLevels(startSel, s);
         }
       }
-      
+
       // If we're setting FROM values, validate against the TO value
       if(which === 'from'){
         const base = s.id.replace(/-start$/, '');
@@ -569,7 +569,7 @@ const CalculatorModule = (function(){
         }
       }
     });
-    
+
     // Recalculate totals since inputs changed
     calculateAll();
     // Save profile after all DOM updates
@@ -588,18 +588,18 @@ const CalculatorModule = (function(){
     // But exclude the batch control selects (which end with -from or -to)
     const charmSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    
+
     // Reset all to 0
     charmSelects.forEach(s => { s.value = LOCKED_VALUE; });
-    
+
     // Also reset the batch control selects for visual consistency
     const batchControls = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
     batchControls.forEach(b => { b.value = LOCKED_VALUE; });
-    
+
     // Re-validate all TO selects to reset disabled states
     const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    
+
     startSelects.forEach(startSel => {
       const base = startSel.id.replace(/-start$/, '');
       const finishSel = document.getElementById(base + '-finish');
@@ -607,7 +607,7 @@ const CalculatorModule = (function(){
         validateLevels(startSel, finishSel);
       }
     });
-    
+
     // Also reset batch control validation
     const batchTypes = ['hat','chestplate','ring','watch','pants','staff'];
     batchTypes.forEach(type => {
@@ -617,7 +617,7 @@ const CalculatorModule = (function(){
         validateLevels(from, to);
       }
     });
-    
+
     // Recalculate (should be 0 cost now)
     calculateAll();
   }
@@ -631,7 +631,7 @@ const CalculatorModule = (function(){
     if(!startSelect || !finishSelect) return;
     const start = parseInt(startSelect.value, 10);
     const finish = parseInt(finishSelect.value, 10);
-    
+
     // Disable options in finish select that are less than start
     if(!isNaN(start)){
       Array.from(finishSelect.options).forEach(option => {
@@ -643,7 +643,7 @@ const CalculatorModule = (function(){
         }
       });
     }
-    
+
     if(!isNaN(start) && !isNaN(finish) && start > finish){
       // If start > finish, set finish = start
       finishSelect.value = start.toString();
@@ -664,15 +664,15 @@ const CalculatorModule = (function(){
     // Find all -start selects and attach validation
     const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    
+
     startSelects.forEach(startSel => {
       const base = startSel.id.replace(/-start$/, '');
       const finishSel = document.getElementById(base + '-finish');
-      
+
       if(finishSel){
         // Apply initial validation
         validateLevels(startSel, finishSel);
-        
+
         startSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
           calculateAll();
@@ -698,7 +698,7 @@ const CalculatorModule = (function(){
     batchTypes.forEach(type => {
       const from = document.getElementById(`${type}-batch-from`);
       const to = document.getElementById(`${type}-batch-to`);
-      
+
       if(from && to){
         // Apply initial validation
         validateLevels(from, to);

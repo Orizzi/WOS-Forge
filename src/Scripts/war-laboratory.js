@@ -788,10 +788,10 @@
       const target = k.toLowerCase().includes('infantry')
         ? 'Infantry'
         : k.toLowerCase().includes('lancer')
-        ? 'Lancer'
-        : k.toLowerCase().includes('marksman')
-        ? 'Marksman'
-        : 'Other';
+          ? 'Lancer'
+          : k.toLowerCase().includes('marksman')
+            ? 'Marksman'
+            : 'Other';
       groups[target].push(`${k}: ${v.toFixed(2)}`);
     });
     return Object.entries(groups)
@@ -828,11 +828,11 @@
         const gap = req - have;
         const gapClass = gap > 0 ? 'deficit' : 'surplus';
         const t = window.I18n?.t || ((k) => k);
-        const gapText = gap > 0 
+        const gapText = gap > 0
           ? t('need-x-more').replace('%s', gap.toLocaleString())
-          : gap < 0 
-          ? t('have-x-extra').replace('%s', Math.abs(gap).toLocaleString())
-          : t('exact-match');
+          : gap < 0
+            ? t('have-x-extra').replace('%s', Math.abs(gap).toLocaleString())
+            : t('exact-match');
         return `
           <div class="summary-pill">
             <div class="label-with-icon" style="gap:${toEm(8)};">
@@ -859,7 +859,7 @@
     const stripeClass = remainingSeconds > 0 ? 'gap-line deficit' : 'gap-line surplus';
     const daysVal = Math.abs(remainingSeconds) / (24 * 60 * 60);
     const t = window.I18n?.t || ((k) => k);
-    const stripeText = remainingSeconds > 0 
+    const stripeText = remainingSeconds > 0
       ? `⚠ ${t('need-more')} ${daysVal.toFixed(1)} ${t('days')} ${t('more')}`
       : `${t('will-have')} ${daysVal.toFixed(1)} ${t('days')} ${t('left')}`;
 

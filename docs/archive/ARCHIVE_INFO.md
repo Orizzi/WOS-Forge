@@ -1,11 +1,24 @@
 # Documentation Archive
 
-**Date Archived:** December 2, 2025  
-**Reason:** Documentation consolidation project - merged multiple small files into comprehensive guides
+**Last Updated:** December 28, 2025  
+**Reason:** Documentation consolidation + obsolete implementation artifacts cleanup
 
 ---
 
-## What Happened
+## Archive History
+
+### December 28, 2025 - Pets Implementation Cleanup
+Archived obsolete pets calculator documentation after successful implementation:
+- **PETS_TESTING_CHECKLIST.md** (7.5KB) - Manual testing checklist completed; no longer needed
+- **PETS_CALCULATOR_PREP_CHECKLIST.md** (1.9KB) - Pre-implementation planning doc; implementation complete
+- **PETS_PAGE_OUTSTANDING_ISSUES.md** (13KB) - December 3rd bug tracking; issues resolved
+
+**Kept Active**: `PETS_CALCULATOR_IMPLEMENTATION.md` (15KB) - Architecture reference maintained in docs/
+
+---
+
+### December 2, 2025 - Documentation Consolidation
+
 
 The WOS Calculator project had 34 documentation files scattered across root and docs/ directories with significant duplication and overlap. A consolidation project merged these into 4 comprehensive, well-organized guides:
 

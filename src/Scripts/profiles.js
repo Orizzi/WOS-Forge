@@ -1,15 +1,15 @@
 /**
  * ====== UNIFIED PROFILES / PRESETS MODULE ======
- * 
+ *
  * Allows users to save and load their upgrade plans across ALL pages
- * 
+ *
  * How it works:
  * 1. User fills in values on any page (Charms, Chief Gear, etc.)
  * 2. Clicks "Save as new" → captureCurrent() saves all current values from ALL pages
  * 3. Values are stored in browser storage (key: 'wos-unified-profiles')
  * 4. User can select saved profile from dropdown → loadSelectedProfile() restores values across all pages
  * 5. User can rename or delete profiles
- * 
+ *
  * Data is stored as JSON: { "My Plan 1": { charms: {...}, chiefGear: {...}, inventory: {...} }, ... }
  */
 
@@ -36,6 +36,40 @@ const ProfilesModule = (function(){
   const DYNAMIC_SCOPE_ATTR = 'data-profile-scope';
   const DEFAULT_DYNAMIC_SCOPE = 'dynamic';
   const MAX_STORAGE_BYTES = 750000;
+  let profileStatusEl = null;
+  let profileStatusTimer = null;
+
+  function getProfileStatusHost(){
+    if(profileStatusEl && document.body.contains(profileStatusEl)) return profileStatusEl;
+    const root = document.querySelector('.profiles');
+    if(!root) return null;
+    const el = document.createElement('div');
+    el.className = 'status-pill info';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+    el.textContent = 'Profiles ready';
+    root.appendChild(el);
+    profileStatusEl = el;
+    return el;
+  }
+
+  function setProfileStatus(type, message){
+    const el = getProfileStatusHost();
+    if(!el) return;
+    el.className = `status-pill ${type || 'info'}`;
+    el.textContent = message || '';
+    clearTimeout(profileStatusTimer);
+    profileStatusTimer = setTimeout(() => {
+      if(!el || !el.parentNode) return;
+      el.className = 'status-pill muted';
+    }, 6000);
+  }
+
+  function toastProfile(type, title, message){
+    if(window.ErrorHandler && typeof window.ErrorHandler.notify === 'function'){
+      window.ErrorHandler.notify(type, title, message);
+    }
+  }
 
   const PAGE_DETECTORS = {
     fireCrystals: () => !!document.getElementById('furnace-start'),
@@ -219,6 +253,7 @@ const ProfilesModule = (function(){
     };
     if(!canUseLocalStorage()){
       console.warn('[Profiles] localStorage unavailable; profiles will not persist.');
+      setProfileStatus('warning', 'Storage unavailable; profiles are disabled.');
       return false;
     }
     try{
@@ -351,7 +386,7 @@ const ProfilesModule = (function(){
    * @param {object} profiles - Object with all profiles to save
    */
   function writeProfiles(profiles){
-    safeSet(PROFILES_KEY, profiles);  // Silently fail if localStorage unavailable
+    return safeSet(PROFILES_KEY, profiles);  // Silently fail if localStorage unavailable
   }
 
   function writeLastSnapshot(snapshot){
@@ -464,7 +499,7 @@ const ProfilesModule = (function(){
    */
   function applyProfileObject(obj){
     if(!obj) return;
-    
+
     const pages = detectPages();
     const isFireCrystals = pages.fireCrystals;
     const isChiefGear = pages.chiefGear;
@@ -594,7 +629,7 @@ const ProfilesModule = (function(){
     list.innerHTML = '';
     Object.keys(profiles).forEach(name => {
       const opt = document.createElement('option');
-      opt.value = name; 
+      opt.value = name;
       opt.textContent = name;
       list.appendChild(opt);
     });
@@ -606,28 +641,43 @@ const ProfilesModule = (function(){
    * @param {string} name - Name for the new profile
    */
   function saveNewProfile(name){
-    if(!name) return alert('Enter a profile name');
-    name = String(name).trim().slice(0, 10);
+    const trimmed = name && String(name).trim().slice(0, 10);
+    if(!trimmed){
+      setProfileStatus('warning', 'Enter a profile name to save.');
+      toastProfile('warning', 'Profile not saved', 'Enter a name to save the profile.');
+      return;
+    }
     const profiles = readProfiles();
-    if(profiles[name]) return alert('A profile with that name already exists. Use Overwrite or pick another name.');
-    // Capture current page selections only
-    profiles[name] = captureCurrent();
-    writeProfiles(profiles);
-    
+    if(profiles[trimmed]){
+      setProfileStatus('warning', 'Name already exists. Use overwrite or choose another name.');
+      toastProfile('warning', 'Profile not saved', 'A profile with that name already exists.');
+      return;
+    }
+    profiles[trimmed] = captureCurrent();
+    const saved = writeProfiles(profiles);
+    if(!saved){
+      setProfileStatus('error', 'Could not save profile (storage unavailable).');
+      toastProfile('error', 'Profile not saved', 'Storage unavailable or full.');
+      return;
+    }
+
     // Refresh the dropdown list
     renderProfilesList();
-    
+
     // Select the newly created profile and mark it as the current one
     const list = document.getElementById('profiles-list');
     if(list){
-      list.value = name;
+      list.value = trimmed;
     }
-    currentLoadedProfile = name;
-    try { localStorage.setItem(LAST_PROFILE_KEY, name); } catch(e){}
-    
+    currentLoadedProfile = trimmed;
+    try { localStorage.setItem(LAST_PROFILE_KEY, trimmed); } catch(e){}
+
     // Clear the input field
     const nameInput = document.getElementById('profile-name');
     if(nameInput) nameInput.value = '';
+
+    setProfileStatus('success', `Saved "${trimmed}"`);
+    toastProfile('success', 'Profile saved', `Saved "${trimmed}"`);
   }
 
   /**
@@ -636,9 +686,17 @@ const ProfilesModule = (function(){
    * @param {string} name - Name of profile to overwrite
    */
   function overwriteProfile(name){
-    if(!name) return alert('Select a profile to overwrite');
+    if(!name){
+      setProfileStatus('warning', 'Select a profile to overwrite.');
+      toastProfile('warning', 'Nothing saved', 'Select a profile to overwrite.');
+      return;
+    }
     const profiles = readProfiles();
-    if(!profiles[name]) return alert('Profile not found');
+    if(!profiles[name]){
+      setProfileStatus('error', 'Profile not found.');
+      toastProfile('warning', 'Profile missing', 'Select another profile.');
+      return;
+    }
     // Merge current page selections into existing profile
     const current = captureCurrent();
     const merged = { ...profiles[name] };
@@ -650,10 +708,17 @@ const ProfilesModule = (function(){
     if(current.meta && Object.keys(current.meta).length){ merged.meta = { ...(profiles[name].meta||{}), ...current.meta }; }
     if(current.dynamic && Object.keys(current.dynamic).length){ merged.dynamic = { ...(profiles[name].dynamic||{}), ...current.dynamic }; }
     profiles[name] = merged;
-    writeProfiles(profiles);
+    const saved = writeProfiles(profiles);
+    if(!saved){
+      setProfileStatus('error', 'Could not save changes (storage unavailable).');
+      toastProfile('error', 'Profile not saved', 'Storage unavailable or full.');
+      return;
+    }
     renderProfilesList();
+    setProfileStatus('success', `Updated "${name}"`);
+    toastProfile('success', 'Profile updated', `Updated "${name}"`);
   }
-  
+
   /**
    * autoSaveCurrentProfile()
    * Automatically saves changes to the currently loaded profile
@@ -751,17 +816,32 @@ const ProfilesModule = (function(){
    */
   function loadSelectedProfile(){
     const list = document.getElementById('profiles-list');
-    if(!list) return alert('No profiles');
+    if(!list){
+      setProfileStatus('warning', 'Profiles list not available on this page.');
+      toastProfile('warning', 'Profile not loaded', 'Profiles UI not available.');
+      return;
+    }
     const name = list.value;
+    if(!name){
+      setProfileStatus('warning', 'Select a profile to load.');
+      toastProfile('warning', 'Profile not loaded', 'Select a profile to load.');
+      return;
+    }
     const profiles = readProfiles();
-    if(!profiles[name]) return alert('Profile not found');
-    
+    if(!profiles[name]){
+      setProfileStatus('error', 'Profile not found.');
+      toastProfile('warning', 'Profile missing', 'Choose another profile.');
+      return;
+    }
+
     // Track the currently loaded profile
     currentLoadedProfile = name;
     try { localStorage.setItem(LAST_PROFILE_KEY, name); } catch(e){}
-    
+
     // Apply the saved profile's selections
     applyProfileObject(profiles[name]);
+    setProfileStatus('success', `Loaded "${name}"`);
+    toastProfile('success', 'Profile loaded', `Loaded "${name}"`);
   }
 
   /**
@@ -770,9 +850,17 @@ const ProfilesModule = (function(){
    */
   function deleteSelectedProfile(){
     const list = document.getElementById('profiles-list');
-    if(!list) return;
+    if(!list){
+      setProfileStatus('warning', 'Profiles list not available.');
+      toastProfile('warning', 'Profile not deleted', 'Profiles UI not available.');
+      return;
+    }
     const name = list.value;
-    if(!name) return alert('Select a profile to delete');
+    if(!name){
+      setProfileStatus('warning', 'Select a profile to delete.');
+      toastProfile('warning', 'Profile not deleted', 'Select a profile before deleting.');
+      return;
+    }
 
     const t = (window.I18n && window.I18n.t) ? window.I18n.t : (k => k);
     const lang = (window.I18n && window.I18n.getCurrentLanguage) ? window.I18n.getCurrentLanguage() : 'en';
@@ -804,8 +892,15 @@ const ProfilesModule = (function(){
       if(!ok) return;
       const profiles = readProfiles();
       delete profiles[name];
-      writeProfiles(profiles);
+      const saved = writeProfiles(profiles);
+      if(!saved){
+        setProfileStatus('error', 'Could not delete profile (storage unavailable).');
+        toastProfile('error', 'Profile not deleted', 'Storage unavailable or full.');
+        return;
+      }
       renderProfilesList();
+      setProfileStatus('success', `Deleted "${name}"`);
+      toastProfile('success', 'Profile deleted', `Deleted "${name}"`);
     });
   }
 
@@ -816,18 +911,41 @@ const ProfilesModule = (function(){
   function renameSelectedProfile(){
     const list = document.getElementById('profiles-list');
     const input = document.getElementById('profile-name');
-    if(!list || !input) return;
+    if(!list || !input){
+      setProfileStatus('warning', 'Profiles controls not available.');
+      toastProfile('warning', 'Rename unavailable', 'Profiles UI not available.');
+      return;
+    }
     const from = list.value;
     const to = (input.value && input.value.trim().slice(0, 10));
-    if(!from) return alert('Select a profile to rename');
-    if(!to) return alert('Enter the new name in the textbox');
+    if(!from){
+      setProfileStatus('warning', 'Select a profile to rename.');
+      toastProfile('warning', 'Rename incomplete', 'Select a profile to rename.');
+      return;
+    }
+    if(!to){
+      setProfileStatus('warning', 'Enter the new name in the textbox.');
+      toastProfile('warning', 'Rename incomplete', 'Enter a new name to rename the profile.');
+      return;
+    }
     const profiles = readProfiles();
-    if(profiles[to]) return alert('A profile with the new name already exists');
+    if(profiles[to]){
+      setProfileStatus('warning', 'A profile with the new name already exists.');
+      toastProfile('warning', 'Rename blocked', 'Choose another name.');
+      return;
+    }
     profiles[to] = profiles[from];
     delete profiles[from];
-    writeProfiles(profiles);
+    const saved = writeProfiles(profiles);
+    if(!saved){
+      setProfileStatus('error', 'Could not rename profile (storage unavailable).');
+      toastProfile('error', 'Rename failed', 'Storage unavailable or full.');
+      return;
+    }
     renderProfilesList();
     input.value = '';
+    setProfileStatus('success', `Renamed to "${to}"`);
+    toastProfile('success', 'Profile renamed', `Renamed to "${to}"`);
   }
 
   /**
@@ -854,86 +972,88 @@ const ProfilesModule = (function(){
           notice.textContent = 'Profile saving is disabled (storage not allowed).';
           profilesSection.appendChild(notice);
         }
+        setProfileStatus('warning', 'Profiles disabled until storage is allowed.');
+        toastProfile('warning', 'Profiles disabled', 'Allow storage to enable saving.');
         return; // Skip wiring if no consent
       }
 
-    const saveBtn = document.getElementById('profile-save');
-    const deleteBtn = document.getElementById('profile-delete');
-    const renameBtn = document.getElementById('profile-rename');
-    const list = document.getElementById('profiles-list');
-    const nameInput = document.getElementById('profile-name');
+      const saveBtn = document.getElementById('profile-save');
+      const deleteBtn = document.getElementById('profile-delete');
+      const renameBtn = document.getElementById('profile-rename');
+      const list = document.getElementById('profiles-list');
+      const nameInput = document.getElementById('profile-name');
 
-    if(saveBtn) saveBtn.addEventListener('click', ()=> saveNewProfile(nameInput && nameInput.value && nameInput.value.trim()));
-    if(deleteBtn) deleteBtn.addEventListener('click', deleteSelectedProfile);
-    if(renameBtn) renameBtn.addEventListener('click', renameSelectedProfile);
-    
-    // Auto-load when a profile is selected from the list
-    if(list) list.addEventListener('change', loadSelectedProfile);
+      if(saveBtn) saveBtn.addEventListener('click', ()=> saveNewProfile(nameInput && nameInput.value && nameInput.value.trim()));
+      if(deleteBtn) deleteBtn.addEventListener('click', deleteSelectedProfile);
+      if(renameBtn) renameBtn.addEventListener('click', renameSelectedProfile);
 
-    // Auto-save for calculator controls (covers batch selects)
-    wireAutoSaveListeners();
+      // Auto-load when a profile is selected from the list
+      if(list) list.addEventListener('change', loadSelectedProfile);
 
-    // If no profile is selected, try to restore the last snapshot (autosave fallback)
-    if(!currentLoadedProfile){
-      const snap = readLastSnapshot();
-      if(snap) applyProfileObject(snap);
-    }
+      // Auto-save for calculator controls (covers batch selects)
+      wireAutoSaveListeners();
 
-    // Last-chance save when leaving or hiding the tab
-    window.addEventListener('beforeunload', autoSaveCurrentProfile);
-    document.addEventListener('visibilitychange', () => {
-      if(document.visibilityState === 'hidden') autoSaveCurrentProfile();
-    });
-
-    // Apply shared base resources (Meat/Wood/Coal/Iron) across pages
-    applySharedResources();
-
-    // Render existing profiles on load
-    renderProfilesList();
-
-    // Apply last snapshot as a guard (helps when profile selection isn't active yet)
-    const lastSnap = readLastSnapshot();
-    if(lastSnap) {
-      try { applyProfileObject(lastSnap); } catch(_) {}
-    }
-
-    // Auto-load last used profile (or first available) on page load
-    if(list){
-      const all = readProfiles();
-      const last = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
-      const applyAndRecalc = () => {
-        loadSelectedProfile();
-        setTimeout(() => {
-          if (window.WOSCalcCore && typeof window.WOSCalcCore.runActive === 'function') {
-            window.WOSCalcCore.runActive();
-          } else {
-            if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
-            if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
-            if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
-          }
-        }, 0);
-      };
-      // Wait for calculators to be ready (event-based)
-      if(window.FireCrystalsCalculator && window.FireCrystalsCalculator.init){
-        document.addEventListener('fc-calculator-ready', applyAndRecalc, { once: true });
+      // If no profile is selected, try to restore the last snapshot (autosave fallback)
+      if(!currentLoadedProfile){
+        const snap = readLastSnapshot();
+        if(snap) applyProfileObject(snap);
       }
-      if(window.ChiefGearCalculator && window.ChiefGearCalculator.init){
-        document.addEventListener('chief-gear-calculator-ready', applyAndRecalc, { once: true });
+
+      // Last-chance save when leaving or hiding the tab
+      window.addEventListener('beforeunload', autoSaveCurrentProfile);
+      document.addEventListener('visibilitychange', () => {
+        if(document.visibilityState === 'hidden') autoSaveCurrentProfile();
+      });
+
+      // Apply shared base resources (Meat/Wood/Coal/Iron) across pages
+      applySharedResources();
+
+      // Render existing profiles on load
+      renderProfilesList();
+
+      // Apply last snapshot as a guard (helps when profile selection isn't active yet)
+      const lastSnap = readLastSnapshot();
+      if(lastSnap) {
+        try { applyProfileObject(lastSnap); } catch(_) {}
       }
-      if(window.CalculatorModule && window.CalculatorModule.init){
-        document.addEventListener('charms-calculator-ready', applyAndRecalc, { once: true });
-      }
-      // Fallback: if no event, apply after short delay
-      setTimeout(() => {
-        if(last && all[last]){
-          list.value = last;
-          applyAndRecalc();
-        } else if(list.options.length > 0){
-          list.selectedIndex = 0;
-          applyAndRecalc();
+
+      // Auto-load last used profile (or first available) on page load
+      if(list){
+        const all = readProfiles();
+        const last = (() => { try { return localStorage.getItem(LAST_PROFILE_KEY); } catch(e){ return null; } })();
+        const applyAndRecalc = () => {
+          loadSelectedProfile();
+          setTimeout(() => {
+            if (window.WOSCalcCore && typeof window.WOSCalcCore.runActive === 'function') {
+              window.WOSCalcCore.runActive();
+            } else {
+              if(typeof CalculatorModule !== 'undefined' && CalculatorModule.calculateAll) CalculatorModule.calculateAll();
+              if(typeof ChiefGearCalculator !== 'undefined' && ChiefGearCalculator.calculateAll) ChiefGearCalculator.calculateAll();
+              if(typeof FireCrystalsCalculator !== 'undefined' && FireCrystalsCalculator.calculateAll) FireCrystalsCalculator.calculateAll();
+            }
+          }, 0);
+        };
+        // Wait for calculators to be ready (event-based)
+        if(window.FireCrystalsCalculator && window.FireCrystalsCalculator.init){
+          document.addEventListener('fc-calculator-ready', applyAndRecalc, { once: true });
         }
-      }, 300);
-    }
+        if(window.ChiefGearCalculator && window.ChiefGearCalculator.init){
+          document.addEventListener('chief-gear-calculator-ready', applyAndRecalc, { once: true });
+        }
+        if(window.CalculatorModule && window.CalculatorModule.init){
+          document.addEventListener('charms-calculator-ready', applyAndRecalc, { once: true });
+        }
+        // Fallback: if no event, apply after short delay
+        setTimeout(() => {
+          if(last && all[last]){
+            list.value = last;
+            applyAndRecalc();
+          } else if(list.options.length > 0){
+            list.selectedIndex = 0;
+            applyAndRecalc();
+          }
+        }, 300);
+      }
     }); // end consent gate
   }
 

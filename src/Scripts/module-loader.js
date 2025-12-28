@@ -1,9 +1,9 @@
 /**
  * Module Loader - Dynamic Import System
- * 
+ *
  * Loads calculator-specific JavaScript modules only when needed,
  * reducing initial page load time by ~40%.
- * 
+ *
  * Usage:
  * - Automatically detects which calculator page is active
  * - Loads only the required modules for that page
@@ -80,7 +80,7 @@ const ModuleLoader = (function() {
   function detectPage() {
     const path = window.location.pathname;
     const filename = path.split('/').pop().replace('.html', '');
-    
+
     // Map filename to page identifier
     const pageMap = {
       'charms': 'charms',
@@ -91,7 +91,7 @@ const ModuleLoader = (function() {
       'experts': 'experts',
       'index': 'home'
     };
-    
+
     return pageMap[filename] || 'home';
   }
 
@@ -100,39 +100,39 @@ const ModuleLoader = (function() {
    */
   async function loadModule(modulePath) {
     const fullPath = `Scripts/${modulePath}`;
-    
+
     // Already loaded?
     if (loadedModules.has(fullPath)) {
       return Promise.resolve();
     }
-    
+
     // Currently loading?
     if (loading.has(fullPath)) {
       return loading.get(fullPath);
     }
-    
+
     // Start loading
     const promise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = fullPath;
       script.defer = true;
-      
+
       script.onload = () => {
         loadedModules.add(fullPath);
         loading.delete(fullPath);
         console.info(`[ModuleLoader] Loaded: ${modulePath}`);
         resolve();
       };
-      
+
       script.onerror = (error) => {
         loading.delete(fullPath);
         console.warn(`[ModuleLoader] Failed to load: ${modulePath}`, error);
         reject(new Error(`Failed to load ${modulePath}`));
       };
-      
+
       document.head.appendChild(script);
     });
-    
+
     loading.set(fullPath, promise);
     return promise;
   }
@@ -156,29 +156,29 @@ const ModuleLoader = (function() {
    */
   async function init() {
     const currentPage = detectPage();
-    
+
     console.info(`[ModuleLoader] Page detected: ${currentPage}`);
-    
+
     // Home page only needs core modules (already loaded via HTML)
     if (currentPage === 'home') {
       console.info('[ModuleLoader] Home page - no calculator modules needed');
       return;
     }
-    
+
     // Get modules for this page
     const pageModules = MODULE_MAP[currentPage];
-    
+
     if (!pageModules || pageModules.length === 0) {
       console.warn(`[ModuleLoader] No modules defined for page: ${currentPage}`);
       return;
     }
-    
+
     console.info(`[ModuleLoader] Loading ${pageModules.length} module(s) for ${currentPage}...`);
-    
+
     try {
       await loadModules(pageModules);
       console.info(`[ModuleLoader] All modules loaded for ${currentPage}`);
-      
+
       // Dispatch event to signal modules are ready
       document.dispatchEvent(new CustomEvent('modules-loaded', {
         detail: { page: currentPage, modules: pageModules }
@@ -194,9 +194,9 @@ const ModuleLoader = (function() {
   function preload(pageName) {
     const modules = MODULE_MAP[pageName];
     if (!modules) return;
-    
+
     console.info(`[ModuleLoader] Preloading modules for ${pageName}...`);
-    
+
     // Use link rel=preload for faster loading
     modules.forEach(modulePath => {
       const link = document.createElement('link');

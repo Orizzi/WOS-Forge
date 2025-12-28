@@ -1,20 +1,20 @@
-    // Add event listeners to all batch inputs to auto-save profile on any change
-    const chiefGearBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
-    chiefGearBatchInputs.forEach(batchInput => {
-      batchInput.addEventListener('change', () => {
-        // [Chief Gear] Batch input changed: removed for production
-        if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
-          ProfilesModule.autoSaveCurrentProfile();
-          // [Chief Gear] Profile auto-saved after batch input change: removed for production
-        }
-      });
-    });
+// Add event listeners to all batch inputs to auto-save profile on any change
+const chiefGearBatchInputs = Array.from(document.querySelectorAll('select[id$="-batch-from"], select[id$="-batch-to"]'));
+chiefGearBatchInputs.forEach(batchInput => {
+  batchInput.addEventListener('change', () => {
+    // [Chief Gear] Batch input changed: removed for production
+    if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
+      ProfilesModule.autoSaveCurrentProfile();
+      // [Chief Gear] Profile auto-saved after batch input change: removed for production
+    }
+  });
+});
 /**
  * ====== CHIEF GEAR CALCULATOR MODULE ======
- * 
+ *
  * This module calculates the total resources needed to upgrade chief gear
  * from one level to another.
- * 
+ *
  * Structure adapted from Charms Calculator for consistency
  */
 
@@ -29,73 +29,73 @@ const ChiefGearCalculatorModule = (function(){
     if(Number.isNaN(n) || !Number.isFinite(n)) return 0;
     return Math.max(0, n);
   }
-  
+
   // Gear levels in order (46 levels total)
   const GEAR_LEVELS = [
-    "Locked",
-    "Green", "Green 1",
-    "Blue", "Blue 1", "Blue 2", "Blue 3",
-    "Purple", "Purple 1", "Purple 2", "Purple 3",
-    "Purple T1", "Purple T1 1", "Purple T1 2", "Purple T1 3",
-    "Gold", "Gold 1", "Gold 2", "Gold 3",
-    "Gold T1", "Gold T1 1", "Gold T1 2", "Gold T1 3",
-    "Gold T2", "Gold T2 1", "Gold T2 2", "Gold T2 3",
-    "Red", "Red 1", "Red 2", "Red 3",
-    "Red T1", "Red T1 1", "Red T1 2", "Red T1 3",
-    "Red T2", "Red T2 1", "Red T2 2", "Red T2 3",
-    "Red T3", "Red T3 1", "Red T3 2", "Red T3 3",
-    "Red T4", "Red T4 1", "Red T4 2", "Red T4 3"
+    'Locked',
+    'Green', 'Green 1',
+    'Blue', 'Blue 1', 'Blue 2', 'Blue 3',
+    'Purple', 'Purple 1', 'Purple 2', 'Purple 3',
+    'Purple T1', 'Purple T1 1', 'Purple T1 2', 'Purple T1 3',
+    'Gold', 'Gold 1', 'Gold 2', 'Gold 3',
+    'Gold T1', 'Gold T1 1', 'Gold T1 2', 'Gold T1 3',
+    'Gold T2', 'Gold T2 1', 'Gold T2 2', 'Gold T2 3',
+    'Red', 'Red 1', 'Red 2', 'Red 3',
+    'Red T1', 'Red T1 1', 'Red T1 2', 'Red T1 3',
+    'Red T2', 'Red T2 1', 'Red T2 2', 'Red T2 3',
+    'Red T3', 'Red T3 1', 'Red T3 2', 'Red T3 3',
+    'Red T4', 'Red T4 1', 'Red T4 2', 'Red T4 3'
   ];
 
   // Map CSV gear level names to calculator option values
   const CSV_LEVEL_TO_UI = {
-    "Locked": "Locked",
-    "Uncommon": "Green",
-    "Uncommon (1-Star)": "Green 1",
-    "Rare": "Blue",
-    "Rare (1-Star)": "Blue 1",
-    "Rare (2-Star)": "Blue 2",
-    "Rare (3-Star)": "Blue 3",
-    "Epic": "Purple",
-    "Epic (1-Star)": "Purple 1",
-    "Epic (2-Star)": "Purple 2",
-    "Epic (3-Star)": "Purple 3",
-    "Epic T1": "Purple T1",
-    "Epic T1 (1-Star)": "Purple T1 1",
-    "Epic T1 (2-Star)": "Purple T1 2",
-    "Epic T1 (3-Star)": "Purple T1 3",
-    "Mythic": "Gold",
-    "Mythic (1-Star)": "Gold 1",
-    "Mythic (2-Star)": "Gold 2",
-    "Mythic (3-Star)": "Gold 3",
-    "Mythic T1": "Gold T1",
-    "Mythic T1 (1-Star)": "Gold T1 1",
-    "Mythic T1 (2-Star)": "Gold T1 2",
-    "Mythic T1 (3-Star)": "Gold T1 3",
-    "Mythic T2": "Gold T2",
-    "Mythic T2 (1-Star)": "Gold T2 1",
-    "Mythic T2 (2-Star)": "Gold T2 2",
-    "Mythic T2 (3-Star)": "Gold T2 3",
-    "Legendary": "Red",
-    "Legendary (1-Star)": "Red 1",
-    "Legendary (2-Star)": "Red 2",
-    "Legendary (3-Star)": "Red 3",
-    "Legendary T1": "Red T1",
-    "Legendary T1 (1-Star)": "Red T1 1",
-    "Legendary T1 (2-Star)": "Red T1 2",
-    "Legendary T1 (3-Star)": "Red T1 3",
-    "Legendary T2": "Red T2",
-    "Legendary T2 (1-Star)": "Red T2 1",
-    "Legendary T2 (2-Star)": "Red T2 2",
-    "Legendary T2 (3-Star)": "Red T2 3",
-    "Legendary T3": "Red T3",
-    "Legendary T3 (1-Star)": "Red T3 1",
-    "Legendary T3 (2-Star)": "Red T3 2",
-    "Legendary T3 (3-Star)": "Red T3 3",
-    "Legendary T4": "Red T4",
-    "Legendary T4 (1-Star)": "Red T4 1",
-    "Legendary T4 (2-Star)": "Red T4 2",
-    "Legendary T4 (3-Star)": "Red T4 3"
+    'Locked': 'Locked',
+    'Uncommon': 'Green',
+    'Uncommon (1-Star)': 'Green 1',
+    'Rare': 'Blue',
+    'Rare (1-Star)': 'Blue 1',
+    'Rare (2-Star)': 'Blue 2',
+    'Rare (3-Star)': 'Blue 3',
+    'Epic': 'Purple',
+    'Epic (1-Star)': 'Purple 1',
+    'Epic (2-Star)': 'Purple 2',
+    'Epic (3-Star)': 'Purple 3',
+    'Epic T1': 'Purple T1',
+    'Epic T1 (1-Star)': 'Purple T1 1',
+    'Epic T1 (2-Star)': 'Purple T1 2',
+    'Epic T1 (3-Star)': 'Purple T1 3',
+    'Mythic': 'Gold',
+    'Mythic (1-Star)': 'Gold 1',
+    'Mythic (2-Star)': 'Gold 2',
+    'Mythic (3-Star)': 'Gold 3',
+    'Mythic T1': 'Gold T1',
+    'Mythic T1 (1-Star)': 'Gold T1 1',
+    'Mythic T1 (2-Star)': 'Gold T1 2',
+    'Mythic T1 (3-Star)': 'Gold T1 3',
+    'Mythic T2': 'Gold T2',
+    'Mythic T2 (1-Star)': 'Gold T2 1',
+    'Mythic T2 (2-Star)': 'Gold T2 2',
+    'Mythic T2 (3-Star)': 'Gold T2 3',
+    'Legendary': 'Red',
+    'Legendary (1-Star)': 'Red 1',
+    'Legendary (2-Star)': 'Red 2',
+    'Legendary (3-Star)': 'Red 3',
+    'Legendary T1': 'Red T1',
+    'Legendary T1 (1-Star)': 'Red T1 1',
+    'Legendary T1 (2-Star)': 'Red T1 2',
+    'Legendary T1 (3-Star)': 'Red T1 3',
+    'Legendary T2': 'Red T2',
+    'Legendary T2 (1-Star)': 'Red T2 1',
+    'Legendary T2 (2-Star)': 'Red T2 2',
+    'Legendary T2 (3-Star)': 'Red T2 3',
+    'Legendary T3': 'Red T3',
+    'Legendary T3 (1-Star)': 'Red T3 1',
+    'Legendary T3 (2-Star)': 'Red T3 2',
+    'Legendary T3 (3-Star)': 'Red T3 3',
+    'Legendary T4': 'Red T4',
+    'Legendary T4 (1-Star)': 'Red T4 1',
+    'Legendary T4 (2-Star)': 'Red T4 2',
+    'Legendary T4 (3-Star)': 'Red T4 3'
   };
 
   const UI_LEVEL_DISPLAY = {};
@@ -113,7 +113,7 @@ const ChiefGearCalculatorModule = (function(){
    * Will be loaded from chief_gear_costs.csv if available
    */
   const costs = {};
-  
+
   function toInternalLevel(levelName) {
     if (!levelName) return levelName;
     const trimmed = levelName.trim();
@@ -342,7 +342,7 @@ const ChiefGearCalculatorModule = (function(){
   /**
    * sumCosts(fromLevel, toLevel)
    * Calculates the total cost to upgrade from one level to another
-   * 
+   *
    * @param {string} fromLevel - Starting level (e.g. "Blue 1")
    * @param {string} toLevel - Target level (e.g. "Purple T1 2")
    * @returns {object} Total costs or null if invalid
@@ -352,12 +352,12 @@ const ChiefGearCalculatorModule = (function(){
     const normTo = toInternalLevel(toLevel);
     const fromIndex = GEAR_LEVELS.indexOf(normFrom);
     const toIndex = GEAR_LEVELS.indexOf(normTo);
-    
+
     if(fromIndex === -1 || toIndex === -1 || fromIndex >= toIndex){
       return null;
     }
-    
-    let totals = {
+
+    const totals = {
       hardenedAlloy: 0,
       polishingSolution: 0,
       designPlans: 0,
@@ -366,7 +366,7 @@ const ChiefGearCalculatorModule = (function(){
       svsPoints: 0
     };
     let finalLevelCost = null;
-    
+
     for(let i = fromIndex + 1; i <= toIndex; i++){
       const level = GEAR_LEVELS[i];
       const cost = costs[level];
@@ -379,9 +379,9 @@ const ChiefGearCalculatorModule = (function(){
         finalLevelCost = cost;
       }
     }
-    
+
     totals.power = finalLevelCost ? (finalLevelCost.power || 0) : 0;
-    
+
     return totals;
   }
 
@@ -394,29 +394,29 @@ const ChiefGearCalculatorModule = (function(){
   function validateLevels(startSelect, finishSelect){
     const startVal = startSelect.value;
     const finishVal = finishSelect.value;
-    
+
     // If TO is set but FROM is empty, auto-fill FROM with first level (Locked)
     if(!startVal && finishVal){
       startSelect.value = GEAR_LEVELS[0]; // Set to "Locked"
       applyRegexForPair(startSelect, finishSelect);
       return; // Re-run validation will happen via event
     }
-    
+
     if(!startVal || !finishVal){
       applyRegexForPair(startSelect, finishSelect);
       return;
     }
-    
+
     const normalizedStart = toInternalLevel(startVal);
     const normalizedFinish = toInternalLevel(finishVal);
     const startIdx = GEAR_LEVELS.indexOf(normalizedStart);
     const finishIdx = GEAR_LEVELS.indexOf(normalizedFinish);
-    
+
     // If FROM > TO, adjust TO to match FROM (maintains FROM ≤ TO invariant)
     if(startIdx !== -1 && finishIdx !== -1 && startIdx > finishIdx){
       finishSelect.value = startVal;
     }
-    
+
     // Disable TO options that are less than FROM (allow equality)
     Array.from(finishSelect.options).forEach(opt => {
       if(!opt.value) return;
@@ -455,7 +455,7 @@ const ChiefGearCalculatorModule = (function(){
 
     // Collect all gear upgrades
     const gearResults = [];
-    let grand = {
+    const grand = {
       hardenedAlloy: 0,
       polishingSolution: 0,
       designPlans: 0,
@@ -468,17 +468,17 @@ const ChiefGearCalculatorModule = (function(){
     GEAR_TYPES.forEach(gear => {
       const startSel = document.getElementById(`${gear}-start`);
       const finishSel = document.getElementById(`${gear}-finish`);
-      
+
       if(!startSel || !finishSel) return;
-      
+
       const from = startSel.value;
       const to = finishSel.value;
-      
+
       if(!from || !to) return;
-      
+
       const costs = sumCosts(from, to);
       if(!costs) return;
-      
+
       gearResults.push({
         name: gear,
         from,
@@ -487,7 +487,7 @@ const ChiefGearCalculatorModule = (function(){
         toDisplay: displayLevel(to),
         costs
       });
-      
+
       // Accumulate totals
       grand.hardenedAlloy += costs.hardenedAlloy;
       grand.polishingSolution += costs.polishingSolution;
@@ -498,13 +498,13 @@ const ChiefGearCalculatorModule = (function(){
     });
 
     // Check if any calculations exist
-    const hasCalculations = grand.hardenedAlloy > 0 || grand.polishingSolution > 0 || 
+    const hasCalculations = grand.hardenedAlloy > 0 || grand.polishingSolution > 0 ||
                            grand.designPlans > 0 || grand.lunarAmber > 0;
 
     // Gap messages (similar to Charms)
     function gapHtml(label, total, inv){
       const gap = total - inv; // positive = need more, negative/zero = will have left
-      
+
       // Don't show gap message if there are no calculations
       if (!hasCalculations) {
         return `
@@ -512,7 +512,7 @@ const ChiefGearCalculatorModule = (function(){
             <p><strong>${label}:</strong> ${formatNumber(total)}</p>
           </div>`;
       }
-      
+
       const cls = gap > 0 ? 'deficit' : 'surplus';
       const text = gap > 0
         ? `⚠ ${t('need-more')} ${formatNumber(gap)} ${t('more')}`
@@ -602,7 +602,7 @@ const ChiefGearCalculatorModule = (function(){
   /**
    * applyBatch(gear, which, value)
    * Quick-set feature: Sets the FROM or TO select for a specific gear type
-   * 
+   *
    * @param {string} gear - Gear type ('helmet', 'chestplate', etc)
    * @param {string} which - 'from' for start selects, 'to' for finish selects
    * @param {string} value - The level to set
@@ -610,11 +610,11 @@ const ChiefGearCalculatorModule = (function(){
   function applyBatch(gear, which, value){
     const suffix = which === 'from' ? '-start' : '-finish';
     const select = document.getElementById(gear + suffix);
-    
+
     if(!select) return;
-    
+
     select.value = String(value);
-    
+
     // Validate cross-levels
     if(which === 'to'){
       const startSel = document.getElementById(gear + '-start');
@@ -627,7 +627,7 @@ const ChiefGearCalculatorModule = (function(){
         validateLevels(startSel, select);
       }
     }
-    
+
     if(which === 'from'){
       const finishSel = document.getElementById(gear + '-finish');
       if(finishSel){
@@ -639,7 +639,7 @@ const ChiefGearCalculatorModule = (function(){
         validateLevels(select, finishSel);
       }
     }
-    
+
     calculateAll();
     // Save profile after all DOM updates
     if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
@@ -654,15 +654,15 @@ const ChiefGearCalculatorModule = (function(){
   function resetGear(){
     const gearSelects = Array.from(document.querySelectorAll('select[id$="-start"], select[id$="-finish"]'))
       .filter(s => !s.id.endsWith('-from') && !s.id.endsWith('-to'));
-    
+
     gearSelects.forEach(s => { s.value = GEAR_LEVELS[0]; });
-    
+
     const batchControls = Array.from(document.querySelectorAll('select[id$="-from"], select[id$="-to"]'));
     batchControls.forEach(b => { b.value = GEAR_LEVELS[0]; });
-    
+
     const startSelects = Array.from(document.querySelectorAll('select[id$="-start"]'))
       .filter(s => !s.id.endsWith('-from'));
-    
+
     startSelects.forEach(startSel => {
       const base = startSel.id.replace(/-start$/, '');
       const finishSel = document.getElementById(base + '-finish');
@@ -670,7 +670,7 @@ const ChiefGearCalculatorModule = (function(){
         Array.from(finishSel.options).forEach(opt => { opt.disabled = false; });
       }
     });
-    
+
     calculateAll();
     // Save profile after all DOM updates
     if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
@@ -699,9 +699,9 @@ const ChiefGearCalculatorModule = (function(){
     GEAR_TYPES.forEach(gear => {
       const startSel = document.getElementById(`${gear}-start`);
       const finishSel = document.getElementById(`${gear}-finish`);
-      
+
       if(!startSel || !finishSel) return;
-      
+
       if(which === 'from'){
         // Setting FROM
         startSel.value = String(value);
@@ -766,7 +766,7 @@ const ChiefGearCalculatorModule = (function(){
     if(globalFrom && globalTo){
       // Apply initial validation to batch controls
       validateLevels(globalFrom, globalTo);
-      
+
       globalFrom.addEventListener('change', () => {
         validateLevels(globalFrom, globalTo);
         applyGlobalBatch('from', globalFrom.value);
@@ -791,11 +791,11 @@ const ChiefGearCalculatorModule = (function(){
     GEAR_TYPES.forEach(gear => {
       const startSel = document.getElementById(`${gear}-start`);
       const finishSel = document.getElementById(`${gear}-finish`);
-      
+
       if(startSel && finishSel){
         // Apply initial validation
         validateLevels(startSel, finishSel);
-        
+
         startSel.addEventListener('change', () => {
           validateLevels(startSel, finishSel);
         });

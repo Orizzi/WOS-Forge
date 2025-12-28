@@ -8,13 +8,13 @@
     wood:'assets/resources/base/wood.png',
     coal:'assets/resources/base/coal.png',
     iron:'assets/resources/base/iron.png',
-    
+
     // Chief Gear resources
     'hardened-alloy':'assets/resources/chief-gear/hardened-alloy.png',
     'polishing-solution':'assets/resources/chief-gear/polishing-solution.png',
     'design-plans':'assets/resources/chief-gear/design-plans.png',
     'lunar-amber':'assets/resources/chief-gear/lunar-amber.png',
-    
+
     // Charms resources
     guides:'assets/resources/charms/guides.png',
     designs:'assets/resources/charms/designs.png',

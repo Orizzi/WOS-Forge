@@ -1,15 +1,15 @@
 /**
  * ====== PETS CALCULATOR MODULE ======
- * 
+ *
  * This module calculates the total resources needed to upgrade pets
  * from one level to another.
- * 
+ *
  * How it works:
  * 1. The 'petsCosts' object stores upgrade costs per pet and level
  * 2. When you select a FROM and TO level, sumCosts() adds up all costs between them
  * 3. calculateAll() finds all pet inputs, runs sumCosts for each, and shows results
  * 4. The results table is made sortable so you can click headers to sort
- * 
+ *
  * Data structure from CSV:
  * - petName: Name of the pet (e.g., "Cave Hyena")
  * - level: Level (10, 10.1, 20, 20.1, etc.)
@@ -36,7 +36,7 @@ const PetsCalculatorModule = (function(){
 
   // Pet costs data: { petName: { level: { foodBase, foodRequired, ... } } }
   const petsCosts = {};
-  
+
   // Map of pet IDs to pet names
   const PET_MAP = {
     'cave-hyena': 'Cave Hyena',
@@ -55,7 +55,7 @@ const PetsCalculatorModule = (function(){
     'frostscale-chameleon': 'Frostscale Chameleon',
     'abyssal-shelldragon': 'Abyssal Shelldragon'
   };
-  
+
   const LOCKED_LEVEL = -1;
   const MAX_PET_LEVEL = 100.1;
   const LOCKED_VALUE = LOCKED_LEVEL.toString();
@@ -66,9 +66,9 @@ const PetsCalculatorModule = (function(){
   function initializeDefaultCosts() {
     // Fallback defaults - will be overridden by CSV
     const defaultPets = Object.values(PET_MAP);
-    const defaultLevels = [10, 10.1, 20, 20.1, 30, 30.1, 40, 40.1, 50, 50.1, 
-                          60, 60.1, 70, 70.1, 80, 80.1, 90, 90.1, 100, 100.1];
-    
+    const defaultLevels = [10, 10.1, 20, 20.1, 30, 30.1, 40, 40.1, 50, 50.1,
+      60, 60.1, 70, 70.1, 80, 80.1, 90, 90.1, 100, 100.1];
+
     defaultPets.forEach(petName => {
       petsCosts[petName] = {};
       defaultLevels.forEach(level => {
@@ -98,7 +98,7 @@ const PetsCalculatorModule = (function(){
         console.warn('[Pets] CSV not found, using fallback defaults');
         return;
       }
-      
+
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
       if (lines.length <= 1) {
@@ -137,19 +137,19 @@ const PetsCalculatorModule = (function(){
         // Handle quoted CSV fields
         const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
         const row = cols.map(c => c.replace(/^"|"$/g, '').trim());
-        
+
         if (row.length < 3) continue; // Skip malformed rows
-        
+
         const petName = row[idx.petName];
         const level = parseFloat(row[idx.level]);
-        
+
         if (!petName || isNaN(level)) continue;
-        
+
         if (!petsCosts[petName]) {
           petsCosts[petName] = {};
           petSet.add(petName);
         }
-        
+
         petsCosts[petName][level] = {
           foodBase: parseInt(row[idx.foodBase], 10) || 0,
           foodRequired: parseInt(row[idx.foodRequired], 10) || 0,
@@ -162,7 +162,7 @@ const PetsCalculatorModule = (function(){
           svsPointsBase: parseInt(row[idx.svsPointsBase], 10) || 0,
           svsPointsRequired: parseInt(row[idx.svsPointsRequired], 10) || 0
         };
-        
+
         rowsProcessed++;
       }
 
@@ -196,7 +196,7 @@ const PetsCalculatorModule = (function(){
 
     const from = parseFloat(fromLevel);
     const to = parseFloat(toLevel);
-    
+
     if (isNaN(from) || isNaN(to) || from >= to) {
       return result;
     }
@@ -210,7 +210,7 @@ const PetsCalculatorModule = (function(){
     for (const level of petLevels) {
       const costs = petsCosts[petName][level];
       if (!costs) continue;
-      
+
       result.foodBase += costs.foodBase;
       result.foodRequired += costs.foodRequired;
       result.manualBase += costs.manualBase;
@@ -248,16 +248,16 @@ const PetsCalculatorModule = (function(){
     Object.entries(PET_MAP).forEach(([petId, petName]) => {
       const startSelect = document.getElementById(`${petId}-start`);
       const finishSelect = document.getElementById(`${petId}-finish`);
-      
+
       if (!startSelect || !finishSelect) return;
-      
+
       const fromLevel = startSelect.value;
       const toLevel = finishSelect.value;
-      
+
       if (fromLevel === '' || toLevel === '' || fromLevel === toLevel) return;
-      
+
       const costs = sumCosts(petName, fromLevel, toLevel);
-      
+
       // Add to totals (only base resources)
       totals.foodBase += costs.foodBase;
       totals.manualBase += costs.manualBase;
@@ -286,7 +286,7 @@ const PetsCalculatorModule = (function(){
 
     function formatGap(gap) {
       const className = gap > 0 ? 'deficit' : 'surplus';
-      const text = gap > 0 
+      const text = gap > 0
         ? `⚠ Need ${gap.toLocaleString()} more`
         : `✅ Have ${Math.abs(gap).toLocaleString()} left`;
       return `<span class="gap ${className}">${text}</span>`;
@@ -326,13 +326,13 @@ const PetsCalculatorModule = (function(){
    */
   function init() {
     console.info('[Pets] Initializing calculator module');
-    
+
     // Initialize default costs
     initializeDefaultCosts();
-    
+
     // Load costs from CSV (async, non-blocking)
     loadPetCostsFromCsv();
-    
+
     // Set up event listeners after DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', setupEventListeners);
@@ -347,11 +347,11 @@ const PetsCalculatorModule = (function(){
   function setupEventListeners() {
     // Listen for changes on pet level selects
     const allLevelSelects = document.querySelectorAll('[id$="-start"], [id$="-finish"]');
-    
+
     allLevelSelects.forEach(select => {
       select.addEventListener('change', () => {
         calculateAll();
-        
+
         // Auto-save profile if ProfilesModule is available
         if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
           ProfilesModule.autoSaveCurrentProfile();
@@ -386,14 +386,14 @@ const PetsCalculatorModule = (function(){
    * Populate all level dropdowns with level options
    */
   function populateLevelDropdowns() {
-    const levelOptions = ['', '10', '10.1', '20', '20.1', '30', '30.1', '40', '40.1', 
-                          '50', '50.1', '60', '60.1', '70', '70.1', '80', '80.1', 
-                          '90', '90.1', '100', '100.1'];
-    
+    const levelOptions = ['', '10', '10.1', '20', '20.1', '30', '30.1', '40', '40.1',
+      '50', '50.1', '60', '60.1', '70', '70.1', '80', '80.1',
+      '90', '90.1', '100', '100.1'];
+
     Object.keys(PET_MAP).forEach(petId => {
       const startSelect = document.getElementById(`${petId}-start`);
       const finishSelect = document.getElementById(`${petId}-finish`);
-      
+
       if (startSelect && startSelect.options.length <= 1) {
         levelOptions.forEach(level => {
           const option = document.createElement('option');
@@ -402,7 +402,7 @@ const PetsCalculatorModule = (function(){
           startSelect.appendChild(option);
         });
       }
-      
+
       if (finishSelect && finishSelect.options.length <= 1) {
         levelOptions.forEach(level => {
           const option = document.createElement('option');
@@ -421,21 +421,21 @@ const PetsCalculatorModule = (function(){
     Object.keys(PET_MAP).forEach(petId => {
       const startSelect = document.getElementById(`${petId}-start`);
       const finishSelect = document.getElementById(`${petId}-finish`);
-      
+
       if (startSelect) startSelect.value = '';
       if (finishSelect) finishSelect.value = '';
     });
 
     // Reset inventory
-    const inventoryInputs = ['inventory-food', 'inventory-manual', 'inventory-potion', 
-                             'inventory-serum', 'inventory-svs-points'];
+    const inventoryInputs = ['inventory-food', 'inventory-manual', 'inventory-potion',
+      'inventory-serum', 'inventory-svs-points'];
     inventoryInputs.forEach(id => {
       const input = document.getElementById(id);
       if (input) input.value = '0';
     });
 
     calculateAll();
-    
+
     if (window.ProfilesModule && ProfilesModule.autoSaveCurrentProfile) {
       ProfilesModule.autoSaveCurrentProfile();
     }
@@ -447,12 +447,12 @@ const PetsCalculatorModule = (function(){
    */
   function getCurrentState() {
     const state = {};
-    
+
     // Save all 15 pet levels with data-profile-key format
     Object.entries(PET_MAP).forEach(([petId, petName]) => {
       const startSelect = document.getElementById(`${petId}-start`);
       const finishSelect = document.getElementById(`${petId}-finish`);
-      
+
       if (startSelect) {
         state[`${petId}-start`] = startSelect.value;
       }
@@ -460,17 +460,17 @@ const PetsCalculatorModule = (function(){
         state[`${petId}-finish`] = finishSelect.value;
       }
     });
-    
+
     // Save inventory
-    const inventoryIds = ['inventory-food', 'inventory-manual', 'inventory-potion', 
-                          'inventory-serum', 'inventory-svs-points'];
+    const inventoryIds = ['inventory-food', 'inventory-manual', 'inventory-potion',
+      'inventory-serum', 'inventory-svs-points'];
     inventoryIds.forEach(id => {
       const input = document.getElementById(id);
       if (input) {
         state[id] = input.value;
       }
     });
-    
+
     return state;
   }
 
@@ -480,12 +480,12 @@ const PetsCalculatorModule = (function(){
    */
   function loadState(state) {
     if (!state || typeof state !== 'object') return;
-    
+
     // Load pet levels
     Object.entries(PET_MAP).forEach(([petId, petName]) => {
       const startKey = `${petId}-start`;
       const finishKey = `${petId}-finish`;
-      
+
       if (state[startKey] !== undefined) {
         const startSelect = document.getElementById(startKey);
         if (startSelect) startSelect.value = state[startKey];
@@ -495,17 +495,17 @@ const PetsCalculatorModule = (function(){
         if (finishSelect) finishSelect.value = state[finishKey];
       }
     });
-    
+
     // Load inventory
     const inventoryIds = ['inventory-food', 'inventory-manual', 'inventory-potion',
-                          'inventory-serum', 'inventory-svs-points'];
+      'inventory-serum', 'inventory-svs-points'];
     inventoryIds.forEach(id => {
       if (state[id] !== undefined) {
         const input = document.getElementById(id);
         if (input) input.value = state[id];
       }
     });
-    
+
     calculateAll();
   }
 

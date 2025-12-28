@@ -1,9 +1,9 @@
 /**
  * ====== THEME TOGGLE MODULE (Dark/Light Mode) ======
- * 
+ *
  * This module handles switching between dark and light themes.
  * The theme choice is saved in browser storage so it remembers your preference.
- * 
+ *
  * How it works:
  * 1. User clicks the theme toggle button
  * 2. setTheme() adds/removes the 'light-theme' class from the body
@@ -30,23 +30,23 @@ const ThemeModule = (function(){
     const on = !!isLight;
     try { document.documentElement.classList.toggle(CLASS, on); } catch(e){}
     try { document.body.classList.toggle(CLASS, on); } catch(e){}
-    
+
     // Save the choice to browser storage (survives page refresh)
-    try { 
-      localStorage.setItem(STORAGE_KEY, isLight ? 'light' : 'dark'); 
+    try {
+      localStorage.setItem(STORAGE_KEY, isLight ? 'light' : 'dark');
     } catch(e){
       // If localStorage fails (e.g., in private browsing), silently continue
     }
-    
+
     // Update button text with emoji to show current theme
     if(toggle){
       // If currently in light mode, show sun emoji (light mode active)
       // If currently in dark mode, show moon emoji (dark mode active)
       toggle.textContent = isLight ? '☀️ Light' : '🌙 Dark';
-      
+
       // For accessibility: tell screen readers if this button is "pressed" (active)
-      try { 
-        toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false'); 
+      try {
+        toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false');
       } catch(e){}
     }
   }
@@ -58,19 +58,19 @@ const ThemeModule = (function(){
    */
   function init(){
     // Get saved theme from browser storage, default to 'dark' if not found
-    const saved = (()=>{ 
-      try { 
-        return localStorage.getItem(STORAGE_KEY); 
-      } catch(e){ 
-        return null; 
-      } 
+    const saved = (()=>{
+      try {
+        return localStorage.getItem(STORAGE_KEY);
+      } catch(e){
+        return null;
+      }
     })() || 'dark';
-    
+
     // Apply the saved theme
     setTheme(saved === 'light');
-    
+
     if(!toggle) return;
-    
+
     // When user clicks the button, toggle the theme
     toggle.addEventListener('click', function(){
       const isLight = !document.body.classList.contains(CLASS);

@@ -1,14 +1,20 @@
 # Pets Calculator Implementation Summary
 
 **Created**: December 3, 2025  
-**Status**: Implemented but pending verification  
-**Related Docs**: [Bug Fixes Reference](BUG_FIXES_REFERENCE.md), [Outstanding Issues](PETS_PAGE_OUTSTANDING_ISSUES.md), [Next Session TODO](TODO_NEXT_SESSION.md)
+**Status**: Complete and operational  
+**Related Docs**: [Bug Fixes Reference](BUG_FIXES_REFERENCE.md), [Archived Issues](archive/PETS_PAGE_OUTSTANDING_ISSUES.md), [Next Session TODO](TODO_NEXT_SESSION.md)
 
 ---
 
 ## Overview
 
-The Pets Calculator is the newest addition to the WOS Forge calculator suite. It follows the same architectural patterns as the Charms and Chief Gear calculators but with a simplified 15-slot grid layout.
+The Pets Calculator is fully integrated into the WOS Calculator suite. It follows the same architectural patterns as the Charms and Chief Gear calculators with a 15-slot grid layout optimized for desktop and mobile views.
+
+**Key Files**:
+- `src/pets.html` - Main calculator page
+- `src/Scripts/pets-calculator.js` - Core logic (~546 lines)
+- `src/assets/pets_costs.csv` - Cost data (300 rows, 15 pets × 20 levels each)
+- Pre-implementation docs archived to `docs/archive/` (prep checklist, testing checklist, Dec 3 issues)
 
 ---
 

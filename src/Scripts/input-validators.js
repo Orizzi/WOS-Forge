@@ -64,7 +64,7 @@
     'inventory-meat': 12,
     'inventory-wood': 12,
     'inventory-coal': 11,
-    'inventory-iron': 11,
+    'inventory-iron': 11
   };
 
   function sanitizeToDigits(value){
