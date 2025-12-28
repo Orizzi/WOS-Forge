@@ -1,6 +1,16 @@
 ﻿(function() {
     'use strict';
     const FC_DEBUG = false;
+    const validator = window.InputValidation;
+
+    function safeInt(value, { min = 0, max = 999999999, fallback = 0 } = {}) {
+        if (validator && typeof validator.toInt === 'function') {
+            return validator.toInt(value, { min, max, fallback });
+        }
+        const n = parseInt(value, 10);
+        if (Number.isNaN(n) || !Number.isFinite(n)) return fallback;
+        return Math.max(min, Math.min(max, n));
+    }
 
     // Lazy-load shared modules when available (no HTML changes).
     async function ensureModules() {
@@ -83,76 +93,6 @@
     }
 
     // Removed legacy hardcoded Fire Crystal costs; CSV is the single source of truth.
-            "FC7": { "time": 207360, "normal": { "1": 48, "2": 48, "3": 48, "4": 48, "toFC8": 24 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC8": 8 } },
-            "FC8": { "time": 134760, "normal": { "1": 56, "2": 56, "3": 56, "4": 56, "toFC9": 28 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC9": 12 } },
-            "FC9": { "time": 207360, "normal": { "1": 70, "2": 70, "3": 70, "4": 70, "toFC10": 35 }, "refine": { "1": 14, "2": 14, "3": 14, "4": 14, "toFC10": 28 } },
-            "FC10": { "time": 0, "normal": { "1": 80, "2": 80, "3": 80, "4": 80 }, "refine": { "1": 16, "2": 16, "3": 16, "4": 16 } }
-        },
-        "Infirmary": {
-            "F30": { "time": 84660, "start": 0, "1": 26, "2": 26, "3": 26, "4": 26, "toFC1": 26 },
-            "FC1": { "time": 108840, "start": 0, "1": 31, "2": 31, "3": 31, "4": 31, "toFC2": 31 },
-            "FC2": { "time": 133020, "start": 0, "1": 47, "2": 47, "3": 47, "4": 47, "toFC3": 47 },
-            "FC3": { "time": 145140, "start": 0, "1": 56, "2": 56, "3": 56, "4": 56, "toFC4": 56 },
-            "FC4": { "time": 169320, "start": 0, "1": 67, "2": 67, "3": 67, "4": 67, "toFC5": 67 },
-            "FC5": { "time": 181440, "normal": { "1": 40, "2": 40, "3": 40, "4": 40, "toFC6": 20 }, "refine": { "1": 2, "2": 2, "3": 2, "4": 2, "toFC6": 5 } },
-            "FC6": { "time": 217680, "normal": { "1": 48, "2": 48, "3": 48, "4": 48, "toFC7": 24 }, "refine": { "1": 3, "2": 3, "3": 3, "4": 3, "toFC7": 7 } },
-            "FC7": { "time": 241920, "normal": { "1": 48, "2": 48, "3": 48, "4": 48, "toFC8": 24 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC8": 8 } },
-            "FC8": { "time": 156600, "normal": { "1": 56, "2": 56, "3": 56, "4": 56, "toFC9": 28 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC9": 12 } },
-            "FC9": { "time": 241920, "normal": { "1": 70, "2": 70, "3": 70, "4": 70, "toFC10": 35 }, "refine": { "1": 14, "2": 14, "3": 14, "4": 14, "toFC10": 28 } },
-            "FC10": { "time": 0, "normal": { "1": 80, "2": 80, "3": 80, "4": 80 }, "refine": { "1": 16, "2": 16, "3": 16, "4": 16 } }
-        },
-        "Infantry Camp": {
-            "F30": { "time": 90720, "start": 0, "1": 59, "2": 59, "3": 59, "4": 59, "toFC1": 59 },
-            "FC1": { "time": 116640, "start": 0, "1": 71, "2": 71, "3": 71, "4": 71, "toFC2": 71 },
-            "FC2": { "time": 142560, "start": 0, "1": 107, "2": 107, "3": 107, "4": 107, "toFC3": 107 },
-            "FC3": { "time": 155520, "start": 0, "1": 126, "2": 126, "3": 126, "4": 126, "toFC4": 126 },
-            "FC4": { "time": 181440, "start": 0, "1": 150, "2": 150, "3": 150, "4": 150, "toFC5": 150 },
-            "FC5": { "time": 194400, "normal": { "1": 90, "2": 90, "3": 90, "4": 90, "toFC6": 90 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC6": 9 } },
-            "FC6": { "time": 233280, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC7": 54 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC7": 13 } },
-            "FC7": { "time": 259200, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC8": 54 }, "refine": { "1": 9, "2": 9, "3": 9, "4": 9, "toFC8": 18 } },
-            "FC8": { "time": 168480, "normal": { "1": 126, "2": 126, "3": 126, "4": 126, "toFC9": 63 }, "refine": { "1": 13, "2": 13, "3": 13, "4": 13, "toFC9": 26 } },
-            "FC9": { "time": 259200, "normal": { "1": 157, "2": 157, "3": 157, "4": 157, "toFC10": 78 }, "refine": { "1": 31, "2": 31, "3": 31, "4": 31, "toFC10": 63 } },
-            "FC10": { "time": 0, "normal": { "1": 180, "2": 180, "3": 180, "4": 180 }, "refine": { "1": 36, "2": 36, "3": 36, "4": 36 } }
-        },
-        "Marksman Camp": {
-            "F30": { "time": 90720, "start": 0, "1": 59, "2": 59, "3": 59, "4": 59, "toFC1": 59 },
-            "FC1": { "time": 116640, "start": 0, "1": 71, "2": 71, "3": 71, "4": 71, "toFC2": 71 },
-            "FC2": { "time": 142560, "start": 0, "1": 107, "2": 107, "3": 107, "4": 107, "toFC3": 107 },
-            "FC3": { "time": 155520, "start": 0, "1": 126, "2": 126, "3": 126, "4": 126, "toFC4": 126 },
-            "FC4": { "time": 181440, "start": 0, "1": 150, "2": 150, "3": 150, "4": 150, "toFC5": 150 },
-            "FC5": { "time": 194400, "normal": { "1": 90, "2": 90, "3": 90, "4": 90, "toFC6": 90 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC6": 9 } },
-            "FC6": { "time": 233280, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC7": 54 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC7": 13 } },
-            "FC7": { "time": 259200, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC8": 54 }, "refine": { "1": 9, "2": 9, "3": 9, "4": 9, "toFC8": 18 } },
-            "FC8": { "time": 168480, "normal": { "1": 126, "2": 126, "3": 126, "4": 126, "toFC9": 63 }, "refine": { "1": 13, "2": 13, "3": 13, "4": 13, "toFC9": 26 } },
-            "FC9": { "time": 259200, "normal": { "1": 157, "2": 157, "3": 157, "4": 157, "toFC10": 78 }, "refine": { "1": 31, "2": 31, "3": 31, "4": 31, "toFC10": 63 } },
-            "FC10": { "time": 0, "normal": { "1": 180, "2": 180, "3": 180, "4": 180 }, "refine": { "1": 36, "2": 36, "3": 36, "4": 36 } }
-        },
-        "Lancer Camp": {
-            "F30": { "time": 90720, "start": 0, "1": 59, "2": 59, "3": 59, "4": 59, "toFC1": 59 },
-            "FC1": { "time": 116640, "start": 0, "1": 71, "2": 71, "3": 71, "4": 71, "toFC2": 71 },
-            "FC2": { "time": 142560, "start": 0, "1": 107, "2": 107, "3": 107, "4": 107, "toFC3": 107 },
-            "FC3": { "time": 155520, "start": 0, "1": 126, "2": 126, "3": 126, "4": 126, "toFC4": 126 },
-            "FC4": { "time": 181440, "start": 0, "1": 150, "2": 150, "3": 150, "4": 150, "toFC5": 150 },
-            "FC5": { "time": 194400, "normal": { "1": 90, "2": 90, "3": 90, "4": 90, "toFC6": 90 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC6": 9 } },
-            "FC6": { "time": 233280, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC7": 54 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC7": 13 } },
-            "FC7": { "time": 259200, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC8": 54 }, "refine": { "1": 9, "2": 9, "3": 9, "4": 9, "toFC8": 18 } },
-            "FC8": { "time": 168480, "normal": { "1": 126, "2": 126, "3": 126, "4": 126, "toFC9": 63 }, "refine": { "1": 13, "2": 13, "3": 13, "4": 13, "toFC9": 26 } },
-            "FC9": { "time": 259200, "normal": { "1": 157, "2": 157, "3": 157, "4": 157, "toFC10": 78 }, "refine": { "1": 31, "2": 31, "3": 31, "4": 31, "toFC10": 63 } },
-            "FC10": { "time": 0, "normal": { "1": 180, "2": 180, "3": 180, "4": 180 }, "refine": { "1": 36, "2": 36, "3": 36, "4": 36 } }
-        },
-        "War Academy": {
-            "FC1": { "time": 155520, "start": 0, "1": 71, "2": 71, "3": 71, "4": 71, "toFC2": 71 },
-            "FC2": { "time": 190080, "start": 0, "1": 107, "2": 107, "3": 107, "4": 107, "toFC3": 107 },
-            "FC3": { "time": 207360, "start": 0, "1": 126, "2": 126, "3": 126, "4": 126, "toFC4": 126 },
-            "FC4": { "time": 241920, "start": 0, "1": 150, "2": 150, "3": 150, "4": 150, "toFC5": 150 },
-            "FC5": { "time": 259200, "normal": { "1": 90, "2": 90, "3": 90, "4": 90, "toFC6": 45 }, "refine": { "1": 4, "2": 4, "3": 4, "4": 4, "toFC6": 9 } },
-            "FC6": { "time": 300240, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC7": 54 }, "refine": { "1": 6, "2": 6, "3": 6, "4": 6, "toFC7": 13 } },
-            "FC7": { "time": 345600, "normal": { "1": 108, "2": 108, "3": 108, "4": 108, "toFC8": 54 }, "refine": { "1": 9, "2": 9, "3": 9, "4": 9, "toFC8": 18 } },
-            "FC8": { "time": 224000, "normal": { "1": 126, "2": 126, "3": 126, "4": 126, "toFC9": 63 }, "refine": { "1": 13, "2": 13, "3": 13, "4": 13, "toFC9": 26 } },
-            "FC9": { "time": 345600, "normal": { "1": 157, "2": 157, "3": 157, "4": 157, "toFC10": 78 }, "refine": { "1": 31, "2": 31, "3": 31, "4": 31, "toFC10": 63 } },
-            "FC10": { "time": 0, "normal": { "1": 180, "2": 180, "3": 180, "4": 180 }, "refine": { "1": 36, "2": 36, "3": 36, "4": 36 } }
-        }
-    };
 
     // Level progression for Furnace
     const FURNACE_LEVELS = ['F30', '30-1', '30-2', '30-3', '30-4', 'FC1', 'FC1-1', 'FC1-2', 'FC1-3', 'FC1-4', 
@@ -469,7 +409,7 @@
         let totalRefineFC = 0;
         let totalTime = 0;
         let totalMeat = 0, totalWood = 0, totalCoal = 0, totalIron = 0;
-        const zinmanLevel = parseInt(document.getElementById('zinman-level')?.value || 0, 10) || 0;
+        const zinmanLevel = safeInt(document.getElementById('zinman-level')?.value || 0, { min: 0, max: 5, fallback: 0 });
 
         // Calculate for each building
         for (const building of BUILDINGS) {
@@ -497,14 +437,14 @@
         }
 
         // Get inventory
-    const inventoryFC = parseInt(document.getElementById('inventory-fire-crystals')?.value || 0);
-    const inventoryRFC = parseInt(document.getElementById('inventory-refine-crystals')?.value || 0);
-    const inventorySpeedupDays = parseInt(document.getElementById('inventory-speedup-days')?.value || 0);
-    const constructionSpeed = parseInt(document.getElementById('inventory-construction-speed')?.value || 0);
-    const inventoryMeat = parseInt(document.getElementById('inventory-meat')?.value || 0);
-    const inventoryWood = parseInt(document.getElementById('inventory-wood')?.value || 0);
-    const inventoryCoal = parseInt(document.getElementById('inventory-coal')?.value || 0);
-    const inventoryIron = parseInt(document.getElementById('inventory-iron')?.value || 0);
+    const inventoryFC = safeInt(document.getElementById('inventory-fire-crystals')?.value, { min: 0 });
+    const inventoryRFC = safeInt(document.getElementById('inventory-refine-crystals')?.value, { min: 0 });
+    const inventorySpeedupDays = safeInt(document.getElementById('inventory-speedup-days')?.value, { min: 0, max: 36500 });
+    const constructionSpeed = safeInt(document.getElementById('inventory-construction-speed')?.value, { min: 0, max: 1000 });
+    const inventoryMeat = safeInt(document.getElementById('inventory-meat')?.value, { min: 0 });
+    const inventoryWood = safeInt(document.getElementById('inventory-wood')?.value, { min: 0 });
+    const inventoryCoal = safeInt(document.getElementById('inventory-coal')?.value, { min: 0 });
+    const inventoryIron = safeInt(document.getElementById('inventory-iron')?.value, { min: 0 });
 
         // Calculate adjusted time
         const adjustedTime = calculateAdjustedTime(totalTime, constructionSpeed);

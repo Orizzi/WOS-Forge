@@ -33,6 +33,25 @@ const CalculatorModule = (function(){
     CHARM_LEVEL_VALUES.push(lvl);
   }
   const LOCKED_VALUE = LOCKED_LEVEL.toString();
+  const validator = window.InputValidation;
+
+  function safeLevel(value, fallback = LOCKED_LEVEL) {
+    if (validator && typeof validator.toInt === 'function') {
+      return validator.toInt(value, { min: LOCKED_LEVEL, max: MAX_CHARM_LEVEL, fallback });
+    }
+    const n = parseInt(value, 10);
+    if (Number.isNaN(n)) return fallback;
+    return Math.max(LOCKED_LEVEL, Math.min(MAX_CHARM_LEVEL, n));
+  }
+
+  function safeInventory(value) {
+    if (validator && typeof validator.numberOrZero === 'function') {
+      return validator.numberOrZero(value, { min: 0, max: 999999999, fallback: 0 });
+    }
+    const n = parseInt(value, 10);
+    if (Number.isNaN(n) || !Number.isFinite(n)) return 0;
+    return Math.max(0, n);
+  }
 
   function isLockedValue(value) {
     return Number(value) === LOCKED_LEVEL;
@@ -66,17 +85,13 @@ const CalculatorModule = (function(){
 
   function applyRegexForPair(startSelect, finishSelect){
     if(startSelect){
-      const finishVal = parseInt(finishSelect?.value, 10);
-      const allowedStart = Number.isNaN(finishVal)
-        ? CHARM_LEVEL_VALUES
-        : CHARM_LEVEL_VALUES.filter(v => v <= finishVal);
+      const finishVal = safeLevel(finishSelect?.value, MAX_CHARM_LEVEL);
+      const allowedStart = CHARM_LEVEL_VALUES.filter(v => v <= finishVal);
       setRegexConstraint(startSelect, allowedStart);
     }
     if(finishSelect){
-      const startVal = parseInt(startSelect?.value, 10);
-      const allowedFinish = Number.isNaN(startVal)
-        ? CHARM_LEVEL_VALUES
-        : CHARM_LEVEL_VALUES.filter(v => v >= startVal);
+      const startVal = safeLevel(startSelect?.value, LOCKED_LEVEL);
+      const allowedFinish = CHARM_LEVEL_VALUES.filter(v => v >= startVal);
       setRegexConstraint(finishSelect, allowedFinish);
     }
   }
@@ -282,8 +297,11 @@ const CalculatorModule = (function(){
   if(!finishSel) return;
       
       // Get the FROM and TO values as numbers
-      const from = Number(startSel.value);
-      const to = Number(finishSel.value);
+      const range = validator?.sanitizeRange
+        ? validator.sanitizeRange(startSel.value, finishSel.value, { min: LOCKED_LEVEL, max: MAX_CHARM_LEVEL, fallbackStart: LOCKED_LEVEL })
+        : null;
+      const from = range ? range.start : safeLevel(startSel.value, LOCKED_LEVEL);
+      const to = range ? range.end : safeLevel(finishSel.value, from);
       
       // Calculate cost for this charm
       const sum = sumCosts(from, to);
@@ -309,9 +327,9 @@ const CalculatorModule = (function(){
 
     // Create the totals summary (big numbers at top)
     // Inventory subtraction (optional inputs) - show gaps similar to Fire Crystals page
-    const invGuides = parseInt(document.getElementById('inventory-guides')?.value || '0', 10);
-    const invDesigns = parseInt(document.getElementById('inventory-designs')?.value || '0', 10);
-    const invSecrets = parseInt(document.getElementById('inventory-secrets')?.value || '0', 10);
+    const invGuides = safeInventory(document.getElementById('inventory-guides')?.value);
+    const invDesigns = safeInventory(document.getElementById('inventory-designs')?.value);
+    const invSecrets = safeInventory(document.getElementById('inventory-secrets')?.value);
 
     const gapGuides = grand.guides - invGuides;
     const gapDesigns = grand.designs - invDesigns;

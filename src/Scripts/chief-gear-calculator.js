@@ -19,6 +19,16 @@
  */
 
 const ChiefGearCalculatorModule = (function(){
+  const validator = window.InputValidation;
+
+  function safeInventory(value){
+    if(validator && typeof validator.numberOrZero === 'function'){
+      return validator.numberOrZero(value, { min: 0, max: 999999999, fallback: 0 });
+    }
+    const n = parseInt(value, 10);
+    if(Number.isNaN(n) || !Number.isFinite(n)) return 0;
+    return Math.max(0, n);
+  }
   
   // Gear levels in order (46 levels total)
   const GEAR_LEVELS = [
@@ -437,10 +447,10 @@ const ChiefGearCalculatorModule = (function(){
 
     // Collect inventory
     const inventory = {
-      hardenedAlloy: parseInt(document.getElementById('inventory-alloy')?.value) || 0,
-      polishingSolution: parseInt(document.getElementById('inventory-solution')?.value) || 0,
-      designPlans: parseInt(document.getElementById('inventory-plans')?.value) || 0,
-      lunarAmber: parseInt(document.getElementById('inventory-amber')?.value) || 0
+      hardenedAlloy: safeInventory(document.getElementById('inventory-alloy')?.value),
+      polishingSolution: safeInventory(document.getElementById('inventory-solution')?.value),
+      designPlans: safeInventory(document.getElementById('inventory-plans')?.value),
+      lunarAmber: safeInventory(document.getElementById('inventory-amber')?.value)
     };
 
     // Collect all gear upgrades

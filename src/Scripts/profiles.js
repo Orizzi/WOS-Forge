@@ -35,6 +35,7 @@ const ProfilesModule = (function(){
   const DYNAMIC_ATTR = 'data-profile-key';
   const DYNAMIC_SCOPE_ATTR = 'data-profile-scope';
   const DEFAULT_DYNAMIC_SCOPE = 'dynamic';
+  const MAX_STORAGE_BYTES = 750000;
 
   const PAGE_DETECTORS = {
     fireCrystals: () => !!document.getElementById('furnace-start'),
@@ -45,6 +46,56 @@ const ProfilesModule = (function(){
 
   function detectPages(){
     return Object.fromEntries(Object.entries(PAGE_DETECTORS).map(([key, fn]) => [key, !!fn()]));
+  }
+
+  function safeParse(raw, key, fallback){
+    if(!raw) return fallback;
+    try{
+      const parsed = JSON.parse(raw);
+      if(parsed === null || parsed === undefined) return fallback;
+      return parsed;
+    }catch(e){
+      console.warn(`[Profiles] Corrupt data in ${key}; clearing.`, e);
+      try{ localStorage.removeItem(key); }catch(_e){}
+      return fallback;
+    }
+  }
+
+  function safeStringify(value, key){
+    try{
+      const json = JSON.stringify(value);
+      if(!json) return null;
+      if(json.length > MAX_STORAGE_BYTES){
+        console.warn(`[Profiles] Skipped saving ${key}: payload ${json.length} bytes exceeds limit ${MAX_STORAGE_BYTES}.`);
+        return null;
+      }
+      return json;
+    }catch(e){
+      console.warn(`[Profiles] Failed to serialize ${key}:`, e);
+      return null;
+    }
+  }
+
+  function safeSet(key, value){
+    const json = safeStringify(value, key);
+    if(!json) return false;
+    try{
+      localStorage.setItem(key, json);
+      return true;
+    }catch(e){
+      console.warn(`[Profiles] Failed to save ${key}:`, e);
+      return false;
+    }
+  }
+
+  function safeGet(key, fallback){
+    try{
+      const raw = localStorage.getItem(key);
+      const parsed = safeParse(raw, key, fallback);
+      return parsed === undefined ? fallback : parsed;
+    }catch(e){
+      return fallback;
+    }
   }
 
   /**
@@ -63,11 +114,7 @@ const ProfilesModule = (function(){
   }
 
   function readSharedResources(){
-    try{
-      const raw = localStorage.getItem(SHARED_RES_KEY);
-      if(raw) return JSON.parse(raw);
-    }catch(e){}
-    return {};
+    return safeGet(SHARED_RES_KEY, {});
   }
 
   function persistSharedResources(){
@@ -91,7 +138,7 @@ const ProfilesModule = (function(){
         }
       }
     });
-    try{ localStorage.setItem(SHARED_RES_KEY, JSON.stringify(payload)); }catch(e){}
+    safeSet(SHARED_RES_KEY, payload);
   }
 
   function applySharedResources(){
@@ -275,41 +322,27 @@ const ProfilesModule = (function(){
    * @returns {object} Object with all profiles: { "Name": { charms: {}, chiefGear: {}, inventory: {} }, ... }
    */
   function readProfiles(){
-    try{
-      const raw = localStorage.getItem(PROFILES_KEY);
-      if(raw) {
-        return JSON.parse(raw);
-      }
-      
-      // Check for old format profiles and migrate
-      const oldKey = 'wos-charm-profiles';
-      const oldRaw = localStorage.getItem(oldKey);
-      if(oldRaw) {
-        const oldProfiles = JSON.parse(oldRaw);
-        const migratedProfiles = {};
-        
-        // Convert old format to new format
-        Object.keys(oldProfiles).forEach(name => {
-          migratedProfiles[name] = {
-            charms: oldProfiles[name],
-            chiefGear: {},
-            inventory: {}
-          };
-        });
-        
-        // Save in new format
-        writeProfiles(migratedProfiles);
-        
-        // Keep old profiles as backup (don't delete)
-        // Migrated old charm profiles to unified format
-        
-        return migratedProfiles;
-      }
-      
-      return {};
-    }catch(e){ 
-      return {}; 
+    const current = safeGet(PROFILES_KEY, null);
+    if(current && typeof current === 'object'){
+      return current;
     }
+
+    const oldKey = 'wos-charm-profiles';
+    const legacy = safeGet(oldKey, null);
+    if(legacy && typeof legacy === 'object'){
+      const migratedProfiles = {};
+      Object.keys(legacy).forEach(name => {
+        migratedProfiles[name] = {
+          charms: legacy[name],
+          chiefGear: {},
+          inventory: {}
+        };
+      });
+      writeProfiles(migratedProfiles);
+      return migratedProfiles;
+    }
+
+    return {};
   }
 
   /**
@@ -318,22 +351,16 @@ const ProfilesModule = (function(){
    * @param {object} profiles - Object with all profiles to save
    */
   function writeProfiles(profiles){
-    try{ 
-      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); 
-    }catch(e){}  // Silently fail if localStorage unavailable
+    safeSet(PROFILES_KEY, profiles);  // Silently fail if localStorage unavailable
   }
 
   function writeLastSnapshot(snapshot){
-    try{ localStorage.setItem(LAST_SNAPSHOT_KEY, JSON.stringify(snapshot || {})); }catch(e){}
+    safeSet(LAST_SNAPSHOT_KEY, snapshot || {});
   }
 
   function readLastSnapshot(){
-    try{
-      const raw = localStorage.getItem(LAST_SNAPSHOT_KEY);
-      return raw ? JSON.parse(raw) : null;
-    }catch(e){
-      return null;
-    }
+    const parsed = safeGet(LAST_SNAPSHOT_KEY, null);
+    return parsed && typeof parsed === 'object' ? parsed : null;
   }
 
   /**

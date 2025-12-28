@@ -23,6 +23,17 @@
 const PetsCalculatorModule = (function(){
   'use strict';
 
+  const validator = window.InputValidation;
+
+  function safeInventory(value){
+    if(validator && typeof validator.numberOrZero === 'function'){
+      return validator.numberOrZero(value, { min: 0, max: 999999999, fallback: 0 });
+    }
+    const n = parseInt(value, 10);
+    if(Number.isNaN(n) || !Number.isFinite(n)) return 0;
+    return Math.max(0, n);
+  }
+
   // Pet costs data: { petName: { level: { foodBase, foodRequired, ... } } }
   const petsCosts = {};
   
@@ -256,11 +267,11 @@ const PetsCalculatorModule = (function(){
     });
 
     // Get inventory values
-    const inventoryFood = parseInt(document.getElementById('inventory-food')?.value || '0', 10);
-    const inventoryManual = parseInt(document.getElementById('inventory-manual')?.value || '0', 10);
-    const inventoryPotion = parseInt(document.getElementById('inventory-potion')?.value || '0', 10);
-    const inventorySerum = parseInt(document.getElementById('inventory-serum')?.value || '0', 10);
-    const inventorySvsPoints = parseInt(document.getElementById('inventory-svs-points')?.value || '0', 10);
+    const inventoryFood = safeInventory(document.getElementById('inventory-food')?.value || '0');
+    const inventoryManual = safeInventory(document.getElementById('inventory-manual')?.value || '0');
+    const inventoryPotion = safeInventory(document.getElementById('inventory-potion')?.value || '0');
+    const inventorySerum = safeInventory(document.getElementById('inventory-serum')?.value || '0');
+    const inventorySvsPoints = safeInventory(document.getElementById('inventory-svs-points')?.value || '0');
 
     // Calculate gaps
     const foodGap = totals.foodBase - inventoryFood;

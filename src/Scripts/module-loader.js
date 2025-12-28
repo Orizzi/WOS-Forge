@@ -23,14 +23,17 @@ const ModuleLoader = (function() {
    */
   const MODULE_MAP = {
     'charms': [
+      'input-validation.js',
       'calculator.js',
       'profiles.js'
     ],
     'chief-gear': [
+      'input-validation.js',
       'chief-gear-calculator.js',
       'profiles.js'
     ],
     'fire-crystals': [
+      'input-validation.js',
       'fire-crystals-calculator.js',
       'fire-crystals-costs.js',
       'fire-crystals-power-extension.js',
@@ -39,14 +42,20 @@ const ModuleLoader = (function() {
       'profiles.js'
     ],
     'war-academy': [
+      'input-validation.js',
+      'modules/helpers/csv.js',
+      'modules/helpers/number-format.js',
+      'modules/data/helios-data.js',
       'war-laboratory.js',
       'profiles.js'
     ],
     'pets': [
-      // Future: pets-calculator.js
+      'input-validation.js',
+      'pets-calculator.js',
       'profiles.js'
     ],
     'experts': [
+      'input-validation.js',
       // Future: experts-calculator.js
       'profiles.js'
     ]
