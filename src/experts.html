@@ -14,8 +14,8 @@
   <script src="Scripts/min/table-sort.min.js" defer></script>
   <script src="Scripts/min/data-loader.min.js" defer></script>
   <script src="Scripts/error-handler.js" defer></script>
+  <script src="Scripts/experts-calculator.js" defer></script>
   <script src="Scripts/calculation-core.js" defer></script>
-  <script src="Scripts/input-validation.js" defer></script>
   <script src="Scripts/module-loader.js" defer></script>
   <script src="Scripts/sw-register.js" defer></script>
 </head>
@@ -52,14 +52,182 @@
   </header>
   <div class="app-shell">
     <main role="main">
-      <h2 data-i18n="experts-header">Experts</h2>
-      <section class="introduction">
-        <p>Calculator coming soon. We'll use your workbook sheets (e.g., "Heroes", "Chief & Hero Data") to power expert-related calculations.</p>
-      </section>
-      <section class="results-section card">
-        <h3>Items You Need</h3>
-        <div id="results-display">Pending data integration?</div>
-      </section>
+      <h2 data-i18n="experts-header">Experts Calculator</h2>
+
+      <!-- Inventory + Profiles row (reuse shared layout) -->
+      <div class="inventory-profiles-row" role="region" aria-label="Inventory and profiles">
+        <section class="inventory-section compact card">
+          <h3 data-i18n="inventory-header">Your Inventory</h3>
+          <div class="inventory-grid compact">
+            <div class="inventory-item">
+              <label for="inventory-expert-affinity">
+                <span class="label-with-icon">
+                  <img class="res-icon" src="assets/resources/experts/expert-placeholder.svg" alt="Affinity" onerror="this.style.display='none'">
+                  <span data-i18n="experts-affinity">Affinity</span>
+                </span>
+              </label>
+              <input type="number" id="inventory-expert-affinity" data-profile-key="inventory-expert-affinity" data-profile-scope="inventory" min="0" step="1" value="0">
+            </div>
+            <div class="inventory-item">
+              <label for="inventory-expert-sigils">
+                <span class="label-with-icon">
+                  <img class="res-icon" src="assets/resources/experts/expert-placeholder.svg" alt="Sigils" onerror="this.style.display='none'">
+                  <span data-i18n="experts-sigils">Sigils</span>
+                </span>
+              </label>
+              <input type="number" id="inventory-expert-sigils" data-profile-key="inventory-expert-sigils" data-profile-scope="inventory" min="0" step="1" value="0">
+            </div>
+            <div class="inventory-item">
+              <label for="inventory-expert-books">
+                <span class="label-with-icon">
+                  <img class="res-icon" src="assets/resources/experts/expert-placeholder.svg" alt="Skill Books" onerror="this.style.display='none'">
+                  <span data-i18n="experts-books">Books</span>
+                </span>
+              </label>
+              <input type="number" id="inventory-expert-books" data-profile-key="inventory-expert-books" data-profile-scope="inventory" min="0" step="1" value="0">
+            </div>
+            <div class="inventory-item">
+              <label for="inventory-expert-xp">
+                <span class="label-with-icon">
+                  <img class="res-icon" src="assets/resources/experts/expert-placeholder.svg" alt="Skill XP" onerror="this.style.display='none'">
+                  <span data-i18n="experts-xp">XP</span>
+                </span>
+              </label>
+              <input type="number" id="inventory-expert-xp" data-profile-key="inventory-expert-xp" data-profile-scope="inventory" min="0" step="1" value="0">
+            </div>
+          </div>
+        </section>
+
+        <section class="profiles stacked card" aria-label="Profiles" role="region">
+          <h3 data-i18n="profiles-header">Profiles</h3>
+          <div class="profiles-row">
+            <div class="input-with-icon">
+              <input id="profile-name" type="text" placeholder="New profile name" data-i18n-placeholder="profile-name-placeholder" aria-label="Profile name" maxlength="10">
+              <button id="profile-save" type="button" title="Save current setup as a new profile" aria-label="Save new profile" class="icon-button"><img src="assets/icons/save.svg" alt="Save"></button>
+            </div>
+            <div class="select-with-icon">
+              <select id="profiles-list" class="profiles-list" aria-label="Saved profiles"></select>
+              <button id="profile-rename" type="button" title="Rename the selected profile" class="icon-button"><img src="assets/icons/edit.svg" alt="Rename"></button>
+            </div>
+            <button id="profile-delete" type="button" title="Delete the selected profile (cannot undo)" class="danger"><span data-i18n="delete">Delete</span></button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Two-column: Experts grid (left) + Results (right) -->
+      <div class="main-layout-wrapper">
+        <section class="card" aria-label="Experts selection grid">
+          <div class="experts-grid" id="experts-grid">
+            <div class="expert-card" data-expert="Agnes">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Agnes">
+                <div>
+                  <h3>Agnes</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-agnes-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-agnes-from" data-profile-key="expert-agnes-from" data-profile-scope="experts"></select>
+                <label for="expert-agnes-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-agnes-to" data-profile-key="expert-agnes-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+
+            <div class="expert-card" data-expert="Baldur">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Baldur">
+                <div>
+                  <h3>Baldur</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-baldur-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-baldur-from" data-profile-key="expert-baldur-from" data-profile-scope="experts"></select>
+                <label for="expert-baldur-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-baldur-to" data-profile-key="expert-baldur-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+
+            <div class="expert-card" data-expert="Cyrille">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Cyrille">
+                <div>
+                  <h3>Cyrille</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-cyrille-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-cyrille-from" data-profile-key="expert-cyrille-from" data-profile-scope="experts"></select>
+                <label for="expert-cyrille-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-cyrille-to" data-profile-key="expert-cyrille-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+
+            <div class="expert-card" data-expert="Fabian">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Fabian">
+                <div>
+                  <h3>Fabian</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-fabian-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-fabian-from" data-profile-key="expert-fabian-from" data-profile-scope="experts"></select>
+                <label for="expert-fabian-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-fabian-to" data-profile-key="expert-fabian-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+
+            <div class="expert-card" data-expert="Holger">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Holger">
+                <div>
+                  <h3>Holger</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-holger-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-holger-from" data-profile-key="expert-holger-from" data-profile-scope="experts"></select>
+                <label for="expert-holger-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-holger-to" data-profile-key="expert-holger-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+
+            <div class="expert-card" data-expert="Romulus">
+              <div class="expert-card__header">
+                <img class="expert-avatar" src="assets/resources/experts/expert-placeholder.svg" alt="Romulus">
+                <div>
+                  <h3>Romulus</h3>
+                  <p class="muted" data-i18n="experts-config-title">Upgrade Plan</p>
+                </div>
+              </div>
+              <div class="expert-card__inputs">
+                <label for="expert-romulus-from" data-i18n="experts-from">From level</label>
+                <select class="expert-from" id="expert-romulus-from" data-profile-key="expert-romulus-from" data-profile-scope="experts"></select>
+                <label for="expert-romulus-to" data-i18n="experts-to">To level</label>
+                <select class="expert-to" id="expert-romulus-to" data-profile-key="expert-romulus-to" data-profile-scope="experts"></select>
+              </div>
+              <div class="validation-hint" aria-live="polite"></div>
+            </div>
+          </div>
+
+        </section>
+
+        <section class="card results-section" aria-labelledby="experts-results-title">
+          <h3 id="experts-results-title" data-i18n="experts-results-title">Resources Needed</h3>
+          <div id="experts-results"></div>
+        </section>
+      </div>
     </main>
   </div>
   <nav class="bottom-nav" aria-label="Mobile navigation">
