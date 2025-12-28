@@ -6,8 +6,8 @@
   "main": "src/index.html",
   "scripts": {
     "start": "cd src && python -m http.server 8080",
-    "build": "node scripts/build.js",
-    "build:dev": "node scripts/build.js --no-cache-busting",
+    "build": "node scripts/build.cjs",
+    "build:dev": "node scripts/build.cjs --no-cache-busting",
     "lint": "npm run lint:css && npm run lint:js",
     "lint:css": "stylelint \"src/style/**/*.css\"",
     "lint:js": "eslint \"src/Scripts/**/*.js\"",
